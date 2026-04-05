@@ -422,6 +422,7 @@ const HomeScreen = ({
   const [uploadedFile, setUploadedFile] = useState<{ url: string, name: string, type: string, ocr?: string } | null>(null);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [currentArtifactId, setCurrentArtifactId] = useState<string | null>(null);
+  const [lastPrompt, setLastPrompt] = useState<string>("");
 
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -634,6 +635,7 @@ const HomeScreen = ({
     } finally {
       setIsSubmitting(false);
       setIsSubmittingGlobal(false);
+      setLastPrompt(finalQuery);
       setQuery("");
     }
   };
@@ -911,7 +913,7 @@ const HomeScreen = ({
             <div className="flex-1 h-full overflow-hidden">
               <ArtifactPanel 
                 code={artifact} 
-                prompt={query} 
+                prompt={lastPrompt} 
                 isSplitView={isSplitView} 
                 onShare={() => setShareDialogOpen(true)}
               />
