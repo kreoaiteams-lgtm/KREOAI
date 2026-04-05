@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>KREO — Every Mode. One Studio.</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap');
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      width: 100%; height: 100%;
+      background: #070c1a;
+      overflow: hidden;
+      font-family: 'Instrument Serif', Georgia, serif;
+      color: #e8eaf0;
+    }
+
+    .scene {
+      width: 100vw; height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 5rem;
+      position: relative;
+    }
+
+    /* Top caption */
+    .eyebrow {
+      font-size: 0.7rem;
+      letter-spacing: 0.45em;
+      text-transform: uppercase;
+      color: rgba(232,234,240,0.25);
+      opacity: 0;
+      transition: opacity 0.9s ease 0.2s;
+    }
+    .eyebrow.visible { opacity: 1; }
+
+    /* Mode row */
+    .modes {
+      display: flex; gap: 2rem;
+      align-items: stretch;
+    }
+
+    .mode-card {
+      width: 200px;
+      border-radius: 1.75rem;
+      overflow: hidden;
+      border: 1px solid transparent;
+      display: flex; flex-direction: column; gap: 1.25rem;
+      padding: 1.75rem;
+      opacity: 0;
+      transform: translateY(48px) scale(0.96);
+      transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1),
+                  transform 0.8s cubic-bezier(0.16,1,0.3,1);
+    }
+
+    /* Ultra */
+    .mode-ultra {
+      background: linear-gradient(135deg, #0d1530 0%, #070c1a 100%);
+      border-color: rgba(201,168,76,0.12);
+      transform-origin: center bottom;
+      transition-delay: 0.4s;
+    }
+    .mode-ultra.visible {
+      opacity: 1; transform: translateY(0) scale(1.04);
+    }
+    /* Dark */
+    .mode-dark {
+      background: rgba(255,255,255,0.02);
+      border-color: rgba(255,255,255,0.06);
+      transition-delay: 0.65s;
+    }
+    .mode-dark.visible { opacity: 1; transform: none; }
+
+    /* Light */
+    .mode-light {
+      background: rgba(248,248,250,0.06);
+      border-color: rgba(248,248,250,0.1);
+      transition-delay: 0.9s;
+    }
+    .mode-light.visible { opacity: 1; transform: none; }
+
+    .mode-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+    }
+    .ultra-dot { background: #c9a84c; box-shadow: 0 0 10px #c9a84c44; }
+    .dark-dot { background: rgba(232,234,240,0.4); }
+    .light-dot { background: rgba(232,234,240,0.7); }
+
+    .mode-label {
+      font-size: 0.6rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: rgba(232,234,240,0.3);
+    }
+
+    .mode-title {
+      font-size: 1.5rem;
+      font-style: italic;
+      line-height: 1.2;
+    }
+    .ultra-title { color: #c9a84c; }
+    .dark-title { color: rgba(232,234,240,0.7); }
+    .light-title { color: rgba(232,234,240,0.5); }
+
+    .mode-desc {
+      font-size: 0.7rem;
+      line-height: 1.7;
+      color: rgba(232,234,240,0.25);
+      font-family: 'Satoshi', system-ui, sans-serif;
+      font-style: normal;
+    }
+
+    /* Ultra glow badge */
+    .badge {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-size: 0.55rem; letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: #c9a84c;
+      border: 1px solid rgba(201,168,76,0.2);
+      border-radius: 99px;
+      padding: 0.25rem 0.7rem;
+      width: fit-content;
+      background: rgba(201,168,76,0.05);
+    }
+
+    /* Bottom line */
+    .bottom-line {
+      position: fixed; bottom: 3rem;
+      left: 50%; transform: translateX(-50%);
+      display: flex; align-items: center; gap: 1.5rem;
+      opacity: 0; transition: opacity 1s ease 2.8s;
+    }
+    .bottom-line.visible { opacity: 1; }
+
+    .rule-short {
+      width: 40px; height: 1px;
+      background: rgba(201,168,76,0.25);
+    }
+
+    .bottom-copy {
+      font-size: 0.65rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: rgba(232,234,240,0.2);
+    }
+
+    .wordmark {
+      position: fixed; top: 2.5rem; left: 3rem;
+      font-size: 0.7rem; letter-spacing: 0.5em;
+      text-transform: uppercase; color: rgba(232,234,240,0.2);
+      opacity: 0; transition: opacity 0.8s ease 0.1s;
+    }
+    .wordmark.visible { opacity: 1; }
+  </style>
+</head>
+<body>
+  <p class="wordmark" id="wm">KREO</p>
+
+  <div class="scene">
+    <p class="eyebrow" id="ey">Three trajectories. One studio.</p>
+
+    <div class="modes">
+      <!-- Ultra -->
+      <div class="mode-card mode-ultra" id="ultra">
+        <div class="mode-dot ultra-dot"></div>
+        <p class="mode-label">Mode</p>
+        <h2 class="mode-title ultra-title">Ultra</h2>
+        <p class="mode-desc">Deep cobalt. Neural glow. The cinematic default for every new session.</p>
+        <div class="badge">★ Signature</div>
+      </div>
+
+      <!-- Dark -->
+      <div class="mode-card mode-dark" id="dark">
+        <div class="mode-dot dark-dot"></div>
+        <p class="mode-label">Mode</p>
+        <h2 class="mode-title dark-title">Dark</h2>
+        <p class="mode-desc">Obsidian architecture. Dithered waves. Precision without decoration.</p>
+      </div>
+
+      <!-- Light -->
+      <div class="mode-card mode-light" id="light">
+        <div class="mode-dot light-dot"></div>
+        <p class="mode-label">Mode</p>
+        <h2 class="mode-title light-title">Light</h2>
+        <p class="mode-desc">Porcelain canvas. Editorial clarity. Where ideas breathe.</p>
+      </div>
+    </div>
+
+    <div class="bottom-line" id="bl">
+      <div class="rule-short"></div>
+      <p class="bottom-copy">Every mode. One identity.</p>
+      <div class="rule-short"></div>
+    </div>
+  </div>
+
+  <script>
+    setTimeout(() => document.getElementById('wm').classList.add('visible'), 100);
+    setTimeout(() => document.getElementById('ey').classList.add('visible'), 200);
+    setTimeout(() => document.getElementById('ultra').classList.add('visible'), 400);
+    setTimeout(() => document.getElementById('dark').classList.add('visible'), 650);
+    setTimeout(() => document.getElementById('light').classList.add('visible'), 900);
+    setTimeout(() => document.getElementById('bl').classList.add('visible'), 2800);
+  </script>
+</body>
+</html>

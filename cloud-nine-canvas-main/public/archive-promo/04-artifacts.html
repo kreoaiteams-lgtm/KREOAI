@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>KREO — What it makes</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap');
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      width: 100%; height: 100%;
+      background: #070c1a;
+      overflow: hidden;
+      font-family: 'Instrument Serif', Georgia, serif;
+      color: #e8eaf0;
+    }
+
+    .scene {
+      width: 100vw; height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 4rem;
+      position: relative;
+    }
+
+    /* ambient glow */
+    .glow {
+      position: fixed; inset: 0; pointer-events: none;
+      background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(201,168,76,0.055) 0%, transparent 70%);
+    }
+
+    .eyebrow {
+      font-size: 0.68rem;
+      letter-spacing: 0.45em;
+      text-transform: uppercase;
+      color: rgba(232,234,240,0.22);
+      opacity: 0;
+      transition: opacity 0.9s ease 0.3s;
+    }
+    .eyebrow.visible { opacity: 1; }
+
+    /* artifact grid */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: 1rem;
+      width: min(760px, 92vw);
+    }
+
+    .tile {
+      border-radius: 1.25rem;
+      border: 1px solid rgba(232,234,240,0.06);
+      background: rgba(255,255,255,0.02);
+      display: flex; flex-direction: column;
+      justify-content: flex-end;
+      padding: 1.4rem;
+      min-height: 130px;
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      transform: scale(0.93);
+      transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1),
+                  transform 0.7s cubic-bezier(0.16,1,0.3,1);
+    }
+    .tile.visible { opacity: 1; transform: none; }
+
+    /* colored accent strips */
+    .tile::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+    }
+    .tile-dash::before  { background: linear-gradient(90deg, #c9a84c, transparent); }
+    .tile-lp::before    { background: linear-gradient(90deg, rgba(100,140,255,0.5), transparent); }
+    .tile-port::before  { background: linear-gradient(90deg, rgba(200,100,200,0.5), transparent); }
+    .tile-fin::before   { background: linear-gradient(90deg, rgba(80,200,120,0.5), transparent); }
+    .tile-ppt::before   { background: linear-gradient(90deg, rgba(255,120,80,0.5), transparent); }
+    .tile-chat::before  { background: linear-gradient(90deg, rgba(80,200,255,0.5), transparent); }
+
+    .tile-tag {
+      font-size: 0.58rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: rgba(232,234,240,0.25);
+      margin-bottom: 0.4rem;
+    }
+    .tile-name {
+      font-size: 1.05rem;
+      font-style: italic;
+      line-height: 1.25;
+    }
+
+    /* count stat */
+    .stat-row {
+      display: flex; gap: 3rem;
+      opacity: 0;
+      transition: opacity 0.9s ease 3.2s;
+    }
+    .stat-row.visible { opacity: 1; }
+
+    .stat { text-align: center; }
+    .stat-num {
+      font-size: 2.5rem;
+      color: #c9a84c;
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 0.6rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: rgba(232,234,240,0.2);
+      margin-top: 0.3rem;
+      font-family: system-ui;
+    }
+
+    .wordmark {
+      position: fixed; top: 2.5rem; left: 3rem;
+      font-size: 0.7rem; letter-spacing: 0.5em;
+      text-transform: uppercase; color: rgba(232,234,240,0.2);
+      opacity: 0; transition: opacity 0.8s ease 0.1s;
+    }
+    .wordmark.visible { opacity: 1; }
+  </style>
+</head>
+<body>
+  <div class="glow"></div>
+  <p class="wordmark" id="wm">KREO</p>
+
+  <div class="scene">
+    <p class="eyebrow" id="ey">Anything you can describe, KREO can manifest.</p>
+
+    <div class="grid">
+      <div class="tile tile-dash" id="t0">
+        <p class="tile-tag">Analytics</p>
+        <p class="tile-name">Executive Dashboard</p>
+      </div>
+      <div class="tile tile-lp" id="t1">
+        <p class="tile-tag">Marketing</p>
+        <p class="tile-name">Landing Page</p>
+      </div>
+      <div class="tile tile-port" id="t2">
+        <p class="tile-tag">Creative</p>
+        <p class="tile-name">Portfolio Site</p>
+      </div>
+      <div class="tile tile-fin" id="t3">
+        <p class="tile-tag">Finance</p>
+        <p class="tile-name">Budget Tracker</p>
+      </div>
+      <div class="tile tile-ppt" id="t4">
+        <p class="tile-tag">Pitch</p>
+        <p class="tile-name">VC Presentation</p>
+      </div>
+      <div class="tile tile-chat" id="t5">
+        <p class="tile-tag">Product</p>
+        <p class="tile-name">AI Chat Interface</p>
+      </div>
+    </div>
+
+    <div class="stat-row" id="stats">
+      <div class="stat">
+        <p class="stat-num">∞</p>
+        <p class="stat-label">Manifest types</p>
+      </div>
+      <div class="stat">
+        <p class="stat-num">&lt;4s</p>
+        <p class="stat-label">Avg. generation</p>
+      </div>
+      <div class="stat">
+        <p class="stat-num">1</p>
+        <p class="stat-label">Prompt needed</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const tiles = ['t0', 't1', 't2', 't3', 't4', 't5'];
+    setTimeout(() => document.getElementById('wm').classList.add('visible'), 100);
+    setTimeout(() => document.getElementById('ey').classList.add('visible'), 300);
+    tiles.forEach((id, i) =>
+      setTimeout(() => document.getElementById(id).classList.add('visible'), 600 + i * 180)
+    );
+    setTimeout(() => document.getElementById('stats').classList.add('visible'), 3200);
+  </script>
+</body>
+</html>
