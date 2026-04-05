@@ -169,14 +169,17 @@ const PossibilitiesPile: React.FC = () => {
 
   return (
     <div className="relative w-full h-[700px] flex items-center justify-center overflow-hidden bg-white rounded-[4rem] border border-black/5 mt-10">
-       {/* Central Focal Text */}
+       {/* Central Focal Text — sits above all pills */}
        <motion.div 
          initial={{ opacity: 0, scale: 0.9 }}
          whileInView={{ opacity: 1, scale: 1 }}
          transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
-         className="relative z-[100] text-center px-6 pointer-events-none"
+         className="absolute z-[200] text-center px-10 py-8 pointer-events-none"
+         style={{ left: '50%', top: '50%', transform: 'translate(-50%, -50%)' }}
        >
-         <h2 className="text-4xl md:text-7xl font-serif italic text-[#1B3FBF] tracking-tighter leading-tight drop-shadow-sm">
+         {/* White radial glow so text is always legible regardless of pill overlap */}
+         <div className="absolute inset-0 -m-8 rounded-full" style={{ background: 'radial-gradient(ellipse 80% 70% at center, rgba(255,255,255,1) 40%, rgba(255,255,255,0.85) 65%, transparent 100%)' }} />
+         <h2 className="relative text-4xl md:text-7xl font-serif italic text-[#1B3FBF] tracking-tighter leading-tight">
            What you can do <br /> with KREO
          </h2>
        </motion.div>
@@ -422,6 +425,7 @@ const HomeScreen = ({
   const [uploadedFile, setUploadedFile] = useState<{ url: string, name: string, type: string, ocr?: string } | null>(null);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [currentArtifactId, setCurrentArtifactId] = useState<string | null>(null);
+  const [currentShareToken, setCurrentShareToken] = useState<string | null>(null);
   const [lastPrompt, setLastPrompt] = useState<string>("");
 
   const { toast } = useToast();
@@ -527,22 +531,85 @@ const HomeScreen = ({
       return;
     }
 
-    // Neural Clarification Trigger for Broad Manifests (PPTs)
+    // ── SMART CLARIFICATION PROTOCOL ──
+    // Detect presentation requests
     const isPresentationRequest = finalQuery.toLowerCase().includes("ppt") ||
       finalQuery.toLowerCase().includes("presentation") ||
-      finalQuery.toLowerCase().includes("slides");
+      finalQuery.toLowerCase().includes("slides") ||
+      finalQuery.toLowerCase().includes("slideshow");
 
-    if (isPresentationRequest && !clarificationRequest) {
-      setClarificationRequest({
-        question: "Establishing Manifest Parameters / Choose a design trajectory:",
-        options: [
-          "Cinematic & Dark (Editorial focus)",
-          "Clean & Minimalist (Professional clarity)",
-          "Vibrant & Energetic (Impact-driven)",
-          "Technical & Schematic (Detail-oriented)"
-        ]
-      });
-      return;
+    // Detect other common artifact types
+    const isDashboardRequest = /dashboard|analytics|tracker|monitor/i.test(finalQuery);
+    const isAppRequest = /app|tool|calculator|converter|manager|planner/i.test(finalQuery);
+    const isLandingRequest = /landing|website|portfolio|homepage|saas/i.test(finalQuery);
+
+    // A prompt is "vague" if it's very short (< 6 words) OR matches a category but has no topic
+    const wordCount = finalQuery.trim().split(/\s+/).length;
+    const isVague = wordCount < 6;
+
+    if (!clarificationRequest) {
+      if (isPresentationRequest && isVague) {
+        // Step 1: Ask WHAT the PPT is about
+        setClarificationRequest({
+          question: "What is this presentation about?",
+          options: [
+            "📊 Business pitch / startup idea",
+            "📚 Education / school / college project",
+            "🌍 Current events / news / research",
+            "💼 Company / product / brand overview"
+          ]
+        });
+        return;
+      }
+      if (isPresentationRequest && !isVague) {
+        // Topic is known — just ask style
+        setClarificationRequest({
+          question: "Choose your slide design style:",
+          options: [
+            "🎬 Cinematic & Dark (Editorial)",
+            "🧹 Clean & Minimalist (Professional)",
+            "⚡ Vibrant & Bold (Impact-driven)",
+            "📐 Technical & Structured (Detail-rich)"
+          ]
+        });
+        return;
+      }
+      if (isDashboardRequest && isVague) {
+        setClarificationRequest({
+          question: "What data should this dashboard track?",
+          options: [
+            "📈 Sales / Revenue / Finance",
+            "👥 Users / Growth / Engagement",
+            "🚀 Project / Task / Team progress",
+            "❤️ Health / Fitness / Personal metrics"
+          ]
+        });
+        return;
+      }
+      if (isAppRequest && isVague) {
+        setClarificationRequest({
+          question: "What kind of app do you need?",
+          options: [
+            "✅ Productivity & task management",
+            "🧮 Calculator or converter tool",
+            "🛒 E-commerce or shopping",
+            "📖 Notes, journal or planner"
+          ]
+        });
+        return;
+      }
+      if (isLandingRequest && isVague) {
+        setClarificationRequest({
+          question: "What is this landing page for?",
+          options: [
+            "🚀 A startup or SaaS product",
+            "🎨 A personal portfolio or creative",
+            "🏢 A company or agency",
+            "📦 A product or app launch"
+          ]
+        });
+        return;
+      }
     }
 
     setIsSubmitting(true);
@@ -612,6 +679,8 @@ const HomeScreen = ({
         }]);
 
         // PERSISTENCE PROTOCOL: Save to Supabase History
+        // Generate a random 10-char share token for every artifact
+        const shareToken = Math.random().toString(36).substring(2, 7) + Math.random().toString(36).substring(2, 7);
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
           const { data: newArtifact, error: insertError } = await supabase
@@ -619,7 +688,9 @@ const HomeScreen = ({
             .insert({
               prompt: finalQuery,
               code: code,
-              user_id: user.id
+              user_id: user.id,
+              share_token: shareToken,
+              is_public: true
             })
             .select()
             .single();
@@ -627,6 +698,7 @@ const HomeScreen = ({
           if (!insertError && newArtifact) {
             setHistoryItems(prev => [newArtifact, ...prev]);
             setCurrentArtifactId(newArtifact.id);
+            setCurrentShareToken(newArtifact.share_token || shareToken);
           }
         }
       }
@@ -946,17 +1018,20 @@ const HomeScreen = ({
                        </div>
 
                        <div className="space-y-2">
-                          <div className="text-[9px] font-black uppercase tracking-[0.3em] text-black/30 pl-2">Neural Share Link</div>
+                          <div className="flex items-center gap-2 pl-2 mb-1">
+                            <div className="text-[9px] font-black uppercase tracking-[0.3em] text-black/30">Public Share Link</div>
+                            <div className="px-2 py-0.5 rounded-full bg-green-50 border border-green-200 text-[8px] font-black uppercase tracking-wider text-green-600">No login required</div>
+                          </div>
                           <div className="flex items-center gap-2 p-2 bg-black/[0.02] border border-black/5 rounded-2xl">
                              <input 
                                 readOnly 
-                                value={`${window.location.origin}/share/${currentArtifactId || 'unbound'}`} 
+                                value={`${window.location.origin}/link/${currentShareToken || currentArtifactId || 'unbound'}`} 
                                 className="flex-1 bg-transparent px-4 py-2 text-xs font-medium text-black/60 outline-none"
                              />
                              <button 
                                 onClick={async () => {
-                                   await navigator.clipboard.writeText(`${window.location.origin}/share/${currentArtifactId}`);
-                                   toast({ title: "Link Manifested", description: "Successfully copied to clipboard." });
+                                   await navigator.clipboard.writeText(`${window.location.origin}/link/${currentShareToken || currentArtifactId}`);
+                                   toast({ title: "Link Copied!", description: "Anyone can view this — no login needed." });
                                 }}
                                 className="px-6 py-3 bg-black text-white rounded-xl text-[9px] font-black uppercase tracking-widest hover:scale-[1.05] active:scale-95 transition-all"
                              >
