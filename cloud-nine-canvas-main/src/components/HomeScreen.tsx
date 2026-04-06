@@ -1186,6 +1186,42 @@ const HomeScreen = ({
                     </div>
                   </form>
 
+                  {/* Neural Clarification UI (MCQ Popup) */}
+                  <AnimatePresence>
+                    {clarificationRequest && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                        className="absolute left-0 right-0 mt-4 p-6 bg-white/90 backdrop-blur-3xl border border-black/10 rounded-[2rem] shadow-2xl z-50 text-left"
+                      >
+                        <div className="flex items-center gap-2 mb-4">
+                          <Sparkles size={16} className="text-[#1B3FBF]" />
+                          <h4 className="text-sm font-bold tracking-tight text-black">{clarificationRequest.question}</h4>
+                        </div>
+                        <div className="flex flex-col gap-2">
+                          {clarificationRequest.options.map((opt, idx) => (
+                            <button
+                              key={idx}
+                              onClick={() => {
+                                const newQuery = `${query} - focus on: ${opt}`;
+                                setQuery(newQuery);
+                                setClarificationRequest(null);
+                                handleSubmit(newQuery);
+                              }}
+                              className="px-4 py-3 bg-black/[0.03] hover:bg-[#1B3FBF]/10 hover:text-[#1B3FBF] border border-black/[0.05] hover:border-[#1B3FBF]/30 rounded-xl text-xs font-semibold text-black/70 transition-all text-left flex items-center gap-3"
+                            >
+                              <div className="w-5 h-5 rounded-full bg-white border border-black/10 flex items-center justify-center text-[9px] text-black/40">
+                                {String.fromCharCode(65 + idx)}
+                              </div>
+                              {opt}
+                            </button>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
                   <div className="flex flex-wrap justify-center gap-2 mt-10">
                     {[
                       { icon: Monitor, label: "Brand Landing" },
