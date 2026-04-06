@@ -392,6 +392,7 @@ const InteractiveVisualLoop = ({ theme }: { theme: string }) => {
 
 
 import { PREMADE_ARTIFACTS } from "@/lib/premadeArtifacts";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const HomeScreen = ({
   onCloudBurst,
@@ -434,6 +435,38 @@ const HomeScreen = ({
   const [feedbackText, setFeedbackText] = useState('');
   const [feedbackSubmitting, setFeedbackSubmitting] = useState(false);
   const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
+
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  // URL Synchronization: Load from URL ID if present
+  useEffect(() => {
+    const urlId = searchParams.get("id");
+    if (urlId && !currentArtifactId) {
+      const fetchFromUrl = async () => {
+        const { data, error } = await supabase
+          .from("artifacts")
+          .select("*")
+          .eq("id", urlId)
+          .single();
+        if (!error && data) {
+          setArtifact(data.code);
+          setCurrentArtifactId(data.id);
+          setQuery(data.prompt);
+          setChatHistory([{ role: "user", content: data.prompt }, { role: "assistant", content: data.code, display: "Manifest restored from neural link." }]);
+          setIsArtifactActive(true);
+        }
+      };
+      fetchFromUrl();
+    }
+  }, [searchParams, currentArtifactId, setIsArtifactActive]);
+
+  // Update URL whenever currentArtifactId changes
+  useEffect(() => {
+    if (currentArtifactId) {
+      navigate(`/?id=${currentArtifactId}`, { replace: true });
+    }
+  }, [currentArtifactId, navigate]);
 
   // Supabase Data Load
   useEffect(() => {
@@ -505,6 +538,7 @@ const HomeScreen = ({
     setQuery(item.prompt);
     setChatHistory([{ role: "user", content: item.prompt }, { role: "assistant", content: item.code, display: "Manifest restored from history." }]);
     setHistoryOpen(false);
+    navigate(`/?id=${item.id}`, { replace: true });
   };
 
   const handleManifestClick = (title: string) => {
@@ -618,7 +652,8 @@ const HomeScreen = ({
             .insert({
               prompt: finalQuery,
               code: code,
-              user_id: user.id
+              user_id: user.id,
+              is_public: true // Automatically public for instant sharing
             })
             .select()
             .single();
@@ -670,14 +705,6 @@ const HomeScreen = ({
               </TooltipTrigger>
               <TooltipContent>History</TooltipContent>
             </Tooltip>
-
-            <button
-              onClick={() => setPricingOpen(true)}
-              className={`px-4 py-1.5 rounded-full border transition-all ml-2 text-[10px] font-bold uppercase tracking-widest ${theme === 'light' ? 'bg-black/5 border-black/10 text-black/60 hover:text-black hover:border-black/20' : 'bg-white/5 border-white/10 text-white/60 hover:text-white hover:border-white/20'
-                }`}
-            >
-              Pricing
-            </button>
 
             <div className="relative">
               <button
@@ -868,7 +895,21 @@ const HomeScreen = ({
                 >
                   <ChevronLeft size={13} className="group-hover:-translate-x-1 transition-transform" /> Back
                 </button>
-                <span className="text-[9px] font-black uppercase tracking-[0.5em] text-black/20">Dialogue / Session</span>
+                <div className="flex items-center gap-3">
+                  <span className="text-[9px] font-black uppercase tracking-[0.5em] text-black/20">Dialogue / Session</span>
+                  {currentArtifactId && (
+                    <button
+                      onClick={async () => {
+                        const shareUrl = `${window.location.origin}/share/${currentArtifactId}`;
+                        await navigator.clipboard.writeText(shareUrl);
+                        toast({ title: "Portal Link Manifested", description: "Successfully copied to clipboard." });
+                      }}
+                      className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#1B3FBF]/20 bg-[#1B3FBF]/5 text-[#1B3FBF] text-[9px] font-black uppercase tracking-widest hover:bg-[#1B3FBF]/10 transition-all shadow-sm"
+                    >
+                      <Share2 size={12} /> Neural Share
+                    </button>
+                  )}
+                </div>
               </div>
 
               <div className="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-5">
@@ -983,7 +1024,7 @@ const HomeScreen = ({
         ) : (
           <div className="flex flex-col items-center w-full">
             {/* Landing Hero */}
-            <section className="min-h-screen flex flex-col items-center justify-start gap-12 px-4 pt-32 md:pt-40">
+            <section className="min-h-screen flex flex-col items-center justify-start gap-12 px-4 pt-20 md:pt-28">
               <div className="text-center space-y-4">
                 <h1
                   className="text-7xl md:text-8xl font-light tracking-tighter leading-tight animate-in fade-in slide-in-from-top-12 duration-1000"
@@ -998,7 +1039,7 @@ const HomeScreen = ({
                   Build your <br />
                   <span className="text-yellow-accent italic font-serif px-2" style={{ textShadow: theme === 'ultra' ? '0 0 80px rgba(255,215,0,0.2)' : 'none' }}>imagination</span>
                 </h1>
-                <p className="text-[10px] font-black uppercase tracking-[0.6em] text-foreground/30 mt-4 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-500">
+                <p className="text-[10px] font-black uppercase tracking-[0.8em] text-foreground/30 mt-6 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-500">
                   why think when you can visualise
                 </p>
               </div>
