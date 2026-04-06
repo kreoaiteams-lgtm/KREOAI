@@ -48,8 +48,9 @@ If the user's prompt is architectural (e.g., integrating OpenAI, setting up a ba
 ## PRACTICAL & COMPLETE — THE MOST IMPORTANT RULE
 Every app you build must be FULLY FUNCTIONAL and PRACTICALLY USEFUL out of the box. This is non-negotiable.
 
-### What "practical and full" means:
+### What "practical and full" means (NO GIMMICKS):
 - **Every button must DO something.** No disabled buttons, no "coming soon" buttons, no buttons that just look nice. If a button says "Submit", it submits. If it says "Delete", it deletes. Use localStorage, JS state, or in-memory arrays to back all CRUD operations.
+- **NO UI GIMMICKS/FAKE FEATURES.** If you add a "Dark Mode" toggle, it MUST actually toggle a dark theme using CSS classes or state. If you add a "Profile" dropdown, it must open. If you add a sidebar toggle, it must collapse the sidebar. Do not generate UI elements just for visual decoration.
 - **Every form must work.** Add/edit/delete patterns must be fully wired. Forms must validate, show errors, and update the UI on success.
 - **Real interactions, real feedback.** Every interaction must give immediate visual feedback (toast notifications, state changes, animations, updated counts, filtered lists, etc.).
 - **Navigation must work.** Multi-page apps must have working tab/page switching. Clicking a nav item must change the visible content.
