@@ -34,6 +34,16 @@ const Index = () => {
   }, []);
 
   // Persist and apply theme
+  useEffect(() => {
+    localStorage.setItem("theme", theme);
+    const root = document.documentElement;
+    root.classList.remove("light", "dark", "ultra");
+    root.classList.add(theme);
+  }, [theme]);
+
+  const [showAuthGate, setShowAuthGate] = useState(false);
+
+  // Determine what to render in the main slot
   const renderMain = () => {
     if (authLoading) return null;
     

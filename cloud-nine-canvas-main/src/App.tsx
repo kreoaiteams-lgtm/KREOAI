@@ -32,7 +32,6 @@ const App = () => (
           <Route path="/promo3" element={<KreoPromo3 />} />
           <Route path="/promo4" element={<KreoPromo4 />} />
           <Route path="/share/:id" element={<ShareView />} />
-          <Route path="/link/:id" element={<ShareView />} />
           <Route path="/social-manifest" element={<SocialManagerPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
