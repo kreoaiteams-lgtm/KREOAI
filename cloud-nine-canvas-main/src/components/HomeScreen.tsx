@@ -538,6 +538,12 @@ const HomeScreen = ({
       finalQuery.toLowerCase().includes("slides") ||
       finalQuery.toLowerCase().includes("slideshow");
 
+    // Detect excel/spreadsheet requests
+    const isExcelRequest = finalQuery.toLowerCase().includes("excel") ||
+      finalQuery.toLowerCase().includes("spreadsheet") ||
+      finalQuery.toLowerCase().includes("table") ||
+      finalQuery.toLowerCase().includes("csv");
+
     // Detect other common artifact types
     const isDashboardRequest = /dashboard|analytics|tracker|monitor/i.test(finalQuery);
     const isAppRequest = /app|tool|calculator|converter|manager|planner/i.test(finalQuery);
@@ -570,6 +576,30 @@ const HomeScreen = ({
             "🧹 Clean & Minimalist (Professional)",
             "⚡ Vibrant & Bold (Impact-driven)",
             "📐 Technical & Structured (Detail-rich)"
+          ]
+        });
+        return;
+      }
+      if (isExcelRequest && isVague) {
+        setClarificationRequest({
+          question: "What kind of spreadsheet/table do you need?",
+          options: [
+            "💰 Financial / Budget / Expense Tracker",
+            "📦 Inventory / Product Management",
+            "📅 Schedule / Task Planner / CRM",
+            "📊 Data Analysis / Pivot Table View"
+          ]
+        });
+        return;
+      }
+      if (isExcelRequest && !isVague) {
+        setClarificationRequest({
+          question: "How should this data be presented?",
+          options: [
+            "📈 Highly visual (Charts + Stats cards)",
+            "🧮 Strictly tabular (Dense data, sortable)",
+            "📋 Editable grid (Like Google Sheets)",
+            "📑 Report style (Print friendly, summarized)"
           ]
         });
         return;
@@ -657,12 +687,34 @@ const HomeScreen = ({
       // PPT ENFORCEMENT PROTOCOL: Direct manifest to use <section> based slideshow architecture
       if (isPresentationRequest) {
         backgroundEnhancedQuery += `
-          CRITICAL ARCHITECTURE: This is a MULTI-SLIDE PPT. 
-          1. Use ONLY HTML/Tailwind. No external JS libraries.
-          2. Structure each slide within <section class="h-screen w-screen flex flex-col items-center justify-center p-20 bg-white"> tags.
-          3. Create a PROPER PPT from start to end (at least 5-7 slides: Title, Problem, Solution, Data/Charts, Team, Contact).
-          4. Use high-fidelity editorial typography (font-serif italic) and architectural layout.
-          5. EVERY SLIDE MUST BE WRAPPED IN <section> TAGS.
+          CRITICAL ARCHITECTURE: HTML PPT Generator Protocol Active.
+          Create a single-file HTML presentation with the following requirements:
+          - Single HTML file, zero external dependencies (inline all CSS + JS)
+          - Keyboard navigation: arrow keys + spacebar
+          - Slide counter (current / total) showing exactly where you are
+          - Smooth slide transitions (fade or slide)
+          - Each slide has: title, body content, optional visual/icon
+          - Responsive, fullscreen layout. Print-friendly (each slide = one page)
+          - EVERY SLIDE MUST BE WRAPPED IN <section class="h-screen w-screen relative"> TAGS.
+          - TONE: COBALT (Royal blue base, white text, sharp minimal Kreo-style) unless otherwise specified.
+          - FONT: Instrument Serif + Satoshi (Kreo default). Do NOT use Inter/Roboto/Arial.
+          - STRUCTURE: At least 5-7 slides covering Title, Problem, Solution, Data/Charts, Team, Contact.
+          Make it a fully functional slideshow that works completely natively in the browser with no external react/js libraries.
+        `;
+      }
+
+      // EXCEL ENFORCEMENT PROTOCOL: Direct manifest to use a dense tabular/spreadsheet architecture
+      if (isExcelRequest) {
+        backgroundEnhancedQuery += `
+          CRITICAL ARCHITECTURE: HTML EXCEL/SPREADSHEET Generator Protocol Active.
+          Create a highly functional, dense tabular data view with the following requirements:
+          - Single HTML file, zero external dependencies (inline all CSS + JS).
+          - Use a wide, responsive grid or table layout mirroring Excel/Google Sheets.
+          - Include UI elements for tabular functionality: sticky headers, alternating row colors, hover states.
+          - Top control bar with mock tools (Filters, Sort, Export, Search).
+          - Ensure typography is tight and tabular (e.g., tabular-nums, mono for data, Satoshi for UI).
+          - Render realistic payload data (5-10 rows minimum of structured data).
+          - Make it feel like a rich, interactable dashboard/spreadsheet application using only native web technologies.
         `;
       }
 
