@@ -1039,7 +1039,7 @@ const HomeScreen = ({
                   Build your <br />
                   <span className="text-yellow-accent italic font-serif px-2" style={{ textShadow: theme === 'ultra' ? '0 0 80px rgba(255,215,0,0.2)' : 'none' }}>imagination</span>
                 </h1>
-                <p className="text-[10px] font-black uppercase tracking-[0.8em] text-foreground/30 mt-6 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-500">
+                <p className="text-[10px] font-black uppercase tracking-[0.8em] text-foreground/30 mt-6 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-500 not-italic">
                   Beyond pure thought.
                 </p>
               </div>
