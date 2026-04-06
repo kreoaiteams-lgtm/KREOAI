@@ -59,34 +59,34 @@ const SCENARIOS = [
 ];
 
 const ScenariosGrid = () => (
-   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {SCENARIOS.map((card, i) => (
-        <div key={i} className="p-10 rounded-[2.5rem] border border-black/10 bg-white hover:bg-white hover:shadow-2xl hover:shadow-black/5 transition-all group">
-           <div className="space-y-4 text-left">
-              <div className="w-10 h-10 rounded-full bg-[#1B3FBF]/10 flex items-center justify-center text-[#1B3FBF] font-serif italic text-xl group-hover:scale-110 transition-transform">?</div>
-              <h4 className="text-2xl font-serif italic text-black leading-tight">{card.t}</h4>
-              <p className="text-sm text-black/40 font-light italic font-serif leading-relaxed">{card.s}</p>
-           </div>
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {SCENARIOS.map((card, i) => (
+      <div key={i} className="p-10 rounded-[2.5rem] border border-black/10 bg-white hover:bg-white hover:shadow-2xl hover:shadow-black/5 transition-all group">
+        <div className="space-y-4 text-left">
+          <div className="w-10 h-10 rounded-full bg-[#1B3FBF]/10 flex items-center justify-center text-[#1B3FBF] font-serif italic text-xl group-hover:scale-110 transition-transform">?</div>
+          <h4 className="text-2xl font-serif italic text-black leading-tight">{card.t}</h4>
+          <p className="text-sm text-black/40 font-light italic font-serif leading-relaxed">{card.s}</p>
         </div>
-      ))}
-   </div>
+      </div>
+    ))}
+  </div>
 );
 
 const SynthesisEngine = () => (
-   <div className="grid grid-cols-1 md:grid-cols-3 gap-12 pt-10">
-      {[
-        { step: "01", title: "Cognitive Input", desc: "Describe your intent in plain language or upload a source manifest." },
-        { step: "02", title: "Neural Orchestration", desc: "Our engine decomposes your logic and applies high-fidelity design weighting." },
-        { step: "03", title: "Visual Manifestation", desc: "A functional, aesthetic outcome is generated in seconds." }
-      ].map((item, i) => (
-        <div key={i} className="space-y-6 text-center group">
-           <div className="text-6xl font-serif italic text-black/5 group-hover:text-[#1B3FBF]/10 transition-colors duration-700">{item.step}</div>
-           <h4 className="text-xl font-bold uppercase tracking-widest text-black">{item.title}</h4>
-           <div className="h-[1px] w-12 mx-auto bg-[#1B3FBF]/20" />
-           <p className="text-sm text-black/40 font-serif italic leading-relaxed">{item.desc}</p>
-        </div>
-      ))}
-   </div>
+  <div className="grid grid-cols-1 md:grid-cols-3 gap-12 pt-10">
+    {[
+      { step: "01", title: "Cognitive Input", desc: "Describe your intent in plain language or upload a source manifest." },
+      { step: "02", title: "Neural Orchestration", desc: "Our engine decomposes your logic and applies high-fidelity design weighting." },
+      { step: "03", title: "Visual Manifestation", desc: "A functional, aesthetic outcome is generated in seconds." }
+    ].map((item, i) => (
+      <div key={i} className="space-y-6 text-center group">
+        <div className="text-6xl font-serif italic text-black/5 group-hover:text-[#1B3FBF]/10 transition-colors duration-700">{item.step}</div>
+        <h4 className="text-xl font-bold uppercase tracking-widest text-black">{item.title}</h4>
+        <div className="h-[1px] w-12 mx-auto bg-[#1B3FBF]/20" />
+        <p className="text-sm text-black/40 font-serif italic leading-relaxed">{item.desc}</p>
+      </div>
+    ))}
+  </div>
 );
 
 const TypingKreo = () => {
@@ -105,13 +105,13 @@ const TypingKreo = () => {
 
   return (
     <div className="flex flex-col items-center justify-center py-20 w-full animate-in fade-in zoom-in-95 duration-1000">
-       <div className="text-center w-full">
-          <h1 className="text-[12vw] font-serif italic text-[#1B3FBF] tracking-tighter leading-none select-none">
-             {text}
-             <motion.span animate={{ opacity: [1, 0, 1] }} transition={{ repeat: Infinity, duration: 0.8 }} className="ml-2 inline-block w-[4px] h-[0.9em] bg-[#1B3FBF] align-middle" />
-          </h1>
-          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.5 }} className="text-[#1B3FBF] text-[10px] font-black uppercase tracking-[1em] opacity-20 mt-8">Manifesting Reality</motion.p>
-       </div>
+      <div className="text-center w-full">
+        <h1 className="text-[12vw] font-serif italic text-[#1B3FBF] tracking-tighter leading-none select-none">
+          {text}
+          <motion.span animate={{ opacity: [1, 0, 1] }} transition={{ repeat: Infinity, duration: 0.8 }} className="ml-2 inline-block w-[4px] h-[0.9em] bg-[#1B3FBF] align-middle" />
+        </h1>
+        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.5 }} className="text-[#1B3FBF] text-[10px] font-black uppercase tracking-[1em] opacity-20 mt-8">Manifesting Reality</motion.p>
+      </div>
     </div>
   );
 };
@@ -129,8 +129,8 @@ const ENHANCEMENT_PHRASES = [
 ];
 
 const EXAMPLES = [
-  "Scientific Diagrams", "Market Reports", "Logic Workflows", "Financial Models", 
-  "Flashcard Sets", "Landing Pages", "Mockup Suites", "Pitch Decks", "API Docs", 
+  "Scientific Diagrams", "Market Reports", "Logic Workflows", "Financial Models",
+  "Flashcard Sets", "Landing Pages", "Mockup Suites", "Pitch Decks", "API Docs",
   "System Architecture", "Global Strategies", "User Experience Flow", "Legal Briefs",
   "Creative Scripts", "Project Roadmaps", "Course Curriculum", "SaaS Dashboards",
   "Portfolio Sites", "Budget Trackers", "Scientific Papers", "Audit Reports",
@@ -149,11 +149,11 @@ const PossibilitiesPile: React.FC = () => {
       const angle = (i / EXAMPLES.length) * Math.PI * 2 + (Math.random() * 0.5);
       const radiusX = 22 + (Math.random() * 30); // Increased minimum 22vw radius for X to clear center
       const radiusY = 15 + (Math.random() * 25); // Increased minimum 15vh radius for Y to clear center
-      
+
       return {
         x: Math.cos(angle) * radiusX,
         y: Math.sin(angle) * radiusY,
-        rotate: (Math.random() * 26) - 13 
+        rotate: (Math.random() * 26) - 13
       };
     });
   }, []);
@@ -163,49 +163,49 @@ const PossibilitiesPile: React.FC = () => {
       count++;
       setVisibleCount(count);
       if (count >= EXAMPLES.length) clearInterval(interval);
-    }, 100); 
+    }, 100);
     return () => clearInterval(interval);
   }, []);
 
   return (
     <div className="relative w-full h-[700px] flex items-center justify-center overflow-hidden bg-white rounded-[4rem] border border-black/5 mt-10">
-       {/* Central Focal Text */}
-       <motion.div 
-         initial={{ opacity: 0, scale: 0.9 }}
-         whileInView={{ opacity: 1, scale: 1 }}
-         transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
-         className="relative z-[100] text-center px-6 pointer-events-none"
-       >
-         <h2 className="text-4xl md:text-7xl font-serif italic text-[#1B3FBF] tracking-tighter leading-tight drop-shadow-sm">
-           Why think <br /> when you can visualise
-         </h2>
-       </motion.div>
+      {/* Central Focal Text */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+        className="relative z-[100] text-center px-6 pointer-events-none"
+      >
+        <h2 className="text-4xl md:text-7xl font-serif italic text-[#1B3FBF] tracking-tighter leading-tight drop-shadow-sm">
+          Why think <br /> when you can visualise
+        </h2>
+      </motion.div>
 
-       {EXAMPLES.map((text, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, scale: 0.5, y: 150 }}
-            animate={{ 
-              opacity: i < visibleCount ? 1 : 0, 
-              scale: i < visibleCount ? 1 : 1, 
-              x: `${positions[i].x}vw`,
-              y: `${positions[i].y}vh`,
-              rotate: positions[i].rotate,
-              zIndex: i 
-            }}
-            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-            className={`absolute px-8 py-4 rounded-[2.5rem] border border-white/10 shadow-lg flex items-center justify-center min-w-[200px] md:min-w-[260px] bg-[#1B3FBF] select-none hover:z-[100] transition-colors duration-500`}
-          >
-            <span className="text-white font-serif italic text-xl md:text-2xl font-medium tracking-tight leading-none text-center">{text}</span>
-          </motion.div>
-       ))}
+      {EXAMPLES.map((text, i) => (
+        <motion.div
+          key={i}
+          initial={{ opacity: 0, scale: 0.5, y: 150 }}
+          animate={{
+            opacity: i < visibleCount ? 1 : 0,
+            scale: i < visibleCount ? 1 : 1,
+            x: `${positions[i].x}vw`,
+            y: `${positions[i].y}vh`,
+            rotate: positions[i].rotate,
+            zIndex: i
+          }}
+          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+          className={`absolute px-8 py-4 rounded-[2.5rem] border border-white/10 shadow-lg flex items-center justify-center min-w-[200px] md:min-w-[260px] bg-[#1B3FBF] select-none hover:z-[100] transition-colors duration-500`}
+        >
+          <span className="text-white font-serif italic text-xl md:text-2xl font-medium tracking-tight leading-none text-center">{text}</span>
+        </motion.div>
+      ))}
     </div>
   );
 };
 
 const InteractiveVisualLoop = ({ theme }: { theme: string }) => {
-  const [subPhase, setSubPhase] = useState(13); 
-  
+  const [subPhase, setSubPhase] = useState(13);
+
   useEffect(() => {
     const sequence = [
       { p: 13, d: 4000 }, { p: 14, d: 4500 }, { p: 15, d: 6000 },
@@ -225,167 +225,167 @@ const InteractiveVisualLoop = ({ theme }: { theme: string }) => {
 
   return (
     <div className="w-full h-[700px] flex flex-col items-center justify-center bg-white rounded-[4rem] border border-black/5 overflow-hidden relative">
-       <AnimatePresence mode="wait">
-          {subPhase === 13 && (
-             <motion.div key="s13" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="text-center space-y-6">
-                <p className="text-[#1B3FBF] text-[10px] font-black tracking-[0.5em] uppercase mb-4">Phase 01 / Manifestation</p>
-                <h1 className="text-3xl md:text-6xl font-serif italic text-black tracking-tighter leading-tight max-w-4xl px-6">
-                  An instant visualizer for your current imaginations.
-                </h1>
-                <div className="flex justify-center gap-2 pt-4">
-                  {[...Array(3)].map((_, i) => <motion.div key={i} animate={{ scale: [1, 1.5, 1], opacity: [0.3, 0.6, 0.3] }} transition={{ repeat: Infinity, duration: 2, delay: i * 0.4 }} className="w-1.5 h-1.5 rounded-full bg-[#1B3FBF]" />)}
-                </div>
-             </motion.div>
-          )}
-
-          {subPhase === 14 && (
-             <motion.div key="s14" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="text-center space-y-6">
-                <p className="text-[#1B3FBF] text-[10px] font-black tracking-[0.5em] uppercase mb-4">Phase 02 / The Need</p>
-                <h1 className="text-3xl md:text-6xl font-serif italic text-black tracking-tighter leading-tight max-w-4xl px-6">
-                   Sometimes you need apps, <br/>
-                   <span className="text-[#1B3FBF] not-italic font-normal">but can't wait for someone to build it or a tool.</span>
-                </h1>
-             </motion.div>
-          )}
-
-          {subPhase === 15 && (
-             <motion.div key="s15" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="text-center space-y-6">
-                <p className="text-[#1B3FBF] text-[10px] font-black tracking-[0.5em] uppercase mb-4">Phase 03 / The Power</p>
-                <h1 className="text-3xl md:text-6xl font-serif italic text-black tracking-tighter leading-tight max-w-4xl px-6">
-                  Studies show visuals have a great impact on many.
-                </h1>
-             </motion.div>
-          )}
-
-          {subPhase === 16 && (
-             <motion.div key="s16" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="text-center space-y-6">
-                <p className="text-[#1B3FBF] text-[10px] font-black tracking-[0.5em] uppercase mb-4">Phase 04 / For Students</p>
-                <h1 className="text-3xl md:text-6xl font-serif italic text-black tracking-tighter leading-tight max-w-4xl px-6">
-                  You don't always understand text or explanations...
-                </h1>
-                <h2 className="text-[#1B3FBF] text-4xl md:text-6xl font-normal px-6">but visuals help.</h2>
-             </motion.div>
-          )}
-
-          {subPhase === 17 && (
-             <motion.div key="s17" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="text-center space-y-6">
-                <p className="text-[#1B3FBF] text-[10px] font-black tracking-[0.5em] uppercase mb-4">Phase 05 / Conviction</p>
-                <h1 className="text-3xl md:text-6xl font-serif italic text-black tracking-tighter leading-tight max-w-4xl px-6">
-                  "I just wanna convince people to join me."
-                </h1>
-             </motion.div>
-          )}
-
-          {subPhase === 18 && (
-             <motion.div key="s18" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="text-center space-y-8">
-                <p className="text-[#1B3FBF] text-[10px] font-black tracking-[0.5em] uppercase mb-4">Phase 06 / Speed</p>
-                <h1 className="text-3xl md:text-6xl font-serif italic text-black tracking-tighter leading-tight max-w-4xl px-6">
-                  Why think? Just enter a vague prompt.
-                </h1>
-                <p className="text-[#1B3FBF] text-2xl md:text-4xl font-normal leading-none px-6">
-                  Something is better than nothing.
-                </p>
-             </motion.div>
-          )}
-
-          {(subPhase === 0 || subPhase === 4 || subPhase === 7 || subPhase === 10) && (
-            <motion.div key="typing" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="w-full max-w-2xl border border-black/5 p-10 rounded-[2rem] bg-[#f8f9ff] mx-6">
-               <div className="flex gap-2 mb-4">
-                  <div className="w-2 h-2 rounded-full bg-[#1B3FBF]" />
-                  <div className="w-2 h-2 rounded-full bg-black/5" />
-               </div>
-               <div className="text-black/60 text-lg md:text-2xl font-serif italic tracking-tight leading-snug">
-                  {subPhase === 0 ? "Create a presentation on Global Energy Trends in 2026..." : 
-                   subPhase === 4 ? "Manifest a physics flowchart for Motion in One Dimension..." : 
-                   subPhase === 7 ? "Build a sleek SaaS dashboard for crypto investment tracking..." :
-                   "Generate a premium brand toolkit for an AI startup called NEURA..."}
-                  <motion.span animate={{ opacity: [1, 0, 1] }} transition={{ repeat: Infinity, duration: 0.8 }} className="ml-1 inline-block w-[2px] h-[0.9em] bg-[#1B3FBF] align-middle" />
-               </div>
-            </motion.div>
-          )}
-
-          {(subPhase === 1 || subPhase === 2) && (
-             <motion.div key="ppt" initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.02 }} className="w-full max-w-5xl h-[500px] bg-white rounded-[3rem] p-0 shadow-2xl relative border border-black/5 flex overflow-hidden mx-6 scale-[0.8] md:scale-100 transition-all">
-                <div className="w-1/4 bg-[#f8f9ff] border-r border-black/5 p-8 flex flex-col gap-4">
-                   <div className="h-4 w-20 bg-black/10 rounded-full mb-8" />
-                   {[...Array(4)].map((_, i) => (
-                     <div key={i} className={`h-16 rounded-xl border ${i === (subPhase === 1 ? 0 : 1) ? 'bg-white border-[#1B3FBF] shadow-sm' : 'bg-black/5 border-transparent'} p-3 space-y-2`}>
-                        <div className="h-1.5 w-1/2 bg-black/20 rounded-full" />
-                        <div className="h-1.5 w-3/4 bg-black/10 rounded-full" />
-                     </div>
-                   ))}
-                </div>
-                <div className="flex-1 p-16 flex flex-col justify-center relative">
-                   <div className="absolute top-12 right-12 text-black/10 text-[9px] font-black uppercase tracking-[0.4em]">SLIDE 0{subPhase}</div>
-                   <div className="space-y-8">
-                      <motion.h1 key={subPhase} initial={{ x: 30, opacity: 0 }} animate={{ x: 0, opacity: 1 }} className="text-4xl md:text-5xl font-serif italic text-black leading-none tracking-tighter">
-                         {subPhase === 1 ? "Efficiency Peak" : "The Grid Shift"}
-                      </motion.h1>
-                      <div className="flex items-center gap-3">
-                         <motion.div initial={{ width: 0 }} animate={{ width: "120px" }} transition={{ duration: 1 }} className="h-2 bg-[#1B3FBF]" />
-                         <span className="text-[10px] font-black uppercase tracking-widest text-[#1B3FBF]">Neural Analysis</span>
-                      </div>
-                      <p className="text-black/70 text-lg font-light max-w-2xl leading-relaxed">
-                         {subPhase === 1 ? "Solar PV efficiency is projected to reach a record 28.5% by Q2 2026." : 
-                          "Smart grid connectivity increases by 42% across oceanic cables."}
-                      </p>
-                   </div>
-                </div>
-             </motion.div>
-          )}
-
-          {subPhase === 5 && (
-            <motion.div key="flow" initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="w-full max-w-5xl h-[550px] bg-white border border-black/5 rounded-[3rem] p-16 relative overflow-hidden shadow-2xl flex flex-col items-center justify-center mx-6 scale-[0.7] md:scale-100 transition-all">
-               <div className="flex flex-col items-center space-y-10 w-full relative">
-                  <div className="px-12 py-6 bg-[#f8f9ff] border border-black/5 rounded-[1.5rem] text-black font-serif italic text-3xl shadow-sm z-10">Translatory Motion</div>
-                  <div className="flex gap-12 pt-4 relative">
-                     {[ 'Position', 'Velocity', 'Acceleration' ].map((title, i) => (
-                        <div key={i} className="flex flex-col items-center space-y-4">
-                           <div className="px-6 py-4 bg-[#1B3FBF] rounded-2xl text-white font-bold tracking-widest text-xs uppercase shadow-xl">{title}</div>
-                        </div>
-                     ))}
-                  </div>
-                  <div className="px-12 py-7 border-2 border-[#1B3FBF] bg-white rounded-[2rem] text-[#1B3FBF] font-serif italic text-4xl shadow-xl leading-none">Equations of Motion</div>
-               </div>
-            </motion.div>
-          )}
-
-          {subPhase === 8 && (
-            <motion.div key="ui" initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-5xl h-[500px] bg-white border border-black/5 rounded-[3rem] shadow-2xl flex overflow-hidden mx-6 scale-[0.7] md:scale-100 transition-all">
-               <div className="w-64 border-r border-black/5 bg-[#f8f9ff] p-10 space-y-10">
-                  <div className="flex items-center gap-3"><div className="w-10 h-10 rounded-xl bg-[#1B3FBF]" /><span className="font-bold text-xs uppercase">Aesthetics UI</span></div>
-               </div>
-               <div className="flex-1 p-16 space-y-12">
-                  <div className="flex justify-between items-center"><h3 className="text-3xl font-serif italic text-black">Crypto Portfolio Explorer</h3><div className="w-3 h-3 rounded-full bg-green-500 animate-pulse" /></div>
-                  <div className="grid grid-cols-2 gap-8">
-                     <div className="h-44 rounded-[2rem] bg-[#f8f9ff] border border-black/5 p-8 flex flex-col justify-between"><span className="text-4xl font-light text-black">$67,492.00</span><div className="h-2 bg-[#1B3FBF] rounded-full w-3/4" /></div>
-                     <div className="h-44 rounded-[2rem] bg-black p-8 flex flex-col justify-between"><span className="text-4xl font-light text-white">$ +14,250.40</span></div>
-                  </div>
-               </div>
-            </motion.div>
-          )}
-
-          {subPhase === 11 && (
-            <motion.div key="brand" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="w-full max-w-6xl h-[550px] bg-white border border-black/10 rounded-[4rem] shadow-2xl p-16 flex flex-col items-center justify-between mx-6 scale-[0.7] md:scale-100 transition-all overflow-hidden">
-               <div className="flex-1 w-full grid grid-cols-2 gap-20">
-                  <div className="flex flex-col items-center justify-center space-y-10 border-r border-black/5">
-                     <div className="w-48 h-48 bg-black rounded-[3rem] flex items-center justify-center shadow-2xl"><span className="text-white font-serif text-9xl italic">N</span></div>
-                     <p className="text-black text-2xl font-black uppercase tracking-[0.3em] italic">Primary Wordmark</p>
-                  </div>
-                  <div className="space-y-16 justify-center flex flex-col">
-                     <div className="space-y-6"><div className="flex gap-6">{[ '#000000', '#1B3FBF', '#FACC15' ].map((c, i) => <div key={i} className="w-14 h-14 rounded-2xl" style={{ backgroundColor: c }} />)}</div></div>
-                     <div className="space-y-1"><h2 className="text-5xl font-serif italic text-black">Instrument Serif</h2></div>
-                  </div>
-               </div>
-            </motion.div>
-          )}
-
-          {subPhase === 12 && (
-            <div className="text-center space-y-4">
-               <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="block text-4xl md:text-8xl font-serif text-[#1B3FBF] tracking-tighter leading-none">Unlimited Potential.</motion.span>
+      <AnimatePresence mode="wait">
+        {subPhase === 13 && (
+          <motion.div key="s13" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="text-center space-y-6">
+            <p className="text-[#1B3FBF] text-[10px] font-black tracking-[0.5em] uppercase mb-4">Phase 01 / Manifestation</p>
+            <h1 className="text-3xl md:text-6xl font-serif italic text-black tracking-tighter leading-tight max-w-4xl px-6">
+              An instant visualizer for your current imaginations.
+            </h1>
+            <div className="flex justify-center gap-2 pt-4">
+              {[...Array(3)].map((_, i) => <motion.div key={i} animate={{ scale: [1, 1.5, 1], opacity: [0.3, 0.6, 0.3] }} transition={{ repeat: Infinity, duration: 2, delay: i * 0.4 }} className="w-1.5 h-1.5 rounded-full bg-[#1B3FBF]" />)}
             </div>
-          )}
-       </AnimatePresence>
+          </motion.div>
+        )}
+
+        {subPhase === 14 && (
+          <motion.div key="s14" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="text-center space-y-6">
+            <p className="text-[#1B3FBF] text-[10px] font-black tracking-[0.5em] uppercase mb-4">Phase 02 / The Need</p>
+            <h1 className="text-3xl md:text-6xl font-serif italic text-black tracking-tighter leading-tight max-w-4xl px-6">
+              Sometimes you need apps, <br />
+              <span className="text-[#1B3FBF] not-italic font-normal">but can't wait for someone to build it or a tool.</span>
+            </h1>
+          </motion.div>
+        )}
+
+        {subPhase === 15 && (
+          <motion.div key="s15" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="text-center space-y-6">
+            <p className="text-[#1B3FBF] text-[10px] font-black tracking-[0.5em] uppercase mb-4">Phase 03 / The Power</p>
+            <h1 className="text-3xl md:text-6xl font-serif italic text-black tracking-tighter leading-tight max-w-4xl px-6">
+              Studies show visuals have a great impact on many.
+            </h1>
+          </motion.div>
+        )}
+
+        {subPhase === 16 && (
+          <motion.div key="s16" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="text-center space-y-6">
+            <p className="text-[#1B3FBF] text-[10px] font-black tracking-[0.5em] uppercase mb-4">Phase 04 / For Students</p>
+            <h1 className="text-3xl md:text-6xl font-serif italic text-black tracking-tighter leading-tight max-w-4xl px-6">
+              You don't always understand text or explanations...
+            </h1>
+            <h2 className="text-[#1B3FBF] text-4xl md:text-6xl font-normal px-6">but visuals help.</h2>
+          </motion.div>
+        )}
+
+        {subPhase === 17 && (
+          <motion.div key="s17" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="text-center space-y-6">
+            <p className="text-[#1B3FBF] text-[10px] font-black tracking-[0.5em] uppercase mb-4">Phase 05 / Conviction</p>
+            <h1 className="text-3xl md:text-6xl font-serif italic text-black tracking-tighter leading-tight max-w-4xl px-6">
+              "I just wanna convince people to join me."
+            </h1>
+          </motion.div>
+        )}
+
+        {subPhase === 18 && (
+          <motion.div key="s18" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="text-center space-y-8">
+            <p className="text-[#1B3FBF] text-[10px] font-black tracking-[0.5em] uppercase mb-4">Phase 06 / Speed</p>
+            <h1 className="text-3xl md:text-6xl font-serif italic text-black tracking-tighter leading-tight max-w-4xl px-6">
+              Why think? Just enter a vague prompt.
+            </h1>
+            <p className="text-[#1B3FBF] text-2xl md:text-4xl font-normal leading-none px-6">
+              Something is better than nothing.
+            </p>
+          </motion.div>
+        )}
+
+        {(subPhase === 0 || subPhase === 4 || subPhase === 7 || subPhase === 10) && (
+          <motion.div key="typing" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="w-full max-w-2xl border border-black/5 p-10 rounded-[2rem] bg-[#f8f9ff] mx-6">
+            <div className="flex gap-2 mb-4">
+              <div className="w-2 h-2 rounded-full bg-[#1B3FBF]" />
+              <div className="w-2 h-2 rounded-full bg-black/5" />
+            </div>
+            <div className="text-black/60 text-lg md:text-2xl font-serif italic tracking-tight leading-snug">
+              {subPhase === 0 ? "Create a presentation on Global Energy Trends in 2026..." :
+                subPhase === 4 ? "Manifest a physics flowchart for Motion in One Dimension..." :
+                  subPhase === 7 ? "Build a sleek SaaS dashboard for crypto investment tracking..." :
+                    "Generate a premium brand toolkit for an AI startup called NEURA..."}
+              <motion.span animate={{ opacity: [1, 0, 1] }} transition={{ repeat: Infinity, duration: 0.8 }} className="ml-1 inline-block w-[2px] h-[0.9em] bg-[#1B3FBF] align-middle" />
+            </div>
+          </motion.div>
+        )}
+
+        {(subPhase === 1 || subPhase === 2) && (
+          <motion.div key="ppt" initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.02 }} className="w-full max-w-5xl h-[500px] bg-white rounded-[3rem] p-0 shadow-2xl relative border border-black/5 flex overflow-hidden mx-6 scale-[0.8] md:scale-100 transition-all">
+            <div className="w-1/4 bg-[#f8f9ff] border-r border-black/5 p-8 flex flex-col gap-4">
+              <div className="h-4 w-20 bg-black/10 rounded-full mb-8" />
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className={`h-16 rounded-xl border ${i === (subPhase === 1 ? 0 : 1) ? 'bg-white border-[#1B3FBF] shadow-sm' : 'bg-black/5 border-transparent'} p-3 space-y-2`}>
+                  <div className="h-1.5 w-1/2 bg-black/20 rounded-full" />
+                  <div className="h-1.5 w-3/4 bg-black/10 rounded-full" />
+                </div>
+              ))}
+            </div>
+            <div className="flex-1 p-16 flex flex-col justify-center relative">
+              <div className="absolute top-12 right-12 text-black/10 text-[9px] font-black uppercase tracking-[0.4em]">SLIDE 0{subPhase}</div>
+              <div className="space-y-8">
+                <motion.h1 key={subPhase} initial={{ x: 30, opacity: 0 }} animate={{ x: 0, opacity: 1 }} className="text-4xl md:text-5xl font-serif italic text-black leading-none tracking-tighter">
+                  {subPhase === 1 ? "Efficiency Peak" : "The Grid Shift"}
+                </motion.h1>
+                <div className="flex items-center gap-3">
+                  <motion.div initial={{ width: 0 }} animate={{ width: "120px" }} transition={{ duration: 1 }} className="h-2 bg-[#1B3FBF]" />
+                  <span className="text-[10px] font-black uppercase tracking-widest text-[#1B3FBF]">Neural Analysis</span>
+                </div>
+                <p className="text-black/70 text-lg font-light max-w-2xl leading-relaxed">
+                  {subPhase === 1 ? "Solar PV efficiency is projected to reach a record 28.5% by Q2 2026." :
+                    "Smart grid connectivity increases by 42% across oceanic cables."}
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {subPhase === 5 && (
+          <motion.div key="flow" initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="w-full max-w-5xl h-[550px] bg-white border border-black/5 rounded-[3rem] p-16 relative overflow-hidden shadow-2xl flex flex-col items-center justify-center mx-6 scale-[0.7] md:scale-100 transition-all">
+            <div className="flex flex-col items-center space-y-10 w-full relative">
+              <div className="px-12 py-6 bg-[#f8f9ff] border border-black/5 rounded-[1.5rem] text-black font-serif italic text-3xl shadow-sm z-10">Translatory Motion</div>
+              <div className="flex gap-12 pt-4 relative">
+                {['Position', 'Velocity', 'Acceleration'].map((title, i) => (
+                  <div key={i} className="flex flex-col items-center space-y-4">
+                    <div className="px-6 py-4 bg-[#1B3FBF] rounded-2xl text-white font-bold tracking-widest text-xs uppercase shadow-xl">{title}</div>
+                  </div>
+                ))}
+              </div>
+              <div className="px-12 py-7 border-2 border-[#1B3FBF] bg-white rounded-[2rem] text-[#1B3FBF] font-serif italic text-4xl shadow-xl leading-none">Equations of Motion</div>
+            </div>
+          </motion.div>
+        )}
+
+        {subPhase === 8 && (
+          <motion.div key="ui" initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-5xl h-[500px] bg-white border border-black/5 rounded-[3rem] shadow-2xl flex overflow-hidden mx-6 scale-[0.7] md:scale-100 transition-all">
+            <div className="w-64 border-r border-black/5 bg-[#f8f9ff] p-10 space-y-10">
+              <div className="flex items-center gap-3"><div className="w-10 h-10 rounded-xl bg-[#1B3FBF]" /><span className="font-bold text-xs uppercase">Aesthetics UI</span></div>
+            </div>
+            <div className="flex-1 p-16 space-y-12">
+              <div className="flex justify-between items-center"><h3 className="text-3xl font-serif italic text-black">Crypto Portfolio Explorer</h3><div className="w-3 h-3 rounded-full bg-green-500 animate-pulse" /></div>
+              <div className="grid grid-cols-2 gap-8">
+                <div className="h-44 rounded-[2rem] bg-[#f8f9ff] border border-black/5 p-8 flex flex-col justify-between"><span className="text-4xl font-light text-black">$67,492.00</span><div className="h-2 bg-[#1B3FBF] rounded-full w-3/4" /></div>
+                <div className="h-44 rounded-[2rem] bg-black p-8 flex flex-col justify-between"><span className="text-4xl font-light text-white">$ +14,250.40</span></div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {subPhase === 11 && (
+          <motion.div key="brand" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="w-full max-w-6xl h-[550px] bg-white border border-black/10 rounded-[4rem] shadow-2xl p-16 flex flex-col items-center justify-between mx-6 scale-[0.7] md:scale-100 transition-all overflow-hidden">
+            <div className="flex-1 w-full grid grid-cols-2 gap-20">
+              <div className="flex flex-col items-center justify-center space-y-10 border-r border-black/5">
+                <div className="w-48 h-48 bg-black rounded-[3rem] flex items-center justify-center shadow-2xl"><span className="text-white font-serif text-9xl italic">N</span></div>
+                <p className="text-black text-2xl font-black uppercase tracking-[0.3em] italic">Primary Wordmark</p>
+              </div>
+              <div className="space-y-16 justify-center flex flex-col">
+                <div className="space-y-6"><div className="flex gap-6">{['#000000', '#1B3FBF', '#FACC15'].map((c, i) => <div key={i} className="w-14 h-14 rounded-2xl" style={{ backgroundColor: c }} />)}</div></div>
+                <div className="space-y-1"><h2 className="text-5xl font-serif italic text-black">Instrument Serif</h2></div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {subPhase === 12 && (
+          <div className="text-center space-y-4">
+            <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="block text-4xl md:text-8xl font-serif text-[#1B3FBF] tracking-tighter leading-none">Unlimited Potential.</motion.span>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
@@ -617,7 +617,7 @@ const HomeScreen = ({
       // Background Prompt Enhancement Protocol
       const adj = ENHANCEMENT_ADJECTIVES[Math.floor(Math.random() * ENHANCEMENT_ADJECTIVES.length)];
       const phrase = ENHANCEMENT_PHRASES[Math.floor(Math.random() * ENHANCEMENT_PHRASES.length)];
-      
+
       let backgroundEnhancedQuery = `Manifest a ${adj} ${finalQuery.trim()} ${phrase}.`;
 
       // PPT ENFORCEMENT PROTOCOL: Direct manifest to use <section> based slideshow architecture
@@ -950,10 +950,10 @@ const HomeScreen = ({
               </div>
             </div>
             <div className="flex-1 h-full overflow-hidden">
-              <ArtifactPanel 
-                code={artifact} 
-                prompt={query} 
-                isSplitView={isSplitView} 
+              <ArtifactPanel
+                code={artifact}
+                prompt={query}
+                isSplitView={isSplitView}
                 onShare={() => setShareDialogOpen(true)}
               />
             </div>
@@ -961,63 +961,63 @@ const HomeScreen = ({
             {/* HIGH-FIDELITY SHARE DIALOG */}
             {shareDialogOpen && (
               <div className="fixed inset-0 z-[2000] flex items-center justify-center p-6 bg-black/60 backdrop-blur-xl animate-in fade-in duration-500">
-                 <div className="bg-white w-full max-w-lg rounded-[3rem] border border-black/5 shadow-2xl p-10 space-y-10 animate-in zoom-in-95 duration-300">
-                    <div className="flex items-center justify-between">
-                       <div className="flex items-center gap-4">
-                          <div className="p-3 bg-[#1B3FBF]/10 rounded-2xl">
-                             <Share2 size={24} className="text-[#1B3FBF]" />
-                          </div>
-                          <div>
-                             <h3 className="text-xl font-bold tracking-tight">Share Manifestation</h3>
-                             <p className="text-[10px] font-black uppercase tracking-widest text-black/30">Google Docs Style Orchestration</p>
-                          </div>
-                       </div>
-                       <button onClick={() => setShareDialogOpen(false)} className="text-[9px] font-black uppercase tracking-widest text-black/20 hover:text-black">Dismiss</button>
+                <div className="bg-white w-full max-w-lg rounded-[3rem] border border-black/5 shadow-2xl p-10 space-y-10 animate-in zoom-in-95 duration-300">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className="p-3 bg-[#1B3FBF]/10 rounded-2xl">
+                        <Share2 size={24} className="text-[#1B3FBF]" />
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-bold tracking-tight">Share Manifestation</h3>
+                        <p className="text-[10px] font-black uppercase tracking-widest text-black/30">Google Docs Style Orchestration</p>
+                      </div>
+                    </div>
+                    <button onClick={() => setShareDialogOpen(false)} className="text-[9px] font-black uppercase tracking-widest text-black/20 hover:text-black">Dismiss</button>
+                  </div>
+
+                  <div className="space-y-6">
+                    <div className="p-6 bg-black/[0.03] border border-black/[0.05] rounded-[2rem] space-y-4">
+                      <div className="flex items-center gap-3">
+                        <Globe size={14} className="text-[#1B3FBF]" />
+                        <span className="text-[11px] font-bold">Bridge Visibility</span>
+                      </div>
+                      <p className="text-xs text-black/40 leading-relaxed">Anyone with this high-fidelity link can view your manifestation. Editing access must be requested from the cloud portal.</p>
                     </div>
 
-                    <div className="space-y-6">
-                       <div className="p-6 bg-black/[0.03] border border-black/[0.05] rounded-[2rem] space-y-4">
-                          <div className="flex items-center gap-3">
-                             <Globe size={14} className="text-[#1B3FBF]" />
-                             <span className="text-[11px] font-bold">Bridge Visibility</span>
-                          </div>
-                          <p className="text-xs text-black/40 leading-relaxed">Anyone with this high-fidelity link can view your manifestation. Editing access must be requested from the cloud portal.</p>
-                       </div>
-
-                       <div className="space-y-2">
-                          <div className="text-[9px] font-black uppercase tracking-[0.3em] text-black/30 pl-2">Neural Share Link</div>
-                          <div className="flex items-center gap-2 p-2 bg-black/[0.02] border border-black/5 rounded-2xl">
-                             <input 
-                                readOnly 
-                                value={`${window.location.origin}/share/${currentArtifactId || 'unbound'}`} 
-                                className="flex-1 bg-transparent px-4 py-2 text-xs font-medium text-black/60 outline-none"
-                             />
-                             <button 
-                                onClick={async () => {
-                                   await navigator.clipboard.writeText(`${window.location.origin}/share/${currentArtifactId}`);
-                                   toast({ title: "Link Manifested", description: "Successfully copied to clipboard." });
-                                }}
-                                className="px-6 py-3 bg-black text-white rounded-xl text-[9px] font-black uppercase tracking-widest hover:scale-[1.05] active:scale-95 transition-all"
-                             >
-                                Copy
-                             </button>
-                          </div>
-                       </div>
+                    <div className="space-y-2">
+                      <div className="text-[9px] font-black uppercase tracking-[0.3em] text-black/30 pl-2">Neural Share Link</div>
+                      <div className="flex items-center gap-2 p-2 bg-black/[0.02] border border-black/5 rounded-2xl">
+                        <input
+                          readOnly
+                          value={`${window.location.origin}/share/${currentArtifactId || 'unbound'}`}
+                          className="flex-1 bg-transparent px-4 py-2 text-xs font-medium text-black/60 outline-none"
+                        />
+                        <button
+                          onClick={async () => {
+                            await navigator.clipboard.writeText(`${window.location.origin}/share/${currentArtifactId}`);
+                            toast({ title: "Link Manifested", description: "Successfully copied to clipboard." });
+                          }}
+                          className="px-6 py-3 bg-black text-white rounded-xl text-[9px] font-black uppercase tracking-widest hover:scale-[1.05] active:scale-95 transition-all"
+                        >
+                          Copy
+                        </button>
+                      </div>
                     </div>
+                  </div>
 
-                    <div className="pt-4 border-t border-black/5 flex items-center justify-between">
-                       <div className="flex items-center gap-2">
-                          <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                          <span className="text-[9px] font-black uppercase tracking-widest text-black/40">Cloud Sync Active</span>
-                       </div>
-                       <button 
-                        onClick={() => setShareDialogOpen(false)}
-                        className="text-[10px] font-bold text-[#1B3FBF] hover:underline"
-                       >
-                         Manage Collaborators
-                       </button>
+                  <div className="pt-4 border-t border-black/5 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                      <span className="text-[9px] font-black uppercase tracking-widest text-black/40">Cloud Sync Active</span>
                     </div>
-                 </div>
+                    <button
+                      onClick={() => setShareDialogOpen(false)}
+                      className="text-[10px] font-bold text-[#1B3FBF] hover:underline"
+                    >
+                      Manage Collaborators
+                    </button>
+                  </div>
+                </div>
               </div>
             )}
           </div>
@@ -1039,7 +1039,7 @@ const HomeScreen = ({
                   Build your <br />
                   <span className="text-yellow-accent italic font-serif px-2" style={{ textShadow: theme === 'ultra' ? '0 0 80px rgba(255,215,0,0.2)' : 'none' }}>imagination</span>
                 </h1>
-                <p className="text-[10px] font-black uppercase tracking-[0.8em] text-foreground/30 mt-6 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-500 not-italic">
+                <p className="text-[10px] font-black uppercase tracking-[0.8em] text-foreground/30 mt-6 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-500">
                   Beyond pure thought.
                 </p>
               </div>
@@ -1180,85 +1180,85 @@ const HomeScreen = ({
                 const manifestoSec = document.querySelector('section[class*="w-screen"]');
                 if (manifestoSec) manifestoSec.scrollIntoView({ behavior: 'smooth' });
               }}>
-                 <span className="text-[10px] font-black uppercase tracking-[0.8em] text-white opacity-60 hover:opacity-100 transition-opacity" style={{ textShadow: '0 2px 10px rgba(0,0,0,0.3)' }}>Discover More</span>
-                 <div className="p-3 bg-white/10 backdrop-blur-3xl border border-white/20 rounded-full shadow-2xl mx-auto">
-                    <ArrowDown size={14} className="text-white" />
-                 </div>
+                <span className="text-[10px] font-black uppercase tracking-[0.8em] text-white opacity-60 hover:opacity-100 transition-opacity" style={{ textShadow: '0 2px 10px rgba(0,0,0,0.3)' }}>Discover More</span>
+                <div className="p-3 bg-white/10 backdrop-blur-3xl border border-white/20 rounded-full shadow-2xl mx-auto">
+                  <ArrowDown size={14} className="text-white" />
+                </div>
               </div>
             </section>
 
             {/* New Manifesto Section - Full Screen Coverage */}
             <section className="w-full relative bg-white py-24 flex flex-col items-center z-30">
-                <div className="w-full max-w-7xl px-6 space-y-24">
-                   <div className="text-center space-y-4">
-                      <span className="text-[10px] font-black tracking-[0.6em] uppercase text-[#1B3FBF]">The Situation</span>
-                      <h2 className="text-4xl md:text-6xl font-serif italic tracking-tighter text-black leading-tight">We all face situations...</h2>
-                   </div>
-
-                   <ScenariosGrid />
-
-                   <div className="text-center py-10 scale-90 md:scale-100">
-                      <h2 className="text-3xl md:text-5xl font-serif italic tracking-tighter text-black/80 leading-tight">
-                         So many problems but <br/>
-                         only one <span className="text-[#1B3FBF] not-italic font-normal">solution.</span>
-                      </h2>
-                   </div>
-
-                   <TypingKreo />
-
-                   <div className="text-center space-y-8 pt-10">
-                      <span className="text-[10px] font-black tracking-[0.6em] uppercase text-[#1B3FBF]">The Outcome</span>
-                      <h2 className="text-4xl md:text-7xl font-serif italic tracking-tighter text-black leading-tight">Manifested from <br /> simple intentions</h2>
-                   </div>
-
-                   {/* Possibilities Pile Ported from Promo 4 - What you can do */}
-                   <div className="space-y-12">
-                      <PossibilitiesPile />
-                   </div>
-
-                   {/* Interactive Visual Loop Ported from Promo 4 - Chat and Enter */}
-                   <div className="space-y-12">
-                      <div className="flex items-center justify-between mb-8">
-                         <div className="space-y-1">
-                            <h3 className="text-3xl font-serif italic text-black">Live Manifestation Sequence</h3>
-                            <p className="text-[11px] font-black uppercase tracking-[0.4em] text-black/20 italic">Acoustic Signal Processing Active</p>
-                         </div>
-                         <div className="h-[1px] w-48 bg-black/5" />
-                      </div>
-                      <div className="relative group overflow-hidden rounded-[4.5rem]">
-                        <div className="absolute -inset-1 bg-gradient-to-r from-[#1B3FBF]/10 to-[#4F75FF]/10 rounded-[4.5rem] blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
-                        <div className="transition-all duration-1000">
-                           <InteractiveVisualLoop theme={theme} />
-                        </div>
-                      </div>
-                   </div>
-
-                   {/* Synthesis Engine Process Section */}
-                   <div className="space-y-12">
-                      <div className="flex items-center justify-between mb-8">
-                         <div className="space-y-1">
-                            <h3 className="text-3xl font-serif italic text-black">The Synthesis Engine</h3>
-                            <p className="text-[11px] font-black uppercase tracking-[0.4em] text-black/20 italic">Process Flow Architecture</p>
-                         </div>
-                         <div className="h-[1px] w-48 bg-black/5" />
-                      </div>
-                      <SynthesisEngine />
-                   </div>
-
-                   <div className="flex justify-center pt-16 pb-12">
-                      <div className="max-w-4xl text-center space-y-10">
-                        <div className="h-[1px] w-24 mx-auto bg-black/10" />
-                        <p className="text-2xl md:text-4xl font-light font-serif italic leading-snug text-black/70">
-                          KREO doesn't just write code. It <span className="font-normal not-italic text-black">orchestrates experiences</span> by understanding the logical weight of your words and manifesting them into functional, aesthetic reality.
-                        </p>
-                        <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="px-12 py-6 rounded-full border text-[11px] font-black uppercase tracking-[0.4em] shadow-xl transition-all hover:scale-105 active:scale-95 bg-black text-white hover:bg-black/80">Start Manifesting</button>
-                      </div>
-                   </div>
+              <div className="w-full max-w-7xl px-6 space-y-24">
+                <div className="text-center space-y-4">
+                  <span className="text-[10px] font-black tracking-[0.6em] uppercase text-[#1B3FBF]">The Situation</span>
+                  <h2 className="text-4xl md:text-6xl font-serif italic tracking-tighter text-black leading-tight">We all face situations...</h2>
                 </div>
-              </section>
-            </div>
-          )}
-        </main>
+
+                <ScenariosGrid />
+
+                <div className="text-center py-10 scale-90 md:scale-100">
+                  <h2 className="text-3xl md:text-5xl font-serif italic tracking-tighter text-black/80 leading-tight">
+                    So many problems but <br />
+                    only one <span className="text-[#1B3FBF] not-italic font-normal">solution.</span>
+                  </h2>
+                </div>
+
+                <TypingKreo />
+
+                <div className="text-center space-y-8 pt-10">
+                  <span className="text-[10px] font-black tracking-[0.6em] uppercase text-[#1B3FBF]">The Outcome</span>
+                  <h2 className="text-4xl md:text-7xl font-serif italic tracking-tighter text-black leading-tight">Manifested from <br /> simple intentions</h2>
+                </div>
+
+                {/* Possibilities Pile Ported from Promo 4 - What you can do */}
+                <div className="space-y-12">
+                  <PossibilitiesPile />
+                </div>
+
+                {/* Interactive Visual Loop Ported from Promo 4 - Chat and Enter */}
+                <div className="space-y-12">
+                  <div className="flex items-center justify-between mb-8">
+                    <div className="space-y-1">
+                      <h3 className="text-3xl font-serif italic text-black">Live Manifestation Sequence</h3>
+                      <p className="text-[11px] font-black uppercase tracking-[0.4em] text-black/20 italic">Acoustic Signal Processing Active</p>
+                    </div>
+                    <div className="h-[1px] w-48 bg-black/5" />
+                  </div>
+                  <div className="relative group overflow-hidden rounded-[4.5rem]">
+                    <div className="absolute -inset-1 bg-gradient-to-r from-[#1B3FBF]/10 to-[#4F75FF]/10 rounded-[4.5rem] blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
+                    <div className="transition-all duration-1000">
+                      <InteractiveVisualLoop theme={theme} />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Synthesis Engine Process Section */}
+                <div className="space-y-12">
+                  <div className="flex items-center justify-between mb-8">
+                    <div className="space-y-1">
+                      <h3 className="text-3xl font-serif italic text-black">The Synthesis Engine</h3>
+                      <p className="text-[11px] font-black uppercase tracking-[0.4em] text-black/20 italic">Process Flow Architecture</p>
+                    </div>
+                    <div className="h-[1px] w-48 bg-black/5" />
+                  </div>
+                  <SynthesisEngine />
+                </div>
+
+                <div className="flex justify-center pt-16 pb-12">
+                  <div className="max-w-4xl text-center space-y-10">
+                    <div className="h-[1px] w-24 mx-auto bg-black/10" />
+                    <p className="text-2xl md:text-4xl font-light font-serif italic leading-snug text-black/70">
+                      KREO doesn't just write code. It <span className="font-normal not-italic text-black">orchestrates experiences</span> by understanding the logical weight of your words and manifesting them into functional, aesthetic reality.
+                    </p>
+                    <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="px-12 py-6 rounded-full border text-[11px] font-black uppercase tracking-[0.4em] shadow-xl transition-all hover:scale-105 active:scale-95 bg-black text-white hover:bg-black/80">Start Manifesting</button>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+        )}
+      </main>
 
       {/* Pricing Manifest - High Fidelity Editorial Design */}
       {pricingOpen && (
@@ -1501,64 +1501,64 @@ const HomeScreen = ({
       {/* HIGH-FIDELITY SHARE DIALOG */}
       {shareDialogOpen && (
         <div className="fixed inset-0 z-[2000] flex items-center justify-center p-6 bg-black/60 backdrop-blur-xl animate-in fade-in duration-500">
-           <div className="bg-white w-full max-w-lg rounded-[3rem] border border-black/5 shadow-2xl p-10 space-y-10 animate-in zoom-in-95 duration-300">
-              <div className="flex items-center justify-between">
-                 <div className="flex items-center gap-4">
-                    <div className="p-3 bg-[#1B3FBF]/10 rounded-2xl">
-                       <Share2 size={24} className="text-[#1B3FBF]" />
-                    </div>
-                    <div>
-                       <h3 className="text-xl font-bold tracking-tight">Share Manifestation</h3>
-                       <p className="text-[10px] font-black uppercase tracking-widest text-black/30">Google Docs Style Orchestration</p>
-                    </div>
-                 </div>
-                 <button onClick={() => setShareDialogOpen(false)} className="text-[9px] font-black uppercase tracking-widest text-black/20 hover:text-black">Dismiss</button>
+          <div className="bg-white w-full max-w-lg rounded-[3rem] border border-black/5 shadow-2xl p-10 space-y-10 animate-in zoom-in-95 duration-300">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="p-3 bg-[#1B3FBF]/10 rounded-2xl">
+                  <Share2 size={24} className="text-[#1B3FBF]" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold tracking-tight">Share Manifestation</h3>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-black/30">Google Docs Style Orchestration</p>
+                </div>
+              </div>
+              <button onClick={() => setShareDialogOpen(false)} className="text-[9px] font-black uppercase tracking-widest text-black/20 hover:text-black">Dismiss</button>
+            </div>
+
+            <div className="space-y-6">
+              <div className="p-6 bg-black/[0.03] border border-black/[0.05] rounded-[2rem] space-y-4">
+                <div className="flex items-center gap-3">
+                  <Globe size={14} className="text-[#1B3FBF]" />
+                  <span className="text-[11px] font-bold">Bridge Visibility</span>
+                </div>
+                <p className="text-xs text-black/40 leading-relaxed">Anyone with this high-fidelity link can view your manifestation. Editing access must be requested from the cloud portal.</p>
               </div>
 
-              <div className="space-y-6">
-                 <div className="p-6 bg-black/[0.03] border border-black/[0.05] rounded-[2rem] space-y-4">
-                    <div className="flex items-center gap-3">
-                       <Globe size={14} className="text-[#1B3FBF]" />
-                       <span className="text-[11px] font-bold">Bridge Visibility</span>
-                    </div>
-                    <p className="text-xs text-black/40 leading-relaxed">Anyone with this high-fidelity link can view your manifestation. Editing access must be requested from the cloud portal.</p>
-                 </div>
-
-                 <div className="space-y-2">
-                    <div className="text-[9px] font-black uppercase tracking-[0.3em] text-black/30 pl-2">Neural Share Link</div>
-                    <div className="flex items-center gap-2 p-2 bg-black/[0.02] border border-black/5 rounded-2xl">
-                       <input 
-                          readOnly 
-                          value={`${window.location.origin}/share/${currentArtifactId || 'unbound'}`} 
-                          className="flex-1 bg-transparent px-4 py-2 text-xs font-medium text-black/60 outline-none"
-                       />
-                       <button 
-                          onClick={async () => {
-                             if (!currentArtifactId) return;
-                             await navigator.clipboard.writeText(`${window.location.origin}/share/${currentArtifactId}`);
-                             toast({ title: "Link Manifested", description: "Successfully copied to clipboard." });
-                          }}
-                          className="px-6 py-3 bg-black text-white rounded-xl text-[9px] font-black uppercase tracking-widest hover:scale-[1.05] active:scale-95 transition-all"
-                       >
-                          Copy
-                       </button>
-                    </div>
-                 </div>
+              <div className="space-y-2">
+                <div className="text-[9px] font-black uppercase tracking-[0.3em] text-black/30 pl-2">Neural Share Link</div>
+                <div className="flex items-center gap-2 p-2 bg-black/[0.02] border border-black/5 rounded-2xl">
+                  <input
+                    readOnly
+                    value={`${window.location.origin}/share/${currentArtifactId || 'unbound'}`}
+                    className="flex-1 bg-transparent px-4 py-2 text-xs font-medium text-black/60 outline-none"
+                  />
+                  <button
+                    onClick={async () => {
+                      if (!currentArtifactId) return;
+                      await navigator.clipboard.writeText(`${window.location.origin}/share/${currentArtifactId}`);
+                      toast({ title: "Link Manifested", description: "Successfully copied to clipboard." });
+                    }}
+                    className="px-6 py-3 bg-black text-white rounded-xl text-[9px] font-black uppercase tracking-widest hover:scale-[1.05] active:scale-95 transition-all"
+                  >
+                    Copy
+                  </button>
+                </div>
               </div>
+            </div>
 
-              <div className="pt-4 border-t border-black/5 flex items-center justify-between">
-                 <div className="flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                    <span className="text-[9px] font-black uppercase tracking-widest text-black/40">Cloud Sync Active</span>
-                 </div>
-                 <button 
-                  onClick={() => setShareDialogOpen(false)}
-                  className="text-[10px] font-bold text-[#1B3FBF] hover:underline"
-                 >
-                   Manage Collaborators
-                 </button>
+            <div className="pt-4 border-t border-black/5 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                <span className="text-[9px] font-black uppercase tracking-widest text-black/40">Cloud Sync Active</span>
               </div>
-           </div>
+              <button
+                onClick={() => setShareDialogOpen(false)}
+                className="text-[10px] font-bold text-[#1B3FBF] hover:underline"
+              >
+                Manage Collaborators
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
