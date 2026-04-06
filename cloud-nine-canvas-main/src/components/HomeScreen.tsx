@@ -747,7 +747,9 @@ const HomeScreen = ({
             .select()
             .single();
 
-          if (!insertError && newArtifact) {
+          if (insertError) {
+            console.error("Supabase Insert Error:", insertError);
+          } else if (newArtifact) {
             setHistoryItems(prev => [newArtifact, ...prev]);
             setCurrentArtifactId(newArtifact.id);
             setCurrentShareToken(newArtifact.share_token || shareToken);
