@@ -983,7 +983,7 @@ const HomeScreen = ({
         ) : (
           <div className="flex flex-col items-center w-full">
             {/* Landing Hero */}
-            <section className="min-h-screen flex flex-col items-center justify-center gap-12 px-4 pt-20">
+            <section className="min-h-screen flex flex-col items-center justify-start gap-12 px-4 pt-32 md:pt-40">
               <div className="text-center space-y-4">
                 <h1
                   className="text-7xl md:text-8xl font-light tracking-tighter leading-tight animate-in fade-in slide-in-from-top-12 duration-1000"
@@ -998,6 +998,9 @@ const HomeScreen = ({
                   Build your <br />
                   <span className="text-yellow-accent italic font-serif px-2" style={{ textShadow: theme === 'ultra' ? '0 0 80px rgba(255,215,0,0.2)' : 'none' }}>imagination</span>
                 </h1>
+                <p className="text-[10px] font-black uppercase tracking-[0.6em] text-foreground/30 mt-4 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-500">
+                  why think when you can visualise
+                </p>
               </div>
 
               <div className="w-full max-w-xl animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
