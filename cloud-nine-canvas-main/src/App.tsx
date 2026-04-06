@@ -26,7 +26,6 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
-          <Route path="/showcase" element={<KreoPromo />} />
           <Route path="/promo1" element={<KreoPromo1 />} />
           <Route path="/promo2" element={<KreoPromo2 />} />
           <Route path="/promo3" element={<KreoPromo3 />} />
