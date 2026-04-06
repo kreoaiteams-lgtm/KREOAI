@@ -87,16 +87,17 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
             <script src="https://cdn.tailwindcss.com"></script>
             <style>
               *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-              html, body { width: 100%; height: 100%; overflow: hidden; background: white; }
+              html, body { width: 100%; min-height: 100%; background: white; overflow-y: auto; }
               body { font-family: 'Inter', sans-serif; }
               .font-serif { font-family: 'Instrument Serif', serif; }
-              section { width: 100vw; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 4rem; box-sizing: border-box; overflow: hidden; }
+              section, section.slide { width: 100%; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 4rem; box-sizing: border-box; overflow: visible; }
             </style>
           </head>
           <body>${slideContent}</body>
         </html>
       `;
     }
+
     // Non-presentation
     if (!code.trim().toLowerCase().startsWith("<!doctype") && !code.trim().toLowerCase().startsWith("<html")) {
       return `

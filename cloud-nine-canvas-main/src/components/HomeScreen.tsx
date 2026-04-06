@@ -507,6 +507,8 @@ const HomeScreen = ({
   const handleHistoryItemClick = (item: any) => {
     setArtifact(item.code);
     setCurrentArtifactId(item.id);
+    setCurrentShareToken(item.share_token || item.id);
+    setLastPrompt(item.prompt);
     setQuery(item.prompt);
     setChatHistory([{ role: "user", content: item.prompt }, { role: "assistant", content: item.code, display: "Manifest restored from history." }]);
     setHistoryOpen(false);
@@ -693,12 +695,13 @@ const HomeScreen = ({
           - Keyboard navigation: arrow keys + spacebar
           - Slide counter (current / total) showing exactly where you are
           - Smooth slide transitions (fade or slide)
-          - Each slide has: title, body content, optional visual/icon
-          - Responsive, fullscreen layout. Print-friendly (each slide = one page)
-          - EVERY SLIDE MUST BE WRAPPED IN <section class="h-screen w-screen relative"> TAGS.
+          - EVERY SLIDE MUST BE WRAPPED IN <section class="slide"> TAGS — do NOT use h-screen on sections.
+          - Slides should be tall enough to fit content naturally; content may scroll within a slide if needed.
           - TONE: COBALT (Royal blue base, white text, sharp minimal Kreo-style) unless otherwise specified.
           - FONT: Instrument Serif + Satoshi (Kreo default). Do NOT use Inter/Roboto/Arial.
-          - STRUCTURE: At least 5-7 slides covering Title, Problem, Solution, Data/Charts, Team, Contact.
+          - STRUCTURE: At least 6-8 slides: Title, Overview, Key Data (with SVG chart), Deep Dive, Insights, Visual (chart/diagram), Summary, CTA.
+          - CHARTS REQUIRED: For any data-heavy slide, render a real inline SVG chart (bar chart, line chart, or pie chart) using only SVG elements — no external charting libraries. The chart must have labeled axes, real data values, and match the slide color scheme.
+          - DO NOT add placeholder charts — only add a chart if you can render it fully in SVG. If unsure, use a styled stat card instead.
           Make it a fully functional slideshow that works completely natively in the browser with no external react/js libraries.
         `;
       }
@@ -722,6 +725,7 @@ const HomeScreen = ({
 
       if (code) {
         setArtifact(code);
+        setLastPrompt(finalQuery); // Set immediately so ArtifactPanel gets correct prompt for isPresentation detection
         setChatHistory(prev => [...prev, {
           role: "assistant",
           content: code,
@@ -760,7 +764,6 @@ const HomeScreen = ({
     } finally {
       setIsSubmitting(false);
       setIsSubmittingGlobal(false);
-      setLastPrompt(finalQuery);
       setQuery("");
     }
   };
