@@ -731,8 +731,7 @@ const HomeScreen = ({
         }]);
 
         // PERSISTENCE PROTOCOL: Save to Supabase History
-        // Generate a random 10-char share token for every artifact
-        const shareToken = Math.random().toString(36).substring(2, 7) + Math.random().toString(36).substring(2, 7);
+        // Let Supabase auto-generate a UUID share_token via gen_random_uuid()
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
           const { data: newArtifact, error: insertError } = await supabase
@@ -741,7 +740,7 @@ const HomeScreen = ({
               prompt: finalQuery,
               code: code,
               user_id: user.id,
-              share_token: shareToken,
+              language: 'html',
               is_public: true
             })
             .select()
@@ -752,7 +751,7 @@ const HomeScreen = ({
           } else if (newArtifact) {
             setHistoryItems(prev => [newArtifact, ...prev]);
             setCurrentArtifactId(newArtifact.id);
-            setCurrentShareToken(newArtifact.share_token || shareToken);
+            setCurrentShareToken(newArtifact.share_token || newArtifact.id);
           }
         }
       }
