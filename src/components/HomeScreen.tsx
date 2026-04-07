@@ -130,7 +130,7 @@ const ENHANCEMENT_PHRASES = [
 
 const EXAMPLES = [
   "Scientific Diagrams", "Market Reports", "Logic Workflows", "Financial Models",
-  "Flashcard Sets", "Landing Pages", "Mockup Suites", "Pitch Decks", "API Docs",
+  "Flashcard Sets", "Landing Pages", "Mockup Suites", "Pitch Deck", "API Docs",
   "System Architecture", "Global Strategies", "User Experience Flow", "Legal Briefs",
   "Creative Scripts", "Project Roadmaps", "Course Curriculum", "SaaS Dashboards",
   "Portfolio Sites", "Budget Trackers", "Scientific Papers", "Audit Reports",
