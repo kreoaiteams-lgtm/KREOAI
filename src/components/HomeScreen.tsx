@@ -3,7 +3,7 @@ import {
   Search, History, Settings, User, ArrowUp, ArrowDown, Monitor, Database, Smartphone,
   LayoutGrid, ChevronDown, ChevronLeft, Clock, Plus, Zap, FileText,
   Image as ImageIcon, BrainCircuit, Sparkles, Paperclip, Shuffle, MessageSquare, Mail,
-  Share2, Globe, Link
+  Share2, Globe, Link, Copy
 } from "lucide-react";
 import KreoLogo from "./KreoLogo";
 import ArtifactPanel from "./ArtifactPanel";
@@ -1285,8 +1285,8 @@ const HomeScreen = ({
                   </div>
 
 
-                  {/* Simplified Know More Text Indicator */}
-                  <div className="pt-20 md:pt-24 cursor-pointer flex flex-col items-center gap-2 group" onClick={() => {
+                  {/* Simplified Know More Text Indicator - Elevated */}
+                  <div className="pt-12 md:pt-16 cursor-pointer flex flex-col items-center gap-2 group" onClick={() => {
                     document.getElementById('manifesto-section')?.scrollIntoView({ behavior: 'smooth' });
                   }}>
                     <span className="text-[10px] font-black uppercase tracking-[0.6em] text-white/50 group-hover:text-white transition-colors">Know More</span>
