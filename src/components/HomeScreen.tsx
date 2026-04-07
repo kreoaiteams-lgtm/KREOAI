@@ -475,9 +475,9 @@ const HomeScreen = ({
   // Update URL whenever currentArtifactId changes
   useEffect(() => {
     if (currentArtifactId) {
-      navigate(`/?id=${currentArtifactId}`, { replace: true });
+      window.history.replaceState(null, '', `/${currentArtifactId}`);
     }
-  }, [currentArtifactId, navigate]);
+  }, [currentArtifactId]);
 
   // Supabase Data Load
   useEffect(() => {
@@ -684,35 +684,39 @@ const HomeScreen = ({
 
         // PERSISTENCE PROTOCOL: Save to Supabase History
         const { data: { user } } = await supabase.auth.getUser();
-        if (user) {
-          const { data: newArtifact, error: insertError } = await supabase
-            .from("artifacts")
-            .insert({
-              prompt: finalQuery,
-              code: code,
-              user_id: user.id,
-              is_public: true // Automatically public for instant sharing
-            })
-            .select()
-            .single();
+        const shareToken = Math.random().toString(36).substring(2, 12);
+        
+        const { data: newArtifact, error: insertError } = await supabase
+          .from("artifacts")
+          .insert({
+            prompt: finalQuery,
+            code: code,
+            user_id: user ? user.id : null,
+            is_public: true, // Automatically public for instant sharing
+            share_token: shareToken
+          })
+          .select()
+          .single();
 
           if (!insertError && newArtifact) {
             setHistoryItems(prev => [newArtifact, ...prev.filter(i => i.id !== optimisticId)]);
-            setCurrentArtifactId(newArtifact.id);
-            window.history.replaceState(null, '', `/?id=${newArtifact.id}`);
+            setCurrentArtifactId(newArtifact.share_token || newArtifact.id);
+            window.history.replaceState(null, '', `/${newArtifact.share_token || newArtifact.id}`);
           } else if (insertError) {
             console.warn("Neural Sync Interrupted. Failing over to Local Memory.", insertError);
             // Local Memory Fallback
-            const localId = 'local-' + Math.random().toString(36).substr(2, 9);
+            const localToken = Math.random().toString(36).substr(2, 10);
+            const localId = 'local-' + localToken;
             const localArtifact = {
               id: localId,
               prompt: finalQuery,
               code: code,
-              created_at: new Date().toISOString()
+              created_at: new Date().toISOString(),
+              share_token: localToken
             };
             setHistoryItems(prev => [localArtifact, ...prev.filter(i => i.id !== optimisticId)]);
-            setCurrentArtifactId(localId);
-            window.history.replaceState(null, '', `/?id=${localId}`);
+            setCurrentArtifactId(localToken);
+            window.history.replaceState(null, '', `/${localToken}`);
             
             // Persist to local storage
             const existingLocal = JSON.parse(localStorage.getItem('kreo_local_history') || '[]');
@@ -723,7 +727,6 @@ const HomeScreen = ({
               description: "Cloud sync failed. Manifest saved to secure local history.",
             });
           }
-        }
       }
     } catch (err) {
       console.error(err);
@@ -1052,12 +1055,12 @@ const HomeScreen = ({
                       <div className="flex items-center gap-2 p-2 bg-black/[0.02] border border-black/5 rounded-2xl">
                         <input
                           readOnly
-                          value={`${window.location.origin}/share/${currentArtifactId || 'unbound'}`}
+                          value={`${window.location.origin}/${currentArtifactId || 'unbound'}`}
                           className="flex-1 bg-transparent px-4 py-2 text-xs font-medium text-black/60 outline-none"
                         />
                         <button
                           onClick={async () => {
-                            await navigator.clipboard.writeText(`${window.location.origin}/share/${currentArtifactId}`);
+                            await navigator.clipboard.writeText(`${window.location.origin}/${currentArtifactId}`);
                             toast({ title: "Link Manifested", description: "Successfully copied to clipboard." });
                           }}
                           className="px-6 py-3 bg-black text-white rounded-xl text-[9px] font-black uppercase tracking-widest hover:scale-[1.05] active:scale-95 transition-all"

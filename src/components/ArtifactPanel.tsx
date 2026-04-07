@@ -261,9 +261,9 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
                           <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;700&display=swap" rel="stylesheet">
                           <script src="https://cdn.tailwindcss.com"></script>
                           <style>
-                            body { font-family: 'Inter', sans-serif; background: white; margin: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+                            body { font-family: 'Inter', sans-serif; background: white; margin: 0; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; overflow-y: auto; }
                             .font-serif { font-family: 'Instrument Serif', serif; }
-                            section { height: 100vh; width: 100vw; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 4rem; box-sizing: border-box; }
+                            section { min-height: 100vh; width: 100vw; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 4rem; box-sizing: border-box; }
                           </style>
                         </head>
                         <body>
@@ -279,7 +279,7 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
                           <script src="https://cdn.tailwindcss.com"></script>
                           <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
                           <style>
-                            body { font-family: 'Inter', sans-serif; background: white; margin: 0; }
+                            body { font-family: 'Inter', sans-serif; background: white; margin: 0; overflow-x: hidden; overflow-y: auto; min-height: 100vh; }
                           </style>
                         </head>
                         <body>
