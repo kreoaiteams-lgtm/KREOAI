@@ -445,26 +445,43 @@ const HomeScreen = ({
 
   // URL Synchronization: Load from URL ID if present
   useEffect(() => {
-    const urlId = searchParams.get("id");
-    if (urlId && !currentArtifactId) {
+    // Check both search params ?id= and the pathname /share/:id or /:id
+    const urlId = searchParams.get("id") || window.location.pathname.split('/').pop();
+    
+    if (urlId && urlId !== "" && !currentArtifactId && !isIncomingPortal) {
       setIsIncomingPortal(true);
       const fetchFromUrl = async () => {
         try {
+          // Priority 1: Check Supabase by share_token or ID
           const { data, error } = await supabase
             .from("artifacts")
             .select("*")
-            .eq("id", urlId)
+            .or(`share_token.eq.${urlId},id.eq.${urlId}`)
             .single();
+          
           if (!error && data) {
-            // Simulated delay for premium splash feel
             setTimeout(() => {
               setArtifact(data.code);
-              setCurrentArtifactId(data.id);
+              setCurrentArtifactId(data.share_token || data.id);
               setQuery(data.prompt);
               setChatHistory([{ role: "user", content: data.prompt }, { role: "assistant", content: data.code, display: "Manifest restored from neural link." }]);
               setIsArtifactActive(true);
               setIsIncomingPortal(false);
-            }, 2500);
+            }, 1500);
+            return;
+          }
+
+          // Priority 2: Check local history
+          const localHistory = JSON.parse(localStorage.getItem('kreo_local_history') || '[]');
+          const localMatch = localHistory.find((h: any) => h.share_token === urlId || h.id === urlId);
+          
+          if (localMatch) {
+            setArtifact(localMatch.code);
+            setCurrentArtifactId(localMatch.share_token || localMatch.id);
+            setQuery(localMatch.prompt);
+            setChatHistory([{ role: "user", content: localMatch.prompt }, { role: "assistant", content: localMatch.code, display: "Manifest restored from local memory." }]);
+            setIsArtifactActive(true);
+            setIsIncomingPortal(false);
           } else {
             setIsIncomingPortal(false);
           }
@@ -478,8 +495,12 @@ const HomeScreen = ({
 
   // Update URL whenever currentArtifactId changes
   useEffect(() => {
-    if (currentArtifactId) {
-      window.history.replaceState(null, '', `/${currentArtifactId}`);
+    if (currentArtifactId && !currentArtifactId.startsWith('opt-')) {
+      // Keep URL clean: just the ID
+      const newPath = `/share/${currentArtifactId}`;
+      if (window.location.pathname !== newPath) {
+        window.history.replaceState(null, '', newPath);
+      }
     }
   }, [currentArtifactId]);
 
@@ -719,7 +740,6 @@ const HomeScreen = ({
         if (!insertError && newArtifact) {
           setHistoryItems(prev => [newArtifact, ...prev.filter(i => i.id !== optimisticId)]);
           setCurrentArtifactId(newArtifact.share_token || newArtifact.id);
-          window.history.replaceState(null, '', `/${newArtifact.share_token || newArtifact.id}`);
 
           // Even if logged in, save a copy to local storage for instant refresh persistence
           const localCopy = {
@@ -745,7 +765,6 @@ const HomeScreen = ({
           };
           setHistoryItems(prev => [localArtifact, ...prev.filter(i => i.id !== optimisticId)]);
           setCurrentArtifactId(localToken);
-          window.history.replaceState(null, '', `/${localToken}`);
 
           // Persist to local storage
           const existingLocal = JSON.parse(localStorage.getItem('kreo_local_history') || '[]');
@@ -1006,19 +1025,6 @@ const HomeScreen = ({
                   <ChevronLeft size={13} className="group-hover:-translate-x-1 transition-transform" /> Back
                 </button>
                 <div className="flex items-center gap-3">
-                  <span className="text-[9px] font-black uppercase tracking-[0.5em] text-black/20">Dialogue / Session</span>
-                  {currentArtifactId && (
-                    <button
-                      onClick={async () => {
-                        const shareUrl = `${window.location.origin}/share/${currentArtifactId}`;
-                        await navigator.clipboard.writeText(shareUrl);
-                        toast({ title: "Portal Link Manifested", description: "Successfully copied to clipboard." });
-                      }}
-                      className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#1B3FBF]/20 bg-[#1B3FBF]/5 text-[#1B3FBF] text-[9px] font-black uppercase tracking-widest hover:bg-[#1B3FBF]/10 transition-all shadow-sm"
-                    >
-                      <Share2 size={12} /> Neural Share
-                    </button>
-                  )}
                 </div>
               </div>
 
@@ -1095,23 +1101,25 @@ const HomeScreen = ({
                     </div>
 
                     <div className="space-y-2">
-                      <div className="text-[9px] font-black uppercase tracking-[0.3em] text-black/30 pl-2">Neural Share Link</div>
-                      <div className="flex items-center gap-2 p-2 bg-black/[0.02] border border-black/5 rounded-2xl">
-                        <input
-                          readOnly
-                          value={`${window.location.origin}/${currentArtifactId || 'unbound'}`}
-                          className="flex-1 bg-transparent px-4 py-2 text-xs font-medium text-black/60 outline-none"
-                        />
-                        <button
-                          onClick={async () => {
-                            await navigator.clipboard.writeText(`${window.location.origin}/${currentArtifactId}`);
-                            toast({ title: "Link Manifested", description: "Successfully copied to clipboard." });
-                          }}
-                          className="px-6 py-3 bg-black text-white rounded-xl text-[9px] font-black uppercase tracking-widest hover:scale-[1.05] active:scale-95 transition-all"
-                        >
-                          Copy
-                        </button>
-                      </div>
+                       <div className="text-[9px] font-black uppercase tracking-[0.3em] text-black/30 pl-2">Neural Share Link</div>
+                       <div className="flex items-center gap-2 p-2 bg-black/[0.02] border border-black/5 rounded-2xl">
+                         <input
+                           readOnly
+                           value={currentArtifactId ? `${window.location.origin}/share/${currentArtifactId}` : 'unbound'}
+                           className="flex-1 bg-transparent px-4 py-2 text-xs font-medium text-black/60 outline-none"
+                         />
+                         <button
+                           onClick={async () => {
+                             if (!currentArtifactId) return;
+                             const fullLink = `${window.location.origin}/share/${currentArtifactId}`;
+                             await navigator.clipboard.writeText(fullLink);
+                             toast({ title: "Portal Link Manifested", description: "Successfully copied to clipboard." });
+                           }}
+                           className="px-6 py-3 bg-black text-white rounded-xl text-[9px] font-black uppercase tracking-widest hover:scale-[1.05] active:scale-95 transition-all"
+                         >
+                           Copy
+                         </button>
+                       </div>
                     </div>
                   </div>
 
@@ -1631,12 +1639,12 @@ const HomeScreen = ({
                   <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[#1B3FBF]">Neural Link Generated</span>
                   <div className="flex items-center gap-3 p-3 bg-white/50 border border-black/5 rounded-2xl">
                     <p className="flex-1 text-[11px] font-mono text-black/60 truncate px-2 select-all tracking-tight">
-                      {`${window.location.origin.replace(/^https?:\/\//, '')}/${currentArtifactId || 'unbound'}`}
+                      {`${window.location.origin.replace(/^https?:\/\//, '')}/share/${currentArtifactId || 'unbound'}`}
                     </p>
                     <button
                       onClick={async () => {
                         if (!currentArtifactId) return;
-                        await navigator.clipboard.writeText(`${window.location.origin}/${currentArtifactId}`);
+                        await navigator.clipboard.writeText(`${window.location.origin}/share/${currentArtifactId}`);
                         toast({ title: "Portal Link Copied", description: "Successfully manifested to clipboard." });
                       }}
                       className="p-3 bg-[#1B3FBF] text-white rounded-xl hover:scale-110 active:scale-95 transition-all shadow-lg shadow-[#1B3FBF]/20"
