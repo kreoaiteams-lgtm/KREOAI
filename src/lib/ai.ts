@@ -93,8 +93,8 @@ const SARVAM_ENDPOINT = "https://api.sarvam.ai/v1/chat/completions";
 
 const NEEDS_SEARCH_REGEX = /(price|cost|today|latest|news|statistics|stats|vs|compare|rate|ranking|best|top|current|roi|bank|market|stock)/i;
 
-async function fetchRealWorldContext(prompt: string): Promise<string> {
-  if (!NEEDS_SEARCH_REGEX.test(prompt)) return "";
+async function fetchRealWorldContext(prompt: string, isPaidUser: boolean): Promise<string> {
+  if (!isPaidUser || !NEEDS_SEARCH_REGEX.test(prompt)) return "";
 
   try {
     let searchQuery = prompt;
@@ -103,17 +103,21 @@ async function fetchRealWorldContext(prompt: string): Promise<string> {
       searchQuery = `latest ROI and savings rates of famous Indian banks 2024 2025 ${prompt}`;
     }
 
-    const res = await fetch("https://google.serper.dev/search", {
+    const res = await fetch("https://api.tavily.com/search", {
       method: "POST",
       headers: {
-        "X-API-KEY": "a444e3edb8322226ee0e31a9c8a51d26adf0e7d4",
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ q: searchQuery, num: 5 })
+      body: JSON.stringify({
+        api_key: "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",
+        query: searchQuery,
+        search_depth: "advanced"
+      })
     });
-    const data = await res.json() as { organic?: Array<{ snippet: string }> };
-    if (data.organic && data.organic.length > 0) {
-      const snippets = data.organic.slice(0, 5).map((r) => `- ${r.snippet}`).join('\n');
+    const data = await res.json();
+    
+    if (data.results && data.results.length > 0) {
+      const snippets = data.results.slice(0, 5).map((r: any) => `- ${r.content}`).join('\n');
       
       let context = `\n\n[REAL WORLD LIVE CONTEXT CRAWLED FROM WEB]:\n${snippets}\nUse these facts to satisfy the user's prompt truthfully.`;
       
@@ -125,19 +129,19 @@ async function fetchRealWorldContext(prompt: string): Promise<string> {
       return context;
     }
   } catch (e) {
-    console.warn("Serper API search failed. Proceeding without live context.", e);
+    console.warn("Tavily API search failed. Proceeding without live context.", e);
   }
   return "";
 }
 
-export const generateArtifact = async (prompt: string, chatHistory: {role: string, content: string}[] = [], imageUrl?: string) => {
+export const generateArtifact = async (prompt: string, chatHistory: {role: string, content: string}[] = [], imageUrl?: string, isPaidUser: boolean = false) => {
   if (!SARVAM_API_KEY) {
     console.warn("Sarvam API key missing. Falling back...");
     return getDemoFallback(prompt);
   }
 
   try {
-    const liveContext = await fetchRealWorldContext(prompt);
+    const liveContext = await fetchRealWorldContext(prompt, isPaidUser);
     let enrichedPrompt = prompt + liveContext;
 
     if (imageUrl) {

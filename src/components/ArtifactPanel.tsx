@@ -306,6 +306,7 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
                               return true;
                             };
                             try {
+                              const { useState, useEffect, useRef, useCallback, useMemo, useReducer, useContext } = React;
                               ${code
                                 .replace(/import\s+React.*?from\s+['"']react['"'];?\n?/g, "")
                                 .replace(/import\s+\{[^}]+\}\s+from\s+['"']react['"'];?\n?/g, "")

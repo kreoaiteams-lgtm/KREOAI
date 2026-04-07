@@ -123,7 +123,7 @@ const ENHANCEMENT_ADJECTIVES = [
 const ENHANCEMENT_PHRASES = [
   "with refined typography and balanced whitespace",
   "incorporating smooth parallax transitions and glassmorphism cards",
-  "focusing on logical heirarchy and architectural spacing",
+  "focusing on logical hierarchy and architectural spacing",
   "using a professional monochromatic palette with vibrant blue accents",
   "leveraging high-fidelity motion design and structural clarity"
 ];
@@ -136,7 +136,11 @@ const EXAMPLES = [
   "Portfolio Sites", "Budget Trackers", "Scientific Papers", "Audit Reports",
   "Marketing Funnels", "Product Wikis", "Hiring Pipelines", "Travel Guides",
   "E-commerce Checkouts", "Auth Flows", "Database Schemas", "Network Maps",
-  "Org Charts", "Mind Maps", "Style Guides", "Brand Toolkits", "Event Planning"
+  "Org Charts", "Mind Maps", "Style Guides", "Brand Toolkits", "Event Planning",
+  "Recipe Books", "Workout Plans", "Travel Itineraries", "Coding Sandboxes", "Learning Paths",
+  "Task Dashboards", "Contact Cards", "Pricing Matrices", "Storyboards", "User Personas",
+  "Competitor Analysis", "SWOT Manifests", "System Diagrams", "Social Media Feeds", "Newsletter Layouts",
+  "Real Estate Listings", "Job Boards", "Community Portals", "Resource Libraries"
 ];
 
 import { AnimatePresence, motion, useMotionValue, useSpring } from "framer-motion";
@@ -591,21 +595,31 @@ const HomeScreen = ({
       return;
     }
 
-    // Neural Clarification Trigger for Broad Manifests (PPTs)
+    // Neural Clarification Trigger for Broad/Vague Manifests
     const isPresentationRequest = finalQuery.toLowerCase().includes("ppt") ||
       finalQuery.toLowerCase().includes("presentation") ||
       finalQuery.toLowerCase().includes("slides");
+    const isVagueRequest = !finalQuery.includes(" ") || finalQuery.length < 15;
+    const isLoanRequest = /(loan|roi|interest)/i.test(finalQuery);
+    
+    if ((isPresentationRequest || isVagueRequest || isLoanRequest) && !clarificationRequest) {
+      let question = "Establishing Manifest Parameters / Choose a design trajectory:";
+      let options = [
+        "Cinematic & Dark (Editorial focus)",
+        "Clean & Minimalist (Professional clarity)",
+        "Vibrant & Energetic (Impact-driven)",
+        "Technical & Schematic (Detail-oriented)"
+      ];
 
-    if (isPresentationRequest && !clarificationRequest) {
-      setClarificationRequest({
-        question: "Establishing Manifest Parameters / Choose a design trajectory:",
-        options: [
-          "Cinematic & Dark (Editorial focus)",
-          "Clean & Minimalist (Professional clarity)",
-          "Vibrant & Energetic (Impact-driven)",
-          "Technical & Schematic (Detail-oriented)"
-        ]
-      });
+      if (isLoanRequest) {
+        question = "Specify Neural Loan Parameters:";
+        options = ["Home Loan Logic", "Personal Loan Model", "Business Capital Flow", "Auto-Finance Matrix"];
+      } else if (isVagueRequest) {
+        question = "Neural Link Detected Vague Intent / Clarify Path:";
+        options = ["Dashboard Manifestation", "Landing Page Core", "Interactive Logic Map", "Presentation Deck"];
+      }
+
+      setClarificationRequest({ question, options });
       return;
     }
 
@@ -670,7 +684,7 @@ const HomeScreen = ({
         `;
       }
 
-      const code = await generateArtifact(backgroundEnhancedQuery, historyToSend, uploadedFile?.url);
+      const code = await generateArtifact(backgroundEnhancedQuery, historyToSend, uploadedFile?.url, false);
 
       if (code) {
         setArtifact(code);
@@ -853,9 +867,24 @@ const HomeScreen = ({
             <h3 className="text-xs font-bold uppercase tracking-widest text-white/40 mb-6">History</h3>
             <div className="space-y-3">
               {historyItems.map((item, i) => (
-                <button key={i} onClick={() => handleHistoryItemClick(item)} className="w-full text-left p-4 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 transition-all text-sm truncate">
-                  {item.prompt}
-                </button>
+                <div key={i} className="group relative">
+                  <button onClick={() => handleHistoryItemClick(item)} className="w-full text-left p-4 pr-12 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 transition-all text-sm truncate">
+                    {item.prompt}
+                  </button>
+                  <button 
+                    onClick={async (e) => {
+                      e.stopPropagation();
+                      const { error } = await supabase.from("artifacts").delete().eq("id", item.id);
+                      if (!error) {
+                        setHistoryItems(prev => prev.filter(h => h.id !== item.id));
+                        toast({ title: "Manifest Purged", description: "Memory entry deleted from neural cloud." });
+                      }
+                    }}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 p-2 text-white/20 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all"
+                  >
+                    ×
+                  </button>
+                </div>
               ))}
             </div>
           </div>
@@ -1090,7 +1119,7 @@ const HomeScreen = ({
         ) : (
           <div className="flex flex-col items-center w-full">
             {/* Landing Hero */}
-            <section className="min-h-screen flex flex-col items-center justify-start gap-12 px-4 pt-4 md:pt-8 -mt-6">
+            <section className="min-h-screen flex flex-col items-center justify-center gap-12 px-4 pb-32">
               <div className="text-center space-y-4">
                 <h1
                   className="text-7xl md:text-8xl font-light tracking-tighter leading-tight animate-in fade-in slide-in-from-top-12 duration-1000"
@@ -1105,9 +1134,19 @@ const HomeScreen = ({
                   Build your <br />
                   <span className="text-yellow-accent italic font-serif px-2" style={{ textShadow: theme === 'ultra' ? '0 0 80px rgba(255,215,0,0.2)' : 'none' }}>imagination</span>
                 </h1>
-                <p className="text-[12px] font-black uppercase tracking-[0.8em] text-[#1B3FBF] mt-4 mb-4 animate-in fade-in slide-in-from-bottom-2 duration-1000 delay-300">
+                <p className={`text-[12px] font-black uppercase tracking-[0.8em] mt-4 mb-4 animate-in fade-in slide-in-from-bottom-2 duration-1000 delay-300 ${theme === 'light' ? 'text-[#1B3FBF]' : 'text-white/90'}`}>
                   Beyond your thought
                 </p>
+                
+                {/* Visual Scroll Indicator */}
+                <div className="pt-12 animate-bounce cursor-pointer flex flex-col items-center gap-3 group" onClick={() => {
+                   document.getElementById('manifesto-section')?.scrollIntoView({ behavior: 'smooth' });
+                }}>
+                  <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white group-hover:bg-white group-hover:text-black transition-all duration-500">
+                    <ArrowDown size={14} />
+                  </div>
+                  <span className="text-[9px] font-black uppercase tracking-[0.5em] text-white/40 group-hover:text-white transition-colors">Know More</span>
+                </div>
               </div>
 
               <div className="w-full max-w-xl animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
@@ -1254,7 +1293,7 @@ const HomeScreen = ({
             </section>
 
             {/* New Manifesto Section - Full Screen Coverage */}
-            <section className="w-full relative bg-white py-24 flex flex-col items-center z-30">
+            <section id="manifesto-section" className="w-full relative bg-white py-24 flex flex-col items-center z-30">
               <div className="w-full max-w-7xl px-6 space-y-24">
                 <div className="text-center space-y-4">
                   <span className="text-[10px] font-black tracking-[0.6em] uppercase text-[#1B3FBF]">The Situation</span>
@@ -1570,12 +1609,12 @@ const HomeScreen = ({
           <div className="bg-white w-full max-w-lg rounded-[3rem] border border-black/5 shadow-2xl p-10 space-y-10 animate-in zoom-in-95 duration-300">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <div className="p-3 bg-[#1B3FBF]/10 rounded-2xl">
-                  <Share2 size={24} className="text-[#1B3FBF]" />
+                <div className="p-3 bg-black/5 rounded-2xl">
+                  <Share2 size={24} className="text-black" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold tracking-tight">Share Manifestation</h3>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-black/30">Google Docs Style Orchestration</p>
+                  <h3 className="text-xl font-bold tracking-tight text-black">Share Artifact</h3>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-black/30">Instantly share your manifestation across the neural web.</p>
                 </div>
               </div>
               <button onClick={() => setShareDialogOpen(false)} className="text-[9px] font-black uppercase tracking-widest text-black/20 hover:text-black">Dismiss</button>
@@ -1595,13 +1634,13 @@ const HomeScreen = ({
                 <div className="flex items-center gap-2 p-2 bg-black/[0.02] border border-black/5 rounded-2xl">
                   <input
                     readOnly
-                    value={`${window.location.origin}/share/${currentArtifactId || 'unbound'}`}
+                    value={`${window.location.origin}/${currentArtifactId || 'unbound'}`}
                     className="flex-1 bg-transparent px-4 py-2 text-xs font-medium text-black/60 outline-none"
                   />
                   <button
                     onClick={async () => {
                       if (!currentArtifactId) return;
-                      await navigator.clipboard.writeText(`${window.location.origin}/share/${currentArtifactId}`);
+                      await navigator.clipboard.writeText(`${window.location.origin}/${currentArtifactId}`);
                       toast({ title: "Link Manifested", description: "Successfully copied to clipboard." });
                     }}
                     className="px-6 py-3 bg-black text-white rounded-xl text-[9px] font-black uppercase tracking-widest hover:scale-[1.05] active:scale-95 transition-all"
