@@ -1120,7 +1120,7 @@ const HomeScreen = ({
           <div className="flex flex-col items-center w-full">
             {/* Landing Hero */}
             <section className="min-h-screen flex flex-col items-center justify-center gap-12 px-4 pb-32">
-              <div className="text-center space-y-4 pt-48 md:pt-64">
+              <div className="text-center space-y-4 pt-32 md:pt-40">
                 <h1
                   className="text-7xl md:text-8xl font-light tracking-tighter leading-tight animate-in fade-in slide-in-from-top-12 duration-1000"
                   style={{
@@ -1248,25 +1248,6 @@ const HomeScreen = ({
                     </div>
                   </form>
 
-                  <div className="flex flex-wrap justify-center gap-2 mt-10">
-                    {[
-                      { icon: Monitor, label: "Brand Landing" },
-                      { icon: Database, label: "SaaS Platform" },
-                      { icon: Smartphone, label: "Mobile App" },
-                      { icon: LayoutGrid, label: "Visual Art" }
-                    ].map((item, i) => (
-                      <button
-                        key={i}
-                        onClick={() => handleSubmit(item.label)}
-                        className={`flex items-center gap-2 px-5 py-2.5 rounded-2xl border text-[10px] tracking-widest uppercase transition-all font-bold ${theme === 'light'
-                          ? 'bg-black/5 border-black/10 text-black hover:bg-black/10'
-                          : 'glass-panel border-white/10 text-white hover:bg-white/10'
-                          }`}
-                      >
-                        <item.icon size={12} className={theme === 'light' ? 'text-black/60' : 'text-white'} /> {item.label}
-                      </button>
-                    ))}
-                  </div>
 
                   {/* Simplified Know More Text Indicator */}
                   <div className="pt-20 md:pt-24 animate-bounce cursor-pointer flex flex-col items-center gap-2 group" onClick={() => {
