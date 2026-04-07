@@ -134,7 +134,7 @@ const EXAMPLES = [
   "System Architecture", "Global Strategies", "User Experience Flow", "Legal Briefs",
   "Creative Scripts", "Project Roadmaps", "Course Curriculum", "SaaS Dashboards",
   "Portfolio Sites", "Budget Trackers", "Scientific Papers", "Audit Reports",
-  "Marketing Funnels", "Product Wikis", "Hiring Pipelines", "Travel Itineraries",
+  "Marketing Funnels", "Product Wikis", "Hiring Pipelines", "Travel Guides",
   "E-commerce Checkouts", "Auth Flows", "Database Schemas", "Network Maps",
   "Org Charts", "Mind Maps", "Style Guides", "Brand Toolkits", "Event Planning"
 ];
