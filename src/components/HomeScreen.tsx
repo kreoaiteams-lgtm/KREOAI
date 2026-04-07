@@ -147,8 +147,8 @@ const PossibilitiesPile: React.FC = () => {
     return EXAMPLES.map((_, i) => {
       // Calculate spread to avoid center area where text will live
       const angle = (i / EXAMPLES.length) * Math.PI * 2 + (Math.random() * 0.5);
-      const radiusX = 45 + (Math.random() * 25); // Pushed further out into a wider orbit
-      const radiusY = 32 + (Math.random() * 20); // Pushed further out into a wider orbit
+      const radiusX = 65 + (Math.random() * 40); // Massively expanded spread
+      const radiusY = 48 + (Math.random() * 32); // Massively expanded spread
 
       return {
         x: Math.cos(angle) * radiusX,
@@ -496,6 +496,25 @@ const HomeScreen = ({
     loadData();
   }, []);
 
+  // Hydrate local memory if it exists
+  useEffect(() => {
+    const localHistoryStr = localStorage.getItem('kreo_local_history');
+    if (localHistoryStr) {
+      try {
+        const localHistoryTree = JSON.parse(localHistoryStr);
+        if (localHistoryTree.length > 0) {
+           setHistoryItems(prev => {
+             const merged = [...prev, ...localHistoryTree];
+             // Simple deduplication
+             return Array.from(new Map(merged.map(item => [item.id, item])).values());
+           });
+        }
+      } catch (e) {
+        console.error("Local memory corrupted.");
+      }
+    }
+  }, []);
+
   // Placeholder Animation
   useEffect(() => {
     const currentText = PLACEHOLDER_TEXTS[placeholderIndex];
@@ -543,6 +562,7 @@ const HomeScreen = ({
     setUserEmail("");
     setArtifact(null);
     setChatHistory([]);
+    window.location.reload();
   };
   const handleHistoryItemClick = (item: any) => {
     setArtifact(item.code);
@@ -673,12 +693,28 @@ const HomeScreen = ({
           if (!insertError && newArtifact) {
             setHistoryItems(prev => [newArtifact, ...prev]);
             setCurrentArtifactId(newArtifact.id);
+            window.history.replaceState(null, '', `/?id=${newArtifact.id}`);
           } else if (insertError) {
-            console.error("Neural Sync Error:", insertError);
-            toast({ 
-              title: "History Out of Sync", 
-              description: `Error: ${insertError.message}. Check your Supabase RLS policies.`,
-              variant: "destructive"
+            console.warn("Neural Sync Interrupted. Failing over to Local Memory.", insertError);
+            // Local Memory Fallback
+            const localId = 'local-' + Math.random().toString(36).substr(2, 9);
+            const localArtifact = {
+              id: localId,
+              prompt: finalQuery,
+              code: code,
+              created_at: new Date().toISOString()
+            };
+            setHistoryItems(prev => [localArtifact, ...prev]);
+            setCurrentArtifactId(localId);
+            window.history.replaceState(null, '', `/?id=${localId}`);
+            
+            // Persist to local storage
+            const existingLocal = JSON.parse(localStorage.getItem('kreo_local_history') || '[]');
+            localStorage.setItem('kreo_local_history', JSON.stringify([localArtifact, ...existingLocal]));
+            
+            toast({
+              title: "Local Memory Active",
+              description: "Cloud sync failed. Manifest saved to secure local history.",
             });
           }
         }
@@ -1045,7 +1081,7 @@ const HomeScreen = ({
         ) : (
           <div className="flex flex-col items-center w-full">
             {/* Landing Hero */}
-            <section className="min-h-screen flex flex-col items-center justify-start gap-12 px-4 pt-20 md:pt-28">
+            <section className="min-h-screen flex flex-col items-center justify-start gap-12 px-4 pt-12 md:pt-16">
               <div className="text-center space-y-4">
                 <h1
                   className="text-7xl md:text-8xl font-light tracking-tighter leading-tight animate-in fade-in slide-in-from-top-12 duration-1000"
@@ -1197,12 +1233,12 @@ const HomeScreen = ({
               </div>
 
               {/* Scroll Down Indicator - High Visibility Hero Version */}
-              <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 animate-bounce hover:scale-110 transition-all cursor-pointer z-50 text-center" onClick={() => {
-                const manifestoSec = document.querySelector('section[class*="w-screen"]');
+              <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 animate-bounce hover:scale-110 transition-all cursor-pointer z-50 text-center" onClick={() => {
+                const manifestoSec = document.querySelector('section[class*="w-full relative"]');
                 if (manifestoSec) manifestoSec.scrollIntoView({ behavior: 'smooth' });
               }}>
-                <span className="text-[10px] font-black uppercase tracking-[0.8em] text-white opacity-60 hover:opacity-100 transition-opacity" style={{ textShadow: '0 2px 10px rgba(0,0,0,0.3)' }}>Discover More</span>
-                <div className="p-3 bg-white/10 backdrop-blur-3xl border border-white/20 rounded-full shadow-2xl mx-auto">
+                <div className="px-6 py-3 bg-[#1B3FBF] backdrop-blur-3xl border border-white/20 rounded-full shadow-2xl mx-auto flex items-center gap-3">
+                  <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white">Know More</span>
                   <ArrowDown size={14} className="text-white" />
                 </div>
               </div>

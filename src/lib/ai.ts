@@ -78,6 +78,7 @@ If the user's prompt is vague or does NOT explicitly mention a style, you MUST d
 - **Minimalist but Filled**: Use white space as a deliberate design element. Large margins and massive typography should make the page feel 'complete' despite having few UI elements.
 
 Output ONLY THE CODE (and Mermaid flowchart if applicable) inside triple backticks.
+CRITICAL ENFORCEMENT: The code MUST be 100% complete, practical, and functional. Do NOT output partial files, do NOT leave out logic, and do NOT use gimmicks or placeholders. It must be a fully working, production-grade application entirely contained within a single file.
 `;
 
 const SARVAM_API_KEY = import.meta.env.VITE_SARVAM_API_KEY;

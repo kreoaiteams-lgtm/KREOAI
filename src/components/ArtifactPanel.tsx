@@ -156,12 +156,12 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
             </Tooltip>
           )}
 
-          {!readOnly && onShare && (
+          {onShare && (
             <Tooltip>
               <TooltipTrigger asChild>
                 <button 
                   onClick={onShare} 
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#1B3FBF] text-white text-[10px] font-black uppercase tracking-widest hover:bg-[#2548d4] transition-all shadow-lg shadow-[#1B3FBF]/20 active:scale-95 ml-2"
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#1B3FBF] text-white text-[10px] font-black uppercase tracking-widest hover:bg-[#2548d4] transition-all shadow-lg shadow-[#1B3FBF]/20 active:scale-95"
                 >
                   <Share2 size={13} strokeWidth={3} /> Share Manifest
                 </button>
@@ -193,13 +193,13 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
       <div className={`flex-1 overflow-hidden relative custom-scrollbar flex items-center justify-center ${isFullscreen ? "bg-[#0a0a0a]" : "bg-[#f7f8fc]"}`}>
         {(activeTab === "preview" || isPresentation) ? (
           <div 
-            className="w-full h-full p-4 md:p-12 transition-all duration-300 flex items-center justify-center overflow-hidden"
+            className="w-full h-full transition-all duration-300 flex items-center justify-center overflow-hidden"
             style={{ 
               transform: `scale(${zoom})`,
               transformOrigin: 'center center'
             }}
           >
-            <div className={`h-full w-full max-w-[1920px] aspect-video animate-in fade-in duration-700 bg-white shadow-2xl overflow-hidden ${isFullscreen ? "rounded-none" : "rounded-2xl"}`}>
+            <div className={`h-full w-full animate-in fade-in duration-700 bg-white overflow-hidden ${isFullscreen ? "rounded-none" : ""}`}>
               <AnimatePresence mode="wait">
                 <motion.div
                   key={currentSlide}
