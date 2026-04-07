@@ -1259,6 +1259,27 @@ const HomeScreen = ({
                     </div>
                   </form>
 
+                  <div className="flex flex-wrap justify-center gap-3 mt-10">
+                    {[
+                      { icon: Monitor, label: "Brand Landing" },
+                      { icon: Database, label: "SaaS Platform" },
+                      { icon: Smartphone, label: "Mobile App" },
+                      { icon: LayoutGrid, label: "Visual Art" }
+                    ].map((item, i) => (
+                      <button
+                        key={i}
+                        onClick={() => handleSubmit(item.label)}
+                        className={`flex items-center gap-2 px-6 py-3 rounded-2xl border text-[10px] tracking-widest uppercase transition-all font-bold ${theme === 'light' 
+                          ? 'bg-black/5 border-black/10 text-black hover:bg-black/10' 
+                          : 'glass-panel border-white/10 text-white hover:bg-white/15 hover:border-white/20'
+                        }`}
+                      >
+                        <item.icon size={13} className={theme === 'light' ? 'text-black/60' : 'text-primary'} /> 
+                        {item.label}
+                      </button>
+                    ))}
+                  </div>
+
 
                   {/* Simplified Know More Text Indicator */}
                   <div className="pt-20 md:pt-24 cursor-pointer flex flex-col items-center gap-2 group" onClick={() => {
