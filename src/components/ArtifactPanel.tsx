@@ -159,11 +159,14 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
           {!readOnly && onShare && (
             <Tooltip>
               <TooltipTrigger asChild>
-                <button onClick={onShare} className="p-2 text-black/30 hover:text-[#1B3FBF] hover:bg-[#1B3FBF]/8 rounded-lg transition-all">
-                  <Share2 size={15} />
+                <button 
+                  onClick={onShare} 
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#1B3FBF] text-white text-[10px] font-black uppercase tracking-widest hover:bg-[#2548d4] transition-all shadow-lg shadow-[#1B3FBF]/20 active:scale-95 ml-2"
+                >
+                  <Share2 size={13} strokeWidth={3} /> Share Manifest
                 </button>
               </TooltipTrigger>
-              <TooltipContent>Share Presentation</TooltipContent>
+              <TooltipContent>Neural Portal Share</TooltipContent>
             </Tooltip>
           )}
 

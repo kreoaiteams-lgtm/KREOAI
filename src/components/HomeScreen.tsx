@@ -147,8 +147,8 @@ const PossibilitiesPile: React.FC = () => {
     return EXAMPLES.map((_, i) => {
       // Calculate spread to avoid center area where text will live
       const angle = (i / EXAMPLES.length) * Math.PI * 2 + (Math.random() * 0.5);
-      const radiusX = 22 + (Math.random() * 30); // Increased minimum 22vw radius for X to clear center
-      const radiusY = 15 + (Math.random() * 25); // Increased minimum 15vh radius for Y to clear center
+      const radiusX = 35 + (Math.random() * 25); // Pushed further out into a wider orbit
+      const radiusY = 28 + (Math.random() * 22); // Pushed further out into a wider orbit
 
       return {
         x: Math.cos(angle) * radiusX,
@@ -174,10 +174,10 @@ const PossibilitiesPile: React.FC = () => {
         initial={{ opacity: 0, scale: 0.9 }}
         whileInView={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
-        className="relative z-[100] text-center px-6 pointer-events-none"
+        className="relative z-[200] text-center px-6 pointer-events-none"
       >
-        <h2 className="text-4xl md:text-7xl font-serif italic text-[#1B3FBF] tracking-tighter leading-tight drop-shadow-sm">
-          Why think <br /> when you can visualise
+        <h2 className="text-5xl md:text-8xl font-serif italic text-[#1B3FBF] tracking-tighter leading-tight drop-shadow-sm">
+          What you can do <br /> with KREO
         </h2>
       </motion.div>
 
@@ -413,6 +413,7 @@ const HomeScreen = ({
   const [userEmail, setUserEmail] = useState<string>("");
   const [isSplitView, setIsSplitView] = useState(true);
   const [loadingMessage, setLoadingMessage] = useState("Establishing Neural Link...");
+  const [isIncomingPortal, setIsIncomingPortal] = useState(false);
   const [placeholderText, setPlaceholderText] = useState("");
   const [chatHistory, setChatHistory] = useState<{ role: "user" | "assistant", content: string, display?: string }[]>([]);
   const [pricingOpen, setPricingOpen] = useState(false);
@@ -443,18 +444,29 @@ const HomeScreen = ({
   useEffect(() => {
     const urlId = searchParams.get("id");
     if (urlId && !currentArtifactId) {
+      setIsIncomingPortal(true);
       const fetchFromUrl = async () => {
-        const { data, error } = await supabase
-          .from("artifacts")
-          .select("*")
-          .eq("id", urlId)
-          .single();
-        if (!error && data) {
-          setArtifact(data.code);
-          setCurrentArtifactId(data.id);
-          setQuery(data.prompt);
-          setChatHistory([{ role: "user", content: data.prompt }, { role: "assistant", content: data.code, display: "Manifest restored from neural link." }]);
-          setIsArtifactActive(true);
+        try {
+          const { data, error } = await supabase
+            .from("artifacts")
+            .select("*")
+            .eq("id", urlId)
+            .single();
+          if (!error && data) {
+            // Simulated delay for premium splash feel
+            setTimeout(() => {
+              setArtifact(data.code);
+              setCurrentArtifactId(data.id);
+              setQuery(data.prompt);
+              setChatHistory([{ role: "user", content: data.prompt }, { role: "assistant", content: data.code, display: "Manifest restored from neural link." }]);
+              setIsArtifactActive(true);
+              setIsIncomingPortal(false);
+            }, 2500); 
+          } else {
+            setIsIncomingPortal(false);
+          }
+        } catch (e) {
+          setIsIncomingPortal(false);
         }
       };
       fetchFromUrl();
@@ -661,6 +673,13 @@ const HomeScreen = ({
           if (!insertError && newArtifact) {
             setHistoryItems(prev => [newArtifact, ...prev]);
             setCurrentArtifactId(newArtifact.id);
+          } else if (insertError) {
+            console.error("Neural Sync Error:", insertError);
+            toast({ 
+              title: "History Out of Sync", 
+              description: `Error: ${insertError.message}. Check your Supabase RLS policies.`,
+              variant: "destructive"
+            });
           }
         }
       }
@@ -839,7 +858,7 @@ const HomeScreen = ({
       )}
 
       <main className={`flex flex-col relative z-20 overflow-x-hidden ${artifact && isSplitView ? "h-screen overflow-hidden" : ""}`}>
-        {isSubmitting && !artifact ? (
+        {(isSubmitting && !artifact) || isIncomingPortal ? (
           <div className="fixed inset-0 z-[1000] flex flex-col items-center justify-center bg-white overflow-hidden">
             {/* Subtle warm gradient wash */}
             <div className="absolute inset-0 bg-gradient-to-br from-[#f0f4ff] via-white to-[#fff8f0] pointer-events-none" />
@@ -867,7 +886,9 @@ const HomeScreen = ({
               {/* Wordmark Manifestation */}
               <div className="text-center">
                 <h1 className="text-6xl italic tracking-tighter text-[#1B3FBF] mb-4 animate-in slide-in-from-bottom-2 duration-700" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>Kreo</h1>
-                <p className="text-[12px] font-black uppercase tracking-[0.7em] text-black/40 animate-pulse">{loadingMessage}</p>
+                <p className="text-[12px] font-black uppercase tracking-[0.7em] text-black/40 animate-pulse">
+                  {isIncomingPortal ? "Restoring Neural Manifest..." : loadingMessage}
+                </p>
               </div>
             </div>
 
@@ -1039,7 +1060,7 @@ const HomeScreen = ({
                   Build your <br />
                   <span className="text-yellow-accent italic font-serif px-2" style={{ textShadow: theme === 'ultra' ? '0 0 80px rgba(255,215,0,0.2)' : 'none' }}>imagination</span>
                 </h1>
-                <p className="text-[10px] font-black uppercase tracking-[0.8em] text-foreground/30 mt-6 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-500">
+                <p className="text-[12px] font-black uppercase tracking-[0.8em] text-[#1B3FBF] mt-10 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-500">
                   Beyond your thought
                 </p>
               </div>
