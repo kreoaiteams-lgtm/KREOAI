@@ -1137,16 +1137,6 @@ const HomeScreen = ({
                 <p className={`text-[12px] font-black uppercase tracking-[0.8em] mt-4 mb-4 animate-in fade-in slide-in-from-bottom-2 duration-1000 delay-300 ${theme === 'light' ? 'text-[#1B3FBF]' : 'text-white/90'}`}>
                   Beyond your thought
                 </p>
-                
-                {/* Visual Scroll Indicator */}
-                <div className="pt-12 animate-bounce cursor-pointer flex flex-col items-center gap-3 group" onClick={() => {
-                   document.getElementById('manifesto-section')?.scrollIntoView({ behavior: 'smooth' });
-                }}>
-                  <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white group-hover:bg-white group-hover:text-black transition-all duration-500">
-                    <ArrowDown size={14} />
-                  </div>
-                  <span className="text-[9px] font-black uppercase tracking-[0.5em] text-white/40 group-hover:text-white transition-colors">Know More</span>
-                </div>
               </div>
 
               <div className="w-full max-w-xl animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
@@ -1276,6 +1266,16 @@ const HomeScreen = ({
                         <item.icon size={12} className={theme === 'light' ? 'text-black/60' : 'text-white'} /> {item.label}
                       </button>
                     ))}
+                  </div>
+
+                  {/* Visual Scroll Indicator - Repositioned below chips */}
+                  <div className="pt-16 md:pt-20 animate-bounce cursor-pointer flex flex-col items-center gap-3 group" onClick={() => {
+                     document.getElementById('manifesto-section')?.scrollIntoView({ behavior: 'smooth' });
+                  }}>
+                    <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white group-hover:bg-white group-hover:text-black transition-all duration-500 shadow-xl">
+                      <ArrowDown size={14} />
+                    </div>
+                    <span className="text-[9px] font-black uppercase tracking-[0.5em] text-white/40 group-hover:text-white transition-colors">Know More</span>
                   </div>
                 </div>
               </div>
