@@ -163,7 +163,7 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
                   onClick={onShare} 
                   className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#1B3FBF] text-white text-[10px] font-black uppercase tracking-widest hover:bg-[#2548d4] transition-all shadow-lg shadow-[#1B3FBF]/20 active:scale-95"
                 >
-                  <Share2 size={13} strokeWidth={3} /> Share Manifest
+                  <Share2 size={13} strokeWidth={3} /> Share Artifact
                 </button>
               </TooltipTrigger>
               <TooltipContent>Neural Portal Share</TooltipContent>

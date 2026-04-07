@@ -603,24 +603,28 @@ const HomeScreen = ({
     const isLoanRequest = /(loan|roi|interest)/i.test(finalQuery);
     
     if ((isPresentationRequest || isVagueRequest || isLoanRequest) && !clarificationRequest) {
-      let question = "Establishing Manifest Parameters / Choose a design trajectory:";
-      let options = [
-        "Cinematic & Dark (Editorial focus)",
-        "Clean & Minimalist (Professional clarity)",
-        "Vibrant & Energetic (Impact-driven)",
-        "Technical & Schematic (Detail-oriented)"
-      ];
+      if (finalQuery.trim().split(" ").length >= 4) {
+        // AI is likely clear enough if it's more than 3 words, proceed with auto-generation
+      } else {
+        let question = "Establishing Manifest Parameters / Choose a design trajectory:";
+        let options = [
+          "Cinematic & Dark (Editorial focus)",
+          "Clean & Minimalist (Professional clarity)",
+          "Vibrant & Energetic (Impact-driven)",
+          "Technical & Schematic (Detail-oriented)"
+        ];
 
-      if (isLoanRequest) {
-        question = "Specify Neural Loan Parameters:";
-        options = ["Home Loan Logic", "Personal Loan Model", "Business Capital Flow", "Auto-Finance Matrix"];
-      } else if (isVagueRequest) {
-        question = "Neural Link Detected Vague Intent / Clarify Path:";
-        options = ["Dashboard Manifestation", "Landing Page Core", "Interactive Logic Map", "Presentation Deck"];
+        if (isLoanRequest) {
+          question = "Specify Neural Loan Parameters:";
+          options = ["Home Loan Logic", "Personal Loan Model", "Business Capital Flow", "Auto-Finance Matrix"];
+        } else if (isVagueRequest) {
+          question = "Neural Link Detected Vague Intent / Clarify Path:";
+          options = ["Dashboard Manifestation", "Landing Page Core", "Interactive Logic Map", "Presentation Deck"];
+        }
+
+        setClarificationRequest({ question, options });
+        return;
       }
-
-      setClarificationRequest({ question, options });
-      return;
     }
 
     setIsSubmitting(true);
@@ -1622,32 +1626,24 @@ const HomeScreen = ({
             </div>
 
             <div className="space-y-6">
-              <div className="p-6 bg-black/[0.03] border border-black/[0.05] rounded-[2rem] space-y-4">
-                <div className="flex items-center gap-3">
-                  <Globe size={14} className="text-[#1B3FBF]" />
-                  <span className="text-[11px] font-bold">Bridge Visibility</span>
-                </div>
-                <p className="text-xs text-black/40 leading-relaxed">Anyone with this high-fidelity link can view your manifestation. Editing access must be requested from the cloud portal.</p>
-              </div>
-
-              <div className="space-y-2">
-                <div className="text-[9px] font-black uppercase tracking-[0.3em] text-black/30 pl-2">Neural Share Link</div>
-                <div className="flex items-center gap-2 p-2 bg-black/[0.02] border border-black/5 rounded-2xl">
-                  <input
-                    readOnly
-                    value={`${window.location.origin}/${currentArtifactId || 'unbound'}`}
-                    className="flex-1 bg-transparent px-4 py-2 text-xs font-medium text-black/60 outline-none"
-                  />
-                  <button
-                    onClick={async () => {
-                      if (!currentArtifactId) return;
-                      await navigator.clipboard.writeText(`${window.location.origin}/${currentArtifactId}`);
-                      toast({ title: "Link Manifested", description: "Successfully copied to clipboard." });
-                    }}
-                    className="px-6 py-3 bg-black text-white rounded-xl text-[9px] font-black uppercase tracking-widest hover:scale-[1.05] active:scale-95 transition-all"
-                  >
-                    Copy
-                  </button>
+              <div className="p-6 bg-black/[0.03] border border-black/[0.05] rounded-[2rem] space-y-4 text-center">
+                <div className="flex flex-col gap-3 py-4">
+                  <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[#1B3FBF]">Neural Link Generated</span>
+                  <div className="flex items-center gap-3 p-3 bg-white/50 border border-black/5 rounded-2xl">
+                    <p className="flex-1 text-[11px] font-mono text-black/60 truncate px-2 select-all tracking-tight">
+                      {`${window.location.origin.replace(/^https?:\/\//, '')}/${currentArtifactId || 'unbound'}`}
+                    </p>
+                    <button 
+                      onClick={async () => {
+                        if (!currentArtifactId) return;
+                        await navigator.clipboard.writeText(`${window.location.origin}/${currentArtifactId}`);
+                        toast({ title: "Portal Link Copied", description: "Successfully manifested to clipboard." });
+                      }}
+                      className="p-3 bg-[#1B3FBF] text-white rounded-xl hover:scale-110 active:scale-95 transition-all shadow-lg shadow-[#1B3FBF]/20"
+                    >
+                      <Copy size={14} />
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
