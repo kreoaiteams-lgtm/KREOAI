@@ -1025,6 +1025,12 @@ const HomeScreen = ({
                   <ChevronLeft size={13} className="group-hover:-translate-x-1 transition-transform" /> Back
                 </button>
                 <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => setShareDialogOpen(true)}
+                    className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#1B3FBF]/20 bg-[#1B3FBF]/5 text-[#1B3FBF] text-[9px] font-black uppercase tracking-widest hover:bg-[#1B3FBF]/10 transition-all shadow-sm"
+                  >
+                    <Share2 size={12} /> Neural Share
+                  </button>
                 </div>
               </div>
 
