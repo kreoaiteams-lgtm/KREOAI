@@ -1120,7 +1120,7 @@ const HomeScreen = ({
           <div className="flex flex-col items-center w-full">
             {/* Landing Hero */}
             <section className="min-h-screen flex flex-col items-center justify-center gap-12 px-4 pb-32">
-              <div className="text-center space-y-4 pt-32 md:pt-40">
+              <div className="text-center space-y-4 pt-20 md:pt-28">
                 <h1
                   className="text-7xl md:text-8xl font-light tracking-tighter leading-tight animate-in fade-in slide-in-from-top-12 duration-1000"
                   style={{
@@ -1139,7 +1139,7 @@ const HomeScreen = ({
                 </p>
               </div>
 
-              <div className="w-full max-w-xl animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
+              <div className="w-full max-w-2xl animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
                 <div className="flex flex-col gap-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
                   {/* Neural Source Preview Manifest */}
                   {uploadedFile && (
