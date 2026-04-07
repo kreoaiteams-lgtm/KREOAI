@@ -9,6 +9,7 @@ import {
   ArrowRight, Sparkles
 } from 'lucide-react';
 import ArtifactPanel from './ArtifactPanel';
+import SplashScreen from './SplashScreen';
 import { motion, AnimatePresence } from 'framer-motion';
 
 /**
@@ -23,6 +24,7 @@ const ShareView: React.FC = () => {
     const [requestEmail, setRequestEmail] = useState("");
     const [requestSent, setRequestSent] = useState(false);
     const [isRequesting, setIsRequesting] = useState(false);
+    const [isSplashComplete, setIsSplashComplete] = useState(false);
 
     useEffect(() => {
         const fetchArtifact = async () => {
@@ -67,9 +69,13 @@ const ShareView: React.FC = () => {
         setIsRequesting(false);
     };
 
+    if (!isSplashComplete) {
+        return <SplashScreen onComplete={() => setIsSplashComplete(true)} />;
+    }
+
     if (loading) {
         return (
-            <div className="min-h-screen bg-[#F0F2F9] flex flex-col items-center justify-center space-y-8">
+            <div className="min-h-screen bg-[#F0F2F9] flex flex-col items-center justify-center space-y-8 animate-in fade-in duration-1000">
                 <div className="w-16 h-16 bg-[#1B3FBF] rounded-full animate-pulse flex items-center justify-center shadow-2xl shadow-[#1B3FBF]/40">
                    <Zap size={24} className="text-white" />
                 </div>
@@ -80,7 +86,7 @@ const ShareView: React.FC = () => {
 
     if (error || !artifact) {
         return (
-            <div className="min-h-screen bg-white flex flex-col items-center justify-center p-8 text-center space-y-12">
+            <div className="min-h-screen bg-white flex flex-col items-center justify-center p-8 text-center space-y-12 animate-in fade-in duration-1000">
                 <div className="w-24 h-24 bg-red-50 rounded-full flex items-center justify-center">
                     <ShieldAlert size={48} className="text-red-500" />
                 </div>
@@ -98,7 +104,8 @@ const ShareView: React.FC = () => {
     }
 
     return (
-        <div className="min-h-screen bg-[#F7F9FC] text-black font-sans flex flex-col selection:bg-[#1B3FBF] selection:text-white">
+        <React.Fragment>
+            <div className={`min-h-screen bg-[#F7F9FC] text-black font-sans flex flex-col selection:bg-[#1B3FBF] selection:text-white transition-opacity duration-1000 animate-in fade-in`}>
             
             {/* Minimal High-Fidelity Header */}
             <header className="px-8 py-6 flex items-center justify-between border-b border-black/[0.04] bg-white sticky top-0 z-50">
@@ -186,6 +193,7 @@ const ShareView: React.FC = () => {
                 </footer>
             </main>
         </div>
+        </React.Fragment>
     );
 };
 

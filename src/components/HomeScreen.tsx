@@ -145,15 +145,14 @@ const PossibilitiesPile: React.FC = () => {
   const [visibleCount, setVisibleCount] = useState(0);
   const positions = useMemo(() => {
     return EXAMPLES.map((_, i) => {
-      // Calculate spread to avoid center area where text will live
-      const angle = (i / EXAMPLES.length) * Math.PI * 2 + (Math.random() * 0.5);
-      const radiusX = 65 + (Math.random() * 40); // Massively expanded spread
-      const radiusY = 48 + (Math.random() * 32); // Massively expanded spread
+      // Disperse cards across the entire container area to avoid dense overlaps
+      const xPos = (Math.random() * 80 - 40); // spread across 80% width
+      const yPos = (Math.random() * 65 - 20); // spread across height, slightly lower to clear header
 
       return {
-        x: Math.cos(angle) * radiusX,
-        y: Math.sin(angle) * radiusY,
-        rotate: (Math.random() * 26) - 13
+        x: xPos,
+        y: yPos,
+        rotate: (Math.random() * 30) - 15
       };
     });
   }, []);
@@ -171,12 +170,12 @@ const PossibilitiesPile: React.FC = () => {
     <div className="relative w-full h-[700px] flex items-center justify-center overflow-hidden bg-white rounded-[4rem] border border-black/5 mt-10">
       {/* Central Focal Text */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        whileInView={{ opacity: 1, scale: 1 }}
+        initial={{ opacity: 0, y: -20 }}
+        whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
-        className="relative z-[200] text-center px-6 pointer-events-none"
+        className="absolute top-16 left-0 right-0 z-[200] text-center px-6 pointer-events-none"
       >
-        <h2 className="text-5xl md:text-8xl font-serif italic text-[#1B3FBF] tracking-tighter leading-tight drop-shadow-sm">
+        <h2 className="text-4xl md:text-6xl font-serif italic text-[#1B3FBF] tracking-tighter leading-tight drop-shadow-sm">
           What you can do <br /> with KREO
         </h2>
       </motion.div>
@@ -633,10 +632,17 @@ const HomeScreen = ({
     try {
       const newUserMsg = { role: "user" as const, content: finalQuery };
 
-      // CRITICAL: If this is a NEW project (no existing artifact), reset history.
-      // Only accumulate history when editing an existing artifact.
+      let optimisticId = "";
       if (!artifact) {
+        optimisticId = 'opt-' + Date.now();
         setChatHistory([newUserMsg]);
+        setHistoryItems(prev => [{
+            id: optimisticId,
+            prompt: finalQuery,
+            code: "<!-- Manifesting... -->",
+            created_at: new Date().toISOString()
+        }, ...prev]);
+        setCurrentArtifactId(optimisticId);
       } else {
         setChatHistory(prev => [...prev, newUserMsg]);
       }
@@ -691,7 +697,7 @@ const HomeScreen = ({
             .single();
 
           if (!insertError && newArtifact) {
-            setHistoryItems(prev => [newArtifact, ...prev]);
+            setHistoryItems(prev => [newArtifact, ...prev.filter(i => i.id !== optimisticId)]);
             setCurrentArtifactId(newArtifact.id);
             window.history.replaceState(null, '', `/?id=${newArtifact.id}`);
           } else if (insertError) {
@@ -704,7 +710,7 @@ const HomeScreen = ({
               code: code,
               created_at: new Date().toISOString()
             };
-            setHistoryItems(prev => [localArtifact, ...prev]);
+            setHistoryItems(prev => [localArtifact, ...prev.filter(i => i.id !== optimisticId)]);
             setCurrentArtifactId(localId);
             window.history.replaceState(null, '', `/?id=${localId}`);
             
@@ -1081,7 +1087,7 @@ const HomeScreen = ({
         ) : (
           <div className="flex flex-col items-center w-full">
             {/* Landing Hero */}
-            <section className="min-h-screen flex flex-col items-center justify-start gap-12 px-4 pt-12 md:pt-16">
+            <section className="min-h-screen flex flex-col items-center justify-start gap-12 px-4 pt-4 md:pt-8 -mt-6">
               <div className="text-center space-y-4">
                 <h1
                   className="text-7xl md:text-8xl font-light tracking-tighter leading-tight animate-in fade-in slide-in-from-top-12 duration-1000"
