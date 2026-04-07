@@ -13,6 +13,7 @@ import KreoPromo3 from "./components/KreoPromo3.tsx";
 import KreoPromo4 from "./components/KreoPromo4.tsx";
 import SocialManagerPage from "./components/SocialManagerPage.tsx";
 import ShareView from "./components/ShareView.tsx";
+import ProjectRouter from "./components/ProjectRouter.tsx";
 
 import { Analytics } from "@vercel/analytics/react";
 

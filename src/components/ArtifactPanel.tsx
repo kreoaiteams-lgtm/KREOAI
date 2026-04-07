@@ -190,10 +190,54 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
         </div>
       </div>
 
-      <div className={`flex-1 overflow-hidden relative custom-scrollbar flex items-center justify-center ${isFullscreen ? "bg-[#0a0a0a]" : "bg-[#f7f8fc]"}`}>
+      <div className={`flex-1 overflow-hidden relative flex ${isFullscreen ? "bg-[#0a0a0a]" : "bg-[#f7f8fc]"}`}>
+        
+        {/* Slides Sidebar */}
+        {isPresentation && !isFullscreen && activeTab === "preview" && slides.length > 0 && (
+          <div className="w-48 lg:w-64 border-r border-black/[0.06] bg-[#f8f9fa] flex flex-col overflow-y-auto p-4 gap-4 custom-scrollbar shrink-0">
+            {slides.map((slideCode, idx) => (
+              <button 
+                key={idx}
+                onClick={() => setCurrentSlide(idx)}
+                className={`relative flex flex-col items-center gap-2 group text-left w-full`}
+              >
+                <div className="flex w-full justify-between items-center px-1">
+                   <span className={`text-[10px] font-black uppercase tracking-widest ${currentSlide === idx ? "text-[#1B3FBF]" : "text-black/30 group-hover:text-black/60"}`}>Slide {idx + 1}</span>
+                </div>
+                <div className={`w-full aspect-[16/9] rounded-xl overflow-hidden border-2 transition-all duration-300 relative bg-white shadow-sm flex items-center justify-center ${currentSlide === idx ? "border-[#1B3FBF] shadow-md shadow-[#1B3FBF]/20 scale-[1.02]" : "border-black/[0.05] group-hover:border-black/20"}`}>
+                   {/* Mini-iframe for Thumbnail */}
+                   <div className="absolute inset-0 pointer-events-none opacity-50 blur-[1px] group-hover:blur-none group-hover:opacity-100 transition-all">
+                      <iframe
+                        srcDoc={`
+                          <html>
+                            <head>
+                              <script src="https://cdn.tailwindcss.com"></script>
+                              <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+                              <style>
+                                body { font-family: 'Inter', sans-serif; background: white; margin: 0; transform: scale(0.2); transform-origin: top left; width: 500vw; height: 500vh; overflow:hidden;}
+                                .font-serif { font-family: 'Instrument Serif', serif; }
+                              </style>
+                            </head>
+                            <body>
+                              ${slideCode}
+                            </body>
+                          </html>
+                        `}
+                        className="w-full h-full border-none"
+                      />
+                   </div>
+                   {currentSlide === idx && <div className="absolute inset-0 ring-4 ring-[#1B3FBF]/10 rounded-xl" />}
+                </div>
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Main Content Area */}
+        <div className="flex-1 relative flex items-center justify-center overflow-hidden w-full h-full">
         {(activeTab === "preview" || isPresentation) ? (
           <div 
-            className="w-full h-full transition-all duration-300 flex items-center justify-center overflow-hidden"
+            className="w-full h-full transition-all duration-300 flex items-center justify-center overflow-hidden relative"
             style={{ 
               transform: `scale(${zoom})`,
               transformOrigin: 'center center'
@@ -313,6 +357,7 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
             <pre className="p-8 font-mono text-xs leading-relaxed text-[#2D4FA8] whitespace-pre-wrap overflow-x-auto">{code}</pre>
           </div>
         )}
+        </div>
       </div>
     </div>
   );
