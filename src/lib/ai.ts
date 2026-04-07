@@ -79,6 +79,13 @@ If the user's prompt is vague or does NOT explicitly mention a style, you MUST d
 
 Output ONLY THE CODE (and Mermaid flowchart if applicable) inside triple backticks.
 CRITICAL ENFORCEMENT: The code MUST be 100% complete, practical, and functional. Do NOT output partial files, do NOT leave out logic, and do NOT use gimmicks or placeholders. It must be a fully working, production-grade application entirely contained within a single file.
+
+## ITERATIVE EDITING PROTOCOL
+When existing code or a Mermaid flowchart is provided in the conversation history, this is your BASE OBJECT.
+1. DO NOT redesign, restructure, or rewrite the base object from scratch.
+2. Treat the new prompt strictly as an EDIT REQUEST to the base object.
+3. If asked to make a change in a flowchart, DO NOT change the entire flowchart layout or core logic—just edit or append the specific nodes requested.
+4. Keep the original aesthetic, design system, and architecture intact, making only the localized modifications requested.
 `;
 
 const SARVAM_API_KEY = import.meta.env.VITE_SARVAM_API_KEY;
