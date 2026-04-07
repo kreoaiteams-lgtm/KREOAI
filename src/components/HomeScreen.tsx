@@ -147,8 +147,8 @@ const PossibilitiesPile: React.FC = () => {
     return EXAMPLES.map((_, i) => {
       // Calculate spread to avoid center area where text will live
       const angle = (i / EXAMPLES.length) * Math.PI * 2 + (Math.random() * 0.5);
-      const radiusX = 35 + (Math.random() * 25); // Pushed further out into a wider orbit
-      const radiusY = 28 + (Math.random() * 22); // Pushed further out into a wider orbit
+      const radiusX = 45 + (Math.random() * 25); // Pushed further out into a wider orbit
+      const radiusY = 32 + (Math.random() * 20); // Pushed further out into a wider orbit
 
       return {
         x: Math.cos(angle) * radiusX,
@@ -1060,7 +1060,7 @@ const HomeScreen = ({
                   Build your <br />
                   <span className="text-yellow-accent italic font-serif px-2" style={{ textShadow: theme === 'ultra' ? '0 0 80px rgba(255,215,0,0.2)' : 'none' }}>imagination</span>
                 </h1>
-                <p className="text-[12px] font-black uppercase tracking-[0.8em] text-[#1B3FBF] mt-10 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-500">
+                <p className="text-[12px] font-black uppercase tracking-[0.8em] text-[#1B3FBF] mt-4 mb-4 animate-in fade-in slide-in-from-bottom-2 duration-1000 delay-300">
                   Beyond your thought
                 </p>
               </div>
