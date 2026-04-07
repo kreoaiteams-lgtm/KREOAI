@@ -464,7 +464,7 @@ const HomeScreen = ({
               setChatHistory([{ role: "user", content: data.prompt }, { role: "assistant", content: data.code, display: "Manifest restored from neural link." }]);
               setIsArtifactActive(true);
               setIsIncomingPortal(false);
-            }, 2500); 
+            }, 2500);
           } else {
             setIsIncomingPortal(false);
           }
@@ -506,11 +506,11 @@ const HomeScreen = ({
       try {
         const localHistoryTree = JSON.parse(localHistoryStr);
         if (localHistoryTree.length > 0) {
-           setHistoryItems(prev => {
-             const merged = [...prev, ...localHistoryTree];
-             // Simple deduplication
-             return Array.from(new Map(merged.map(item => [item.id, item])).values());
-           });
+          setHistoryItems(prev => {
+            const merged = [...prev, ...localHistoryTree];
+            // Simple deduplication
+            return Array.from(new Map(merged.map(item => [item.id, item])).values());
+          });
         }
       } catch (e) {
         console.error("Local memory corrupted.");
@@ -601,7 +601,7 @@ const HomeScreen = ({
       finalQuery.toLowerCase().includes("slides");
     const isVagueRequest = !finalQuery.includes(" ") || finalQuery.length < 15;
     const isLoanRequest = /(loan|roi|interest)/i.test(finalQuery);
-    
+
     if ((isPresentationRequest || isVagueRequest || isLoanRequest) && !clarificationRequest) {
       if (finalQuery.trim().split(" ").length >= 4) {
         // AI is likely clear enough if it's more than 3 words, proceed with auto-generation
@@ -655,10 +655,10 @@ const HomeScreen = ({
         optimisticId = 'opt-' + Date.now();
         setChatHistory([newUserMsg]);
         setHistoryItems(prev => [{
-            id: optimisticId,
-            prompt: finalQuery,
-            code: "<!-- Manifesting... -->",
-            created_at: new Date().toISOString()
+          id: optimisticId,
+          prompt: finalQuery,
+          code: "<!-- Manifesting... -->",
+          created_at: new Date().toISOString()
         }, ...prev]);
         setCurrentArtifactId(optimisticId);
       } else {
@@ -703,7 +703,7 @@ const HomeScreen = ({
         // PERSISTENCE PROTOCOL: Save to Supabase History
         const { data: { user } } = await supabase.auth.getUser();
         const shareToken = Math.random().toString(36).substring(2, 12);
-        
+
         const { data: newArtifact, error: insertError } = await supabase
           .from("artifacts")
           .insert({
@@ -716,46 +716,46 @@ const HomeScreen = ({
           .select()
           .single();
 
-          if (!insertError && newArtifact) {
-            setHistoryItems(prev => [newArtifact, ...prev.filter(i => i.id !== optimisticId)]);
-            setCurrentArtifactId(newArtifact.share_token || newArtifact.id);
-            window.history.replaceState(null, '', `/${newArtifact.share_token || newArtifact.id}`);
-            
-            // Even if logged in, save a copy to local storage for instant refresh persistence
-            const localCopy = {
-              id: newArtifact.id,
-              prompt: finalQuery,
-              code: code,
-              created_at: new Date().toISOString(),
-              share_token: newArtifact.share_token
-            };
-            const existingLocal = JSON.parse(localStorage.getItem('kreo_local_history') || '[]');
-            localStorage.setItem('kreo_local_history', JSON.stringify([localCopy, ...existingLocal.filter((i:any) => i.id !== newArtifact.id)].slice(0, 20)));
-          } else if (insertError) {
-            console.warn("Neural Sync Interrupted. Failing over to Local Memory.", insertError);
-            // Local Memory Fallback
-            const localToken = Math.random().toString(36).substr(2, 10);
-            const localId = 'local-' + localToken;
-            const localArtifact = {
-              id: localId,
-              prompt: finalQuery,
-              code: code,
-              created_at: new Date().toISOString(),
-              share_token: localToken
-            };
-            setHistoryItems(prev => [localArtifact, ...prev.filter(i => i.id !== optimisticId)]);
-            setCurrentArtifactId(localToken);
-            window.history.replaceState(null, '', `/${localToken}`);
-            
-            // Persist to local storage
-            const existingLocal = JSON.parse(localStorage.getItem('kreo_local_history') || '[]');
-            localStorage.setItem('kreo_local_history', JSON.stringify([localArtifact, ...existingLocal]));
-            
-            toast({
-              title: "Local Memory Active",
-              description: "Cloud sync failed. Manifest saved to secure local history.",
-            });
-          }
+        if (!insertError && newArtifact) {
+          setHistoryItems(prev => [newArtifact, ...prev.filter(i => i.id !== optimisticId)]);
+          setCurrentArtifactId(newArtifact.share_token || newArtifact.id);
+          window.history.replaceState(null, '', `/${newArtifact.share_token || newArtifact.id}`);
+
+          // Even if logged in, save a copy to local storage for instant refresh persistence
+          const localCopy = {
+            id: newArtifact.id,
+            prompt: finalQuery,
+            code: code,
+            created_at: new Date().toISOString(),
+            share_token: newArtifact.share_token
+          };
+          const existingLocal = JSON.parse(localStorage.getItem('kreo_local_history') || '[]');
+          localStorage.setItem('kreo_local_history', JSON.stringify([localCopy, ...existingLocal.filter((i: any) => i.id !== newArtifact.id)].slice(0, 20)));
+        } else if (insertError) {
+          console.warn("Neural Sync Interrupted. Failing over to Local Memory.", insertError);
+          // Local Memory Fallback
+          const localToken = Math.random().toString(36).substr(2, 10);
+          const localId = 'local-' + localToken;
+          const localArtifact = {
+            id: localId,
+            prompt: finalQuery,
+            code: code,
+            created_at: new Date().toISOString(),
+            share_token: localToken
+          };
+          setHistoryItems(prev => [localArtifact, ...prev.filter(i => i.id !== optimisticId)]);
+          setCurrentArtifactId(localToken);
+          window.history.replaceState(null, '', `/${localToken}`);
+
+          // Persist to local storage
+          const existingLocal = JSON.parse(localStorage.getItem('kreo_local_history') || '[]');
+          localStorage.setItem('kreo_local_history', JSON.stringify([localArtifact, ...existingLocal]));
+
+          toast({
+            title: "Local Memory Active",
+            description: "Cloud sync failed. Manifest saved to secure local history.",
+          });
+        }
       }
     } catch (err) {
       console.error(err);
@@ -886,7 +886,7 @@ const HomeScreen = ({
                   <button onClick={() => handleHistoryItemClick(item)} className="w-full text-left p-4 pr-12 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 transition-all text-sm truncate">
                     {item.prompt}
                   </button>
-                  <button 
+                  <button
                     onClick={async (e) => {
                       e.stopPropagation();
                       const { error } = await supabase.from("artifacts").delete().eq("id", item.id);
@@ -1150,7 +1150,7 @@ const HomeScreen = ({
                   <span className="text-yellow-accent italic font-serif px-2" style={{ textShadow: theme === 'ultra' ? '0 0 80px rgba(255,215,0,0.2)' : 'none' }}>imagination</span>
                 </h1>
                 <p className={`text-[12px] font-black uppercase tracking-[0.8em] mt-8 mb-8 animate-in fade-in slide-in-from-bottom-2 duration-1000 delay-300 ${theme === 'light' ? 'text-[#1B3FBF]' : 'text-white/90'}`}>
-                  Beyond your thought
+
                 </p>
               </div>
 
@@ -1273,12 +1273,12 @@ const HomeScreen = ({
                       <button
                         key={i}
                         onClick={() => handleSubmit(item.label)}
-                        className={`flex items-center gap-2 px-6 py-3 rounded-2xl border text-[10px] tracking-widest uppercase transition-all font-bold ${theme === 'light' 
-                          ? 'bg-black/5 border-black/10 text-black hover:bg-black/10' 
+                        className={`flex items-center gap-2 px-6 py-3 rounded-2xl border text-[10px] tracking-widest uppercase transition-all font-bold ${theme === 'light'
+                          ? 'bg-black/5 border-black/10 text-black hover:bg-black/10'
                           : 'glass-panel border-white/10 text-white hover:bg-white/15 hover:border-white/20'
-                        }`}
+                          }`}
                       >
-                        <item.icon size={13} className={theme === 'light' ? 'text-black/60' : 'text-primary'} /> 
+                        <item.icon size={13} className={theme === 'light' ? 'text-black/60' : 'text-primary'} />
                         {item.label}
                       </button>
                     ))}
@@ -1287,7 +1287,7 @@ const HomeScreen = ({
 
                   {/* Simplified Know More Text Indicator */}
                   <div className="pt-20 md:pt-24 cursor-pointer flex flex-col items-center gap-2 group" onClick={() => {
-                     document.getElementById('manifesto-section')?.scrollIntoView({ behavior: 'smooth' });
+                    document.getElementById('manifesto-section')?.scrollIntoView({ behavior: 'smooth' });
                   }}>
                     <span className="text-[10px] font-black uppercase tracking-[0.6em] text-white/50 group-hover:text-white transition-colors">Know More</span>
                     <ArrowDown size={14} className="text-white/40 group-hover:text-white" />
@@ -1633,7 +1633,7 @@ const HomeScreen = ({
                     <p className="flex-1 text-[11px] font-mono text-black/60 truncate px-2 select-all tracking-tight">
                       {`${window.location.origin.replace(/^https?:\/\//, '')}/${currentArtifactId || 'unbound'}`}
                     </p>
-                    <button 
+                    <button
                       onClick={async () => {
                         if (!currentArtifactId) return;
                         await navigator.clipboard.writeText(`${window.location.origin}/${currentArtifactId}`);
