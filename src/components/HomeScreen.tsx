@@ -447,18 +447,25 @@ const HomeScreen = ({
   useEffect(() => {
     // Check both search params ?id= and the pathname /share/:id or /:id
     const urlId = searchParams.get("id") || window.location.pathname.split('/').pop();
-    
+
     if (urlId && urlId !== "" && !currentArtifactId && !isIncomingPortal) {
       setIsIncomingPortal(true);
       const fetchFromUrl = async () => {
         try {
           // Priority 1: Check Supabase by share_token or ID
-          const { data, error } = await supabase
-            .from("artifacts")
-            .select("*")
-            .or(`share_token.eq.${urlId},id.eq.${urlId}`)
-            .single();
-          
+          // Avoid casting errors by checking if urlId is a valid UUID
+          const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+          const isUuid = uuidRegex.test(urlId);
+
+          let query = supabase.from("artifacts").select("*");
+          if (isUuid) {
+            query = query.or(`share_token.eq.${urlId},id.eq.${urlId}`);
+          } else {
+            query = query.eq("share_token", urlId);
+          }
+
+          const { data, error } = await query.single();
+
           if (!error && data) {
             setTimeout(() => {
               setArtifact(data.code);
@@ -474,7 +481,7 @@ const HomeScreen = ({
           // Priority 2: Check local history
           const localHistory = JSON.parse(localStorage.getItem('kreo_local_history') || '[]');
           const localMatch = localHistory.find((h: any) => h.share_token === urlId || h.id === urlId);
-          
+
           if (localMatch) {
             setArtifact(localMatch.code);
             setCurrentArtifactId(localMatch.share_token || localMatch.id);
@@ -501,6 +508,9 @@ const HomeScreen = ({
       if (window.location.pathname !== newPath) {
         window.history.replaceState(null, '', newPath);
       }
+    } else if (!currentArtifactId && window.location.pathname !== '/') {
+      // Reset to root if artifact is cleared
+      window.history.replaceState(null, '', '/');
     }
   }, [currentArtifactId]);
 
@@ -802,7 +812,7 @@ const HomeScreen = ({
       )}
       {!artifact && (
         <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-3 bg-transparent backdrop-blur-3xl border-b border-white/5 transition-all">
-          <div className="text-foreground group cursor-pointer max-w-[124px]" onClick={() => { setArtifact(null); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
+          <div className="text-foreground group cursor-pointer max-w-[124px]" onClick={() => { setArtifact(null); setCurrentArtifactId(null); setChatHistory([]); window.history.replaceState(null, '', '/'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
             <KreoLogo />
           </div>
           <div className="flex items-center gap-1">
@@ -1019,7 +1029,7 @@ const HomeScreen = ({
             <div className={`${isSplitView ? "w-[420px] shrink-0" : "w-full max-w-4xl mb-6"} flex flex-col ${isSplitView ? "h-full" : "min-h-[50vh]"} overflow-hidden bg-[#f5f7ff] border-r border-black/[0.06]`}>
               <div className="shrink-0 flex justify-between items-center px-6 py-4 border-b border-black/[0.06] bg-white/90 backdrop-blur-xl">
                 <button
-                  onClick={() => { setArtifact(null); setChatHistory([]); }}
+                  onClick={() => { setArtifact(null); setChatHistory([]); setCurrentArtifactId(null); window.history.replaceState(null, '', '/'); }}
                   className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.35em] text-black/30 hover:text-[#1B3FBF] transition-all group"
                 >
                   <ChevronLeft size={13} className="group-hover:-translate-x-1 transition-transform" /> Back
@@ -1029,7 +1039,7 @@ const HomeScreen = ({
                     onClick={() => setShareDialogOpen(true)}
                     className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#1B3FBF]/20 bg-[#1B3FBF]/5 text-[#1B3FBF] text-[9px] font-black uppercase tracking-widest hover:bg-[#1B3FBF]/10 transition-all shadow-sm"
                   >
-                    <Share2 size={12} /> Neural Share
+                    <Share2 size={12} />Share Artifact
                   </button>
                 </div>
               </div>
@@ -1103,29 +1113,28 @@ const HomeScreen = ({
                         <Globe size={14} className="text-[#1B3FBF]" />
                         <span className="text-[11px] font-bold">Bridge Visibility</span>
                       </div>
-                      <p className="text-xs text-black/40 leading-relaxed">Anyone with this high-fidelity link can view your manifestation. Editing access must be requested from the cloud portal.</p>
                     </div>
 
                     <div className="space-y-2">
-                       <div className="text-[9px] font-black uppercase tracking-[0.3em] text-black/30 pl-2">Neural Share Link</div>
-                       <div className="flex items-center gap-2 p-2 bg-black/[0.02] border border-black/5 rounded-2xl">
-                         <input
-                           readOnly
-                           value={currentArtifactId ? `${window.location.origin}/share/${currentArtifactId}` : 'unbound'}
-                           className="flex-1 bg-transparent px-4 py-2 text-xs font-medium text-black/60 outline-none"
-                         />
-                         <button
-                           onClick={async () => {
-                             if (!currentArtifactId) return;
-                             const fullLink = `${window.location.origin}/share/${currentArtifactId}`;
-                             await navigator.clipboard.writeText(fullLink);
-                             toast({ title: "Portal Link Manifested", description: "Successfully copied to clipboard." });
-                           }}
-                           className="px-6 py-3 bg-black text-white rounded-xl text-[9px] font-black uppercase tracking-widest hover:scale-[1.05] active:scale-95 transition-all"
-                         >
-                           Copy
-                         </button>
-                       </div>
+                      <div className="text-[9px] font-black uppercase tracking-[0.3em] text-black/30 pl-2">Share Link</div>
+                      <div className="flex items-center gap-2 p-2 bg-black/[0.02] border border-black/5 rounded-2xl">
+                        <input
+                          readOnly
+                          value={currentArtifactId ? `${window.location.origin}/share/${currentArtifactId}` : 'unbound'}
+                          className="flex-1 bg-transparent px-4 py-2 text-xs font-medium text-black/60 outline-none"
+                        />
+                        <button
+                          onClick={async () => {
+                            if (!currentArtifactId) return;
+                            const fullLink = `${window.location.origin}/share/${currentArtifactId}`;
+                            await navigator.clipboard.writeText(fullLink);
+                            toast({ title: "Portal Link Manifested", description: "Successfully copied to clipboard." });
+                          }}
+                          className="px-6 py-3 bg-black text-white rounded-xl text-[9px] font-black uppercase tracking-widest hover:scale-[1.05] active:scale-95 transition-all"
+                        >
+                          Copy
+                        </button>
+                      </div>
                     </div>
                   </div>
 

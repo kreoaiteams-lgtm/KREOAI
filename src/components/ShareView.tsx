@@ -31,43 +31,38 @@ const ShareView: React.FC = () => {
             if (!id) return;
             setLoading(true);
             
-            // Try fetching by share_token or ID
-            const { data, error: fetchError } = await supabase
-                .from('artifacts')
-                .select('*')
-                .or(`share_token.eq.${id},id.eq.${id}`)
-                .eq('is_public', true)
-                .single();
+            try {
+                // Determine if ID is a valid UUID to avoid Supabase 400 error
+                const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+                const isUuid = uuidRegex.test(id);
 
-            if (fetchError || !data) {
-                setError("Neural Manifestation Not Found or Private.");
-            } else {
-                setArtifact(data);
+                let query = supabase.from('artifacts').select('*');
+                
+                if (isUuid) {
+                    query = query.or(`id.eq.${id},share_token.eq.${id}`);
+                } else {
+                    query = query.eq('share_token', id);
+                }
+
+                const { data, error: fetchError } = await query.single();
+
+                if (fetchError || !data) {
+                    setError("Neural Manifestation Not Found.");
+                } else {
+                    setArtifact(data);
+                }
+            } catch (err) {
+                console.error("Link sync failure:", err);
+                setError("Neural Sync Failure.");
+            } finally {
+                setLoading(false);
             }
-            setLoading(false);
         };
 
         fetchArtifact();
     }, [id]);
 
-    const handleRequestAccess = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!requestEmail || !artifact) return;
-
-        setIsRequesting(true);
-        const { error: reqError } = await supabase
-            .from('artifact_access_requests')
-            .insert({
-                artifact_id: artifact.id,
-                requester_email: requestEmail,
-                message: "I'd like to collaborate on this manifestation."
-            });
-
-        if (!reqError) {
-            setRequestSent(true);
-        }
-        setIsRequesting(false);
-    };
+    // Request Access logic removed as per user request to remove "access and stuff"
 
     if (!isSplashComplete) {
         return <SplashScreen onComplete={() => setIsSplashComplete(true)} />;
@@ -134,63 +129,6 @@ const ShareView: React.FC = () => {
                    <ArtifactPanel code={artifact.code} prompt={artifact.prompt} readOnly={true} />
                 </div>
 
-                {/* Collaborative Request Section - Google Docs Style */}
-                <footer className="bg-white rounded-[2.5rem] border border-black/[0.04] p-10 md:p-16 flex flex-col md:flex-row items-center justify-between gap-12 shadow-sm mb-12">
-                    <div className="max-w-xl space-y-6">
-                        <div className="flex items-center gap-3">
-                           <Sparkles size={16} className="text-[#1B3FBF]" />
-                           <span className="text-[10px] font-black uppercase tracking-widest text-[#1B3FBF]">Collaboration Layer</span>
-                        </div>
-                        <h3 className="text-4xl md:text-5xl font-serif italic tracking-tighter leading-none">Need to refine this vision?</h3>
-                        <p className="text-black/40 text-lg leading-relaxed">
-                            Request edit access from the manifest owner to collaborate in real-time or fork this project into your own KREO vault.
-                        </p>
-                    </div>
-
-                    <div className="w-full md:w-auto min-w-[340px]">
-                        <AnimatePresence mode="wait">
-                            {!requestSent ? (
-                                <motion.form 
-                                    key="form"
-                                    initial={{ opacity: 0, x: 20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    exit={{ opacity: 0, x: -20 }}
-                                    onSubmit={handleRequestAccess} 
-                                    className="relative flex flex-col gap-4"
-                                >
-                                    <input 
-                                        type="email" 
-                                        required
-                                        placeholder="Your professional email..."
-                                        value={requestEmail}
-                                        onChange={(e) => setRequestEmail(e.target.value)}
-                                        className="w-full px-8 py-5 bg-black/[0.03] border border-black/[0.06] rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1B3FBF]/20 transition-all font-medium"
-                                    />
-                                    <button 
-                                        disabled={isRequesting}
-                                        type="submit"
-                                        className="w-full px-8 py-5 bg-black text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] shadow-xl hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3"
-                                    >
-                                        {isRequesting ? 'Orchestrating...' : 'Request Edit Access'} <Send size={12} />
-                                    </button>
-                                </motion.form>
-                            ) : (
-                                <motion.div 
-                                    key="success"
-                                    initial={{ opacity: 0, scale: 0.95 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    className="text-center p-8 bg-[#1B3FBF]/5 border border-[#1B3FBF]/10 rounded-[2rem] space-y-4"
-                                >
-                                    <div className="w-12 h-12 bg-[#1B3FBF] rounded-full flex items-center justify-center mx-auto mb-2 shadow-xl shadow-[#1B3FBF]/20">
-                                       <Check size={20} className="text-white" />
-                                    </div>
-                                    <p className="text-sm font-bold tracking-tight">Request Successfully Dispatched.</p>
-                                    <p className="text-[10px] text-black/40 uppercase tracking-widest leading-relaxed">The owner will receive your neural handshake shortly.</p>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-                    </div>
-                </footer>
             </main>
         </div>
         </React.Fragment>
