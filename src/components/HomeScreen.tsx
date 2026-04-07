@@ -1120,7 +1120,7 @@ const HomeScreen = ({
           <div className="flex flex-col items-center w-full">
             {/* Landing Hero */}
             <section className="min-h-screen flex flex-col items-center justify-center gap-12 px-4 pb-32">
-              <div className="text-center space-y-4">
+              <div className="text-center space-y-4 pt-48 md:pt-64">
                 <h1
                   className="text-7xl md:text-8xl font-light tracking-tighter leading-tight animate-in fade-in slide-in-from-top-12 duration-1000"
                   style={{
@@ -1268,28 +1268,16 @@ const HomeScreen = ({
                     ))}
                   </div>
 
-                  {/* Visual Scroll Indicator - Repositioned below chips */}
-                  <div className="pt-16 md:pt-20 animate-bounce cursor-pointer flex flex-col items-center gap-3 group" onClick={() => {
+                  {/* Simplified Know More Text Indicator */}
+                  <div className="pt-20 md:pt-24 animate-bounce cursor-pointer flex flex-col items-center gap-2 group" onClick={() => {
                      document.getElementById('manifesto-section')?.scrollIntoView({ behavior: 'smooth' });
                   }}>
-                    <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white group-hover:bg-white group-hover:text-black transition-all duration-500 shadow-xl">
-                      <ArrowDown size={14} />
-                    </div>
-                    <span className="text-[9px] font-black uppercase tracking-[0.5em] text-white/40 group-hover:text-white transition-colors">Know More</span>
+                    <span className="text-[10px] font-black uppercase tracking-[0.6em] text-white/50 group-hover:text-white transition-colors">Know More</span>
+                    <ArrowDown size={14} className="text-white/40 group-hover:text-white" />
                   </div>
                 </div>
               </div>
 
-              {/* Scroll Down Indicator - High Visibility Hero Version */}
-              <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 animate-bounce hover:scale-110 transition-all cursor-pointer z-50 text-center" onClick={() => {
-                const manifestoSec = document.querySelector('section[class*="w-full relative"]');
-                if (manifestoSec) manifestoSec.scrollIntoView({ behavior: 'smooth' });
-              }}>
-                <div className="px-6 py-3 bg-[#1B3FBF] backdrop-blur-3xl border border-white/20 rounded-full shadow-2xl mx-auto flex items-center gap-3">
-                  <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white">Know More</span>
-                  <ArrowDown size={14} className="text-white" />
-                </div>
-              </div>
             </section>
 
             {/* New Manifesto Section - Full Screen Coverage */}
