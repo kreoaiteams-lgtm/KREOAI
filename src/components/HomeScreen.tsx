@@ -716,6 +716,17 @@ const HomeScreen = ({
             setHistoryItems(prev => [newArtifact, ...prev.filter(i => i.id !== optimisticId)]);
             setCurrentArtifactId(newArtifact.share_token || newArtifact.id);
             window.history.replaceState(null, '', `/${newArtifact.share_token || newArtifact.id}`);
+            
+            // Even if logged in, save a copy to local storage for instant refresh persistence
+            const localCopy = {
+              id: newArtifact.id,
+              prompt: finalQuery,
+              code: code,
+              created_at: new Date().toISOString(),
+              share_token: newArtifact.share_token
+            };
+            const existingLocal = JSON.parse(localStorage.getItem('kreo_local_history') || '[]');
+            localStorage.setItem('kreo_local_history', JSON.stringify([localCopy, ...existingLocal.filter((i:any) => i.id !== newArtifact.id)].slice(0, 20)));
           } else if (insertError) {
             console.warn("Neural Sync Interrupted. Failing over to Local Memory.", insertError);
             // Local Memory Fallback
@@ -1139,7 +1150,7 @@ const HomeScreen = ({
                 </p>
               </div>
 
-              <div className="w-full max-w-2xl animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
+              <div className="w-full max-w-4xl animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
                 <div className="flex flex-col gap-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
                   {/* Neural Source Preview Manifest */}
                   {uploadedFile && (
@@ -1250,7 +1261,7 @@ const HomeScreen = ({
 
 
                   {/* Simplified Know More Text Indicator */}
-                  <div className="pt-20 md:pt-24 animate-bounce cursor-pointer flex flex-col items-center gap-2 group" onClick={() => {
+                  <div className="pt-20 md:pt-24 cursor-pointer flex flex-col items-center gap-2 group" onClick={() => {
                      document.getElementById('manifesto-section')?.scrollIntoView({ behavior: 'smooth' });
                   }}>
                     <span className="text-[10px] font-black uppercase tracking-[0.6em] text-white/50 group-hover:text-white transition-colors">Know More</span>
