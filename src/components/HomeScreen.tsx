@@ -23,6 +23,7 @@ interface HomeScreenProps {
   setTheme: (theme: "light" | "dark" | "ultra") => void;
   isGuest?: boolean;
   onAuthRequired?: () => void;
+  urlId?: string;
 }
 
 const PLACEHOLDER_TEXTS = [
@@ -404,9 +405,10 @@ const HomeScreen = ({
   theme,
   setTheme,
   isGuest = false,
-  onAuthRequired
+  onAuthRequired,
+  urlId: propUrlId
 }: HomeScreenProps) => {
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(() => localStorage.getItem('kreo_last_query') || "");
   const [artifact, setArtifact] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
@@ -424,9 +426,33 @@ const HomeScreen = ({
   const [activeTool, setActiveTool] = useState<{ id: string, label: string, icon: any, desc: string } | null>(null);
   const [manifestCount, setManifestCount] = useState(0);
   const [hasUsedFreeTool, setHasUsedFreeTool] = useState(false);
-  const [uploadedFile, setUploadedFile] = useState<{ url: string, name: string, type: string, ocr?: string } | null>(null);
+  const [uploadedFile, setUploadedFile] = useState<{ url: string, name: string, type: string, ocr?: string } | null>(() => {
+    const saved = localStorage.getItem('kreo_last_upload');
+    return saved ? JSON.parse(saved) : null;
+  });
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
-  const [currentArtifactId, setCurrentArtifactId] = useState<string | null>(null);
+  const [currentArtifactId, setCurrentArtifactId] = useState<string | null>(() => localStorage.getItem('kreo_last_id'));
+
+  // Persistence of local state
+  useEffect(() => {
+    localStorage.setItem('kreo_last_query', query);
+  }, [query]);
+
+  useEffect(() => {
+    if (uploadedFile) {
+        localStorage.setItem('kreo_last_upload', JSON.stringify(uploadedFile));
+    } else {
+        localStorage.removeItem('kreo_last_upload');
+    }
+  }, [uploadedFile]);
+
+  useEffect(() => {
+    if (currentArtifactId) {
+        localStorage.setItem('kreo_last_id', currentArtifactId);
+    } else {
+        localStorage.removeItem('kreo_last_id');
+    }
+  }, [currentArtifactId]);
 
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -443,12 +469,11 @@ const HomeScreen = ({
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  // URL Synchronization: Load from URL ID if present
   useEffect(() => {
-    // Check both search params ?id= and the pathname /share/:id or /:id
-    const urlId = searchParams.get("id") || window.location.pathname.split('/').pop();
+    // Check both search params ?id=, the prop, and the pathname
+    const urlId = propUrlId || searchParams.get("id") || window.location.pathname.split('/').pop();
 
-    if (urlId && urlId !== "" && !currentArtifactId && !isIncomingPortal) {
+    if (urlId && urlId !== "" && !artifact && !isIncomingPortal) {
       setIsIncomingPortal(true);
       const fetchFromUrl = async () => {
         try {
@@ -620,11 +645,7 @@ const HomeScreen = ({
     const finalQuery = typeof e === "string" ? e : query;
     if (!finalQuery.trim() || isSubmitting) return;
 
-    // GUEST PROTOCOL: If user is not authed, trigger the Auth manifestation before processing
-    if (isGuest && onAuthRequired) {
-      onAuthRequired();
-      return;
-    }
+    // Permission check removed as per user request to remove "access and stuff"
 
     // Neural Clarification Trigger for Broad/Vague Manifests
     const isPresentationRequest = finalQuery.toLowerCase().includes("ppt") ||

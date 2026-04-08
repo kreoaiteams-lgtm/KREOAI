@@ -13,26 +13,30 @@ export default function ProjectRouter() {
         const checkOwnership = async () => {
             if (!id) return;
             const { data: { user } } = await supabase.auth.getUser();
-            if (!user) {
-                // Not logged in -> show share view
-                setIsOwner(false);
-                setLoading(false);
-                return;
-            }
-
+            
             try {
-                const { data, error } = await supabase
-                    .from('artifacts')
-                    .select('user_id')
-                    .or(`share_token.eq.${id},id.eq.${id}`)
-                    .single();
+                // Determine if ID is a valid UUID to avoid Supabase 400 error
+                const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+                const isUuid = uuidRegex.test(id);
 
-                if (data && data.user_id === user.id) {
+                let query = supabase.from('artifacts').select('user_id');
+                if (isUuid) {
+                    query = query.or(`id.eq.${id},share_token.eq.${id}`);
+                } else {
+                    query = query.eq('share_token', id);
+                }
+
+                const { data, error } = await query.single();
+
+                if (!user) {
+                    setIsOwner(false);
+                } else if (data && data.user_id === user.id) {
                     setIsOwner(true);
                 } else {
                     setIsOwner(false);
                 }
             } catch (e) {
+                console.warn("Ownership sync fail:", e);
                 setIsOwner(false);
             }
             setLoading(false);

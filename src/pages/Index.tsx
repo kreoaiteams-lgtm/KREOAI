@@ -4,12 +4,15 @@ import IntroScreen from "@/components/IntroScreen";
 import SplashScreen from "@/components/SplashScreen";
 import AuthScreen from "@/components/AuthScreen";
 import HomeScreen from "@/components/HomeScreen";
-
 import { supabase } from "@/lib/supabase";
 
 type ThemeMode = "light" | "dark" | "ultra";
 
-const Index = () => {
+interface IndexProps {
+  urlId?: string;
+}
+
+const Index = ({ urlId }: IndexProps) => {
   const [authed, setAuthed] = useState(false);
   const [authLoading, setAuthLoading] = useState(true);
   const [theme, setTheme] = useState<ThemeMode>((localStorage.getItem("theme") as ThemeMode) || "ultra");
@@ -48,11 +51,7 @@ const Index = () => {
     if (authLoading) return null;
     
     // If not authed, always force AuthScreen after splash
-    if (!authed) {
-      return <AuthScreen />;
-    }
-
-    // Authenticated manifest
+    // Authenticated manifest or Guest mode
     return (
       <HomeScreen 
         onCloudBurst={() => {}} 
@@ -60,7 +59,8 @@ const Index = () => {
         setIsSubmittingGlobal={setIsSubmitting}
         theme={theme}
         setTheme={setTheme}
-        isGuest={false}
+        isGuest={!authed}
+        urlId={urlId}
       />
     );
   };
