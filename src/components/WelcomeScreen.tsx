@@ -88,20 +88,13 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ isVisible, onClose }) => 
                 </p>
               </div>
               
-              <div className="flex flex-col md:flex-row items-center justify-center gap-4">
+              <div className="flex justify-center">
                 <button 
                   onClick={onClose}
-                  className="w-full md:w-auto px-14 py-6 bg-white text-black text-[12px] font-black uppercase tracking-[0.4em] rounded-full hover:scale-105 active:scale-95 transition-all shadow-2xl flex items-center justify-center gap-3"
+                  className="px-14 py-6 bg-white text-black text-[12px] font-black uppercase tracking-[0.4em] rounded-full hover:scale-105 active:scale-95 transition-all shadow-2xl flex items-center justify-center gap-3"
                 >
                   <Sparkles size={16} />
                   Start Building
-                </button>
-                <button 
-                  onClick={() => navigate('/pricing')}
-                  className="w-full md:w-auto px-14 py-6 bg-white/10 text-white text-[12px] font-black uppercase tracking-[0.4em] rounded-full hover:bg-white/20 hover:scale-105 active:scale-95 transition-all border border-white/10 backdrop-blur-md flex items-center justify-center gap-3"
-                >
-                  <CreditCard size={16} />
-                  Pricing
                 </button>
               </div>
             </motion.div>

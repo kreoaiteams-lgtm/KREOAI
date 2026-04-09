@@ -2,270 +2,253 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Check, X, Sparkles, Zap, Shield, Crown, ArrowRight, CreditCard, 
-  Globe, Cpu, Layers, Lock, ChevronRight
+  Globe, Cpu, Layers, Lock, ChevronRight, User, MapPin, ReceiptText
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const PricingPage = () => {
   const navigate = useNavigate();
-  const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
+  const [selectedPlan, setSelectedPlan] = useState<'free' | 'ultra' | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
-
-  const plans = [
-    {
-      id: 'essential',
-      name: 'Essential',
-      price: '$0',
-      period: '/month',
-      description: 'Perfect for exploring the possibilities of imagination.',
-      features: ['10 Alpha Manifestations', 'Standard Logic Engine', 'Community Access', 'Basic Export'],
-      icon: Zap,
-      color: 'blue'
-    },
-    {
-      id: 'pro',
-      name: 'Architect',
-      price: '$29',
-      period: '/month',
-      description: 'The definitive choice for visionaries and professional creators.',
-      features: ['Unlimited Manifestations', 'Neural Logic v2', 'Priority Rendering', 'High-Fidelity Exports', 'Private History'],
-      icon: Crown,
-      color: 'yellow',
-      popular: true
-    },
-    {
-      id: 'enterprise',
-      name: 'Sovereign',
-      price: 'Custom',
-      period: '',
-      description: 'Custom infrastructure for teams and massive orchestration.',
-      features: ['Dedicated Neural Nodes', 'SLA Guarantees', 'White-label Manifest', 'Custom API Access', '24/7 Intel Support'],
-      icon: Shield,
-      color: 'white'
-    }
-  ];
-
-  const handlePayment = (planId: string) => {
-    setSelectedPlan(planId);
-    // Mimic transition to payment details
-  };
 
   const processPayment = () => {
     setIsProcessing(true);
     setTimeout(() => {
       setIsProcessing(false);
-      navigate('/home'); // Redirect back home after "payment"
+      navigate('/'); // Redirect back home after "payment"
     }, 2000);
   };
 
   return (
-    <div className="min-h-screen bg-[#0020C2] text-white selection:bg-white selection:text-[#0020C2] overflow-x-hidden font-satoshi relative">
-      {/* Cinematic Background */}
+    <div className="min-h-screen bg-white text-black selection:bg-[#0020C2] selection:text-white overflow-x-hidden font-satoshi relative">
+      {/* Cinematic Background Atmosphere - Light & Clean */}
       <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-blue-400/10 blur-[150px] rounded-full" />
-        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-yellow-400/5 blur-[120px] rounded-full" />
+        <div className="absolute top-0 right-0 w-[1000px] h-[1000px] bg-blue-50/50 blur-[200px] rounded-full" />
+        <div className="absolute bottom-0 left-0 w-[800px] h-[800px] bg-yellow-50/50 blur-[180px] rounded-full" />
       </div>
 
       {/* Header */}
-      <header className="relative z-10 flex items-center justify-between px-10 py-10">
+      <header className="relative z-10 flex items-center justify-between px-10 py-10 border-b border-black/[0.03]">
         <button onClick={() => navigate(-1)} className="flex items-center gap-4 group">
-          <div className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-white/10 transition-all">
+          <div className="w-10 h-10 rounded-full border border-black/5 flex items-center justify-center group-hover:bg-black/5 transition-all text-black">
             <X size={18} />
           </div>
           <span className="text-[10px] font-black uppercase tracking-[0.4em] opacity-40 group-hover:opacity-100 transition-opacity">Return</span>
         </button>
         <div className="flex items-center gap-3">
-          <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-          <span className="text-[9px] font-black uppercase tracking-widest opacity-40">Operational Intel Secured</span>
+          <div className="w-2 h-2 rounded-full bg-[#0020C2] animate-pulse" />
+          <span className="text-[9px] font-black uppercase tracking-widest opacity-30">Neural Auth Protocol Active</span>
         </div>
       </header>
 
-      <main className="relative z-10 max-w-7xl mx-auto px-6 py-20 flex flex-col items-center">
-        <AnimatePresence mode="wait">
-          {!selectedPlan ? (
-            <motion.div 
-              key="pricing"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -30 }}
-              className="w-full flex flex-col items-center"
-            >
-              <div className="text-center space-y-6 mb-24">
-                <motion.div 
-                   initial={{ opacity: 0, scale: 0.9 }}
-                   animate={{ opacity: 1, scale: 1 }}
-                   className="inline-flex items-center gap-3 px-6 py-2 bg-white/5 border border-white/10 rounded-full text-[10px] font-black uppercase tracking-[0.4em] mb-4"
+      <main className="relative z-10 max-w-7xl mx-auto px-6 py-16 flex flex-col items-center">
+        {!selectedPlan ? (
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="w-full max-w-5xl space-y-20"
+          >
+            <div className="text-center space-y-6">
+              <span className="text-[10px] font-black tracking-[0.6em] uppercase text-[#0020C2]">Tier Strategy</span>
+              <h1 className="text-6xl md:text-8xl font-serif italic tracking-tighter leading-none text-black">
+                Simple <span className="text-[#0020C2] not-italic">Scaling</span>
+              </h1>
+              <p className="max-w-xl mx-auto text-xl font-light text-black/40 font-serif italic">
+                Choose the foundation for your neural manifestations. Professional tools, accessible reality.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+              {/* Essential Tier */}
+              <div className="p-12 bg-[#f8faff] border border-black/[0.03] rounded-[3.5rem] space-y-10 flex flex-col justify-between hover:bg-white hover:shadow-2xl hover:shadow-black/5 transition-all duration-700">
+                <div className="space-y-8">
+                  <div className="flex justify-between items-start">
+                    <div className="space-y-1">
+                      <h3 className="text-3xl font-serif italic text-black">Foundation</h3>
+                      <p className="text-[10px] font-black uppercase tracking-widest text-black/30">Essential Access</p>
+                    </div>
+                    <div className="text-4xl font-serif italic text-black">$0</div>
+                  </div>
+                  <div className="space-y-5">
+                    {["3 Generations per week", "Standard Manifest Logic", "Community Access"].map((f, i) => (
+                      <div key={i} className="flex items-center gap-3 text-sm text-black/40 font-light italic font-serif">
+                        <Check size={14} className="text-black/20" /> {f}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <button className="w-full py-5 rounded-2xl border border-black/10 text-[10px] font-black uppercase tracking-widest bg-black text-white">Current Manifest</button>
+              </div>
+
+              {/* Ultra Tier */}
+              <div className="relative p-12 bg-white border border-[#0020C2]/10 rounded-[3.5rem] shadow-[0_30px_100px_rgba(0,32,194,0.08)] space-y-10 flex flex-col justify-between hover:scale-[1.02] transition-all duration-700 overflow-hidden">
+                <div className="absolute top-0 right-0 px-8 py-3 bg-[#0020C2] text-white text-[9px] font-black uppercase tracking-widest rounded-bl-3xl">Peak Architecture</div>
+                <div className="space-y-8">
+                  <div className="flex justify-between items-start">
+                    <div className="space-y-1">
+                      <h3 className="text-3xl font-serif italic text-[#0020C2]">Ultra</h3>
+                      <p className="text-[10px] font-black uppercase tracking-widest text-[#0020C2]/30">Professional Tier</p>
+                    </div>
+                    <div className="text-4xl font-serif italic text-[#0020C2]">$1 <span className="text-sm font-sans not-italic text-black/20 font-bold ml-1">/ month</span></div>
+                  </div>
+                  <div className="space-y-5">
+                    {["Unlimited Manifestations", "High-Fidelity Assets", "Private Manifest Vault", "Priority Neural Link"].map((f, i) => (
+                      <div key={i} className="flex items-center gap-3 text-sm text-black/70 font-medium italic font-serif">
+                        <Check size={16} className="text-[#0020C2]" /> {f}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <button 
+                  onClick={() => setSelectedPlan('ultra')}
+                  className="w-full py-6 bg-[#0020C2] text-white rounded-2xl text-[11px] font-black uppercase tracking-[0.4em] shadow-xl shadow-[#0020C2]/20 hover:scale-105 active:scale-95 transition-all"
                 >
-                  <Sparkles size={12} className="text-yellow-400" /> Choose Your Scale
-                </motion.div>
-                <h1 className="text-6xl md:text-8xl font-serif italic tracking-tighter leading-none">
-                  Investing in <span className="text-yellow-400 not-italic">Intent</span>
-                </h1>
-                <p className="max-w-2xl mx-auto text-xl font-light opacity-60 font-serif italic">
-                  Unlock the full potential of high-fidelity manifestion. Every tier is engineered for absolute clarity.
-                </p>
+                  Upgrade to Ultra
+                </button>
               </div>
-
-              {/* Plans Grid */}
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 w-full max-w-6xl">
-                {plans.map((plan) => (
-                  <motion.div
-                    key={plan.id}
-                    whileHover={{ y: -10 }}
-                    className={`relative p-12 bg-white/5 border ${plan.popular ? 'border-yellow-400/30' : 'border-white/10'} rounded-[3rem] backdrop-blur-xl flex flex-col gap-10 hover:bg-white/[0.07] transition-all`}
-                  >
-                    {plan.popular && (
-                      <div className="absolute -top-5 left-1/2 -translate-x-1/2 px-6 py-2 bg-yellow-400 text-black text-[9px] font-black uppercase tracking-widest rounded-full shadow-xl">
-                        Architect Peak
-                      </div>
-                    )}
-
-                    <div className="space-y-6">
-                      <div className={`w-16 h-16 rounded-2xl ${plan.color === 'yellow' ? 'bg-yellow-400 text-black' : 'bg-white/10 text-white'} flex items-center justify-center`}>
-                        <plan.icon size={30} />
-                      </div>
-                      <div>
-                        <h3 className="text-3xl font-serif italic leading-none mb-2">{plan.name}</h3>
-                        <p className="text-sm opacity-50 font-light">{plan.description}</p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-baseline gap-1">
-                      <span className="text-5xl font-black">{plan.price}</span>
-                      <span className="text-sm opacity-40 uppercase font-black tracking-widest">{plan.period}</span>
-                    </div>
-
-                    <div className="space-y-4 flex-grow">
-                      {plan.features.map((feature, i) => (
-                        <div key={i} className="flex items-start gap-3">
-                          <Check size={16} className={plan.color === 'yellow' ? 'text-yellow-400' : 'text-blue-400'} />
-                          <span className="text-sm opacity-70 font-light">{feature}</span>
-                        </div>
-                      ))}
-                    </div>
-
-                    <button 
-                      onClick={() => handlePayment(plan.id)}
-                      className={`w-full py-6 rounded-[2rem] text-[11px] font-black uppercase tracking-[0.3em] transition-all flex items-center justify-center gap-3 ${
-                        plan.color === 'yellow' 
-                        ? 'bg-yellow-400 text-black hover:scale-105 active:scale-95' 
-                        : 'bg-white/10 text-white hover:bg-white/20 active:scale-95 border border-white/10'
-                      }`}
-                    >
-                      Manifest {plan.name} <ArrowRight size={14} />
-                    </button>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-          ) : (
-            <motion.div 
-              key="payment"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="w-full max-w-xl bg-white text-black p-12 rounded-[4rem] shadow-2xl space-y-12"
-            >
+            </div>
+          </motion.div>
+        ) : (
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-12"
+          >
+            {/* Left Side: Payment Form */}
+            <div className="bg-white border border-black/5 rounded-[4rem] p-10 md:p-14 shadow-2xl space-y-12">
               <div className="flex items-center justify-between">
                 <div className="space-y-1">
-                  <h3 className="text-2xl font-serif italic text-[#0020C2]">Payment Authority</h3>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-black/40">Secure Transaction Flow</p>
+                  <h3 className="text-2xl font-serif italic text-black">Authority Manifest</h3>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-black/20">Secure Neural Transaction</p>
                 </div>
-                <div className="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center text-[#0020C2]">
-                  <Lock size={20} />
-                </div>
-              </div>
-
-              {/* Order Summary */}
-              <div className="p-8 bg-blue-50 rounded-3xl space-y-6">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm font-medium opacity-60">Selected Manifest</span>
-                  <span className="text-lg font-serif italic text-[#0020C2]">{plans.find(p => p.id === selectedPlan)?.name} Tier</span>
-                </div>
-                <div className="h-px bg-blue-100" />
-                <div className="flex justify-between items-center">
-                  <span className="text-sm font-medium opacity-60">Total to Manifest</span>
-                  <span className="text-3xl font-black text-[#0020C2]">{plans.find(p => p.id === selectedPlan)?.price}</span>
+                <div className="p-4 bg-blue-50 border border-blue-100 rounded-3xl text-[#0020C2]">
+                  <Lock size={22} />
                 </div>
               </div>
 
-              {/* Credit Card Mockup */}
-              <div className="space-y-6">
-                 <div className="space-y-4">
-                    <label className="text-[9px] font-black uppercase tracking-[0.3em] text-black/30 ml-2">Card Credentials</label>
-                    <div className="relative">
-                       <input 
-                         type="text" 
-                         disabled 
-                         value="4242 4242 4242 4242" 
-                         className="w-full p-6 bg-white border-2 border-blue-50 rounded-3xl text-lg font-medium tracking-widest"
-                       />
-                       <CreditCard className="absolute right-6 top-1/2 -translate-y-1/2 text-blue-200" size={24} />
-                    </div>
-                 </div>
-                 <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-4">
-                      <label className="text-[9px] font-black uppercase tracking-[0.3em] text-black/30 ml-2">Expiry</label>
-                      <input type="text" disabled value="12/28" className="w-full p-6 bg-white border-2 border-blue-50 rounded-3xl text-lg font-medium" />
-                    </div>
-                    <div className="space-y-4">
-                      <label className="text-[9px] font-black uppercase tracking-[0.3em] text-black/30 ml-2">CVV</label>
-                      <input type="text" disabled value="***" className="w-full p-6 bg-white border-2 border-blue-50 rounded-3xl text-lg font-medium" />
-                    </div>
-                 </div>
+              <div className="space-y-8">
+                {/* Account Owner */}
+                <div className="space-y-4">
+                  <label className="text-[9px] font-black uppercase tracking-[0.5em] text-black/30 ml-2 italic">Account Owner</label>
+                  <div className="relative">
+                    <input type="text" placeholder="Architect Name" className="w-full p-6 bg-[#f8faff] border border-black/5 rounded-3xl text-lg font-medium outline-none focus:border-[#0020C2]/20 transition-all font-serif italic" />
+                    <User className="absolute right-6 top-1/2 -translate-y-1/2 text-black/10" size={20} />
+                  </div>
+                </div>
+
+                {/* Card Credentials */}
+                <div className="space-y-4">
+                  <label className="text-[9px] font-black uppercase tracking-[0.5em] text-black/30 ml-2 italic">Card Credentials</label>
+                  <div className="relative">
+                    <input type="text" value="4242 4242 4242 4242" disabled className="w-full p-6 bg-[#f8faff] border border-black/5 rounded-3xl text-lg font-medium tracking-widest opacity-60" />
+                    <CreditCard className="absolute right-6 top-1/2 -translate-y-1/2 text-[#0020C2]/40" size={22} />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <input type="text" value="12/28" disabled className="w-full p-6 bg-[#f8faff] border border-black/5 rounded-3xl text-lg font-medium opacity-60" />
+                    <input type="text" value="***" disabled className="w-full p-6 bg-[#f8faff] border border-black/5 rounded-3xl text-lg font-medium opacity-60" />
+                  </div>
+                </div>
+
+                {/* Address Line */}
+                <div className="space-y-4">
+                  <label className="text-[9px] font-black uppercase tracking-[0.5em] text-black/30 ml-2 italic">Architecture Address</label>
+                  <div className="relative">
+                    <input type="text" placeholder="Street Address, Neural Grid" className="w-full p-6 bg-[#f8faff] border border-black/5 rounded-3xl text-lg font-medium outline-none focus:border-[#0020C2]/20 transition-all font-serif italic" />
+                    <MapPin className="absolute right-6 top-1/2 -translate-y-1/2 text-black/10" size={20} />
+                  </div>
+                </div>
               </div>
 
-              <div className="flex flex-col gap-6">
+              <div className="flex flex-col gap-6 pt-4">
                 <button 
                   onClick={processPayment}
                   disabled={isProcessing}
-                  className="w-full py-7 bg-[#0020C2] text-white text-[12px] font-black uppercase tracking-[0.4em] rounded-full hover:scale-105 active:scale-95 transition-all shadow-2xl relative flex items-center justify-center"
+                  className="w-full py-7 bg-black text-white text-[11px] font-black uppercase tracking-[0.4em] rounded-full hover:scale-[1.02] active:scale-95 transition-all shadow-2xl relative flex items-center justify-center font-satoshi"
                 >
                   {isProcessing ? (
-                     <motion.div 
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className="flex items-center gap-3"
-                     >
-                        <LoaderIcon className="animate-spin" /> Orchestrating...
-                     </motion.div>
+                    <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-3">
+                      <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                      Syncing Portal...
+                    </motion.span>
                   ) : (
-                    <>Authorize $29.00 <ChevronRight size={16} /></>
+                    <>Authorize Transition <ChevronRight size={16} className="ml-2" /></>
                   )}
                 </button>
                 <button 
                   onClick={() => setSelectedPlan(null)}
                   disabled={isProcessing}
-                  className="w-full py-4 text-[9px] font-black uppercase tracking-widest text-black/30 hover:text-black/60 transition-colors"
+                  className="text-[10px] font-black uppercase tracking-widest text-black/20 hover:text-black/60 transition-colors"
                 >
-                  Choose Different Tier
+                  Reconsider Parameters
                 </button>
               </div>
+            </div>
 
-              <div className="flex items-center justify-center gap-6 opacity-20 filter grayscale">
-                 <Globe size={16} />
-                 <Shield size={16} />
-                 <Lock size={16} />
-                 <Cpu size={16} />
+            {/* Right Side: Manifest Summary */}
+            <div className="flex flex-col gap-10">
+              <div className="bg-[#f8faff] border border-black/5 rounded-[4rem] p-12 space-y-12">
+                 <div className="space-y-2">
+                    <ReceiptText className="text-[#0020C2]" size={32} />
+                    <h3 className="text-3xl font-serif italic text-black">Manifest Summary</h3>
+                    <p className="text-[10px] font-black uppercase tracking-[0.4em] text-black/20 italic">Architectural Overview</p>
+                 </div>
+
+                 <div className="space-y-8">
+                    <div className="flex justify-between items-end border-b border-black/[0.05] pb-6">
+                       <div className="space-y-1">
+                          <span className="text-[9px] font-black uppercase tracking-widest text-black/40">Active Provision</span>
+                          <div className="text-2xl font-serif italic text-[#0020C2]">KREO Ultra Tier</div>
+                       </div>
+                       <div className="text-3xl font-black text-black leading-none">$1.00</div>
+                    </div>
+
+                    <div className="flex justify-between items-end border-b border-black/[0.05] pb-6">
+                       <div className="space-y-1">
+                          <span className="text-[9px] font-black uppercase tracking-widest text-black/40">Duration Horizon</span>
+                          <div className="text-xl font-serif italic text-black/60">30 Days Neural Access</div>
+                       </div>
+                       <div className="text-[10px] font-black uppercase tracking-widest text-black/20">Recurring Alpha</div>
+                    </div>
+
+                    <p className="text-sm font-light italic font-serif text-black/40 leading-relaxed">
+                       You will be on this manifest plan for <span className="text-black font-semibold">1 month</span>. Your neural capabilities will be upgraded instantly upon authority confirmation.
+                    </p>
+                 </div>
+
+                 <div className="p-8 bg-white border border-black/5 rounded-3xl space-y-4">
+                    <div className="flex justify-between items-center text-xs">
+                       <span className="font-bold uppercase tracking-widest opacity-20">Total Manifest Weight</span>
+                       <span className="text-2xl font-black text-[#0020C2]">$1.00</span>
+                    </div>
+                 </div>
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+
+              {/* Security & Quality Trust */}
+              <div className="grid grid-cols-3 gap-6 opacity-30 px-10">
+                 <div className="flex flex-col items-center gap-2">
+                    <Shield size={20} />
+                    <span className="text-[8px] font-black uppercase tracking-[0.3em]">Encrypted</span>
+                 </div>
+                 <div className="flex flex-col items-center gap-2">
+                    <Globe size={20} />
+                    <span className="text-[8px] font-black uppercase tracking-[0.3em]">Global</span>
+                 </div>
+                 <div className="flex flex-col items-center gap-2">
+                    <Cpu size={20} />
+                    <span className="text-[8px] font-black uppercase tracking-[0.3em]">Neural</span>
+                 </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
       </main>
 
-      {/* Decorative Brand Text */}
-      <div className="fixed bottom-10 left-10 pointer-events-none opacity-5">
-        <h2 className="text-[12rem] font-serif italic leading-none select-none tracking-tighter">DIARCHE</h2>
+      {/* Watermark Section */}
+      <div className="fixed bottom-10 right-10 pointer-events-none opacity-[0.03]">
+        <h2 className="text-[10rem] font-black leading-none select-none tracking-tighter uppercase font-satoshi">DIARCHE</h2>
       </div>
     </div>
   );
 };
-
-const LoaderIcon = ({ className }: { className?: string }) => (
-  <svg className={`w-5 h-5 ${className}`} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" className="opacity-20" />
-    <path d="M12 2C6.47715 2 2 6.47715 2 12C2 13.5997 2.37562 15.1116 3.0434 16.4527" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
-  </svg>
-);
 
 export default PricingPage;

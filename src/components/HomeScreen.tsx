@@ -4,7 +4,7 @@ import {
   Search, History, Settings, User, ArrowUp, ArrowDown, Monitor, Database, Smartphone,
   LayoutGrid, ChevronDown, ChevronLeft, Clock, Plus, Zap, FileText,
   Image as ImageIcon, BrainCircuit, Sparkles, Paperclip, Shuffle, MessageSquare, Mail,
-  Share2, Globe, Link, Copy, Info
+  Share2, Globe, Link, Copy, Info, CheckCircle2, Crown, Star
 } from "lucide-react";
 
 import KreoLogo from "./KreoLogo";
@@ -16,6 +16,7 @@ import { supabase } from "@/lib/supabase";
 import { createWorker } from "tesseract.js";
 import Dither from "./Dither";
 import { useToast } from "@/hooks/use-toast";
+import { AnimatePresence, motion } from "framer-motion";
 
 interface HomeScreenProps {
   onCloudBurst: () => void;
@@ -34,6 +35,7 @@ const PLACEHOLDER_TEXTS = [
   "Build a neumorphic widget…",
   "Generate a stylish login card…",
   "Make a minimal portfolio site…",
+  "Make an About Us page for Dhruv Gautam…",
 ];
 
 const NEURAL_PROMPTS = [
@@ -146,15 +148,12 @@ const EXAMPLES = [
   "Real Estate Listings", "Job Boards", "Community Portals", "Resource Libraries"
 ];
 
-import { AnimatePresence, motion, useMotionValue, useSpring } from "framer-motion";
-
 const PossibilitiesPile: React.FC = () => {
   const [visibleCount, setVisibleCount] = useState(0);
   const positions = useMemo(() => {
     return EXAMPLES.map((_, i) => {
-      // Disperse cards across the entire container area to avoid dense overlaps
-      const xPos = (Math.random() * 80 - 40); // spread across 80% width
-      const yPos = (Math.random() * 65 - 20); // spread across height, slightly lower to clear header
+      const xPos = (Math.random() * 80 - 40); 
+      const yPos = (Math.random() * 65 - 20); 
 
       return {
         x: xPos,
@@ -175,7 +174,6 @@ const PossibilitiesPile: React.FC = () => {
 
   return (
     <div className="relative w-full h-[700px] flex items-center justify-center overflow-hidden bg-white rounded-[4rem] border border-black/5 mt-10">
-      {/* Central Focal Text */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -200,7 +198,7 @@ const PossibilitiesPile: React.FC = () => {
             zIndex: i
           }}
           transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-          className={`absolute px-8 py-4 rounded-[2.5rem] border border-white/10 shadow-lg flex items-center justify-center min-w-[200px] md:min-w-[260px] bg-[#1B3FBF] select-none hover:z-[100] transition-colors duration-500`}
+          className={`absolute px-8 py-4 rounded-[2.5rem] border border-white/10 shadow-lg flex items-center justify-center min-w-[200px] md:min-w-[260px] bg-[#1B3FBF] select-none hover:z-[100] transition-all duration-500 hover:scale-110 active:scale-95`}
         >
           <span className="text-white font-serif italic text-xl md:text-2xl font-medium tracking-tight leading-none text-center">{text}</span>
         </motion.div>
@@ -424,10 +422,9 @@ const HomeScreen = ({
   const [placeholderText, setPlaceholderText] = useState("");
   const [chatHistory, setChatHistory] = useState<{ role: "user" | "assistant", content: string, display?: string }[]>([]);
   const [pricingOpen, setPricingOpen] = useState(false);
-  const [toolsOpen, setToolsOpen] = useState(false);
-  const [activeTool, setActiveTool] = useState<{ id: string, label: string, icon: any, desc: string } | null>(null);
+  const [showUpgradePop, setShowUpgradePop] = useState(false);
   const [manifestCount, setManifestCount] = useState(0);
-  const [hasUsedFreeTool, setHasUsedFreeTool] = useState(false);
+
   const [uploadedFile, setUploadedFile] = useState<{ url: string, name: string, type: string, ocr?: string } | null>(() => {
     const saved = localStorage.getItem('kreo_last_upload');
     return saved ? JSON.parse(saved) : null;
@@ -435,7 +432,6 @@ const HomeScreen = ({
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [currentArtifactId, setCurrentArtifactId] = useState<string | null>(() => localStorage.getItem('kreo_last_id'));
 
-  // Persistence of local state
   useEffect(() => {
     localStorage.setItem('kreo_last_query', query);
   }, [query]);
@@ -462,24 +458,16 @@ const HomeScreen = ({
   const [charIndex, setCharIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
   const [clarificationRequest, setClarificationRequest] = useState<{ question: string, options: string[] } | null>(null);
-  const [feedbackOpen, setFeedbackOpen] = useState(false);
-  const [feedbackRating, setFeedbackRating] = useState<number | null>(null);
-  const [feedbackText, setFeedbackText] = useState('');
-  const [feedbackSubmitting, setFeedbackSubmitting] = useState(false);
-  const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
 
   const [searchParams] = useSearchParams();
 
   useEffect(() => {
-    // Check both search params ?id=, the prop, and the pathname
     const urlId = propUrlId || searchParams.get("id") || window.location.pathname.split('/').pop();
 
     if (urlId && urlId !== "" && !artifact && !isIncomingPortal) {
       setIsIncomingPortal(true);
       const fetchFromUrl = async () => {
         try {
-          // Priority 1: Check Supabase by share_token or ID
-          // Avoid casting errors by checking if urlId is a valid UUID
           const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
           const isUuid = uuidRegex.test(urlId);
 
@@ -504,7 +492,6 @@ const HomeScreen = ({
             return;
           }
 
-          // Priority 2: Check local history
           const localHistory = JSON.parse(localStorage.getItem('kreo_local_history') || '[]');
           const localMatch = localHistory.find((h: any) => h.share_token === urlId || h.id === urlId);
 
@@ -526,21 +513,17 @@ const HomeScreen = ({
     }
   }, [searchParams, currentArtifactId, setIsArtifactActive]);
 
-  // Update URL whenever currentArtifactId changes
   useEffect(() => {
     if (currentArtifactId && !currentArtifactId.startsWith('opt-')) {
-      // Keep URL clean: just the ID
       const newPath = `/share/${currentArtifactId}`;
       if (window.location.pathname !== newPath) {
         window.history.replaceState(null, '', newPath);
       }
     } else if (!currentArtifactId && window.location.pathname !== '/') {
-      // Reset to root if artifact is cleared
       window.history.replaceState(null, '', '/');
     }
   }, [currentArtifactId]);
 
-  // Supabase Data Load
   useEffect(() => {
     const loadData = async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -556,7 +539,6 @@ const HomeScreen = ({
     loadData();
   }, []);
 
-  // Hydrate local memory if it exists
   useEffect(() => {
     const localHistoryStr = localStorage.getItem('kreo_local_history');
     if (localHistoryStr) {
@@ -565,7 +547,6 @@ const HomeScreen = ({
         if (localHistoryTree.length > 0) {
           setHistoryItems(prev => {
             const merged = [...prev, ...localHistoryTree];
-            // Simple deduplication
             return Array.from(new Map(merged.map(item => [item.id, item])).values());
           });
         }
@@ -575,7 +556,6 @@ const HomeScreen = ({
     }
   }, []);
 
-  // Placeholder Animation
   useEffect(() => {
     const currentText = PLACEHOLDER_TEXTS[placeholderIndex];
     let timeout: ReturnType<typeof setTimeout>;
@@ -623,6 +603,7 @@ const HomeScreen = ({
     setArtifact(null);
     setChatHistory([]);
   };
+
   const handleHistoryItemClick = (item: any) => {
     setArtifact(item.code);
     setCurrentArtifactId(item.id);
@@ -645,9 +626,6 @@ const HomeScreen = ({
     const finalQuery = typeof e === "string" ? e : query;
     if (!finalQuery.trim() || isSubmitting) return;
 
-    // Permission check removed as per user request to remove "access and stuff"
-
-    // Neural Clarification Trigger for Broad/Vague Manifests
     const isPresentationRequest = finalQuery.toLowerCase().includes("ppt") ||
       finalQuery.toLowerCase().includes("presentation") ||
       finalQuery.toLowerCase().includes("slides");
@@ -656,7 +634,6 @@ const HomeScreen = ({
 
     if ((isPresentationRequest || isVagueRequest || isLoanRequest) && !clarificationRequest) {
       if (finalQuery.trim().split(" ").length >= 4) {
-        // AI is likely clear enough if it's more than 3 words, proceed with auto-generation
       } else {
         let question = "Establishing Manifest Parameters / Choose a design trajectory:";
         let options = [
@@ -684,19 +661,11 @@ const HomeScreen = ({
     setClarificationRequest(null);
     onCloudBurst();
 
-    // High-Fidelity Research Detection for UI Feedback
     const isResearchPrompt = /(roi|bank|price|rate|current|latest|vs|compare|stats|statistics|market|stock)/i.test(finalQuery);
     if (isResearchPrompt) {
       setLoadingMessage("Orchestrating live market data & research analysis...");
     } else {
       setLoadingMessage("Manifesting neural architecture...");
-    }
-
-    if (manifestCount >= 3) {
-      setPricingOpen(true);
-      setIsSubmitting(false);
-      setIsSubmittingGlobal(false);
-      return;
     }
 
     try {
@@ -722,13 +691,11 @@ const HomeScreen = ({
         ? [...chatHistory, { role: "assistant" as const, content: `Current Code Base:\n\`\`\`tsx\n${artifact}\n\`\`\`` }]
         : [];
 
-      // Background Prompt Enhancement Protocol
       const adj = ENHANCEMENT_ADJECTIVES[Math.floor(Math.random() * ENHANCEMENT_ADJECTIVES.length)];
       const phrase = ENHANCEMENT_PHRASES[Math.floor(Math.random() * ENHANCEMENT_PHRASES.length)];
 
       let backgroundEnhancedQuery = `Manifest a ${adj} ${finalQuery.trim()} ${phrase}.`;
 
-      // PPT ENFORCEMENT PROTOCOL: Direct manifest to use <section> based slideshow architecture
       if (isPresentationRequest) {
         backgroundEnhancedQuery += `
           CRITICAL ARCHITECTURE: This is a MULTI-SLIDE PPT. 
@@ -752,7 +719,6 @@ const HomeScreen = ({
             : "Manifest architecture updated according to your refinements."
         }]);
 
-        // PERSISTENCE PROTOCOL: Save to Supabase History
         const { data: { user } } = await supabase.auth.getUser();
         const shareToken = Math.random().toString(36).substring(2, 12);
 
@@ -762,7 +728,7 @@ const HomeScreen = ({
             prompt: finalQuery,
             code: code,
             user_id: user ? user.id : null,
-            is_public: true, // Automatically public for instant sharing
+            is_public: true,
             share_token: shareToken
           })
           .select()
@@ -771,40 +737,11 @@ const HomeScreen = ({
         if (!insertError && newArtifact) {
           setHistoryItems(prev => [newArtifact, ...prev.filter(i => i.id !== optimisticId)]);
           setCurrentArtifactId(newArtifact.share_token || newArtifact.id);
-
-          // Even if logged in, save a copy to local storage for instant refresh persistence
-          const localCopy = {
-            id: newArtifact.id,
-            prompt: finalQuery,
-            code: code,
-            created_at: new Date().toISOString(),
-            share_token: newArtifact.share_token
-          };
-          const existingLocal = JSON.parse(localStorage.getItem('kreo_local_history') || '[]');
-          localStorage.setItem('kreo_local_history', JSON.stringify([localCopy, ...existingLocal.filter((i: any) => i.id !== newArtifact.id)].slice(0, 20)));
-        } else if (insertError) {
-          console.warn("Neural Sync Interrupted. Failing over to Local Memory.", insertError);
-          // Local Memory Fallback
-          const localToken = Math.random().toString(36).substr(2, 10);
-          const localId = 'local-' + localToken;
-          const localArtifact = {
-            id: localId,
-            prompt: finalQuery,
-            code: code,
-            created_at: new Date().toISOString(),
-            share_token: localToken
-          };
-          setHistoryItems(prev => [localArtifact, ...prev.filter(i => i.id !== optimisticId)]);
-          setCurrentArtifactId(localToken);
-
-          // Persist to local storage
-          const existingLocal = JSON.parse(localStorage.getItem('kreo_local_history') || '[]');
-          localStorage.setItem('kreo_local_history', JSON.stringify([localArtifact, ...existingLocal]));
-
-          toast({
-            title: "Local Memory Active",
-            description: "Cloud sync failed. Manifest saved to secure local history.",
-          });
+          
+          // Show upgrade popup after first manifestation
+          if (manifestCount === 1) {
+            setTimeout(() => setShowUpgradePop(true), 2000);
+          }
         }
       }
     } catch (err) {
@@ -818,7 +755,6 @@ const HomeScreen = ({
 
   return (
     <div className="relative flex flex-col min-h-screen bg-transparent">
-      {/* High-Fidelity Dither Manifest — Neural Wave Exploration */}
       {(theme === 'light' || theme === 'dark') && (
         <Dither
           waveColor={theme === 'light' ? [0.9, 0.9, 0.9] : [0.5, 0.5, 0.5]}
@@ -857,69 +793,19 @@ const HomeScreen = ({
                 >
                   <Info size={20} />
                 </button>
-
               </TooltipTrigger>
               <TooltipContent>About Us</TooltipContent>
             </Tooltip>
 
+            <button
+              onClick={() => navigate('/pricing')}
+              className={`flex items-center gap-2 px-6 py-2 rounded-full border transition-all ml-2 text-[10px] font-black uppercase tracking-widest ${
+                theme === 'light' ? 'bg-[#0020C2] text-white border-[#0020C2]' : 'bg-yellow-400 text-black border-yellow-400 shadow-[0_0_20px_rgba(250,204,21,0.3)]'
+              } hover:scale-105 active:scale-95`}
+            >
+              <Crown size={12} /> Pricing
+            </button>
 
-            <div className="relative">
-              <button
-                onClick={() => setToolsOpen(!toolsOpen)}
-                className={`flex items-center gap-2 px-4 py-1.5 rounded-full border transition-all ml-2 text-[10px] font-black uppercase tracking-widest ${toolsOpen
-                  ? 'bg-primary border-primary text-white'
-                  : (theme === 'light' ? 'bg-black/5 border-black/10 text-black/60 hover:text-black' : 'bg-white/5 border-white/10 text-white/60 hover:text-white')
-                  }`}
-              >
-                <Zap size={14} /> Tools
-              </button>
-
-              {toolsOpen && (
-                <div className="absolute top-full right-0 mt-4 w-64 bg-black/60 backdrop-blur-3xl border border-white/10 rounded-[2rem] p-6 shadow-2xl animate-in fade-in slide-in-from-top-4 duration-300 z-[100]">
-                  <div className="space-y-4">
-                    <span className="text-[9px] font-black tracking-[0.4em] uppercase text-white/20">Neural Tool Suite</span>
-                    <div className="space-y-2">
-                      {[
-                        { id: "study", label: "Study Manifestor", icon: FileText, desc: "PDF to Instant Study Guide (1 Free Project)" },
-                        { id: "flash", label: "Flash Architecture", icon: BrainCircuit, desc: "Image to Editable Flashcards" },
-                        { id: "pdf", label: "Neural PDF", icon: Sparkles, desc: "Contextual Document Logic" }
-                      ].map((tool, i) => (
-                        <button
-                          key={i}
-                          onClick={() => {
-                            if (tool.id === "study" && hasUsedFreeTool) {
-                              setPricingOpen(true);
-                              setToolsOpen(false);
-                            } else {
-                              setActiveTool(tool);
-                              setToolsOpen(false);
-                              if (tool.id === "study") setHasUsedFreeTool(true);
-                            }
-                          }}
-                          className="w-full p-4 rounded-2xl hover:bg-white/5 text-left transition-all group"
-                        >
-                          <div className="flex items-center gap-3">
-                            <tool.icon size={16} className="text-primary group-hover:scale-110 transition-transform" />
-                            <div className="space-y-0.5">
-                              <div className="text-[11px] font-bold text-white tracking-widest uppercase">{tool.label}</div>
-                              <div className="text-[9px] font-medium text-white/30 italic font-serif">{tool.desc}</div>
-                            </div>
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button onClick={() => setFeedbackOpen(true)} className="rounded-full p-2 text-foreground/80 hover:text-foreground transition-all">
-                  <MessageSquare size={20} />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>Feedback & Contact</TooltipContent>
-            </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
                 <button onClick={() => setSettingsOpen(true)} className="rounded-full p-2 text-foreground/80 hover:text-foreground transition-all">
@@ -941,27 +827,14 @@ const HomeScreen = ({
       )}
 
       {historyOpen && (
-        <div className="fixed right-0 top-20 z-50 h-[calc(100vh-100px)] w-80 glass-panel border-l border-white/10 animate-in slide-in-from-right duration-300">
+        <div className="fixed right-0 top-20 z-50 h-[calc(100vh-100px)] w-80 glass-panel border-l border-white/10 animate-in slide-in-from-right duration-300 shadow-2xl overflow-y-auto custom-scrollbar">
           <div className="p-6">
-            <h3 className="text-xs font-bold uppercase tracking-widest text-white/40 mb-6">History</h3>
-            <div className="space-y-3">
+            <h3 className="text-xs font-bold uppercase tracking-widest text-white/40 mb-6">Manifest History</h3>
+            <div className="space-y-4">
               {historyItems.map((item, i) => (
                 <div key={i} className="group relative">
-                  <button onClick={() => handleHistoryItemClick(item)} className="w-full text-left p-4 pr-12 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 transition-all text-sm truncate">
+                  <button onClick={() => handleHistoryItemClick(item)} className="w-full text-left p-4 pr-12 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all text-sm truncate font-light">
                     {item.prompt}
-                  </button>
-                  <button
-                    onClick={async (e) => {
-                      e.stopPropagation();
-                      const { error } = await supabase.from("artifacts").delete().eq("id", item.id);
-                      if (!error) {
-                        setHistoryItems(prev => prev.filter(h => h.id !== item.id));
-                        toast({ title: "Manifest Purged", description: "Memory entry deleted from neural cloud." });
-                      }
-                    }}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 p-2 text-white/20 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all"
-                  >
-                    ×
                   </button>
                 </div>
               ))}
@@ -974,16 +847,16 @@ const HomeScreen = ({
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-md" onClick={() => setSettingsOpen(false)} />
           <div className={`relative w-full max-w-sm p-8 rounded-[2.5rem] border animate-in zoom-in-95 duration-200 ${theme === 'light' ? 'bg-white border-black/5 shadow-2xl' : 'glass-panel border-white/10 shadow-2xl'}`}>
-            <h2 className="text-2xl font-medium mb-8">Settings</h2>
+            <h2 className="text-2xl font-serif italic mb-8">Atmosphere Control</h2>
             <div className="space-y-6">
               <div className="flex bg-foreground/5 p-1 rounded-2xl">
                 {(["light", "dark", "ultra"] as const).map((m) => (
-                  <button key={m} onClick={() => setTheme(m)} className={`flex-1 py-2.5 rounded-xl text-sm font-medium transition-all ${theme === m ? "bg-foreground text-background shadow-lg" : "text-foreground/40"}`}>{m}</button>
+                  <button key={m} onClick={() => setTheme(m)} className={`flex-1 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${theme === m ? "bg-[#0020C2] text-white shadow-lg" : "text-foreground/40"}`}>{m}</button>
                 ))}
               </div>
-              <div className="flex items-center justify-between p-4 rounded-2xl bg-primary/5 border border-primary/10">
-                <div className="text-sm font-medium">Split View</div>
-                <button onClick={() => setIsSplitView(!isSplitView)} className={`w-12 h-6 rounded-full transition-all relative ${isSplitView ? 'bg-primary' : 'bg-foreground/10'}`}>
+              <div className="flex items-center justify-between p-4 rounded-2xl bg-[#0020C2]/5 border border-[#0020C2]/10">
+                <div className="text-sm font-medium">Split Architecture</div>
+                <button onClick={() => setIsSplitView(!isSplitView)} className={`w-12 h-6 rounded-full transition-all relative ${isSplitView ? 'bg-[#0020C2]' : 'bg-foreground/10'}`}>
                   <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${isSplitView ? 'left-7' : 'left-1'}`} />
                 </button>
               </div>
@@ -997,15 +870,15 @@ const HomeScreen = ({
           <div className="absolute inset-0 bg-black/60 backdrop-blur-md" onClick={() => setProfileOpen(false)} />
           <div className={`relative w-full max-w-sm p-8 rounded-[2.5rem] border animate-in zoom-in-95 duration-200 ${theme === 'light' ? 'bg-white border-black/5' : 'glass-panel border-white/10'}`}>
             <div className="flex flex-col items-center gap-4 mb-8">
-              <div className="w-20 h-20 rounded-full bg-primary flex items-center justify-center text-white text-3xl font-bold">
+              <div className="w-20 h-20 rounded-full bg-[#0020C2] flex items-center justify-center text-white text-3xl font-bold">
                 {userEmail.charAt(0).toUpperCase()}
               </div>
               <div className="text-center">
-                <div className="font-medium">{userEmail.split('@')[0]}</div>
-                <div className="text-xs opacity-40">{userEmail}</div>
+                <div className="font-serif italic text-xl">{userEmail.split('@')[0]}</div>
+                <div className="text-[10px] font-black uppercase tracking-widest opacity-40">{userEmail}</div>
               </div>
             </div>
-            <button onClick={handleLogout} className="w-full py-4 bg-red-500/10 text-red-500 font-medium rounded-2xl hover:bg-red-500/20 transition-all">Sign Out</button>
+            <button onClick={handleLogout} className="w-full py-4 bg-red-500/10 text-red-500 text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-red-500/20 transition-all">Sign Out Portal</button>
           </div>
         </div>
       )}
@@ -1013,30 +886,15 @@ const HomeScreen = ({
       <main className={`flex flex-col relative z-20 overflow-x-hidden ${artifact && isSplitView ? "h-screen overflow-hidden" : ""}`}>
         {(isSubmitting && !artifact) || isIncomingPortal ? (
           <div className="fixed inset-0 z-[1000] flex flex-col items-center justify-center bg-white overflow-hidden">
-            {/* Subtle warm gradient wash */}
             <div className="absolute inset-0 bg-gradient-to-br from-[#f0f4ff] via-white to-[#fff8f0] pointer-events-none" />
-
             <div className="relative z-10 flex flex-col items-center gap-14">
-              {/* High-Fidelity Pulse Manifest */}
               <div className="relative w-48 h-48 flex items-center justify-center">
                 <div className="absolute inset-0 rounded-full bg-[#1B3FBF]/5 animate-ping" style={{ animationDuration: '3s' }} />
-                <div className="absolute inset-4 rounded-full bg-[#1B3FBF]/8 animate-ping" style={{ animationDuration: '3s', animationDelay: '0.6s' }} />
                 <div className="absolute inset-8 rounded-full bg-[#1B3FBF]/10 animate-pulse transition-all duration-1000 scale-110" />
-
                 <div className="relative w-24 h-24 rounded-full bg-[#1B3FBF] flex items-center justify-center shadow-[0_0_80px_rgba(27,63,191,0.4)] animate-in zoom-in-50 duration-700">
                   <div className="w-4 h-4 rounded-full bg-white shadow-inner animate-[pulse_1.5s_ease-in-out_infinite]" />
-
-                  {/* Orbiting Particles Manifest */}
-                  <div className="absolute inset-0 animate-[spin_4s_linear_infinite]">
-                    <div className="w-2 h-2 rounded-full bg-white/40 absolute -top-1 left-1/2 -translate-x-1/2" />
-                  </div>
-                  <div className="absolute inset-0 animate-[spin_6s_linear_infinite_reverse]">
-                    <div className="w-1.5 h-1.5 rounded-full bg-white/20 absolute -bottom-1 left-1/2 -translate-x-1/2" />
-                  </div>
                 </div>
               </div>
-
-              {/* Wordmark Manifestation */}
               <div className="text-center">
                 <h1 className="text-6xl italic tracking-tighter text-[#1B3FBF] mb-4 animate-in slide-in-from-bottom-2 duration-700" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>Kreo</h1>
                 <p className="text-[12px] font-black uppercase tracking-[0.7em] text-black/40 animate-pulse">
@@ -1044,23 +902,9 @@ const HomeScreen = ({
                 </p>
               </div>
             </div>
-
-            {/* Full-width progress bar at bottom */}
-            <div className="fixed bottom-0 left-0 w-full h-[3px] bg-black/5">
-              <div className="h-full bg-[#1B3FBF] animate-[loading_2s_ease-in-out_infinite]" />
-            </div>
-
-            <style>{`
-              @keyframes loading {
-                0% { width: 0%; transform: translateX(0); }
-                50% { width: 60%; transform: translateX(60vw); }
-                100% { width: 0%; transform: translateX(100vw); }
-              }
-            `}</style>
           </div>
         ) : artifact ? (
           <div className={`flex w-full h-screen animate-in fade-in slide-in-from-bottom-4 duration-700 ${isSplitView ? "flex-row overflow-hidden" : "flex-col items-center p-8 overflow-auto"}`}>
-            {/* Chat Sidebar */}
             <div className={`${isSplitView ? "w-[420px] shrink-0" : "w-full max-w-4xl mb-6"} flex flex-col ${isSplitView ? "h-full" : "min-h-[50vh]"} overflow-hidden bg-[#f5f7ff] border-r border-black/[0.06]`}>
               <div className="shrink-0 flex justify-between items-center px-6 py-4 border-b border-black/[0.06] bg-white/90 backdrop-blur-xl">
                 <button
@@ -1069,21 +913,18 @@ const HomeScreen = ({
                 >
                   <ChevronLeft size={13} className="group-hover:-translate-x-1 transition-transform" /> Back
                 </button>
-                <div className="flex items-center gap-3">
-                  <button
-                    onClick={() => setShareDialogOpen(true)}
-                    className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#1B3FBF]/20 bg-[#1B3FBF]/5 text-[#1B3FBF] text-[9px] font-black uppercase tracking-widest hover:bg-[#1B3FBF]/10 transition-all shadow-sm"
-                  >
-                    <Share2 size={12} />Share Artifact
-                  </button>
-                </div>
+                <button
+                  onClick={() => setShareDialogOpen(true)}
+                  className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#1B3FBF]/20 bg-[#1B3FBF]/5 text-[#1B3FBF] text-[9px] font-black uppercase tracking-widest hover:bg-[#1B3FBF]/10 transition-all shadow-sm"
+                >
+                  <Share2 size={12} /> Share
+                </button>
               </div>
-
               <div className="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-5">
                 {chatHistory.map((msg, i) => (
                   <div key={i} className={`flex w-full ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                     <div className={`max-w-[88%] rounded-2xl p-4 text-[13px] font-light leading-relaxed tracking-wide ${msg.role === 'user'
-                      ? 'bg-[#1B3FBF] text-white rounded-tr-sm shadow-sm shadow-[#1B3FBF]/20'
+                      ? 'bg-[#1B3FBF] text-white rounded-tr-sm shadow-sm opacity-90'
                       : 'bg-white border border-black/[0.07] text-black/60 rounded-tl-sm shadow-sm'
                       }`}>
                       {msg.display || msg.content}
@@ -1091,336 +932,77 @@ const HomeScreen = ({
                   </div>
                 ))}
               </div>
-
               <div className="p-4 border-t border-black/[0.06] bg-white">
                 <form onSubmit={handleSubmit} className="relative">
                   <input
                     type="text"
                     className="w-full rounded-2xl px-6 py-4 pr-14 text-sm outline-none border border-black/[0.08] bg-[#f0f3ff] text-black placeholder:text-black/30 focus:border-[#1B3FBF]/60 focus:bg-white transition-all font-light disabled:opacity-40"
-                    placeholder={isSubmitting ? "Orchestrating..." : "Refine the manifest..."}
+                    placeholder="Refine the manifest..."
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     disabled={isSubmitting}
                   />
                   <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                    {isSubmitting ? (
-                      <div className="p-2 bg-[#1B3FBF]/10 rounded-xl">
-                        <div className="w-4 h-4 border-2 border-[#1B3FBF]/20 border-t-[#1B3FBF] rounded-full animate-spin" />
-                      </div>
-                    ) : (
-                      <button type="submit" className="p-2.5 bg-[#1B3FBF] text-white rounded-xl shadow-lg shadow-[#1B3FBF]/30 hover:bg-[#2548d4] transition-all">
-                        <ArrowUp size={14} strokeWidth={3} />
-                      </button>
-                    )}
+                    <button type="submit" className="p-2.5 bg-[#1B3FBF] text-white rounded-xl shadow-lg hover:scale-110 active:scale-95 transition-all">
+                      <ArrowUp size={14} strokeWidth={3} />
+                    </button>
                   </div>
                 </form>
               </div>
             </div>
             <div className="flex-1 h-full overflow-hidden">
-              <ArtifactPanel
-                code={artifact}
-                prompt={query}
-                isSplitView={isSplitView}
-                onShare={() => setShareDialogOpen(true)}
-              />
+              <ArtifactPanel code={artifact} prompt={query} isSplitView={isSplitView} onShare={() => setShareDialogOpen(true)} />
             </div>
-
-            {/* HIGH-FIDELITY SHARE DIALOG */}
-            {shareDialogOpen && (
-              <div className="fixed inset-0 z-[2000] flex items-center justify-center p-6 bg-black/60 backdrop-blur-xl animate-in fade-in duration-500">
-                <div className="bg-white w-full max-w-lg rounded-[3rem] border border-black/5 shadow-2xl p-10 space-y-10 animate-in zoom-in-95 duration-300">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className="p-3 bg-[#1B3FBF]/10 rounded-2xl">
-                        <Share2 size={24} className="text-[#1B3FBF]" />
-                      </div>
-                      <div>
-                        <h3 className="text-xl font-bold tracking-tight">Share Manifestation</h3>
-                        <p className="text-[10px] font-black uppercase tracking-widest text-black/30">Google Docs Style Orchestration</p>
-                      </div>
-                    </div>
-                    <button onClick={() => setShareDialogOpen(false)} className="text-[9px] font-black uppercase tracking-widest text-black/20 hover:text-black">Dismiss</button>
-                  </div>
-
-                  <div className="space-y-6">
-                    <div className="p-6 bg-black/[0.03] border border-black/[0.05] rounded-[2rem] space-y-4">
-                      <div className="flex items-center gap-3">
-                        <Globe size={14} className="text-[#1B3FBF]" />
-                        <span className="text-[11px] font-bold">Bridge Visibility</span>
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <div className="text-[9px] font-black uppercase tracking-[0.3em] text-black/30 pl-2">Share Link</div>
-                      <div className="flex items-center gap-2 p-2 bg-black/[0.02] border border-black/5 rounded-2xl">
-                        <input
-                          readOnly
-                          value={currentArtifactId ? `${window.location.origin}/share/${currentArtifactId}` : 'unbound'}
-                          className="flex-1 bg-transparent px-4 py-2 text-xs font-medium text-black/60 outline-none"
-                        />
-                        <button
-                          onClick={async () => {
-                            if (!currentArtifactId) return;
-                            const fullLink = `${window.location.origin}/share/${currentArtifactId}`;
-                            await navigator.clipboard.writeText(fullLink);
-                            toast({ title: "Portal Link Manifested", description: "Successfully copied to clipboard." });
-                          }}
-                          className="px-6 py-3 bg-black text-white rounded-xl text-[9px] font-black uppercase tracking-widest hover:scale-[1.05] active:scale-95 transition-all"
-                        >
-                          Copy
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="pt-4 border-t border-black/5 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                      <span className="text-[9px] font-black uppercase tracking-widest text-black/40">Cloud Sync Active</span>
-                    </div>
-                    <button
-                      onClick={() => setShareDialogOpen(false)}
-                      className="text-[10px] font-bold text-[#1B3FBF] hover:underline"
-                    >
-                      Manage Collaborators
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
         ) : (
           <div className="flex flex-col items-center w-full">
-            {/* Landing Hero */}
             <section className="min-h-screen flex flex-col items-center justify-center gap-16 px-4 pb-32">
               <div className="text-center space-y-8 pt-12 md:pt-16">
-                <h1
-                  className="text-7xl md:text-8xl font-light tracking-tighter leading-tight animate-in fade-in slide-in-from-top-12 duration-1000"
-                  style={{
-                    textShadow: theme === 'light'
-                      ? '2px 2px 0 #fff, -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff, 0 2px 0 #fff, 0 -2px 0 #fff, 2px 0 0 #fff, -2px 0 0 #fff'
-                      : theme === 'dark'
-                        ? '2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 0 2px 0 #000, 0 -2px 0 #000, 2px 0 0 #000, -2px 0 0 #000'
-                        : 'none'
-                  }}
-                >
+                <h1 className="text-7xl md:text-8xl font-light tracking-tighter leading-tight animate-in fade-in slide-in-from-top-12 duration-1000">
                   Build your <br />
-                  <span className="text-yellow-accent italic font-serif px-2" style={{ textShadow: theme === 'ultra' ? '0 0 80px rgba(255,215,0,0.2)' : 'none' }}>imagination</span>
+                  <span className="text-yellow-accent italic font-serif px-2">imagination</span>
                 </h1>
-                <p className={`text-[12px] font-black uppercase tracking-[0.8em] mt-8 mb-8 animate-in fade-in slide-in-from-bottom-2 duration-1000 delay-300 ${theme === 'light' ? 'text-[#1B3FBF]' : 'text-white/90'}`}>
-
-                </p>
               </div>
-
-              <div className="w-full max-w-4xl animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
-                <div className="flex flex-col gap-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                  {/* Neural Source Preview Manifest */}
-                  {uploadedFile && (
-                    <div className={`flex items-center gap-4 p-4 backdrop-blur-3xl border rounded-3xl w-max animate-in zoom-in-95 duration-500 relative group ${theme === 'light' ? 'bg-black/5 border-black/10' : 'bg-white/10 border-white/20'}`}>
-                      <button
-                        onClick={() => setUploadedFile(null)}
-                        className="absolute -top-2 -right-2 w-6 h-6 bg-black text-white rounded-full flex items-center justify-center text-[10px] opacity-0 group-hover:opacity-100 transition-opacity border border-white/20 shadow-xl z-20"
-                      >
-                        ×
+              <div className="w-full max-w-4xl">
+                <form onSubmit={handleSubmit}>
+                  <div className={`flex items-center rounded-[1.8rem] px-6 py-4 shadow-2xl transition-all border ring-1 gap-3 ${theme === 'light' ? 'bg-white border-black/10 ring-black/5 text-black' : 'glass-panel border-white/20 ring-white/10 backdrop-blur-3xl text-white'}`}>
+                    <div className={`flex items-center gap-2 pr-2 border-r leading-none ${theme === 'light' ? 'border-black/10' : 'border-white/10'}`}>
+                      <button type="button" onClick={() => fileInputRef.current?.click()} className="p-2 text-foreground/40 hover:text-foreground">
+                        <Paperclip size={20} />
                       </button>
-                      {uploadedFile.url ? (
-                        <img src={uploadedFile.url} className={`w-12 h-12 rounded-xl object-cover border shadow-lg ${theme === 'light' ? 'border-black/10' : 'border-white/10'}`} alt="Source" />
-                      ) : (
-                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center border ${theme === 'light' ? 'bg-primary/10 border-primary/20' : 'bg-primary/20 border-primary/30'}`}>
-                          <FileText size={20} className="text-primary" />
-                        </div>
-                      )}
-                      <div className="pr-4">
-                        <div className={`text-[10px] font-black uppercase tracking-widest mb-0.5 ${theme === 'light' ? 'text-black/40' : 'text-white/40'}`}>Source Manifest</div>
-                        <div className={`text-[11px] font-bold tracking-wide truncate max-w-[120px] ${theme === 'light' ? 'text-black' : 'text-white'}`}>{uploadedFile.name}</div>
-                      </div>
                     </div>
-                  )}
-
-                  <form onSubmit={handleSubmit}>
-                    <div className={`flex items-center rounded-[1.8rem] px-6 py-4 shadow-2xl transition-all border ring-1 gap-3 ${theme === 'light' ? 'bg-white border-black/10 ring-black/5 text-black' : 'glass-panel border-white/20 ring-white/10 backdrop-blur-3xl text-white'}`}>
-                      <div className={`flex items-center gap-2 pr-2 border-r leading-none ${theme === 'light' ? 'border-black/10' : 'border-white/10'}`}>
-                        <input
-                          type="file"
-                          ref={fileInputRef}
-                          className="hidden"
-                          accept="image/*,.pdf,.txt"
-                          onChange={async (e) => {
-                            const file = e.target.files?.[0];
-                            if (file) {
-                              console.log("Neural Manifesting Source:", file.name);
-
-                              const previewUrl = file.type.startsWith('image/') ? URL.createObjectURL(file) : '';
-                              setUploadedFile({ url: previewUrl, name: file.name, type: file.type });
-
-                              // BACKGROUND OCR - NO UI BLOCK
-                              (async () => {
-                                try {
-                                  let extractedContent = "";
-
-                                  if (file.type.startsWith('image/')) {
-                                    const worker = await createWorker('eng');
-                                    const ret = await worker.recognize(file);
-                                    extractedContent = ret.data.text;
-                                    await worker.terminate();
-                                  } else {
-                                    extractedContent = await file.text();
-                                  }
-
-                                  setUploadedFile(prev => prev ? { ...prev, ocr: extractedContent } : null);
-
-                                  const { data: { user } } = await supabase.auth.getUser();
-                                  if (user) {
-                                    await supabase.from('manifest_documents').insert({
-                                      user_id: user.id,
-                                      source_name: file.name,
-                                      source_type: file.type,
-                                      source_size: file.size,
-                                      neural_intent: extractedContent.substring(0, 500),
-                                      vault_path: `manifests/${Date.now()}_${file.name}`,
-                                      metadata: { ocr_full: extractedContent }
-                                    });
-                                  }
-                                } catch (err) {
-                                  console.error("Background Manifest Error:", err);
-                                }
-                              })();
-                            }
-                          }}
-                        />
-                        <button
-                          type="button"
-                          onClick={() => fileInputRef.current?.click()}
-                          className={`p-2 transition-all hover:scale-110 active:scale-90 tooltip-trigger ${theme === 'light' ? 'text-black/40 hover:text-black' : 'text-white/40 hover:text-white'}`}
-                        >
-                          <Paperclip size={20} />
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const randomIdx = Math.floor(Math.random() * NEURAL_PROMPTS.length);
-                            setQuery(NEURAL_PROMPTS[randomIdx]);
-                          }}
-                          className={`p-2 transition-all hover:scale-110 active:scale-90 ${theme === 'light' ? 'text-black/40 hover:text-black' : 'text-white/40 hover:text-white'}`}
-                        >
-                          <Shuffle size={20} />
-                        </button>
-                      </div>
-                      <input
-                        className={`flex-1 bg-transparent text-lg outline-none font-normal tracking-wide font-satoshi ${theme === 'light' ? 'placeholder:text-black/30 text-black' : 'placeholder:text-white/40 text-white'}`}
-                        style={{ fontFamily: "'Satoshi', sans-serif" }}
-                        placeholder={placeholderText}
-                        value={query}
-                        onChange={(e) => setQuery(e.target.value)}
-                      />
-                      <div className="flex items-center gap-2">
-                        <button type="submit" className="p-2.5 bg-primary text-white rounded-2xl shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all">
-                          <ArrowUp size={20} strokeWidth={3} />
-                        </button>
-                      </div>
-                    </div>
-                  </form>
-
-                  <div className="flex flex-wrap justify-center gap-3 mt-10">
-                    {[
-                      { icon: Monitor, label: "Brand Landing" },
-                      { icon: Database, label: "SaaS Platform" },
-                      { icon: Smartphone, label: "Mobile App" },
-                      { icon: LayoutGrid, label: "Visual Art" }
-                    ].map((item, i) => (
-                      <button
-                        key={i}
-                        onClick={() => handleSubmit(item.label)}
-                        className={`flex items-center gap-2 px-6 py-3 rounded-2xl border text-[10px] tracking-widest uppercase transition-all font-bold ${theme === 'light'
-                          ? 'bg-black/5 border-black/10 text-black hover:bg-black/10'
-                          : 'glass-panel border-white/10 text-white hover:bg-white/15 hover:border-white/20'
-                          }`}
-                      >
-                        <item.icon size={13} className={theme === 'light' ? 'text-black/60' : 'text-primary'} />
-                        {item.label}
-                      </button>
-                    ))}
+                    <input
+                      className={`flex-1 bg-transparent text-lg outline-none font-satoshi ${theme === 'light' ? 'placeholder:text-black/30 text-black' : 'placeholder:text-white/40 text-white'}`}
+                      placeholder={placeholderText}
+                      value={query}
+                      onChange={(e) => setQuery(e.target.value)}
+                    />
+                    <button type="submit" className="p-2.5 bg-[#0020C2] text-white rounded-2xl shadow-xl hover:scale-105 transition-all">
+                      <ArrowUp size={20} strokeWidth={3} />
+                    </button>
                   </div>
-
-
-                  {/* Simplified Know More Text Indicator - Elevated */}
-                  <div className="pt-12 md:pt-16 cursor-pointer flex flex-col items-center gap-2 group" onClick={() => {
-                    document.getElementById('manifesto-section')?.scrollIntoView({ behavior: 'smooth' });
-                  }}>
-                    <span className="text-[10px] font-black uppercase tracking-[0.6em] text-white/50 group-hover:text-white transition-colors">Know More</span>
-                    <ArrowDown size={14} className="text-white/40 group-hover:text-white" />
-                  </div>
+                </form>
+                <div className="flex flex-wrap justify-center gap-3 mt-10">
+                  {["Brand Architecture", "SaaS Dashboard", "Interactive App", "Visual Guide"].map((label, i) => (
+                    <button key={i} onClick={() => handleSubmit(label)} className="flex items-center gap-2 px-6 py-3 rounded-2xl border text-[10px] tracking-widest uppercase transition-all font-bold glass-panel hover:bg-white/10">
+                      {label}
+                    </button>
+                  ))}
                 </div>
               </div>
-
             </section>
-
-            {/* New Manifesto Section - Full Screen Coverage */}
             <section id="manifesto-section" className="w-full relative bg-white py-24 flex flex-col items-center z-30">
               <div className="w-full max-w-7xl px-6 space-y-24">
                 <div className="text-center space-y-4">
                   <span className="text-[10px] font-black tracking-[0.6em] uppercase text-[#1B3FBF]">The Situation</span>
                   <h2 className="text-4xl md:text-6xl font-serif italic tracking-tighter text-black leading-tight">We all face situations...</h2>
                 </div>
-
                 <ScenariosGrid />
-
-                <div className="text-center py-10 scale-90 md:scale-100">
-                  <h2 className="text-3xl md:text-5xl font-serif italic tracking-tighter text-black/80 leading-tight">
-                    So many problems but <br />
-                    only one <span className="text-[#1B3FBF] not-italic font-normal">solution.</span>
-                  </h2>
-                </div>
-
                 <TypingKreo />
-
-                <div className="text-center space-y-8 pt-10">
-                  <span className="text-[10px] font-black tracking-[0.6em] uppercase text-[#1B3FBF]">The Outcome</span>
-                  <h2 className="text-4xl md:text-7xl font-serif italic tracking-tighter text-black leading-tight">Manifested from <br /> simple intentions</h2>
-                </div>
-
-                {/* Possibilities Pile Ported from Promo 4 - What you can do */}
-                <div className="space-y-12">
-                  <PossibilitiesPile />
-                </div>
-
-                {/* Interactive Visual Loop Ported from Promo 4 - Chat and Enter */}
-                <div className="space-y-12">
-                  <div className="flex items-center justify-between mb-8">
-                    <div className="space-y-1">
-                      <h3 className="text-3xl font-serif italic text-black">Live Manifestation Sequence</h3>
-                      <p className="text-[11px] font-black uppercase tracking-[0.4em] text-black/20 italic">Acoustic Signal Processing Active</p>
-                    </div>
-                    <div className="h-[1px] w-48 bg-black/5" />
-                  </div>
-                  <div className="relative group overflow-hidden rounded-[4.5rem]">
-                    <div className="absolute -inset-1 bg-gradient-to-r from-[#1B3FBF]/10 to-[#4F75FF]/10 rounded-[4.5rem] blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
-                    <div className="transition-all duration-1000">
-                      <InteractiveVisualLoop theme={theme} />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Synthesis Engine Process Section */}
-                <div className="space-y-12">
-                  <div className="flex items-center justify-between mb-8">
-                    <div className="space-y-1">
-                      <h3 className="text-3xl font-serif italic text-black">The Synthesis Engine</h3>
-                      <p className="text-[11px] font-black uppercase tracking-[0.4em] text-black/20 italic">Process Flow Architecture</p>
-                    </div>
-                    <div className="h-[1px] w-48 bg-black/5" />
-                  </div>
-                  <SynthesisEngine />
-                </div>
-
-                <div className="flex justify-center pt-16 pb-12">
-                  <div className="max-w-4xl text-center space-y-10">
-                    <div className="h-[1px] w-24 mx-auto bg-black/10" />
-                    <p className="text-2xl md:text-4xl font-light font-serif italic leading-snug text-black/70">
-                      KREO doesn't just write code. It <span className="font-normal not-italic text-black">orchestrates experiences</span> by understanding the logical weight of your words and manifesting them into functional, aesthetic reality.
-                    </p>
-                    <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="px-12 py-6 rounded-full border text-[11px] font-black uppercase tracking-[0.4em] shadow-xl transition-all hover:scale-105 active:scale-95 bg-black text-white hover:bg-black/80">Start Manifesting</button>
-                  </div>
+                <PossibilitiesPile />
+                <InteractiveVisualLoop theme={theme} />
+                <div className="flex justify-center pt-16">
+                   <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="px-12 py-6 rounded-full bg-black text-white text-[11px] font-black uppercase tracking-[0.4em] shadow-xl hover:scale-105 transition-all">Start Manifesting</button>
                 </div>
               </div>
             </section>
@@ -1428,295 +1010,60 @@ const HomeScreen = ({
         )}
       </main>
 
-      {/* Pricing Manifest - High Fidelity Editorial Design */}
-      {pricingOpen && (
-        <div className="fixed inset-0 z-[500] flex items-center justify-center bg-white/40 backdrop-blur-3xl animate-in fade-in duration-500 p-6">
-          <div className="bg-white w-full max-w-4xl border border-black/[0.03] rounded-[3.5rem] relative shadow-[0_40px_100px_-20px_rgba(0,0,0,0.1)] overflow-hidden flex flex-col max-h-[90vh] custom-scrollbar">
-
-            {/* Background Atmosphere */}
-            <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] bg-[#1B3FBF]/5 blur-[120px] rounded-full pointer-events-none" />
-            <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-yellow-400/5 blur-[120px] rounded-full pointer-events-none" />
-
-            <div className="relative z-10 flex flex-col h-full p-10 md:p-14 overflow-y-auto custom-scrollbar">
-              {/* Header Manifest */}
-              <div className="flex flex-col md:flex-row justify-between items-end gap-6 mb-16 border-b border-black/[0.05] pb-10">
-                <div className="space-y-4 max-w-md">
-                  <span className="text-[10px] font-black tracking-[0.6em] uppercase text-[#1B3FBF]">Tier Strategy</span>
-                  <h2 className="text-7xl font-serif italic text-black tracking-tighter leading-[0.9]">Elevate your <br />vision</h2>
+      {/* Manifest Success Upgrade Popup */}
+      <AnimatePresence>
+        {showUpgradePop && (
+          <div className="fixed inset-0 z-[1000] flex items-center justify-center p-6 bg-black/40 backdrop-blur-xl">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="bg-white w-full max-w-md rounded-[3rem] p-12 text-center space-y-10 shadow-2xl relative overflow-hidden"
+            >
+              <div className="absolute top-0 right-0 w-32 h-32 bg-yellow-400/10 blur-[50px] rounded-full" />
+              <div className="relative z-10 space-y-6">
+                <div className="w-20 h-20 bg-yellow-400 rounded-3xl mx-auto flex items-center justify-center text-black shadow-lg shadow-yellow-400/20 rotate-12">
+                   <Crown size={40} />
                 </div>
-                <button
-                  onClick={() => setPricingOpen(false)}
-                  className="px-8 py-3 rounded-full border border-black/10 text-[10px] font-black uppercase tracking-[0.4em] bg-black"
-                >
-                  Dismiss
-                </button>
-              </div>
-
-              {/* Tiers Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-4">
-                {/* Free Tier - The Foundation */}
-                <div className="group relative p-12 bg-[#f9faff] border border-black/[0.03] rounded-[3rem] transition-all duration-700 hover:bg-white hover:shadow-2xl hover:shadow-black/5 flex flex-col justify-between h-full">
-                  <div className="space-y-10">
-                    <div className="flex justify-between items-start">
-                      <div className="space-y-2">
-                        <h3 className="text-3xl font-serif italic text-black">Foundation</h3>
-                        <p className="text-[10px] font-black uppercase tracking-widest text-black/30">Free Architecture</p>
-                      </div>
-                      <div className="text-4xl font-serif italic text-black">$0</div>
-                    </div>
-                    <div className="space-y-6">
-                      {[
-                        "3 Generations per week",
-                        "Standard Manifest Logic",
-                        "1 Trial Tool Set",
-                        "Public Artifact Access"
-                      ].map((feat, i) => (
-                        <div key={i} className="flex items-center gap-4 text-sm text-black/40 font-light italic font-serif">
-                          <div className="w-1.5 h-1.5 rounded-full bg-black/10" />
-                          {feat}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  <button className="mt-12 w-full py-5 rounded-2xl border border-black/10 text-[10px] font-black uppercase tracking-[0.3em] bg-black">Current Tier</button>
+                <div className="space-y-3">
+                  <h2 className="text-3xl font-serif italic text-black leading-tight">Manifestation Successful</h2>
+                  <p className="text-sm font-light text-black/50 italic font-serif leading-relaxed px-4">
+                    You've established your first manifest. Unlock unlimited high-fidelity orchestration and private vaults with KREO Ultra.
+                  </p>
                 </div>
-
-                {/* Pro Tier - The Orchestrator */}
-                <div className="group relative p-12 bg-white border border-[#1B3FBF]/10 rounded-[3rem] shadow-[0_30px_60px_-15px_rgba(27,63,191,0.1)] transition-all duration-700 hover:scale-[1.02] flex flex-col justify-between overflow-hidden h-full">
-                  <div className="absolute top-0 right-0 py-2 px-8 bg-[#1B3FBF] text-white text-[9px] font-black uppercase tracking-widest rounded-bl-3xl">Most Manifested</div>
-
-                  <div className="space-y-10">
-                    <div className="flex justify-between items-start">
-                      <div className="space-y-2">
-                        <h3 className="text-3xl font-serif italic text-[#1B3FBF]">Ultra</h3>
-                        <p className="text-[10px] font-black uppercase tracking-widest text-[#1B3FBF]/40">Professional Elite</p>
-                      </div>
-                      <div className="text-4xl font-serif italic text-black">$1 <span className="text-xs font-sans not-italic text-black/20 font-bold ml-1">/ mo</span></div>
-                    </div>
-                    <p className="text-xs text-black/60 italic font-serif leading-relaxed">Unlimited high-fidelity orchestration</p>
-                    <div className="space-y-6">
-                      {[
-                        "Unlimited Generations",
-                        "Manifest Document Studio (PDF/OCR)",
-                        "Private Manifest Vault",
-                        "High-Res Asset Export"
-                      ].map((feat, i) => (
-                        <div key={i} className="flex items-center gap-4 text-sm text-black/60 font-medium italic font-serif">
-                          <div className="w-2 h-2 rounded-full bg-[#1B3FBF] shadow-[0_0_10px_rgba(27,63,191,0.4)]" />
-                          {feat}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  <button className="mt-12 w-full py-6 bg-[#1B3FBF] text-white rounded-2xl text-[11px] font-black uppercase tracking-[0.4em] shadow-xl shadow-[#1B3FBF]/30 hover:bg-[#2548d4] transform hover:-translate-y-1 transition-all">Elevate Identity</button>
+                <div className="space-y-4 pt-4">
+                   <button 
+                     onClick={() => navigate('/pricing')}
+                     className="w-full py-5 bg-[#0020C2] text-white text-[10px] font-black uppercase tracking-[0.4em] rounded-full shadow-2xl hover:scale-105 active:scale-95 transition-all"
+                   >
+                     Upgrade to Ultra — $1
+                   </button>
+                   <button 
+                     onClick={() => setShowUpgradePop(false)}
+                     className="text-[10px] font-black uppercase tracking-widest text-black/20 hover:text-black transition-colors"
+                   >
+                     Maybe Later
+                   </button>
                 </div>
               </div>
-
-              <div className="mt-12 text-center">
-                <p className="text-[9px] font-black uppercase tracking-[0.8em] text-black/10 italic">Opal AI Systems Orchestration Layer Active</p>
-              </div>
-            </div>
+            </motion.div>
           </div>
-        </div>
-      )}
+        )}
+      </AnimatePresence>
 
-      {/* Localized Tool Manifest Popup - High Fidelity Scrollable */}
-      {activeTool && (
-        <div className="fixed inset-0 z-[600] flex items-center justify-center bg-white/20 backdrop-blur-3xl animate-in fade-in duration-500 p-6">
-          <div className="bg-white/40 w-full max-w-4xl border border-white/30 rounded-[3rem] p-8 md:p-12 relative shadow-2xl backdrop-blur-3xl overflow-hidden flex flex-col h-auto max-h-[90vh]">
-            <div className="absolute top-0 right-0 w-96 h-96 bg-primary/10 blur-[150px] rounded-full" />
-
-            <div className="relative z-10 flex flex-col h-full overflow-y-auto pr-2 custom-scrollbar">
-              <div className="flex justify-between items-start border-b border-black/5 pb-6 mb-8 shrink-0">
-                <div className="flex items-center gap-4">
-                  <div className="p-4 bg-primary/10 border border-primary/20 rounded-2xl">
-                    <activeTool.icon size={28} className="text-primary" />
-                  </div>
-                  <div className="space-y-0.5">
-                    <span className="text-[9px] font-black tracking-[0.4em] uppercase text-primary">Neural Manifestor</span>
-                    <h2 className="text-4xl font-light italic font-serif text-black tracking-tighter">{activeTool.label}</h2>
-                  </div>
-                </div>
-                <button onClick={() => setActiveTool(null)} className="text-[10px] font-black uppercase text-black/40 hover:text-black tracking-[0.4em]">Dismiss</button>
-              </div>
-
-              <div className="flex-1 flex flex-col items-center justify-center py-6">
-                <div className="max-w-md w-full p-10 bg-white/20 border border-white/40 border-dashed rounded-[2.5rem] text-center space-y-6 group cursor-pointer hover:bg-white/40 transition-all duration-700">
-                  <div className="mx-auto w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-700">
-                    <Zap size={24} className="text-primary animate-pulse" />
-                  </div>
-                  <div className="space-y-4">
-                    <h3 className="text-2xl font-light font-serif italic text-black">Ready for Orchestration</h3>
-                    <p className="text-black/40 text-sm font-light leading-relaxed font-serif italic">
-                      Describe your intent or upload your source manifest (PDF/Image) to begin high-fidelity synthesis.
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => {
-                      const prompts = {
-                        study: "Create a comprehensive, visually-stunning study guide from this material. Extract key logical concepts and format them into a high-fidelity editorial manifest.",
-                        flash: "Manifest a suite of interactive, editable flashcards from this intent. Focus on architectural clarity and rapid retrieval logic.",
-                        pdf: "Perform high-level neural orchestration on this document. Identify logical structures, extract contextual metadata, and manifest a standalone analysis dashboard."
-                      };
-                      setQuery(prompts[activeTool.id as keyof typeof prompts] || "");
-                      setActiveTool(null);
-                      // Auto-focus the input after a short delay
-                      setTimeout(() => {
-                        const inputEl = document.querySelector('textarea');
-                        if (inputEl) (inputEl as HTMLTextAreaElement).focus();
-                      }, 100);
-                    }}
-                    className="px-10 py-5 bg-black text-white text-[10px] font-black uppercase tracking-widest rounded-2xl shadow-xl hover:scale-105 active:scale-95 transition-all"
-                  >
-                    Start Manifestation
-                  </button>
-                </div>
-                <p className="text-[9px] font-black uppercase tracking-[0.6em] text-black/20 italic">Google Opal Reasoning Engine Active</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Contact & Review Modal - High Fidelity White Manifestation */}
-      {feedbackOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-md" onClick={() => { setFeedbackOpen(false); setFeedbackSubmitted(false); setFeedbackRating(null); setFeedbackText(''); }} />
-          <div className={`relative w-full max-w-lg rounded-[3rem] border-white/20 bg-white shadow-2xl animate-in zoom-in-95 duration-500 overflow-y-auto max-h-[90vh] custom-scrollbar`}>
-
-            <div className="p-10 space-y-10 text-center">
-              {/* Header */}
-              <div className="space-y-1">
-                <h2 className="text-4xl font-serif italic text-black tracking-tight leading-none">KREO</h2>
-                <p className="text-[10px] font-black uppercase tracking-[0.6em] text-black/20">YOUR FEEDBACK</p>
-              </div>
-
-              {feedbackSubmitted ? (
-                <div className="py-12 space-y-6 animate-in fade-in zoom-in-95 duration-500">
-                  <h1 className="text-5xl font-serif italic text-[#1B3FBF]">Gracias! ❤️</h1>
-                  <p className="text-sm font-light text-black/40 italic">Your vision helps us evolve the manifestation engine.</p>
-                </div>
-              ) : (
-                <div className="space-y-10">
-                  {/* Face Emoji Manifestation */}
-                  <div className="text-8xl animate-bounce" style={{ animationDuration: '3s' }}>
-                    {['😡', '😕', '😐', '😊', '😍'][(feedbackRating || 3) - 1]}
-                  </div>
-
-                  {/* Clay Slider Design */}
-                  <div className="px-6 space-y-4">
-                    <input
-                      type="range"
-                      min="1"
-                      max="5"
-                      value={feedbackRating || 3}
-                      onChange={e => setFeedbackRating(parseInt(e.target.value))}
-                      className="w-full h-1.5 bg-[#1B3FBF]/10 rounded-full appearance-none cursor-pointer accent-[#1B3FBF]"
-                    />
-                    <div className="flex justify-between text-[10px] font-black uppercase text-black/10 tracking-widest px-1">
-                      <span>Poor</span>
-                      <span>Neutral</span>
-                      <span>Loved it!</span>
-                    </div>
-                  </div>
-
-                  {/* Feedback Input Manifest */}
-                  <div className="text-left space-y-3">
-                    <label className="text-xs font-serif italic text-black/40 ml-4">Suggestions?</label>
-                    <textarea
-                      value={feedbackText}
-                      onChange={e => setFeedbackText(e.target.value)}
-                      placeholder="Tell us what you'd like to visualize next..."
-                      className="w-full rounded-[2rem] px-8 py-6 text-sm outline-none border border-black/5 bg-[#f5f7ff] text-black placeholder:text-black/20 focus:border-[#1B3FBF]/20 transition-all font-light resize-none h-32"
-                    />
-                  </div>
-
-                  <div className="space-y-6">
-                    <button
-                      onClick={async () => {
-                        setFeedbackSubmitting(true);
-                        try {
-                          const { data: { user } } = await supabase.auth.getUser();
-                          await supabase.from('feedback').insert({
-                            rating: feedbackRating || 3,
-                            suggestion: feedbackText.trim() || null,
-                            user_id: user?.id || null
-                          });
-                          setFeedbackSubmitted(true);
-                        } catch (err) {
-                          console.error('Feedback failed:', err);
-                        } finally {
-                          setFeedbackSubmitting(false);
-                        }
-                      }}
-                      className="w-full py-6 bg-[#1B3FBF] text-white font-serif italic text-2xl rounded-2xl shadow-xl shadow-[#1B3FBF]/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
-                    >
-                      {feedbackSubmitting ? 'Sending...' : 'Share Love'}
-                    </button>
-
-                    <div className="flex flex-col items-center gap-2">
-                      <span className="text-[10px] font-black uppercase tracking-[0.4em] text-black/20">Contact Manifest</span>
-                      <a href="mailto:kreoai.teams@gmail.com" className="text-[#1B3FBF] text-sm font-semibold hover:underline">kreoai.teams@gmail.com</a>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* HIGH-FIDELITY SHARE DIALOG */}
       {shareDialogOpen && (
-        <div className="fixed inset-0 z-[2000] flex items-center justify-center p-6 bg-black/60 backdrop-blur-xl animate-in fade-in duration-500">
-          <div className="bg-white w-full max-w-lg rounded-[3rem] border border-black/5 shadow-2xl p-10 space-y-10 animate-in zoom-in-95 duration-300">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-black/5 rounded-2xl">
-                  <Share2 size={24} className="text-black" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold tracking-tight text-black">Share Artifact</h3>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-black/30">Instantly share your manifestation across the neural web.</p>
-                </div>
+        <div className="fixed inset-0 z-[2000] flex items-center justify-center p-6 bg-black/60 backdrop-blur-xl">
+          <div className="bg-white w-full max-w-lg rounded-[3rem] p-10 space-y-10 animate-in zoom-in-95 duration-300">
+            <div className="flex justify-between items-center pb-6 border-b border-black/5">
+              <div className="space-y-1">
+                <h3 className="text-xl font-bold tracking-tight">Share Manifestation</h3>
+                <p className="text-[10px] font-black uppercase tracking-widest text-black/30">Instantly share your vision</p>
               </div>
               <button onClick={() => setShareDialogOpen(false)} className="text-[9px] font-black uppercase tracking-widest text-black/20 hover:text-black">Dismiss</button>
             </div>
-
-            <div className="space-y-6">
-              <div className="p-6 bg-black/[0.03] border border-black/[0.05] rounded-[2rem] space-y-4 text-center">
-                <div className="flex flex-col gap-3 py-4">
-                  <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[#1B3FBF]">Neural Link Generated</span>
-                  <div className="flex items-center gap-3 p-3 bg-white/50 border border-black/5 rounded-2xl">
-                    <p className="flex-1 text-[11px] font-mono text-black/60 truncate px-2 select-all tracking-tight">
-                      {`${window.location.origin.replace(/^https?:\/\//, '')}/share/${currentArtifactId || 'unbound'}`}
-                    </p>
-                    <button
-                      onClick={async () => {
-                        if (!currentArtifactId) return;
-                        await navigator.clipboard.writeText(`${window.location.origin}/share/${currentArtifactId}`);
-                        toast({ title: "Portal Link Copied", description: "Successfully manifested to clipboard." });
-                      }}
-                      className="p-3 bg-[#1B3FBF] text-white rounded-xl hover:scale-110 active:scale-95 transition-all shadow-lg shadow-[#1B3FBF]/20"
-                    >
-                      <Copy size={14} />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="pt-4 border-t border-black/5 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                <span className="text-[9px] font-black uppercase tracking-widest text-black/40">Cloud Sync Active</span>
-              </div>
-              <button
-                onClick={() => setShareDialogOpen(false)}
-                className="text-[10px] font-bold text-[#1B3FBF] hover:underline"
-              >
-                Manage Collaborators
-              </button>
+            <div className="flex items-center gap-3 p-3 bg-black/[0.02] border border-black/5 rounded-2xl">
+              <input readOnly value={`${window.location.origin}/share/${currentArtifactId || 'unbound'}`} className="flex-1 bg-transparent px-2 text-xs font-mono text-black/60 outline-none" />
+              <button onClick={() => { navigator.clipboard.writeText(`${window.location.origin}/share/${currentArtifactId}`); toast({ title: "Link Manifested" }); }} className="p-3 bg-[#0020C2] text-white rounded-xl"><Copy size={14} /></button>
             </div>
           </div>
         </div>

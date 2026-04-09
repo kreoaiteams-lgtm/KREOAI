@@ -36,8 +36,11 @@ const Index = ({ urlId }: IndexProps) => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       const isNowAuthed = !!session;
       if (isNowAuthed && !authed) {
-        // Just logged in or signed up
-        setShowWelcome(true);
+        // Just logged in or signed up - check if already seen
+        const hasSeenWelcome = localStorage.getItem("hasSeenWelcome");
+        if (!hasSeenWelcome) {
+          setShowWelcome(true);
+        }
       }
       if (!isNowAuthed && event === 'SIGNED_OUT') {
         navigate("/login");
@@ -95,7 +98,10 @@ const Index = ({ urlId }: IndexProps) => {
 
       <WelcomeScreen 
         isVisible={showWelcome} 
-        onClose={() => setShowWelcome(false)} 
+        onClose={() => {
+          setShowWelcome(false);
+          localStorage.setItem("hasSeenWelcome", "true");
+        }} 
       />
 
       {/* Main App Logic — visible after splash */}
