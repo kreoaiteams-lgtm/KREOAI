@@ -7,7 +7,7 @@ import {
 
 const AboutUs = () => {
   return (
-    <section id="about" className="relative min-h-[200vh] pt-12 pb-32 px-6 overflow-hidden bg-white text-[#0020C2] flex flex-col items-center">
+    <section id="about" className="relative min-h-[220vh] pt-12 pb-32 px-6 overflow-hidden bg-white text-[#0020C2] flex flex-col items-center">
       {/* Subtle background atmosphere - Editorial White */}
       <div className="absolute top-0 right-0 w-[1000px] h-[1000px] bg-blue-50/40 blur-[220px] rounded-full opacity-40 pointer-events-none" />
       <div className="absolute top-1/2 left-0 w-[800px] h-[800px] bg-yellow-50/40 blur-[180px] rounded-full opacity-40 pointer-events-none" />
@@ -15,6 +15,75 @@ const AboutUs = () => {
       {/* Scattered background elements */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden select-none opacity-20">
          <motion.div animate={{ rotate: 360 }} transition={{ duration: 60, repeat: Infinity, ease: 'linear' }} className="absolute -top-20 -left-20 w-[400px] h-[400px] border border-blue-100 rounded-full" />
+      </div>
+
+      {/* SPREAD UI COMPONENTS AROUND THE SCREEN - AS REQUESTED */}
+      <div className="absolute inset-0 pointer-events-none select-none">
+         {/* Code Snippet Card - Scattered Left */}
+         <motion.div 
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            className="absolute top-[20%] left-[5%] p-6 bg-white border border-blue-50 rounded-3xl shadow-xl shadow-blue-900/5 hidden md:block z-30 pointer-events-auto"
+         >
+            <div className="flex gap-1.5 mb-3">
+               <div className="w-2 h-2 rounded-full bg-red-400/40" />
+               <div className="w-2 h-2 rounded-full bg-yellow-400/40" />
+               <div className="w-2 h-2 rounded-full bg-green-400/40" />
+            </div>
+            <div className="space-y-2">
+               <div className="h-1.5 w-16 bg-blue-100 rounded-full" />
+               <div className="h-1.5 w-10 bg-blue-50 rounded-full" />
+            </div>
+            <span className="block mt-4 text-[8px] font-black uppercase text-blue-500/30">Logic.manifest</span>
+         </motion.div>
+
+         {/* Metrics Pill - Scattered Right */}
+         <motion.div 
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            className="absolute top-[35%] right-[5%] p-6 bg-white border border-blue-50 rounded-full shadow-xl shadow-blue-900/5 flex items-center gap-4 hidden md:flex z-30 pointer-events-auto"
+         >
+            <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-500"><BarChart size={18} /></div>
+            <div>
+               <div className="text-[9px] font-black uppercase text-blue-400/40">Efficiency</div>
+               <div className="text-sm font-serif italic text-blue-900/60">Optimized</div>
+            </div>
+         </motion.div>
+
+         {/* System Settings Toggle - Scattered Bottom Left */}
+         <motion.div 
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            className="absolute bottom-[40%] left-[10%] p-6 bg-yellow-50/20 border border-yellow-100 rounded-3xl flex items-center gap-6 hidden md:flex z-30 pointer-events-auto"
+         >
+            <ToggleRight size={24} className="text-yellow-600/60" />
+            <span className="text-[9px] font-black uppercase tracking-widest text-yellow-600/40">Visual Depth</span>
+         </motion.div>
+
+         {/* Global Scale Card - Scattered Center Right */}
+         <motion.div 
+            initial={{ opacity: 0, scale: 0.8 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            className="absolute top-[55%] right-[12%] p-6 bg-white border border-blue-50 rounded-3xl shadow-xl shadow-blue-900/5 flex flex-col gap-2 hidden md:flex z-30 pointer-events-auto"
+         >
+            <div className="flex items-center gap-3">
+               <Globe size={16} className="text-blue-500/50" />
+               <span className="text-[9px] font-black uppercase text-blue-500/40">Nodes</span>
+            </div>
+            <div className="flex -space-x-2">
+               {[1,2,3].map(i => <div key={i} className="w-6 h-6 rounded-full bg-blue-100 border-2 border-white" />)}
+               <div className="w-6 h-6 rounded-full bg-blue-50 border-2 border-white flex items-center justify-center text-[8px] font-bold text-blue-400">+</div>
+            </div>
+         </motion.div>
+
+         {/* Additional Floating UI - Code Pill */}
+         <motion.div 
+            animate={{ y: [0, -10, 0] }}
+            transition={{ duration: 5, repeat: Infinity }}
+            className="absolute top-[10%] right-[25%] px-6 py-2 bg-blue-50 border border-blue-100 rounded-full hidden md:block opacity-40"
+         >
+            <span className="text-[8px] font-black uppercase tracking-widest text-blue-900">Render Pipeline Alpha</span>
+         </motion.div>
       </div>
 
       <div className="max-w-6xl w-full relative z-10 flex flex-col items-center pt-24">
@@ -37,7 +106,7 @@ const AboutUs = () => {
            whileInView={{ opacity: 1, y: 0 }}
            viewport={{ once: true }}
            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-           className="text-center relative mb-12"
+           className="text-center relative mb-32"
         >
           <h1 className="flex flex-col items-center select-none">
             <span className="text-[7rem] md:text-[10rem] font-light italic font-serif text-[#0020C2] leading-[0.7] tracking-tighter block">
@@ -55,56 +124,7 @@ const AboutUs = () => {
           />
         </motion.div>
 
-        {/* CLUSTERED UI COMPONENTS BELOW THE NAME - AS REQUESTED */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          className="flex flex-wrap items-center justify-center gap-6 mb-40 max-w-4xl"
-        >
-           {/* Code Snippet Card */}
-           <div className="p-6 bg-white border border-blue-50 rounded-3xl shadow-xl shadow-blue-900/5 hover:scale-105 transition-all group">
-              <div className="flex gap-1.5 mb-3">
-                 <div className="w-2 h-2 rounded-full bg-red-400/40" />
-                 <div className="w-2 h-2 rounded-full bg-yellow-400/40" />
-                 <div className="w-2 h-2 rounded-full bg-green-400/40" />
-              </div>
-              <div className="space-y-2">
-                 <div className="h-1.5 w-16 bg-blue-100 rounded-full" />
-                 <div className="h-1.5 w-10 bg-blue-50 rounded-full" />
-              </div>
-              <span className="block mt-4 text-[8px] font-black uppercase text-blue-500/30">Logic.manifest</span>
-           </div>
-
-           {/* Metrics Pill */}
-           <div className="p-6 bg-white border border-blue-50 rounded-full shadow-xl shadow-blue-900/5 flex items-center gap-4 hover:scale-105 transition-all">
-              <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-500"><BarChart size={18} /></div>
-              <div>
-                 <div className="text-[9px] font-black uppercase text-blue-400/40">Efficiency</div>
-                 <div className="text-sm font-serif italic text-blue-900/60">Optimized</div>
-              </div>
-           </div>
-
-           {/* System Settings Toggle */}
-           <div className="p-6 bg-yellow-50/20 border border-yellow-100 rounded-3xl flex items-center gap-6 hover:scale-105 transition-all">
-              <ToggleRight size={24} className="text-yellow-600/60" />
-              <span className="text-[9px] font-black uppercase tracking-widest text-yellow-600/40">Visual Depth</span>
-           </div>
-
-           {/* Global Scale Card */}
-           <div className="p-6 bg-white border border-blue-50 rounded-3xl shadow-xl shadow-blue-900/5 flex flex-col gap-2 hover:scale-105 transition-all">
-              <div className="flex items-center gap-3">
-                 <Globe size={16} className="text-blue-500/50" />
-                 <span className="text-[9px] font-black uppercase text-blue-500/40">Nodes</span>
-              </div>
-              <div className="flex -space-x-2">
-                 {[1,2,3].map(i => <div key={i} className="w-6 h-6 rounded-full bg-blue-100 border-2 border-white" />)}
-                 <div className="w-6 h-6 rounded-full bg-blue-50 border-2 border-white flex items-center justify-center text-[8px] font-bold text-blue-400">+</div>
-              </div>
-           </div>
-        </motion.div>
-
-        {/* Narrative Block - More Data */}
+        {/* Narrative Block - Vision */}
         <div className="max-w-4xl w-full space-y-40 text-center mt-12 pb-40 px-6">
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
@@ -125,7 +145,7 @@ const AboutUs = () => {
             </div>
           </motion.div>
 
-          {/* New Skill Manifest Component - More UI Elements */}
+          {/* New Skill Manifest Component - Skill Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
              <motion.div 
                initial={{ opacity: 0, x: -30 }}
@@ -166,7 +186,7 @@ const AboutUs = () => {
              </motion.div>
           </div>
 
-          {/* Philosophy Detail - More Data */}
+          {/* Philosophy Detail - manifesto */}
           <motion.div 
             initial={{ opacity: 0, scale: 0.98 }}
             whileInView={{ opacity: 1, scale: 1 }}
@@ -182,7 +202,7 @@ const AboutUs = () => {
              </div>
           </motion.div>
 
-          {/* Final Social/Contact Manifest */}
+          {/* Final Operational Status */}
           <div className="flex flex-col items-center gap-10 pt-10">
              <div className="text-center">
                 <div className="text-[9px] font-black uppercase tracking-widest text-[#0020C2]/20 font-satoshi mb-4">Operational Status</div>
