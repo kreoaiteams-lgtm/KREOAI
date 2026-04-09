@@ -46,7 +46,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ isVisible, onClose }) => 
             <X size={20} />
           </button>
 
-          <div className="relative z-10 max-w-2xl w-full flex flex-col items-center space-y-24 pb-20">
+          <div className="relative z-10 max-w-2xl w-full flex flex-col items-center space-y-12 pb-20 mt-10">
             {/* Top Section - Small Image */}
             <motion.div 
               initial={{ y: -20, opacity: 0 }}
@@ -66,7 +66,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ isVisible, onClose }) => 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4, duration: 0.8 }}
-              className="space-y-16"
+              className="space-y-8"
             >
               <div className="space-y-4">
                 <h1 className="text-6xl md:text-8xl font-serif italic tracking-tighter leading-none">
