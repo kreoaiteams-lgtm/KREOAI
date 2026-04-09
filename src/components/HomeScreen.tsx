@@ -468,7 +468,6 @@ const HomeScreen = ({
   const [feedbackSubmitting, setFeedbackSubmitting] = useState(false);
   const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
 
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
   useEffect(() => {
