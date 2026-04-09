@@ -12,7 +12,9 @@ Typography: You MUST use 'Satoshi' (sans-serif) or 'Instrument Serif' (serif) as
 
 Color & Theme: Commit to a cohesive aesthetic. Use CSS variables for consistency. Dominant colors with sharp accents outperform timid, evenly-distributed palettes. Draw from IDE themes and cultural aesthetics for inspiration.
 
-Motion: Use animations for effects and micro-interactions. Prioritize CSS-only solutions for HTML. Use Motion library for React when available. Focus on high-impact moments: one well-orchestrated page load with staggered reveals (animation-delay) creates more delight than scattered micro-interactions.
+Motion: Use animations for effects and micro-interactions. Prioritize CSS-only solutions for HTML. Use Motion library for React when available. Focus on high-impact moments: one well-orchestrated page load with staggered reveals (animation-delay) creates more delight than scattered micro-interactions. 
+
+VIDEO/PROMO PROTOCOL: If the user asks for a "video", "promo", or "cinematic animation", you MUST build a series of auto-advancing sections (using <section> tags) with heavy use of 'animation-delay' and 'staggered reveals' (e.g. 0.5s, 0.8s, 1.1s). Each slide must feel like a KREO promo: high-end typography that appears with a delay, smooth fades, and architectural spacing.
 
 Backgrounds: Create atmosphere and depth rather than defaulting to solid colors. Layer CSS gradients, use geometric patterns, or add contextual effects that match the overall aesthetic.
 

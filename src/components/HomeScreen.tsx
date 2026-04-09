@@ -3,8 +3,9 @@ import {
   Search, History, Settings, User, ArrowUp, ArrowDown, Monitor, Database, Smartphone,
   LayoutGrid, ChevronDown, ChevronLeft, Clock, Plus, Zap, FileText,
   Image as ImageIcon, BrainCircuit, Sparkles, Paperclip, Shuffle, MessageSquare, Mail,
-  Share2, Globe, Link, Copy
+  Share2, Globe, Link, Copy, Info
 } from "lucide-react";
+
 import KreoLogo from "./KreoLogo";
 import ArtifactPanel from "./ArtifactPanel";
 import CloudFraming from "./CloudFraming";
@@ -848,6 +849,20 @@ const HomeScreen = ({
               </TooltipTrigger>
               <TooltipContent>History</TooltipContent>
             </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={() => navigate('/landing#about')}
+                  className="rounded-full p-2 text-foreground/80 hover:text-foreground hover:bg-foreground/5 transition-all"
+                >
+                  <Info size={20} />
+                </button>
+
+              </TooltipTrigger>
+              <TooltipContent>About Us</TooltipContent>
+            </Tooltip>
+
 
             <div className="relative">
               <button
