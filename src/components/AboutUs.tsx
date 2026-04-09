@@ -2,12 +2,13 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { 
   Sparkles, Globe, ShieldCheck, Zap, Code, Layout, BarChart, Smartphone, 
-  Cpu, Layers, Cloud, Terminal, CheckCircle2, Monitor, Database, Settings, ToggleRight
+  Cpu, Layers, Cloud, Terminal, CheckCircle2, Monitor, Database, Settings, ToggleRight,
+  MousePointer2, PlayCircle, Loader2, Fingerprint, Box
 } from 'lucide-react';
 
 const AboutUs = () => {
   return (
-    <section id="about" className="relative min-h-[200vh] pt-12 pb-32 px-6 overflow-hidden bg-white text-[#0020C2] flex flex-col items-center">
+    <section id="about" className="relative min-h-[220vh] pt-12 pb-32 px-6 overflow-hidden bg-white text-[#0020C2] flex flex-col items-center">
       {/* Subtle background atmosphere - Editorial White */}
       <div className="absolute top-0 right-0 w-[1000px] h-[1000px] bg-blue-50/40 blur-[220px] rounded-full opacity-40 pointer-events-none" />
       <div className="absolute top-1/2 left-0 w-[800px] h-[800px] bg-yellow-50/40 blur-[180px] rounded-full opacity-40 pointer-events-none" />
@@ -26,21 +27,21 @@ const AboutUs = () => {
           </div>
         </motion.div>
 
-        {/* Hero Section - The Name - CLUSTERED UI COMPONENTS AROUND IT AS REQUESTED */}
-        <div className="relative mb-32">
-          {/* Floating Artifacts surrounding the name */}
-          <div className="absolute -left-32 -top-12 pointer-events-none hidden xl:block">
+        {/* Hero Section - The Name - ENHANCED CLUSTER */}
+        <div className="relative mb-40">
+          {/* Top-Left: Code Snippet */}
+          <div className="absolute -left-56 -top-20 pointer-events-none hidden xl:block">
             <motion.div 
                initial={{ opacity: 0, x: -20 }}
                whileInView={{ opacity: 1, x: 0 }}
-               className="p-6 bg-white border border-blue-50 rounded-3xl shadow-xl shadow-blue-900/5 pointer-events-auto"
+               className="p-6 bg-white border border-blue-50 rounded-[2.5rem] shadow-xl shadow-blue-900/5 pointer-events-auto"
             >
                <div className="flex gap-1.5 mb-3">
                   <div className="w-2 h-2 rounded-full bg-red-400/40" />
                   <div className="w-2 h-2 rounded-full bg-yellow-400/40" />
                   <div className="w-2 h-2 rounded-full bg-green-400/40" />
                </div>
-               <div className="space-y-2">
+               <div className="space-y-2 opacity-40">
                   <div className="h-1.5 w-16 bg-blue-100 rounded-full" />
                   <div className="h-1.5 w-10 bg-blue-50 rounded-full" />
                </div>
@@ -48,46 +49,99 @@ const AboutUs = () => {
             </motion.div>
           </div>
 
-          <div className="absolute -right-32 top-8 pointer-events-none hidden xl:block">
+          {/* Top-Right: Analytics Dial */}
+          <div className="absolute -right-56 -top-12 pointer-events-none hidden xl:block">
             <motion.div 
                initial={{ opacity: 0, x: 20 }}
                whileInView={{ opacity: 1, x: 0 }}
-               className="p-6 bg-white border border-blue-50 rounded-full shadow-xl shadow-blue-900/5 flex items-center gap-4 pointer-events-auto"
+               className="p-7 bg-white border border-blue-50 rounded-full shadow-xl shadow-blue-900/5 flex items-center gap-4 pointer-events-auto"
             >
-               <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-500"><BarChart size={18} /></div>
+               <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-blue-500"><BarChart size={20} /></div>
                <div>
                   <div className="text-[9px] font-black uppercase text-blue-400/40">Efficiency</div>
-                  <div className="text-sm font-serif italic text-blue-900/60">Optimized</div>
+                  <div className="text-base font-serif italic text-blue-900/60 leading-none">Optimized</div>
                </div>
             </motion.div>
           </div>
 
-          <div className="absolute -left-16 bottom-0 pointer-events-none hidden xl:block">
+          {/* Bottom-Left: Toggle Card */}
+          <div className="absolute -left-32 bottom-0 pointer-events-none hidden xl:block">
             <motion.div 
                initial={{ opacity: 0, y: 20 }}
                whileInView={{ opacity: 1, y: 0 }}
-               className="p-5 bg-yellow-50/20 border border-yellow-100 rounded-2xl flex items-center gap-4 pointer-events-auto"
+               className="p-6 bg-yellow-50/20 border border-yellow-100 rounded-3xl flex items-center gap-6 pointer-events-auto"
             >
-               <ToggleRight size={20} className="text-yellow-600/60" />
-               <span className="text-[8px] font-black uppercase tracking-widest text-yellow-600/40">Visual Depth</span>
+               <ToggleRight size={24} className="text-yellow-600/60" />
+               <span className="text-[10px] font-black uppercase tracking-widest text-yellow-600/40">Visual Depth</span>
             </motion.div>
           </div>
 
-          <div className="absolute -right-24 -bottom-16 pointer-events-none hidden xl:block">
+          {/* Bottom-Right: Node Grid */}
+          <div className="absolute -right-40 -bottom-16 pointer-events-none hidden xl:block">
             <motion.div 
                initial={{ opacity: 0, scale: 0.8 }}
                whileInView={{ opacity: 1, scale: 1 }}
-               className="p-6 bg-white border border-blue-50 rounded-3xl shadow-xl shadow-blue-900/5 flex flex-col gap-2 pointer-events-auto"
+               className="p-8 bg-white border border-blue-50 rounded-[3rem] shadow-xl shadow-blue-900/5 flex flex-col gap-3 pointer-events-auto"
             >
                <div className="flex items-center gap-3">
-                  <Globe size={16} className="text-blue-500/50" />
-                  <span className="text-[9px] font-black uppercase text-blue-500/40">Nodes</span>
+                  <Globe size={20} className="text-blue-500/50" />
+                  <span className="text-[10px] font-black uppercase text-blue-500/40">Manifest Nodes</span>
                </div>
-               <div className="flex -space-x-2">
-                  {[1,2,3].map(i => <div key={i} className="w-6 h-6 rounded-full bg-blue-100 border-2 border-white" />)}
-                  <div className="w-5 h-5 rounded-full bg-blue-50 border-2 border-white flex items-center justify-center text-[7px] font-bold text-blue-400">+</div>
+               <div className="flex -space-x-3">
+                  {[1,2,3,4].map(i => <div key={i} className="w-8 h-8 rounded-full bg-blue-100 border-2 border-white" />)}
+                  <div className="w-8 h-8 rounded-full bg-blue-50 border-2 border-white flex items-center justify-center text-[10px] font-bold text-blue-400">+</div>
                </div>
             </motion.div>
+          </div>
+
+          {/* NEW: Studio Controller (Top Center) */}
+          <div className="absolute left-1/2 -translate-x-1/2 -top-40 pointer-events-none hidden xl:block">
+            <motion.div 
+               initial={{ opacity: 0, y: -20 }}
+               whileInView={{ opacity: 1, y: 0 }}
+               className="p-4 bg-white border border-blue-50 rounded-2xl shadow-lg flex items-center gap-4 pointer-events-auto"
+            >
+               <motion.div animate={{ rotate: 360 }} transition={{ duration: 4, repeat: Infinity, ease: 'linear' }} className="w-8 h-8 rounded-full border-2 border-dashed border-blue-400 flex items-center justify-center">
+                  <Settings size={14} className="text-blue-400" />
+               </motion.div>
+               <span className="text-[9px] font-black uppercase tracking-widest text-blue-900/40">Studio.Controller.v2</span>
+            </motion.div>
+          </div>
+
+          {/* NEW: Fingerprint Security (Mid Left) */}
+          <div className="absolute -left-64 top-1/4 pointer-events-none hidden xl:block">
+            <motion.div 
+               initial={{ opacity: 0, x: -30 }}
+               whileInView={{ opacity: 1, x: 0 }}
+               className="w-16 h-16 bg-blue-50 border border-blue-100 rounded-2xl flex items-center justify-center text-blue-600 shadow-sm pointer-events-auto"
+            >
+               <Fingerprint size={24} />
+            </motion.div>
+          </div>
+
+          {/* NEW: Box Dimensions (Mid Right) */}
+          <div className="absolute -right-60 top-1/3 pointer-events-none hidden xl:block">
+            <motion.div 
+               initial={{ opacity: 0, x: 30 }}
+               whileInView={{ opacity: 1, x: 0 }}
+               className="p-5 bg-white border border-blue-50 rounded-3xl shadow-xl flex flex-col gap-3 pointer-events-auto"
+            >
+               <Box size={20} className="text-blue-300" />
+               <div className="h-[2px] w-12 bg-blue-50" />
+               <span className="text-[8px] font-black uppercase text-blue-900/20">3D.Manifest</span>
+            </motion.div>
+          </div>
+
+          {/* NEW: Play Artifact Button (Bottom Center) */}
+          <div className="absolute left-1/2 -translate-x-1/2 -bottom-48 pointer-events-none hidden xl:block">
+             <motion.button 
+               initial={{ opacity: 0, scale: 0.9 }}
+               whileInView={{ opacity: 1, scale: 1 }}
+               className="flex items-center gap-4 px-10 py-4 bg-[#0020C2] text-white rounded-full shadow-2xl pointer-events-auto hover:scale-105 active:scale-95 transition-all"
+             >
+                <PlayCircle size={18} />
+                <span className="text-[10px] font-black uppercase tracking-[0.4em]">Run Manifest</span>
+             </motion.button>
           </div>
 
           <motion.div
@@ -98,10 +152,10 @@ const AboutUs = () => {
              className="text-center"
           >
             <h1 className="flex flex-col items-center select-none">
-              <span className="text-[7rem] md:text-[10rem] font-light italic font-serif text-[#0020C2] leading-[0.7] tracking-tighter block">
+              <span className="text-[7.5rem] md:text-[10.5rem] font-light italic font-serif text-[#0020C2] leading-[0.7] tracking-tighter block">
                 Dhruv
               </span>
-              <span className="text-[7rem] md:text-[10rem] font-black font-satoshi text-yellow-500 leading-[0.9] tracking-tighter block uppercase">
+              <span className="text-[7.5rem] md:text-[10.5rem] font-black font-satoshi text-yellow-500 leading-[0.9] tracking-tighter block uppercase">
                 GAUTAM
               </span>
             </h1>

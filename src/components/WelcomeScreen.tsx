@@ -17,26 +17,24 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ isVisible, onClose }) => 
           exit={{ opacity: 0 }}
           className="fixed inset-0 z-[100] bg-[#0020C2] text-white flex flex-col items-center py-20 px-8 text-center overflow-y-auto custom-scrollbar"
         >
-          {/* Connected Atmospheric Clouds */}
+          {/* Uniform Atmospheric Clouds - Ensuring they fully cover/meet in the center */}
           <div className="fixed inset-0 pointer-events-none overflow-hidden select-none">
             <motion.div 
-              initial={{ scale: 1.2, opacity: 0 }}
-              animate={{ scale: 1, opacity: 0.5 }}
+              initial={{ scale: 1.1, opacity: 0 }}
+              animate={{ scale: 1, opacity: 0.4 }}
               transition={{ duration: 2 }}
               className="absolute inset-0 flex items-center justify-center"
             >
               <img 
                 src="/cloud_left.png" 
-                className="absolute -left-[15%] top-0 h-full w-[80%] object-contain mix-blend-screen opacity-60 scale-125"
+                className="absolute inset-0 h-full w-full object-cover mix-blend-screen opacity-50 scale-150 translate-x-[-20%]"
                 alt=""
               />
               <img 
                 src="/cloud_right.png" 
-                className="absolute -right-[15%] top-0 h-full w-[80%] object-contain mix-blend-screen opacity-60 scale-125"
+                className="absolute inset-0 h-full w-full object-cover mix-blend-screen opacity-50 scale-150 translate-x-[20%]"
                 alt=""
               />
-              {/* Optional: Add a central soft glow to bridge the gap if images don't overlap enough */}
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-400/5 to-transparent blur-3xl" />
             </motion.div>
           </div>
 
