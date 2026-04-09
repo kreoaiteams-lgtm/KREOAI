@@ -5,6 +5,7 @@ import SplashScreen from "@/components/SplashScreen";
 import AuthScreen from "@/components/AuthScreen";
 import HomeScreen from "@/components/HomeScreen";
 import { supabase } from "@/lib/supabase";
+import WelcomeScreen from "@/components/WelcomeScreen";
 
 type ThemeMode = "light" | "dark" | "ultra";
 
@@ -19,6 +20,7 @@ const Index = ({ urlId }: IndexProps) => {
   const [isSplashComplete, setIsSplashComplete] = useState(false);
   const [isArtifactActive, setIsArtifactActive] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(false);
 
   useEffect(() => {
     // Check initial session — must resolve before rendering protected content
@@ -28,13 +30,19 @@ const Index = ({ urlId }: IndexProps) => {
     });
 
     // Listen for auth changes (login / logout)
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setAuthed(!!session);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      const isNowAuthed = !!session;
+      if (isNowAuthed && !authed) {
+        // Just logged in or signed up
+        setShowWelcome(true);
+      }
+      setAuthed(isNowAuthed);
       setAuthLoading(false);
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [authed]);
+
 
   // Persist and apply theme
   useEffect(() => {
@@ -79,8 +87,13 @@ const Index = ({ urlId }: IndexProps) => {
       {/* Signature Atmospheric Framing — only active in 'Ultra' mode */}
       <CloudFraming visible={isSplashComplete && !isArtifactActive && !isSubmitting && theme === "ultra"} />
 
+      <WelcomeScreen 
+        isVisible={showWelcome} 
+        onClose={() => setShowWelcome(false)} 
+      />
 
       {/* Main App Logic — visible after splash */}
+
       <div className={`transition-opacity duration-1000 ${isSplashComplete ? "opacity-100" : "opacity-0"}`}>
         {renderMain()}
       </div>

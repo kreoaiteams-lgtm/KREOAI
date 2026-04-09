@@ -3,6 +3,8 @@ import KreoLogo from '@/components/KreoLogo';
 import CloudFraming from '@/components/CloudFraming';
 import { Link } from 'react-router-dom';
 
+import AboutUs from '@/components/AboutUs';
+
 const Landing = () => {
   return (
     <div className="min-h-screen bg-[#0020C2] text-white selection:bg-white selection:text-primary overflow-x-hidden">
@@ -33,11 +35,13 @@ const Landing = () => {
           <a href="#vision" className="hover:text-white transition-colors">Vision</a>
           <a href="#intel" className="hover:text-white transition-colors">Manifests</a>
           <a href="#pricing" className="hover:text-white transition-colors">Pricing</a>
+          <a href="#about" className="hover:text-white transition-colors">Architect</a>
         </nav>
         <Link to="/home" className="px-8 py-3 bg-white text-black text-[10px] font-black uppercase tracking-widest rounded-full hover:scale-105 active:scale-95 transition-all shadow-2xl">
           Enter Studio
         </Link>
       </header>
+
 
       {/* Ultra Hero Manifest - Exact Studio Replica */}
       <section className="relative h-screen flex flex-col items-center justify-center pt-32 px-10 overflow-hidden">
@@ -150,7 +154,10 @@ const Landing = () => {
         </div>
       </section>
 
+      <AboutUs />
+
       <footer className="py-32 border-t border-white/5 text-center bg-black/40 backdrop-blur-xl">
+
          <div className="scale-75 opacity-40 mx-auto mb-10"><KreoLogo /></div>
          <p className="max-w-xs mx-auto text-white/20 text-[9px] font-black uppercase tracking-[0.6em] italic leading-relaxed mb-12">
             Established for the visionary architect. <br/>
