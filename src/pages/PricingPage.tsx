@@ -1,33 +1,74 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Check, X, Sparkles, Zap, Shield, Crown, ArrowRight, CreditCard, 
-  Globe, Cpu, Layers, Lock, ChevronRight, User, MapPin, ReceiptText
+  Globe, Cpu, Layers, Lock, ChevronRight, User, MapPin, ReceiptText, 
+  Wallet, Landmark
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+
+declare global {
+  interface Window {
+    paypal: any;
+  }
+}
 
 const PricingPage = () => {
   const navigate = useNavigate();
   const [selectedPlan, setSelectedPlan] = useState<'free' | 'ultra' | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  
+  // Editable Form States
+  const [ownerName, setOwnerName] = useState('Dhruv Gautam');
+  const [address, setAddress] = useState('Neural Sector 4, Architecture Grid');
+  const [cardNumber, setCardNumber] = useState('4242 4242 4242 4242');
+  const [expiry, setExpiry] = useState('12/28');
+  const [cvv, setCvv] = useState('***');
+
+  const paypalButtonRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (selectedPlan === 'ultra' && window.paypal && paypalButtonRef.current && !paypalButtonRef.current.innerHTML) {
+      window.paypal.Buttons({
+        style: {
+          shape: 'pill',
+          color: 'gold',
+          layout: 'vertical',
+          label: 'subscribe'
+        },
+        createSubscription: function(data: any, actions: any) {
+          // You should create a Plan ID in your PayPal dashboard and use it here
+          // For demo purposes, we usually use a hardcoded plan id
+          return actions.subscription.create({
+            'plan_id': 'P-5ML4271244454362MC62MV7I' // This is a placeholder, you'll need a real one
+          });
+        },
+        onApprove: function(data: any, actions: any) {
+          setIsProcessing(true);
+          setTimeout(() => {
+            setIsProcessing(false);
+            navigate('/');
+          }, 2000);
+        }
+      }).render(paypalButtonRef.current);
+    }
+  }, [selectedPlan, navigate]);
 
   const processPayment = () => {
     setIsProcessing(true);
     setTimeout(() => {
       setIsProcessing(false);
-      navigate('/'); // Redirect back home after "payment"
+      navigate('/'); 
     }, 2000);
   };
 
   return (
     <div className="min-h-screen bg-white text-black selection:bg-[#0020C2] selection:text-white overflow-x-hidden font-satoshi relative">
-      {/* Cinematic Background Atmosphere - Light & Clean */}
       <div className="fixed inset-0 pointer-events-none">
         <div className="absolute top-0 right-0 w-[1000px] h-[1000px] bg-blue-50/50 blur-[200px] rounded-full" />
         <div className="absolute bottom-0 left-0 w-[800px] h-[800px] bg-yellow-50/50 blur-[180px] rounded-full" />
       </div>
 
-      {/* Header */}
       <header className="relative z-10 flex items-center justify-between px-10 py-10 border-b border-black/[0.03]">
         <button onClick={() => navigate(-1)} className="flex items-center gap-4 group">
           <div className="w-10 h-10 rounded-full border border-black/5 flex items-center justify-center group-hover:bg-black/5 transition-all text-black">
@@ -59,7 +100,6 @@ const PricingPage = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-              {/* Essential Tier */}
               <div className="p-12 bg-[#f8faff] border border-black/[0.03] rounded-[3.5rem] space-y-10 flex flex-col justify-between hover:bg-white hover:shadow-2xl hover:shadow-black/5 transition-all duration-700">
                 <div className="space-y-8">
                   <div className="flex justify-between items-start">
@@ -80,7 +120,6 @@ const PricingPage = () => {
                 <button className="w-full py-5 rounded-2xl border border-black/10 text-[10px] font-black uppercase tracking-widest bg-black text-white">Current Manifest</button>
               </div>
 
-              {/* Ultra Tier */}
               <div className="relative p-12 bg-white border border-[#0020C2]/10 rounded-[3.5rem] shadow-[0_30px_100px_rgba(0,32,194,0.08)] space-y-10 flex flex-col justify-between hover:scale-[1.02] transition-all duration-700 overflow-hidden">
                 <div className="absolute top-0 right-0 px-8 py-3 bg-[#0020C2] text-white text-[9px] font-black uppercase tracking-widest rounded-bl-3xl">Peak Architecture</div>
                 <div className="space-y-8">
@@ -114,77 +153,7 @@ const PricingPage = () => {
             animate={{ opacity: 1, scale: 1 }}
             className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-12"
           >
-            {/* Left Side: Payment Form */}
-            <div className="bg-white border border-black/5 rounded-[4rem] p-10 md:p-14 shadow-2xl space-y-12">
-              <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                  <h3 className="text-2xl font-serif italic text-black">Authority Manifest</h3>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-black/20">Secure Neural Transaction</p>
-                </div>
-                <div className="p-4 bg-blue-50 border border-blue-100 rounded-3xl text-[#0020C2]">
-                  <Lock size={22} />
-                </div>
-              </div>
-
-              <div className="space-y-8">
-                {/* Account Owner */}
-                <div className="space-y-4">
-                  <label className="text-[9px] font-black uppercase tracking-[0.5em] text-black/30 ml-2 italic">Account Owner</label>
-                  <div className="relative">
-                    <input type="text" placeholder="Architect Name" className="w-full p-6 bg-[#f8faff] border border-black/5 rounded-3xl text-lg font-medium outline-none focus:border-[#0020C2]/20 transition-all font-serif italic" />
-                    <User className="absolute right-6 top-1/2 -translate-y-1/2 text-black/10" size={20} />
-                  </div>
-                </div>
-
-                {/* Card Credentials */}
-                <div className="space-y-4">
-                  <label className="text-[9px] font-black uppercase tracking-[0.5em] text-black/30 ml-2 italic">Card Credentials</label>
-                  <div className="relative">
-                    <input type="text" value="4242 4242 4242 4242" disabled className="w-full p-6 bg-[#f8faff] border border-black/5 rounded-3xl text-lg font-medium tracking-widest opacity-60" />
-                    <CreditCard className="absolute right-6 top-1/2 -translate-y-1/2 text-[#0020C2]/40" size={22} />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <input type="text" value="12/28" disabled className="w-full p-6 bg-[#f8faff] border border-black/5 rounded-3xl text-lg font-medium opacity-60" />
-                    <input type="text" value="***" disabled className="w-full p-6 bg-[#f8faff] border border-black/5 rounded-3xl text-lg font-medium opacity-60" />
-                  </div>
-                </div>
-
-                {/* Address Line */}
-                <div className="space-y-4">
-                  <label className="text-[9px] font-black uppercase tracking-[0.5em] text-black/30 ml-2 italic">Architecture Address</label>
-                  <div className="relative">
-                    <input type="text" placeholder="Street Address, Neural Grid" className="w-full p-6 bg-[#f8faff] border border-black/5 rounded-3xl text-lg font-medium outline-none focus:border-[#0020C2]/20 transition-all font-serif italic" />
-                    <MapPin className="absolute right-6 top-1/2 -translate-y-1/2 text-black/10" size={20} />
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-6 pt-4">
-                <button 
-                  onClick={processPayment}
-                  disabled={isProcessing}
-                  className="w-full py-7 bg-black text-white text-[11px] font-black uppercase tracking-[0.4em] rounded-full hover:scale-[1.02] active:scale-95 transition-all shadow-2xl relative flex items-center justify-center font-satoshi"
-                >
-                  {isProcessing ? (
-                    <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-3">
-                      <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-                      Syncing Portal...
-                    </motion.span>
-                  ) : (
-                    <>Authorize Transition <ChevronRight size={16} className="ml-2" /></>
-                  )}
-                </button>
-                <button 
-                  onClick={() => setSelectedPlan(null)}
-                  disabled={isProcessing}
-                  className="text-[10px] font-black uppercase tracking-widest text-black/20 hover:text-black/60 transition-colors"
-                >
-                  Reconsider Parameters
-                </button>
-              </div>
-            </div>
-
-            {/* Right Side: Manifest Summary */}
+            {/* Left Side: Manifest Summary (INTERSWITCHED) */}
             <div className="flex flex-col gap-10">
               <div className="bg-[#f8faff] border border-black/5 rounded-[4rem] p-12 space-y-12">
                  <div className="space-y-2">
@@ -223,7 +192,6 @@ const PricingPage = () => {
                  </div>
               </div>
 
-              {/* Security & Quality Trust */}
               <div className="grid grid-cols-3 gap-6 opacity-30 px-10">
                  <div className="flex flex-col items-center gap-2">
                     <Shield size={20} />
@@ -239,11 +207,116 @@ const PricingPage = () => {
                  </div>
               </div>
             </div>
+
+            {/* Right Side: Payment Form (INTERSWITCHED) */}
+            <div className="bg-white border border-black/5 rounded-[4rem] p-10 md:p-14 shadow-2xl space-y-12 h-max">
+              <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                  <h3 className="text-2xl font-serif italic text-black">Authority Manifest</h3>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-black/20">Secure Neural Transaction</p>
+                </div>
+                <div className="p-4 bg-blue-50 border border-blue-100 rounded-3xl text-[#0020C2]">
+                  <Lock size={22} />
+                </div>
+              </div>
+
+              <div className="space-y-8">
+                {/* Account Owner */}
+                <div className="space-y-4">
+                  <label className="text-[9px] font-black uppercase tracking-[0.5em] text-black/30 ml-2 italic">Account Owner</label>
+                  <div className="relative">
+                    <input 
+                      type="text" 
+                      value={ownerName}
+                      onChange={(e) => setOwnerName(e.target.value)}
+                      placeholder="Architect Name" 
+                      className="w-full p-6 bg-[#f8faff] border border-black/5 rounded-3xl text-lg font-medium outline-none focus:border-[#0020C2]/20 transition-all font-serif italic" 
+                    />
+                    <User className="absolute right-6 top-1/2 -translate-y-1/2 text-black/10" size={20} />
+                  </div>
+                </div>
+
+                {/* Card Credentials (EDITABLE) */}
+                <div className="space-y-4">
+                  <label className="text-[9px] font-black uppercase tracking-[0.5em] text-black/30 ml-2 italic">Card Credentials</label>
+                  <div className="relative">
+                    <input 
+                      type="text" 
+                      value={cardNumber}
+                      onChange={(e) => setCardNumber(e.target.value)}
+                      className="w-full p-6 bg-[#f8faff] border border-black/5 rounded-3xl text-lg font-medium tracking-widest outline-none focus:border-[#0020C2]/20 transition-all" 
+                    />
+                    <CreditCard className="absolute right-6 top-1/2 -translate-y-1/2 text-[#0020C2]/40" size={22} />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <input 
+                      type="text" 
+                      value={expiry}
+                      onChange={(e) => setExpiry(e.target.value)}
+                      className="w-full p-6 bg-[#f8faff] border border-black/5 rounded-3xl text-lg font-medium outline-none focus:border-[#0020C2]/20 transition-all" 
+                    />
+                    <input 
+                      type="text" 
+                      value={cvv}
+                      onChange={(e) => setCvv(e.target.value)}
+                      className="w-full p-6 bg-[#f8faff] border border-black/5 rounded-3xl text-lg font-medium outline-none focus:border-[#0020C2]/20 transition-all" 
+                    />
+                  </div>
+                </div>
+
+                {/* Address Line (EDITABLE) */}
+                <div className="space-y-4">
+                  <label className="text-[9px] font-black uppercase tracking-[0.5em] text-black/30 ml-2 italic">Architecture Address</label>
+                  <div className="relative">
+                    <input 
+                      type="text" 
+                      value={address}
+                      onChange={(e) => setAddress(e.target.value)}
+                      placeholder="Street Address, Neural Grid" 
+                      className="w-full p-6 bg-[#f8faff] border border-black/5 rounded-3xl text-lg font-medium outline-none focus:border-[#0020C2]/20 transition-all font-serif italic" 
+                    />
+                    <MapPin className="absolute right-6 top-1/2 -translate-y-1/2 text-black/10" size={20} />
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-6 pt-4">
+                <div className="space-y-4">
+                  <div className="text-[9px] font-black uppercase tracking-widest text-black/30 text-center mb-2">Automated Neural Authority</div>
+                  <div ref={paypalButtonRef} className="w-full z-10" />
+                </div>
+                
+                <div className="relative h-px bg-black/5 my-4">
+                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 px-4 bg-white text-[8px] font-black uppercase tracking-widest text-black/20">or manifest directly</div>
+                </div>
+
+                <button 
+                  onClick={processPayment}
+                  disabled={isProcessing}
+                  className="w-full py-7 bg-black text-white text-[10px] font-black uppercase tracking-[0.4em] rounded-full hover:scale-[1.02] active:scale-95 transition-all shadow-2xl relative flex items-center justify-center font-satoshi"
+                >
+                  {isProcessing ? (
+                    <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-3">
+                      <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                      Syncing Portal...
+                    </motion.span>
+                  ) : (
+                    <>Authorize Transition <ChevronRight size={16} className="ml-2" /></>
+                  )}
+                </button>
+                <button 
+                  onClick={() => setSelectedPlan(null)}
+                  disabled={isProcessing}
+                  className="text-[10px] font-black uppercase tracking-widest text-black/20 hover:text-black/60 transition-colors text-center"
+                >
+                  Reconsider Parameters
+                </button>
+              </div>
+            </div>
           </motion.div>
         )}
       </main>
 
-      {/* Watermark Section */}
       <div className="fixed bottom-10 right-10 pointer-events-none opacity-[0.03]">
         <h2 className="text-[10rem] font-black leading-none select-none tracking-tighter uppercase font-satoshi">DIARCHE</h2>
       </div>
