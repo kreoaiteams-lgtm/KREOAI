@@ -24,7 +24,7 @@ const Landing = () => {
       </main>
 
       <div className="py-20 flex justify-center">
-        <h2 className="text-[12rem] font-serif italic text-blue-50/60 select-none tracking-tighter leading-none opacity-40">DIARCHE</h2>
+        <h2 className="text-[12rem] font-black font-satoshi text-gray-800/80 select-none tracking-tighter leading-none">DIARCHE</h2>
       </div>
 
       <footer className="py-20 border-t border-blue-50 text-center bg-white">

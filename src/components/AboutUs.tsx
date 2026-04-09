@@ -7,84 +7,10 @@ import {
 
 const AboutUs = () => {
   return (
-    <section id="about" className="relative min-h-[220vh] pt-12 pb-32 px-6 overflow-hidden bg-white text-[#0020C2] flex flex-col items-center">
+    <section id="about" className="relative min-h-[200vh] pt-12 pb-32 px-6 overflow-hidden bg-white text-[#0020C2] flex flex-col items-center">
       {/* Subtle background atmosphere - Editorial White */}
       <div className="absolute top-0 right-0 w-[1000px] h-[1000px] bg-blue-50/40 blur-[220px] rounded-full opacity-40 pointer-events-none" />
       <div className="absolute top-1/2 left-0 w-[800px] h-[800px] bg-yellow-50/40 blur-[180px] rounded-full opacity-40 pointer-events-none" />
-
-      {/* Scattered background elements */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden select-none opacity-20">
-         <motion.div animate={{ rotate: 360 }} transition={{ duration: 60, repeat: Infinity, ease: 'linear' }} className="absolute -top-20 -left-20 w-[400px] h-[400px] border border-blue-100 rounded-full" />
-      </div>
-
-      {/* SPREAD UI COMPONENTS AROUND THE SCREEN - AS REQUESTED */}
-      <div className="absolute inset-0 pointer-events-none select-none">
-         {/* Code Snippet Card - Scattered Left */}
-         <motion.div 
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            className="absolute top-[20%] left-[5%] p-6 bg-white border border-blue-50 rounded-3xl shadow-xl shadow-blue-900/5 hidden md:block z-30 pointer-events-auto"
-         >
-            <div className="flex gap-1.5 mb-3">
-               <div className="w-2 h-2 rounded-full bg-red-400/40" />
-               <div className="w-2 h-2 rounded-full bg-yellow-400/40" />
-               <div className="w-2 h-2 rounded-full bg-green-400/40" />
-            </div>
-            <div className="space-y-2">
-               <div className="h-1.5 w-16 bg-blue-100 rounded-full" />
-               <div className="h-1.5 w-10 bg-blue-50 rounded-full" />
-            </div>
-            <span className="block mt-4 text-[8px] font-black uppercase text-blue-500/30">Logic.manifest</span>
-         </motion.div>
-
-         {/* Metrics Pill - Scattered Right */}
-         <motion.div 
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            className="absolute top-[35%] right-[5%] p-6 bg-white border border-blue-50 rounded-full shadow-xl shadow-blue-900/5 flex items-center gap-4 hidden md:flex z-30 pointer-events-auto"
-         >
-            <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-500"><BarChart size={18} /></div>
-            <div>
-               <div className="text-[9px] font-black uppercase text-blue-400/40">Efficiency</div>
-               <div className="text-sm font-serif italic text-blue-900/60">Optimized</div>
-            </div>
-         </motion.div>
-
-         {/* System Settings Toggle - Scattered Bottom Left */}
-         <motion.div 
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            className="absolute bottom-[40%] left-[10%] p-6 bg-yellow-50/20 border border-yellow-100 rounded-3xl flex items-center gap-6 hidden md:flex z-30 pointer-events-auto"
-         >
-            <ToggleRight size={24} className="text-yellow-600/60" />
-            <span className="text-[9px] font-black uppercase tracking-widest text-yellow-600/40">Visual Depth</span>
-         </motion.div>
-
-         {/* Global Scale Card - Scattered Center Right */}
-         <motion.div 
-            initial={{ opacity: 0, scale: 0.8 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            className="absolute top-[55%] right-[12%] p-6 bg-white border border-blue-50 rounded-3xl shadow-xl shadow-blue-900/5 flex flex-col gap-2 hidden md:flex z-30 pointer-events-auto"
-         >
-            <div className="flex items-center gap-3">
-               <Globe size={16} className="text-blue-500/50" />
-               <span className="text-[9px] font-black uppercase text-blue-500/40">Nodes</span>
-            </div>
-            <div className="flex -space-x-2">
-               {[1,2,3].map(i => <div key={i} className="w-6 h-6 rounded-full bg-blue-100 border-2 border-white" />)}
-               <div className="w-6 h-6 rounded-full bg-blue-50 border-2 border-white flex items-center justify-center text-[8px] font-bold text-blue-400">+</div>
-            </div>
-         </motion.div>
-
-         {/* Additional Floating UI - Code Pill */}
-         <motion.div 
-            animate={{ y: [0, -10, 0] }}
-            transition={{ duration: 5, repeat: Infinity }}
-            className="absolute top-[10%] right-[25%] px-6 py-2 bg-blue-50 border border-blue-100 rounded-full hidden md:block opacity-40"
-         >
-            <span className="text-[8px] font-black uppercase tracking-widest text-blue-900">Render Pipeline Alpha</span>
-         </motion.div>
-      </div>
 
       <div className="max-w-6xl w-full relative z-10 flex flex-col items-center pt-24">
         {/* Section Label */}
@@ -100,29 +26,93 @@ const AboutUs = () => {
           </div>
         </motion.div>
 
-        {/* Hero Section - The Name */}
-        <motion.div
-           initial={{ opacity: 0, y: 30 }}
-           whileInView={{ opacity: 1, y: 0 }}
-           viewport={{ once: true }}
-           transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-           className="text-center relative mb-32"
-        >
-          <h1 className="flex flex-col items-center select-none">
-            <span className="text-[7rem] md:text-[10rem] font-light italic font-serif text-[#0020C2] leading-[0.7] tracking-tighter block">
-              Dhruv
-            </span>
-            <span className="text-[7rem] md:text-[10rem] font-black font-satoshi text-yellow-500 leading-[0.9] tracking-tighter block uppercase">
-              GAUTAM
-            </span>
-          </h1>
-          <motion.div 
-             initial={{ width: 0 }}
-             whileInView={{ width: '100%' }}
-             transition={{ duration: 1.5, delay: 0.5 }}
-             className="h-4 bg-[#f0f4ff] mt-2 mx-auto opacity-50"
-          />
-        </motion.div>
+        {/* Hero Section - The Name - CLUSTERED UI COMPONENTS AROUND IT AS REQUESTED */}
+        <div className="relative mb-32">
+          {/* Floating Artifacts surrounding the name */}
+          <div className="absolute -left-32 -top-12 pointer-events-none hidden xl:block">
+            <motion.div 
+               initial={{ opacity: 0, x: -20 }}
+               whileInView={{ opacity: 1, x: 0 }}
+               className="p-6 bg-white border border-blue-50 rounded-3xl shadow-xl shadow-blue-900/5 pointer-events-auto"
+            >
+               <div className="flex gap-1.5 mb-3">
+                  <div className="w-2 h-2 rounded-full bg-red-400/40" />
+                  <div className="w-2 h-2 rounded-full bg-yellow-400/40" />
+                  <div className="w-2 h-2 rounded-full bg-green-400/40" />
+               </div>
+               <div className="space-y-2">
+                  <div className="h-1.5 w-16 bg-blue-100 rounded-full" />
+                  <div className="h-1.5 w-10 bg-blue-50 rounded-full" />
+               </div>
+               <span className="block mt-4 text-[8px] font-black uppercase text-blue-500/30">Logic.manifest</span>
+            </motion.div>
+          </div>
+
+          <div className="absolute -right-32 top-8 pointer-events-none hidden xl:block">
+            <motion.div 
+               initial={{ opacity: 0, x: 20 }}
+               whileInView={{ opacity: 1, x: 0 }}
+               className="p-6 bg-white border border-blue-50 rounded-full shadow-xl shadow-blue-900/5 flex items-center gap-4 pointer-events-auto"
+            >
+               <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-500"><BarChart size={18} /></div>
+               <div>
+                  <div className="text-[9px] font-black uppercase text-blue-400/40">Efficiency</div>
+                  <div className="text-sm font-serif italic text-blue-900/60">Optimized</div>
+               </div>
+            </motion.div>
+          </div>
+
+          <div className="absolute -left-16 bottom-0 pointer-events-none hidden xl:block">
+            <motion.div 
+               initial={{ opacity: 0, y: 20 }}
+               whileInView={{ opacity: 1, y: 0 }}
+               className="p-5 bg-yellow-50/20 border border-yellow-100 rounded-2xl flex items-center gap-4 pointer-events-auto"
+            >
+               <ToggleRight size={20} className="text-yellow-600/60" />
+               <span className="text-[8px] font-black uppercase tracking-widest text-yellow-600/40">Visual Depth</span>
+            </motion.div>
+          </div>
+
+          <div className="absolute -right-24 -bottom-16 pointer-events-none hidden xl:block">
+            <motion.div 
+               initial={{ opacity: 0, scale: 0.8 }}
+               whileInView={{ opacity: 1, scale: 1 }}
+               className="p-6 bg-white border border-blue-50 rounded-3xl shadow-xl shadow-blue-900/5 flex flex-col gap-2 pointer-events-auto"
+            >
+               <div className="flex items-center gap-3">
+                  <Globe size={16} className="text-blue-500/50" />
+                  <span className="text-[9px] font-black uppercase text-blue-500/40">Nodes</span>
+               </div>
+               <div className="flex -space-x-2">
+                  {[1,2,3].map(i => <div key={i} className="w-6 h-6 rounded-full bg-blue-100 border-2 border-white" />)}
+                  <div className="w-5 h-5 rounded-full bg-blue-50 border-2 border-white flex items-center justify-center text-[7px] font-bold text-blue-400">+</div>
+               </div>
+            </motion.div>
+          </div>
+
+          <motion.div
+             initial={{ opacity: 0, y: 30 }}
+             whileInView={{ opacity: 1, y: 0 }}
+             viewport={{ once: true }}
+             transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+             className="text-center"
+          >
+            <h1 className="flex flex-col items-center select-none">
+              <span className="text-[7rem] md:text-[10rem] font-light italic font-serif text-[#0020C2] leading-[0.7] tracking-tighter block">
+                Dhruv
+              </span>
+              <span className="text-[7rem] md:text-[10rem] font-black font-satoshi text-yellow-500 leading-[0.9] tracking-tighter block uppercase">
+                GAUTAM
+              </span>
+            </h1>
+            <motion.div 
+               initial={{ width: 0 }}
+               whileInView={{ width: '100%' }}
+               transition={{ duration: 1.5, delay: 0.5 }}
+               className="h-4 bg-[#f0f4ff] mt-2 mx-auto opacity-50"
+            />
+          </motion.div>
+        </div>
 
         {/* Narrative Block - Vision */}
         <div className="max-w-4xl w-full space-y-40 text-center mt-12 pb-40 px-6">
