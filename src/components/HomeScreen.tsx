@@ -424,6 +424,7 @@ const HomeScreen = ({
   const [pricingOpen, setPricingOpen] = useState(false);
   const [showUpgradePop, setShowUpgradePop] = useState(false);
   const [manifestCount, setManifestCount] = useState(0);
+  const [isPro, setIsPro] = useState(localStorage.getItem('is_kreo_pro') === 'true');
 
   const [uploadedFile, setUploadedFile] = useState<{ url: string, name: string, type: string, ocr?: string } | null>(() => {
     const saved = localStorage.getItem('kreo_last_upload');
@@ -769,8 +770,8 @@ const HomeScreen = ({
       )}
       {!artifact && (
         <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-3 bg-transparent backdrop-blur-3xl border-b border-white/5 transition-all">
-          <div className="text-foreground group cursor-pointer max-w-[124px]" onClick={() => { setArtifact(null); setCurrentArtifactId(null); setChatHistory([]); window.history.replaceState(null, '', '/'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
-            <KreoLogo />
+          <div className="text-foreground group cursor-pointer max-w-[150px]" onClick={() => { setArtifact(null); setCurrentArtifactId(null); setChatHistory([]); window.history.replaceState(null, '', '/'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
+            <KreoLogo isPro={isPro} />
           </div>
           <div className="flex items-center gap-1">
             <Tooltip>
@@ -896,7 +897,9 @@ const HomeScreen = ({
                 </div>
               </div>
               <div className="text-center">
-                <h1 className="text-6xl italic tracking-tighter text-[#1B3FBF] mb-4 animate-in slide-in-from-bottom-2 duration-700" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>Kreo</h1>
+                <h1 className="text-6xl italic tracking-tighter text-[#1B3FBF] mb-4 animate-in slide-in-from-bottom-2 duration-700" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>
+                  Kreo {isPro && <span className="bg-[#1B3FBF] text-white text-[14px] font-black uppercase tracking-widest px-3 py-1 rounded-full align-middle ml-2">PRO</span>}
+                </h1>
                 <p className="text-[12px] font-black uppercase tracking-[0.7em] text-black/40 animate-pulse">
                   {isIncomingPortal ? "Restoring Neural Manifest..." : loadingMessage}
                 </p>

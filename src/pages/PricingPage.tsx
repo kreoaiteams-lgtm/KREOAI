@@ -18,12 +18,8 @@ const PricingPage = () => {
   const [selectedPlan, setSelectedPlan] = useState<'free' | 'ultra' | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   
-  // Editable Form States
+  // Editable Form States - Retaining only the primary identifier
   const [ownerName, setOwnerName] = useState('Dhruv Gautam');
-  const [address, setAddress] = useState('Neural Sector 4, Architecture Grid');
-  const [cardNumber, setCardNumber] = useState('4242 4242 4242 4242');
-  const [expiry, setExpiry] = useState('12/28');
-  const [cvv, setCvv] = useState('***');
 
   const paypalButtonRef = useRef<HTMLDivElement>(null);
 
@@ -37,25 +33,30 @@ const PricingPage = () => {
           label: 'subscribe'
         },
         createSubscription: function(data: any, actions: any) {
-          // You should create a Plan ID in your PayPal dashboard and use it here
-          // For demo purposes, we usually use a hardcoded plan id
+          // IMPORTANT: You must replace 'YOUR_PLAN_ID' with a real Plan ID created in your PayPal dashboard.
+          // Failure to do so results in 'RESOURCE_NOT_FOUND'.
           return actions.subscription.create({
-            'plan_id': 'P-5ML4271244454362MC62MV7I' // This is a placeholder, you'll need a real one
+            'plan_id': 'P-5ML4271244454362MC62MV7I' 
           });
         },
         onApprove: function(data: any, actions: any) {
           setIsProcessing(true);
+          localStorage.setItem('is_kreo_pro', 'true');
           setTimeout(() => {
             setIsProcessing(false);
             navigate('/');
           }, 2000);
+        },
+        onError: function(err: any) {
+          console.error("PayPal Neural Link Failed:", err);
         }
       }).render(paypalButtonRef.current);
     }
   }, [selectedPlan, navigate]);
 
-  const processPayment = () => {
+  const processManualBypass = () => {
     setIsProcessing(true);
+    localStorage.setItem('is_kreo_pro', 'true');
     setTimeout(() => {
       setIsProcessing(false);
       navigate('/'); 
@@ -153,9 +154,9 @@ const PricingPage = () => {
             animate={{ opacity: 1, scale: 1 }}
             className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-12"
           >
-            {/* Left Side: Manifest Summary (INTERSWITCHED) */}
+            {/* Left Side: Manifest Summary */}
             <div className="flex flex-col gap-10">
-              <div className="bg-[#f8faff] border border-black/5 rounded-[4rem] p-12 space-y-12">
+              <div className="bg-[#f8faff] border border-black/5 rounded-[4rem] p-12 space-y-12 h-full">
                  <div className="space-y-2">
                     <ReceiptText className="text-[#0020C2]" size={32} />
                     <h3 className="text-3xl font-serif italic text-black">Manifest Summary</h3>
@@ -191,8 +192,59 @@ const PricingPage = () => {
                     </div>
                  </div>
               </div>
+            </div>
 
-              <div className="grid grid-cols-3 gap-6 opacity-30 px-10">
+            {/* Right Side: Authority Entry (CLEANED) */}
+            <div className="bg-white border border-black/5 rounded-[4rem] p-10 md:p-14 shadow-2xl space-y-12 h-max">
+              <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                  <h3 className="text-2xl font-serif italic text-black">Authority Manifest</h3>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-black/20">Secure Neural Transition</p>
+                </div>
+                <div className="p-4 bg-blue-50 border border-blue-100 rounded-3xl text-[#0020C2]">
+                  <Lock size={22} />
+                </div>
+              </div>
+
+              <div className="space-y-10">
+                {/* Account Owner */}
+                <div className="space-y-4">
+                  <label className="text-[9px] font-black uppercase tracking-[0.5em] text-black/30 ml-2 italic">Account Owner</label>
+                  <div className="relative">
+                    <input 
+                      type="text" 
+                      value={ownerName}
+                      onChange={(e) => setOwnerName(e.target.value)}
+                      placeholder="Architect Name" 
+                      className="w-full p-6 bg-[#f8faff] border border-black/5 rounded-3xl text-lg font-medium outline-none focus:border-[#0020C2]/20 transition-all font-serif italic" 
+                    />
+                    <User className="absolute right-6 top-1/2 -translate-y-1/2 text-black/10" size={20} />
+                  </div>
+                  <p className="text-[9px] font-black uppercase tracking-widest text-black/30 text-center opacity-60">Credentials and Address are managed securely via PayPal Authority</p>
+                </div>
+
+                <div className="space-y-6 pt-6 flex flex-col items-center">
+                  <div className="w-full max-w-sm">
+                    <div ref={paypalButtonRef} className="w-full relative z-50" />
+                  </div>
+                  
+                  <div className="flex items-center gap-6 w-full opacity-20">
+                     <div className="h-px flex-1 bg-black" />
+                     <span className="text-[8px] font-black uppercase tracking-widest">or</span>
+                     <div className="h-px flex-1 bg-black" />
+                  </div>
+
+                  <button 
+                    onClick={processManualBypass}
+                    disabled={isProcessing}
+                    className="w-full py-7 border border-black text-black text-[10px] font-black uppercase tracking-[0.4em] rounded-full hover:bg-black hover:text-white active:scale-95 transition-all shadow-xl font-satoshi"
+                  >
+                    {isProcessing ? "Syncing Portal..." : "Authorize Transition Directly"}
+                  </button>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-6 opacity-30 pt-4">
                  <div className="flex flex-col items-center gap-2">
                     <Shield size={20} />
                     <span className="text-[8px] font-black uppercase tracking-[0.3em]">Encrypted</span>
@@ -207,118 +259,12 @@ const PricingPage = () => {
                  </div>
               </div>
             </div>
-
-            {/* Right Side: Payment Form (INTERSWITCHED) */}
-            <div className="bg-white border border-black/5 rounded-[4rem] p-10 md:p-14 shadow-2xl space-y-12 h-max">
-              <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                  <h3 className="text-2xl font-serif italic text-black">Authority Manifest</h3>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-black/20">Secure Neural Transaction</p>
-                </div>
-                <div className="p-4 bg-blue-50 border border-blue-100 rounded-3xl text-[#0020C2]">
-                  <Lock size={22} />
-                </div>
-              </div>
-
-              <div className="space-y-8">
-                {/* Account Owner */}
-                <div className="space-y-4">
-                  <label className="text-[9px] font-black uppercase tracking-[0.5em] text-black/30 ml-2 italic">Account Owner</label>
-                  <div className="relative">
-                    <input 
-                      type="text" 
-                      value={ownerName}
-                      onChange={(e) => setOwnerName(e.target.value)}
-                      placeholder="Architect Name" 
-                      className="w-full p-6 bg-[#f8faff] border border-black/5 rounded-3xl text-lg font-medium outline-none focus:border-[#0020C2]/20 transition-all font-serif italic" 
-                    />
-                    <User className="absolute right-6 top-1/2 -translate-y-1/2 text-black/10" size={20} />
-                  </div>
-                </div>
-
-                {/* Card Credentials (EDITABLE) */}
-                <div className="space-y-4">
-                  <label className="text-[9px] font-black uppercase tracking-[0.5em] text-black/30 ml-2 italic">Card Credentials</label>
-                  <div className="relative">
-                    <input 
-                      type="text" 
-                      value={cardNumber}
-                      onChange={(e) => setCardNumber(e.target.value)}
-                      className="w-full p-6 bg-[#f8faff] border border-black/5 rounded-3xl text-lg font-medium tracking-widest outline-none focus:border-[#0020C2]/20 transition-all" 
-                    />
-                    <CreditCard className="absolute right-6 top-1/2 -translate-y-1/2 text-[#0020C2]/40" size={22} />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <input 
-                      type="text" 
-                      value={expiry}
-                      onChange={(e) => setExpiry(e.target.value)}
-                      className="w-full p-6 bg-[#f8faff] border border-black/5 rounded-3xl text-lg font-medium outline-none focus:border-[#0020C2]/20 transition-all" 
-                    />
-                    <input 
-                      type="text" 
-                      value={cvv}
-                      onChange={(e) => setCvv(e.target.value)}
-                      className="w-full p-6 bg-[#f8faff] border border-black/5 rounded-3xl text-lg font-medium outline-none focus:border-[#0020C2]/20 transition-all" 
-                    />
-                  </div>
-                </div>
-
-                {/* Address Line (EDITABLE) */}
-                <div className="space-y-4">
-                  <label className="text-[9px] font-black uppercase tracking-[0.5em] text-black/30 ml-2 italic">Architecture Address</label>
-                  <div className="relative">
-                    <input 
-                      type="text" 
-                      value={address}
-                      onChange={(e) => setAddress(e.target.value)}
-                      placeholder="Street Address, Neural Grid" 
-                      className="w-full p-6 bg-[#f8faff] border border-black/5 rounded-3xl text-lg font-medium outline-none focus:border-[#0020C2]/20 transition-all font-serif italic" 
-                    />
-                    <MapPin className="absolute right-6 top-1/2 -translate-y-1/2 text-black/10" size={20} />
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-6 pt-4">
-                <div className="space-y-4">
-                  <div className="text-[9px] font-black uppercase tracking-widest text-black/30 text-center mb-2">Automated Neural Authority</div>
-                  <div ref={paypalButtonRef} className="w-full z-10" />
-                </div>
-                
-                <div className="relative h-px bg-black/5 my-4">
-                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 px-4 bg-white text-[8px] font-black uppercase tracking-widest text-black/20">or manifest directly</div>
-                </div>
-
-                <button 
-                  onClick={processPayment}
-                  disabled={isProcessing}
-                  className="w-full py-7 bg-black text-white text-[10px] font-black uppercase tracking-[0.4em] rounded-full hover:scale-[1.02] active:scale-95 transition-all shadow-2xl relative flex items-center justify-center font-satoshi"
-                >
-                  {isProcessing ? (
-                    <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-3">
-                      <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-                      Syncing Portal...
-                    </motion.span>
-                  ) : (
-                    <>Authorize Transition <ChevronRight size={16} className="ml-2" /></>
-                  )}
-                </button>
-                <button 
-                  onClick={() => setSelectedPlan(null)}
-                  disabled={isProcessing}
-                  className="text-[10px] font-black uppercase tracking-widest text-black/20 hover:text-black/60 transition-colors text-center"
-                >
-                  Reconsider Parameters
-                </button>
-              </div>
-            </div>
           </motion.div>
         )}
       </main>
 
       <div className="fixed bottom-10 right-10 pointer-events-none opacity-[0.03]">
-        <h2 className="text-[10rem] font-black leading-none select-none tracking-tighter uppercase font-satoshi">DIARCHE</h2>
+        <h2 className="text-[10rem] font-black leading-none select-none tracking-tighter uppercase font-satoshi">KREO</h2>
       </div>
     </div>
   );
