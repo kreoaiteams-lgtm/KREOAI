@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useMemo } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   Search, History, Settings, User, ArrowUp, ArrowDown, Monitor, Database, Smartphone,
   LayoutGrid, ChevronDown, ChevronLeft, Clock, Plus, Zap, FileText,
@@ -397,7 +398,6 @@ const InteractiveVisualLoop = ({ theme }: { theme: string }) => {
 
 
 import { PREMADE_ARTIFACTS } from "@/lib/premadeArtifacts";
-import { useNavigate, useSearchParams } from "react-router-dom";
 
 const HomeScreen = ({
   onCloudBurst,
@@ -409,6 +409,7 @@ const HomeScreen = ({
   onAuthRequired,
   urlId: propUrlId
 }: HomeScreenProps) => {
+  const navigate = useNavigate();
   const [query, setQuery] = useState(() => localStorage.getItem('kreo_last_query') || "");
   const [artifact, setArtifact] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -622,7 +623,6 @@ const HomeScreen = ({
     setUserEmail("");
     setArtifact(null);
     setChatHistory([]);
-    window.location.reload();
   };
   const handleHistoryItemClick = (item: any) => {
     setArtifact(item.code);

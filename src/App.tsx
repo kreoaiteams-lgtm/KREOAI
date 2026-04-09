@@ -14,6 +14,7 @@ import KreoPromo4 from "./components/KreoPromo4.tsx";
 import SocialManagerPage from "./components/SocialManagerPage.tsx";
 import ShareView from "./components/ShareView.tsx";
 import ProjectRouter from "./components/ProjectRouter.tsx";
+import AuthScreen from "./components/AuthScreen.tsx";
 
 import { Analytics } from "@vercel/analytics/react";
 
@@ -27,6 +28,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/login" element={<AuthScreen />} />
           <Route path="/landing" element={<Landing />} />
           <Route path="/promo1" element={<KreoPromo1 />} />
           <Route path="/promo2" element={<KreoPromo2 />} />

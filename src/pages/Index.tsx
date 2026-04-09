@@ -1,8 +1,7 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import CloudFraming from "@/components/CloudFraming";
-import IntroScreen from "@/components/IntroScreen";
 import SplashScreen from "@/components/SplashScreen";
-import AuthScreen from "@/components/AuthScreen";
 import HomeScreen from "@/components/HomeScreen";
 import { supabase } from "@/lib/supabase";
 import WelcomeScreen from "@/components/WelcomeScreen";
@@ -14,6 +13,7 @@ interface IndexProps {
 }
 
 const Index = ({ urlId }: IndexProps) => {
+  const navigate = useNavigate();
   const [authed, setAuthed] = useState(false);
   const [authLoading, setAuthLoading] = useState(true);
   const [theme, setTheme] = useState<ThemeMode>((localStorage.getItem("theme") as ThemeMode) || "ultra");
@@ -25,6 +25,9 @@ const Index = ({ urlId }: IndexProps) => {
   useEffect(() => {
     // Check initial session — must resolve before rendering protected content
     supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) {
+        navigate("/login");
+      }
       setAuthed(!!session);
       setAuthLoading(false);
     });
@@ -36,12 +39,15 @@ const Index = ({ urlId }: IndexProps) => {
         // Just logged in or signed up
         setShowWelcome(true);
       }
+      if (!isNowAuthed && event === 'SIGNED_OUT') {
+        navigate("/login");
+      }
       setAuthed(isNowAuthed);
       setAuthLoading(false);
     });
 
     return () => subscription.unsubscribe();
-  }, [authed]);
+  }, [authed, navigate]);
 
 
   // Persist and apply theme
