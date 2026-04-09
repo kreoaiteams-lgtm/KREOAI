@@ -19,13 +19,13 @@ const Landing = () => {
         </Link>
       </header>
 
-      <main className="pt-20">
+      <main className="pt-0">
         <AboutUs />
       </main>
 
-      <footer className="py-32 border-t border-blue-50 text-center bg-white">
-         <div className="scale-75 opacity-40 mx-auto mb-10"><KreoLogo /></div>
-         <p className="max-w-xs mx-auto text-[#0020C2]/20 text-[9px] font-black uppercase tracking-[0.6em] italic leading-relaxed mb-12">
+      <footer className="py-20 border-t border-blue-50 text-center bg-white">
+         <div className="scale-75 opacity-40 mx-auto mb-6"><KreoLogo /></div>
+         <p className="max-w-xs mx-auto text-[#0020C2]/20 text-[9px] font-black uppercase tracking-[0.6em] italic leading-relaxed mb-10">
             Established for the visionary architect. <br/>
             Neural Design manifested by KREO Engine.
          </p>
