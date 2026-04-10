@@ -81,8 +81,8 @@ const SynthesisEngine = () => (
   <div className="grid grid-cols-1 md:grid-cols-3 gap-12 pt-10">
     {[
       { step: "01", title: "Cognitive Input", desc: "Describe your intent in plain language or upload a source manifest." },
-      { step: "02", title: "Neural Orchestration", desc: "Our engine decomposes your logic and applies high-fidelity design weighting." },
-      { step: "03", title: "Visual Manifestation", desc: "A functional, aesthetic outcome is generated in seconds." }
+      { step: "02", title: "Visual Orchestration", desc: "Our engine decomposes your intent and applies high-fidelity design weighting." },
+      { step: "03", title: "Digital Manifestation", desc: "A functional, aesthetic outcome is generated in seconds." }
     ].map((item, i) => (
       <div key={i} className="space-y-6 text-center group">
         <div className="text-6xl font-serif italic text-black/5 group-hover:text-[#1B3FBF]/10 transition-colors duration-700">{item.step}</div>
@@ -666,7 +666,7 @@ const HomeScreen = ({
     if (isResearchPrompt) {
       setLoadingMessage("Orchestrating live market data & research analysis...");
     } else {
-      setLoadingMessage("Manifesting neural architecture...");
+      setLoadingMessage("Generating visual manifestation...");
     }
 
     try {
@@ -695,15 +695,15 @@ const HomeScreen = ({
       const adj = ENHANCEMENT_ADJECTIVES[Math.floor(Math.random() * ENHANCEMENT_ADJECTIVES.length)];
       const phrase = ENHANCEMENT_PHRASES[Math.floor(Math.random() * ENHANCEMENT_PHRASES.length)];
 
-      let backgroundEnhancedQuery = `Manifest a ${adj} ${finalQuery.trim()} ${phrase}.`;
+      let backgroundEnhancedQuery = `Manifest a ${adj} visual experience for ${finalQuery.trim()} ${phrase}. DO NOT create a blueprint or documentation layout; build a LIVE, interactive, and high-fidelity product interface.`;
 
       if (isPresentationRequest) {
         backgroundEnhancedQuery += `
-          CRITICAL ARCHITECTURE: This is a MULTI-SLIDE PPT. 
+          CRITICAL ACTION: This is a MULTI-SLIDE PPT. 
           1. Use ONLY HTML/Tailwind. No external JS libraries.
-          2. Structure each slide within <section class="h-screen w-screen flex flex-col items-center justify-center p-20 bg-white"> tags.
-          3. Create a PROPER PPT from start to end (at least 5-7 slides: Title, Problem, Solution, Data/Charts, Team, Contact).
-          4. Use high-fidelity editorial typography (font-serif italic) and architectural layout.
+          2. Structure each slide within <section class="h-screen w-screen flex flex-col items-center justify-center p-24 bg-white"> tags.
+          3. Create a STUNNING PPT from start to end (at least 5-8 slides: Title, Narrative, Data Visuals, Outcome).
+          4. Use high-fidelity editorial typography (font-serif italic) and clean whitespace.
           5. EVERY SLIDE MUST BE WRAPPED IN <section> TAGS.
         `;
       }
@@ -768,7 +768,7 @@ const HomeScreen = ({
           waveSpeed={0.05}
         />
       )}
-      {!artifact && (
+      {!artifact && !isSubmitting && !isIncomingPortal && (
         <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-3 bg-transparent backdrop-blur-3xl border-b border-white/5 transition-all">
           <div className="text-foreground group cursor-pointer max-w-[150px]" onClick={() => { setArtifact(null); setCurrentArtifactId(null); setChatHistory([]); window.history.replaceState(null, '', '/'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
             <KreoLogo isPro={isPro} />
