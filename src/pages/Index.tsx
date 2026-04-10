@@ -20,7 +20,7 @@ const Index = ({ urlId }: IndexProps) => {
   const [isSplashComplete, setIsSplashComplete] = useState(false);
   const [isArtifactActive, setIsArtifactActive] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showWelcome, setShowWelcome] = useState(true);
+  const [showWelcome, setShowWelcome] = useState(false);
 
   useEffect(() => {
     // Check initial session — must resolve before rendering protected content
