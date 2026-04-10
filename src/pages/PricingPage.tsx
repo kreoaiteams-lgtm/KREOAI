@@ -70,7 +70,7 @@ const PricingPage = () => {
         <div className="absolute bottom-0 left-0 w-[800px] h-[800px] bg-yellow-50/50 blur-[180px] rounded-full" />
       </div>
 
-      <header className="relative z-10 flex items-center justify-between px-10 py-10 border-b border-black/[0.03]">
+      <header className="relative z-10 flex items-center justify-between px-10 py-5 border-b border-black/[0.03]">
         <button onClick={() => navigate(-1)} className="flex items-center gap-4 group">
           <div className="w-10 h-10 rounded-full border border-black/5 flex items-center justify-center group-hover:bg-black/5 transition-all text-black">
             <X size={18} />
@@ -83,7 +83,7 @@ const PricingPage = () => {
         </div>
       </header>
 
-      <main className="relative z-10 max-w-7xl mx-auto px-6 py-16 flex flex-col items-center">
+      <main className="relative z-10 max-w-7xl mx-auto px-6 py-6 flex flex-col items-center">
         {!selectedPlan ? (
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
