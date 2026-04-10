@@ -695,9 +695,12 @@ const HomeScreen = ({
       const adj = ENHANCEMENT_ADJECTIVES[Math.floor(Math.random() * ENHANCEMENT_ADJECTIVES.length)];
       const phrase = ENHANCEMENT_PHRASES[Math.floor(Math.random() * ENHANCEMENT_PHRASES.length)];
 
+      const formsReactRequest = finalQuery.toLowerCase().includes("react");
+      const isInteractiveApp = /(dashboard|app|tool|interactive|calculator|widget|game)/i.test(finalQuery);
+
       let backgroundEnhancedQuery = `Manifest a ${adj} visual experience for ${finalQuery.trim()} ${phrase}. DO NOT create a blueprint or documentation layout; build a LIVE, interactive, and high-fidelity product interface.`;
 
-      if (isPresentationRequest) {
+      if (isPresentationRequest && !formsReactRequest) {
         backgroundEnhancedQuery += `
           CRITICAL ACTION: This is a MULTI-SLIDE PPT. 
           1. Use ONLY HTML/Tailwind. No external JS libraries.
@@ -705,6 +708,17 @@ const HomeScreen = ({
           3. Create a STUNNING PPT from start to end (at least 5-8 slides: Title, Narrative, Data Visuals, Outcome).
           4. Use high-fidelity editorial typography (font-serif italic) and clean whitespace.
           5. EVERY SLIDE MUST BE WRAPPED IN <section> TAGS.
+        `;
+      } else if (formsReactRequest || isInteractiveApp) {
+        backgroundEnhancedQuery += `
+          CRITICAL ARCHITECTURE: You may use REACT for this manifestation.
+          1. This MUST be a SINGLE-FILE REACT COMPONENT.
+          2. Use React hooks (useState, useEffect, etc.) via the 'React' global if needed.
+          3. Use ONLY Lucide-React icons (access via standard component names).
+          4. Use ONLY Tailwind CSS for all styling and animations.
+          5. Export ONE single default functional component.
+          6. DO NOT use external imports or markdown code blocks inside the UI; return the PURE executable code.
+          7. Focus on a high-fidelity, functional application interface.
         `;
       }
 
