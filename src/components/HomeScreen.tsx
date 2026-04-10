@@ -697,8 +697,15 @@ const HomeScreen = ({
 
       const formsReactRequest = finalQuery.toLowerCase().includes("react");
       const isInteractiveApp = /(dashboard|app|tool|interactive|calculator|widget|game)/i.test(finalQuery);
+      const isStoryboardRequest = /(storyboard|story board|script|dialogue|scene)/i.test(finalQuery);
+      const hasThemeSpecified = /(dark|black|neon|vibrant|colorful|night)/i.test(finalQuery);
 
       let backgroundEnhancedQuery = `Manifest a ${adj} visual experience for ${finalQuery.trim()} ${phrase}. DO NOT create a blueprint or documentation layout; build a LIVE, interactive, and high-fidelity product interface.`;
+
+      // Default to Light Editorial if no theme is specified
+      if (!hasThemeSpecified) {
+        backgroundEnhancedQuery += ` DEFAULT THEME: Use a "Clean Light Editorial" aesthetic (White background, black text, royal blue accents). `;
+      }
 
       if (isPresentationRequest && !formsReactRequest) {
         backgroundEnhancedQuery += `
@@ -709,6 +716,15 @@ const HomeScreen = ({
           4. Use high-fidelity editorial typography (font-serif italic) and clean whitespace.
           5. EVERY SLIDE MUST BE WRAPPED IN <section> TAGS.
         `;
+      } else if (isStoryboardRequest) {
+        backgroundEnhancedQuery += `
+          CRITICAL ORCHESTRATION: This is a HIGH-FIDELITY VISUAL STORYBOARD.
+          1. Structure the layout as a CINEMATIC VERTICAL PROGRESSION.
+          2. USE PROPER SCRIPT FORMATTING: Character names in Bold, Dialogues in centered or distinct blocks.
+          3. Include "Visual Direction" notes in a small, italic, professional font.
+          4. Use subtle dividers or architectural spacing between scenes.
+          5. Ensure distinct dialogue labels for every line of speech.
+        `;
       } else if (formsReactRequest || isInteractiveApp) {
         backgroundEnhancedQuery += `
           CRITICAL ARCHITECTURE: You may use REACT for this manifestation.
@@ -717,8 +733,10 @@ const HomeScreen = ({
           3. Use ONLY Lucide-React icons (access via standard component names).
           4. Use ONLY Tailwind CSS for all styling and animations.
           5. Export ONE single default functional component.
-          6. DO NOT use external imports or markdown code blocks inside the UI; return the PURE executable code.
-          7. Focus on a high-fidelity, functional application interface.
+          6. RETURN THE PURE RAW CODE ONLY. 
+          7. DO NOT use markdown code blocks (no triple backticks).
+          8. DO NOT include any explanations, preambles, or post-scripts.
+          9. Focus on a high-fidelity, functional application interface.
         `;
       }
 
@@ -904,38 +922,51 @@ const HomeScreen = ({
             <div className="absolute inset-0 bg-gradient-to-br from-[#f0f4ff] via-white to-[#fff8f0] pointer-events-none" />
             <div className="relative z-10 flex flex-col items-center gap-14 w-full h-full justify-center">
               
-              {/* Dynamic Component Manifestation Previews */}
-              <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 w-full max-w-7xl mx-auto px-10 pointer-events-none hidden lg:block">
-                 <div className="relative h-[600px] w-full">
+              {/* Responsive Dashboard & Manifestation Fragment Previews */}
+              <div className="absolute inset-x-0 inset-y-0 w-full max-w-7xl mx-auto px-6 pointer-events-none">
+                 <div className="relative h-full w-full">
                     {[
-                      { delay: 0.2, x: "-15%", y: "-30%", title: "Founder Paradigm", content: "Dhruv Gautam / Architect of Flow", icon: <User size={14} /> },
-                      { delay: 0.8, x: "20%", y: "-45%", title: "Vision Manifest", content: "Orchestrating visual reality through neural links.", icon: <Sparkles size={14} /> },
-                      { delay: 1.4, x: "-25%", y: "10%", title: "Operational Core", content: "Headquarters: KREO Neural Labs", icon: <Globe size={14} /> },
-                      { delay: 2.0, x: "15%", y: "25%", title: "Philosophy", content: "Simplicity is the ultimate manifestation.", icon: <BrainCircuit size={14} /> }
+                      { delay: 0.2, x: "-20%", y: "-35%", title: "Founder", content: "Dhruv Gautam / CEO", icon: <User size={12} />, variant: "card" },
+                      { delay: 1.0, x: "25%", y: "-40%", title: "Vision", content: "Neural Orchestration", icon: <Sparkles size={12} />, variant: "card" },
+                      { delay: 1.8, x: "-30%", y: "15%", title: "Region", content: "KREO Global Node", icon: <Globe size={12} />, variant: "card" },
+                      { delay: 0.5, x: "20%", y: "20%", variant: "skeleton" },
+                      { delay: 1.5, x: "-15%", y: "30%", variant: "skeleton" },
+                      { delay: 2.2, x: "0%", y: "-50%", variant: "skeleton" }
                     ].map((comp, idx) => (
                       <motion.div
                         key={idx}
-                        initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                        initial={{ opacity: 0, scale: 0.8, y: 30 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         transition={{ 
                           delay: comp.delay, 
-                          duration: 1.5, 
+                          duration: 2, 
                           repeat: Infinity, 
                           repeatType: "reverse",
-                          repeatDelay: 2
+                          repeatDelay: 3
                         }}
-                        className="absolute p-6 bg-white/40 backdrop-blur-3xl border border-white/50 rounded-3xl shadow-2xl flex flex-col gap-3 min-w-[280px]"
+                        className={`absolute rounded-[2rem] shadow-2xl transition-all duration-700 ${comp.variant === 'card' ? 'p-5 bg-white/60 backdrop-blur-3xl border border-white/50 min-w-[240px] flex flex-col gap-2' : 'p-4 bg-[#1B3FBF]/5 border border-[#1B3FBF]/10 w-48 h-24'}`}
                         style={{ left: `50%`, top: `50%`, transform: `translate(${comp.x}, ${comp.y})` }}
                       >
-                        <div className="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest text-[#1B3FBF]/60">
-                           {comp.icon} {comp.title}
-                        </div>
-                        <div className="text-sm font-serif italic text-black/80">{comp.content}</div>
-                        <div className="flex gap-1">
-                           {[...Array(3)].map((_, i) => <div key={i} className="h-1 flex-1 bg-black/5 rounded-full overflow-hidden">
-                              <motion.div animate={{ x: ["-100%", "100%"] }} transition={{ repeat: Infinity, duration: 2, delay: i * 0.5 }} className="w-full h-full bg-[#1B3FBF]/20" />
-                           </div>)}
-                        </div>
+                        {comp.variant === 'card' ? (
+                          <>
+                            <div className="flex items-center gap-2 text-[8px] font-black uppercase tracking-widest text-[#1B3FBF]/60">
+                               {comp.icon} {comp.title}
+                            </div>
+                            <div className="text-xs font-serif italic text-black/80">{comp.content}</div>
+                            <div className="flex gap-1">
+                               {[...Array(3)].map((_, i) => <div key={i} className="h-0.5 flex-1 bg-black/5 rounded-full overflow-hidden">
+                                  <motion.div animate={{ x: ["-100%", "100%"] }} transition={{ repeat: Infinity, duration: 2, delay: i * 0.5 }} className="w-full h-full bg-[#1B3FBF]/20" />
+                               </div>)}
+                            </div>
+                          </>
+                        ) : (
+                          <div className="flex flex-col gap-3 h-full">
+                            <div className="h-2 w-1/2 bg-[#1B3FBF]/10 rounded-full" />
+                            <div className="flex-1 bg-[#1B3FBF]/5 rounded-xl border border-[#1B3FBF]/5 flex items-center justify-center">
+                               <Sparkles size={14} className="text-[#1B3FBF]/10" />
+                            </div>
+                          </div>
+                        )}
                       </motion.div>
                     ))}
                  </div>

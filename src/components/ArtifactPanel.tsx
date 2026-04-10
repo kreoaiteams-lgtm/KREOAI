@@ -259,31 +259,32 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
                         </body>
                       </html>
                     ` : (
-                      !code.trim().toLowerCase().startsWith("<!doctype") &&
-                      !code.trim().toLowerCase().startsWith("<html")
-                    ) ? `
+                    ) ? (() => {
+                      const cleanCode = code
+                        .replace(/```(jsx|tsx|javascript|js|html|react)?/g, "")
+                        .replace(/```/g, "")
+                        .trim();
+                      
+                      return `
                       <html>
                         <head>
                           <script src="https://cdn.tailwindcss.com"></script>
                           <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+                          <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
                           <style>
                             body { font-family: 'Inter', sans-serif; background: white; margin: 0; overflow-x: hidden; overflow-y: auto; min-height: 100vh; }
+                            #root { min-height: 100vh; }
                           </style>
                         </head>
                         <body>
                           <div id="root"></div>
-                          <script type="module">
+                          <script type="text/babel" data-type="module">
                             import { createElement, useState, useEffect, useRef, useCallback, useMemo, useReducer, useContext } from 'https://esm.sh/react@18';
                             import { createRoot } from 'https://esm.sh/react-dom@18/client';
+                            
                             const React = { createElement, useState, useEffect, useRef, useCallback, useMemo, useReducer, useContext };
                             window.React = React;
-                            window.useState = useState;
-                            window.useEffect = useEffect;
-                            window.useRef = useRef;
-                            window.useCallback = useCallback;
-                            window.useMemo = useMemo;
-                            window.useReducer = useReducer;
-                            window.useContext = useContext;
+                            
                             window.onerror = (message, source, lineno, colno, error) => {
                               document.getElementById('root').innerHTML =
                                 '<div style="padding: 3rem; background: #000; color: #ff3e3e; font-family: sans-serif; border: 1px solid #1a1a1a; border-radius: 2rem; margin: 2rem;">' +
@@ -293,9 +294,9 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
                                 '</div>';
                               return true;
                             };
+
                             try {
-                              const { useState, useEffect, useRef, useCallback, useMemo, useReducer, useContext } = React;
-                              ${code
+                              ${cleanCode
                                 .replace(/import\s+React.*?from\s+['"']react['"'];?\n?/g, "")
                                 .replace(/import\s+\{[^}]+\}\s+from\s+['"']react['"'];?\n?/g, "")
                                 .replace(/import\s+.*?\s+from\s+['"']lucide-react['"'];?\n?/g, "")
@@ -306,7 +307,7 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
                               if (App) {
                                 createRoot(document.getElementById('root')).render(createElement(App));
                               } else {
-                                document.getElementById('root').innerHTML = '<div style="padding:2rem;color:red">Could not find exported component.</div>';
+                                document.getElementById('root').innerHTML = '<div style="padding:2rem;color:red">Could not find exported component. Ensure you use "export default function ComponentName()".</div>';
                               }
                             } catch (err) {
                                window.onerror(err.message, null, null, null, err);
@@ -314,7 +315,7 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
                           </script>
                         </body>
                       </html>
-                    ` : code}
+                    `; })() : code}
                     title="Manifestation Player"
                     className="h-full w-full border-none"
                   />
@@ -341,9 +342,11 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
               <div className="w-2.5 h-2.5 rounded-full bg-red-400" />
               <div className="w-2.5 h-2.5 rounded-full bg-yellow-400" />
               <div className="w-2.5 h-2.5 rounded-full bg-green-400" />
-              <span className="ml-2 text-[10px] font-mono text-black/30 tracking-widest">manifestation.html</span>
+              <span className="ml-2 text-[10px] font-mono text-black/30 tracking-widest">manifestation.jsx</span>
             </div>
-            <pre className="p-8 font-mono text-xs leading-relaxed text-[#2D4FA8] whitespace-pre-wrap overflow-x-auto">{code}</pre>
+            <pre className="p-8 font-mono text-xs leading-relaxed text-[#2D4FA8] whitespace-pre-wrap overflow-x-auto">
+              {code.replace(/```(jsx|tsx|javascript|js|html|react|css)?/g, "").replace(/```/g, "").trim()}
+            </pre>
           </div>
         )}
         </div>
