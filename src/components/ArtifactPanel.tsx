@@ -259,6 +259,8 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
                         </body>
                       </html>
                     ` : (
+                      !code.trim().toLowerCase().startsWith("<!doctype") &&
+                      !code.trim().toLowerCase().startsWith("<html")
                     ) ? (() => {
                       const cleanCode = code
                         .replace(/```(jsx|tsx|javascript|js|html|react)?/g, "")
