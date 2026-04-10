@@ -27,6 +27,12 @@ const Index = ({ urlId }: IndexProps) => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session) {
         navigate("/login");
+      } else {
+        // Logged in session restored - check if already seen
+        const hasSeenWelcome = localStorage.getItem("hasSeenWelcome");
+        if (!hasSeenWelcome) {
+          setShowWelcome(true);
+        }
       }
       setAuthed(!!session);
       setAuthLoading(false);
