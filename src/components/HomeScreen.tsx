@@ -902,7 +902,45 @@ const HomeScreen = ({
         {(isSubmitting && !artifact) || isIncomingPortal ? (
           <div className="fixed inset-0 z-[1000] flex flex-col items-center justify-center bg-white overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-br from-[#f0f4ff] via-white to-[#fff8f0] pointer-events-none" />
-            <div className="relative z-10 flex flex-col items-center gap-14">
+            <div className="relative z-10 flex flex-col items-center gap-14 w-full h-full justify-center">
+              
+              {/* Dynamic Component Manifestation Previews */}
+              <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 w-full max-w-7xl mx-auto px-10 pointer-events-none hidden lg:block">
+                 <div className="relative h-[600px] w-full">
+                    {[
+                      { delay: 0.2, x: "-15%", y: "-30%", title: "Founder Paradigm", content: "Dhruv Gautam / Architect of Flow", icon: <User size={14} /> },
+                      { delay: 0.8, x: "20%", y: "-45%", title: "Vision Manifest", content: "Orchestrating visual reality through neural links.", icon: <Sparkles size={14} /> },
+                      { delay: 1.4, x: "-25%", y: "10%", title: "Operational Core", content: "Headquarters: KREO Neural Labs", icon: <Globe size={14} /> },
+                      { delay: 2.0, x: "15%", y: "25%", title: "Philosophy", content: "Simplicity is the ultimate manifestation.", icon: <BrainCircuit size={14} /> }
+                    ].map((comp, idx) => (
+                      <motion.div
+                        key={idx}
+                        initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        transition={{ 
+                          delay: comp.delay, 
+                          duration: 1.5, 
+                          repeat: Infinity, 
+                          repeatType: "reverse",
+                          repeatDelay: 2
+                        }}
+                        className="absolute p-6 bg-white/40 backdrop-blur-3xl border border-white/50 rounded-3xl shadow-2xl flex flex-col gap-3 min-w-[280px]"
+                        style={{ left: `50%`, top: `50%`, transform: `translate(${comp.x}, ${comp.y})` }}
+                      >
+                        <div className="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest text-[#1B3FBF]/60">
+                           {comp.icon} {comp.title}
+                        </div>
+                        <div className="text-sm font-serif italic text-black/80">{comp.content}</div>
+                        <div className="flex gap-1">
+                           {[...Array(3)].map((_, i) => <div key={i} className="h-1 flex-1 bg-black/5 rounded-full overflow-hidden">
+                              <motion.div animate={{ x: ["-100%", "100%"] }} transition={{ repeat: Infinity, duration: 2, delay: i * 0.5 }} className="w-full h-full bg-[#1B3FBF]/20" />
+                           </div>)}
+                        </div>
+                      </motion.div>
+                    ))}
+                 </div>
+              </div>
+
               <div className="relative w-48 h-48 flex items-center justify-center">
                 <div className="absolute inset-0 rounded-full bg-[#1B3FBF]/5 animate-ping" style={{ animationDuration: '3s' }} />
                 <div className="absolute inset-8 rounded-full bg-[#1B3FBF]/10 animate-pulse transition-all duration-1000 scale-110" />
@@ -910,7 +948,8 @@ const HomeScreen = ({
                   <div className="w-4 h-4 rounded-full bg-white shadow-inner animate-[pulse_1.5s_ease-in-out_infinite]" />
                 </div>
               </div>
-              <div className="text-center">
+              
+              <div className="text-center relative z-20">
                 <h1 className="text-6xl italic tracking-tighter text-[#1B3FBF] mb-4 animate-in slide-in-from-bottom-2 duration-700" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>
                   Kreo {isPro && <span className="bg-[#1B3FBF] text-white text-[14px] font-black uppercase tracking-widest px-3 py-1 rounded-full align-middle ml-2">PRO</span>}
                 </h1>
