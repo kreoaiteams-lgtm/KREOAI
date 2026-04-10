@@ -4,7 +4,7 @@ import {
   Search, History, Settings, User, ArrowUp, ArrowDown, Monitor, Database, Smartphone,
   LayoutGrid, ChevronDown, ChevronLeft, Clock, Plus, Zap, FileText,
   Image as ImageIcon, BrainCircuit, Sparkles, Paperclip, Shuffle, MessageSquare, Mail,
-  Share2, Globe, Link, Copy, Info, CheckCircle2, Crown, Star
+  Share2, Globe, Link as LinkIcon, Copy, Info, CheckCircle2, Crown, Star
 } from "lucide-react";
 
 import KreoLogo from "./KreoLogo";
@@ -735,7 +735,7 @@ const HomeScreen = ({
         }]);
 
         const { data: { user } } = await supabase.auth.getUser();
-        const shareToken = Math.random().toString(36).substring(2, 12);
+        const shareToken = crypto.randomUUID();
 
         const { data: newArtifact, error: insertError } = await supabase
           .from("artifacts")
@@ -1069,20 +1069,58 @@ const HomeScreen = ({
       </AnimatePresence>
 
       {shareDialogOpen && (
-        <div className="fixed inset-0 z-[2000] flex items-center justify-center p-6 bg-black/60 backdrop-blur-xl">
-          <div className="bg-white w-full max-w-lg rounded-[3rem] p-10 space-y-10 animate-in zoom-in-95 duration-300">
-            <div className="flex justify-between items-center pb-6 border-b border-black/5">
+        <div className="fixed inset-0 z-[2000] flex items-center justify-center p-6 bg-black/60 backdrop-blur-xl animate-in fade-in duration-300">
+          <motion.div 
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="bg-white w-full max-w-lg rounded-[3rem] p-10 space-y-10 shadow-2xl relative overflow-hidden"
+          >
+            <div className="absolute top-0 right-0 w-40 h-40 bg-[#0020C2]/5 blur-[60px] rounded-full" />
+            
+            <div className="flex justify-between items-center pb-6 border-b border-black/5 relative z-10">
               <div className="space-y-1">
-                <h3 className="text-xl font-bold tracking-tight">Share Manifestation</h3>
-                <p className="text-[10px] font-black uppercase tracking-widest text-black/30">Instantly share your vision</p>
+                <h3 className="text-2xl font-serif italic tracking-tight text-black">Share Manifestation</h3>
+                <p className="text-[10px] font-black uppercase tracking-widest text-[#0020C2]">Collaborative Link Active</p>
               </div>
-              <button onClick={() => setShareDialogOpen(false)} className="text-[9px] font-black uppercase tracking-widest text-black/20 hover:text-black">Dismiss</button>
+              <button onClick={() => setShareDialogOpen(false)} className="w-10 h-10 rounded-full bg-black/5 flex items-center justify-center text-black/40 hover:text-black transition-colors hover:bg-black/10">
+                <X size={16} />
+              </button>
             </div>
-            <div className="flex items-center gap-3 p-3 bg-black/[0.02] border border-black/5 rounded-2xl">
-              <input readOnly value={`${window.location.origin}/share/${currentArtifactId || 'unbound'}`} className="flex-1 bg-transparent px-2 text-xs font-mono text-black/60 outline-none" />
-              <button onClick={() => { navigator.clipboard.writeText(`${window.location.origin}/share/${currentArtifactId}`); toast({ title: "Link Manifested" }); }} className="p-3 bg-[#0020C2] text-white rounded-xl"><Copy size={14} /></button>
+
+            <div className="space-y-6 relative z-10">
+              <p className="text-sm font-light text-black/50 italic font-serif leading-relaxed text-left">
+                Anyone with this link can view your high-fidelity manifestation in real-time.
+              </p>
+              
+              <div className="flex items-center gap-3 p-4 bg-[#1B3FBF]/5 border border-[#1B3FBF]/10 rounded-[2rem] group hover:border-[#1B3FBF]/30 transition-all">
+                <LinkIcon className="text-[#1B3FBF] shrink-0" size={18} />
+                <input 
+                  readOnly 
+                  onClick={(e) => (e.target as HTMLInputElement).select()}
+                  value={`${window.location.origin}/share/${currentArtifactId || 'unbound'}`} 
+                  className="flex-1 bg-transparent px-2 text-xs font-mono text-[#1B3FBF] outline-none truncate" 
+                />
+                <button 
+                  onClick={() => { 
+                    navigator.clipboard.writeText(`${window.location.origin}/share/${currentArtifactId}`); 
+                    toast({ title: "Link Manifested", description: "URL copied to your neural buffer." }); 
+                  }} 
+                  className="px-6 py-3 bg-[#1B3FBF] text-white rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg shadow-[#1B3FBF]/20 hover:scale-105 active:scale-95 transition-all"
+                >
+                  Copy Link
+                </button>
+              </div>
             </div>
-          </div>
+
+            <div className="pt-4 flex justify-center relative z-10">
+               <button 
+                 onClick={() => setShareDialogOpen(false)}
+                 className="text-[10px] font-black uppercase tracking-widest text-black/20 hover:text-black transition-colors"
+               >
+                 Close Manifest
+               </button>
+            </div>
+          </motion.div>
         </div>
       )}
     </div>

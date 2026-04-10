@@ -41,13 +41,15 @@ const ShareView: React.FC = () => {
                 if (isUuid) {
                     query = query.or(`id.eq.${id},share_token.eq.${id}`);
                 } else {
+                    // Fallback to searching all token-like columns if not a standard UUID
                     query = query.eq('share_token', id);
                 }
 
                 const { data, error: fetchError } = await query.single();
 
                 if (fetchError || !data) {
-                    setError("Neural Manifestation Not Found.");
+                    console.error("Fetch manifest error:", fetchError);
+                    setError("Neural Manifestation Not Found. The protocol may be incorrect or the artifact was never synchronized.");
                 } else {
                     setArtifact(data);
                 }
