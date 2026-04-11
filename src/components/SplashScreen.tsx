@@ -15,11 +15,11 @@ const SplashScreen = ({ onComplete }: { onComplete: () => void }) => {
   const [phase, setPhase] = useState<"idle" | "lottie" | "reveal" | "exit">("idle");
 
   useEffect(() => {
-    // Neural Sequence Timing
-    const t1 = setTimeout(() => setPhase("lottie"), 200);   // Start Lottie
-    const t2 = setTimeout(() => setPhase("reveal"), 2400);  // Reveal KREO
-    const t3 = setTimeout(() => setPhase("exit"),   3400);  // Fade out
-    const t4 = setTimeout(onComplete,               4200);  // Complete
+    // Neural Sequence Timing (Accelerated)
+    const t1 = setTimeout(() => setPhase("lottie"), 100);   // Start Lottie
+    const t2 = setTimeout(() => setPhase("reveal"), 1400);  // Reveal KREO
+    const t3 = setTimeout(() => setPhase("exit"),   2000);  // Fade out
+    const t4 = setTimeout(onComplete,               2400);  // Complete
     return () => [t1, t2, t3, t4].forEach(clearTimeout);
   }, [onComplete]);
 

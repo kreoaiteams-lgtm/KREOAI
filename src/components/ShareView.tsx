@@ -66,9 +66,7 @@ const ShareView: React.FC = () => {
 
     // Request Access logic removed as per user request to remove "access and stuff"
 
-    if (!isSplashComplete) {
-        return <SplashScreen onComplete={() => setIsSplashComplete(true)} />;
-    }
+/* SplashScreen removed to ensure instantaneous share rendering */
 
     if (loading) {
         return (
