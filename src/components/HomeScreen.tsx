@@ -922,51 +922,72 @@ const HomeScreen = ({
             <div className="absolute inset-0 bg-gradient-to-br from-[#f0f4ff] via-white to-[#fff8f0] pointer-events-none" />
             <div className="relative z-10 flex flex-col items-center gap-14 w-full h-full justify-center">
               
-              {/* Responsive Dashboard & Manifestation Fragment Previews */}
-              <div className="absolute inset-x-0 inset-y-0 w-full max-w-7xl mx-auto px-6 pointer-events-none">
+              {/* High-Fidelity Neural Archetypes scattered around the screen */}
+              <div className="absolute inset-x-0 inset-y-0 w-full h-full pointer-events-none">
                  <div className="relative h-full w-full">
                     {[
-                      { delay: 0.2, x: "-20%", y: "-35%", title: "Founder", content: "Dhruv Gautam / CEO", icon: <User size={12} />, variant: "card" },
-                      { delay: 1.0, x: "25%", y: "-40%", title: "Vision", content: "Neural Orchestration", icon: <Sparkles size={12} />, variant: "card" },
-                      { delay: 1.8, x: "-30%", y: "15%", title: "Region", content: "KREO Global Node", icon: <Globe size={12} />, variant: "card" },
-                      { delay: 0.5, x: "20%", y: "20%", variant: "skeleton" },
-                      { delay: 1.5, x: "-15%", y: "30%", variant: "skeleton" },
-                      { delay: 2.2, x: "0%", y: "-50%", variant: "skeleton" }
-                    ].map((comp, idx) => (
+                      { delay: 0.2, x: "-35%", y: "-38%", type: "pricing", title: "Ultra Tier", value: "$49/mo" },
+                      { delay: 1.0, x: "32%", y: "-42%", type: "metric", title: "Neural Fidelity", value: "99.2%" },
+                      { delay: 1.8, x: "-38%", y: "25%", type: "toggle", title: "Real-time Sync", active: true },
+                      { delay: 0.5, x: "38%", y: "35%", type: "chart", title: "Project Growth" },
+                      { delay: 1.5, x: "-18%", y: "42%", type: "profile", name: "Dhruv Gautam", role: "Archon" },
+                      { delay: 2.2, x: "42%", y: "-15%", type: "skeleton", height: "40px", width: "120px" },
+                      { delay: 0.8, x: "0%", y: "45%", type: "skeleton", height: "20px", width: "200px" },
+                      { delay: 3.0, x: "-45%", y: "-10%", type: "skeleton", height: "100px", width: "80px" }
+                    ].map((frag, idx) => (
                       <motion.div
                         key={idx}
-                        initial={{ opacity: 0, scale: 0.8, y: 30 }}
+                        initial={{ opacity: 0, scale: 0.8, y: 40 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         transition={{ 
-                          delay: comp.delay, 
-                          duration: 2, 
+                          delay: frag.delay, 
+                          duration: 2.5, 
                           repeat: Infinity, 
                           repeatType: "reverse",
-                          repeatDelay: 3
+                          repeatDelay: 2
                         }}
-                        className={`absolute rounded-[2rem] shadow-2xl transition-all duration-700 ${comp.variant === 'card' ? 'p-5 bg-white/60 backdrop-blur-3xl border border-white/50 min-w-[240px] flex flex-col gap-2' : 'p-4 bg-[#1B3FBF]/5 border border-[#1B3FBF]/10 w-48 h-24'}`}
-                        style={{ left: `50%`, top: `50%`, transform: `translate(${comp.x}, ${comp.y})` }}
+                        className="absolute p-4 md:p-6 bg-white/40 backdrop-blur-3xl border border-white/60 rounded-[2.5rem] shadow-2xl flex flex-col gap-3 min-w-[180px] group hover:border-[#1B3FBF]/20 transition-all duration-1000"
+                        style={{ left: `50%`, top: `50%`, transform: `translate(${frag.x}, ${frag.y})` }}
                       >
-                        {comp.variant === 'card' ? (
-                          <>
-                            <div className="flex items-center gap-2 text-[8px] font-black uppercase tracking-widest text-[#1B3FBF]/60">
-                               {comp.icon} {comp.title}
+                         {frag.type === 'pricing' && (
+                            <div className="space-y-4">
+                               <div className="flex justify-between items-center"><span className="text-[7px] font-black uppercase text-[#1B3FBF]/40">Active Tier</span><Crown size={10} className="text-yellow-500" /></div>
+                               <div className="text-xl font-serif italic text-black">{frag.value}</div>
+                               <div className="h-1.5 w-full bg-black/5 rounded-full overflow-hidden"><motion.div animate={{ x: ["-100%", "100%"] }} transition={{ repeat: Infinity, duration: 3 }} className="w-full h-full bg-[#1B3FBF]/30" /></div>
                             </div>
-                            <div className="text-xs font-serif italic text-black/80">{comp.content}</div>
-                            <div className="flex gap-1">
-                               {[...Array(3)].map((_, i) => <div key={i} className="h-0.5 flex-1 bg-black/5 rounded-full overflow-hidden">
-                                  <motion.div animate={{ x: ["-100%", "100%"] }} transition={{ repeat: Infinity, duration: 2, delay: i * 0.5 }} className="w-full h-full bg-[#1B3FBF]/20" />
-                               </div>)}
+                         )}
+                         {frag.type === 'metric' && (
+                            <div className="space-y-2">
+                               <div className="flex items-center gap-1.5"><Activity size={10} className="text-[#1B3FBF]" /><span className="text-[7px] font-black uppercase text-[#1B3FBF]/40">{frag.title}</span></div>
+                               <div className="text-2xl font-light tracking-tighter text-black">{frag.value}</div>
                             </div>
-                          </>
-                        ) : (
-                          <div className="flex flex-col gap-3 h-full">
-                            <div className="h-2 w-1/2 bg-[#1B3FBF]/10 rounded-full" />
-                            <div className="flex-1 bg-[#1B3FBF]/5 rounded-xl border border-[#1B3FBF]/5 flex items-center justify-center">
-                               <Sparkles size={14} className="text-[#1B3FBF]/10" />
+                         )}
+                         {frag.type === 'toggle' && (
+                            <div className="flex items-center justify-between gap-4">
+                               <span className="text-[8px] font-bold text-black/40">{frag.title}</span>
+                               <div className="w-8 h-4 bg-[#1B3FBF] rounded-full p-0.5 flex justify-end items-center"><div className="w-3 h-3 bg-white rounded-full shadow-sm" /></div>
                             </div>
-                          </div>
-                        )}
+                         )}
+                         {frag.type === 'chart' && (
+                            <div className="space-y-3">
+                               <span className="text-[7px] font-black uppercase text-[#1B3FBF]/40">{frag.title}</span>
+                               <div className="h-12 flex items-end gap-1 px-1">
+                                  {[40, 70, 45, 90, 60, 80].map((h, i) => <motion.div key={i} animate={{ height: [`${h}%`, `${h+10}%`, `${h}%`] }} transition={{ repeat: Infinity, duration: 2, delay: i * 0.2 }} className="flex-1 bg-[#1B3FBF]/10 rounded-full" />)}
+                               </div>
+                            </div>
+                         )}
+                         {frag.type === 'profile' && (
+                            <div className="flex items-center gap-3">
+                               <div className="w-8 h-8 rounded-full bg-[#1B3FBF]/10 flex items-center justify-center text-[#1B3FBF] font-black text-[10px]">{frag.name[0]}</div>
+                               <div className="leading-tight"><div className="text-[10px] font-bold text-black">{frag.name}</div><div className="text-[8px] text-black/30 italic font-serif">{frag.role}</div></div>
+                            </div>
+                         )}
+                         {frag.type === 'skeleton' && (
+                            <div className="space-y-2" style={{ width: frag.width }}>
+                               <div className="h-2 bg-black/5 rounded-full w-2/3" />
+                               <div className="bg-black/5 rounded-xl border border-black/5" style={{ height: frag.height }} />
+                            </div>
+                         )}
                       </motion.div>
                     ))}
                  </div>
@@ -1030,8 +1051,12 @@ const HomeScreen = ({
                     disabled={isSubmitting}
                   />
                   <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                    <button type="submit" className="p-2.5 bg-[#1B3FBF] text-white rounded-xl shadow-lg hover:scale-110 active:scale-95 transition-all">
-                      <ArrowUp size={14} strokeWidth={3} />
+                    <button type="submit" disabled={isSubmitting} className="p-2.5 bg-[#1B3FBF] text-white rounded-xl shadow-lg hover:scale-110 active:scale-95 transition-all disabled:opacity-50">
+                      {isSubmitting ? (
+                        <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      ) : (
+                        <ArrowUp size={14} strokeWidth={3} />
+                      )}
                     </button>
                   </div>
                 </form>

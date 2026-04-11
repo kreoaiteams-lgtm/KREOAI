@@ -263,9 +263,17 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
                       !code.trim().toLowerCase().startsWith("<html")
                     ) ? (() => {
                       const cleanCode = code
-                        .replace(/```(jsx|tsx|javascript|js|html|react)?/g, "")
+                        .replace(/```(jsx|tsx|javascript|js|html|react-native|react)?/g, "")
                         .replace(/```/g, "")
                         .trim();
+                      const cleanCodeForBabel = cleanCode
+                        .replace(/import\s+['"].*?['"];?/g, "") // Strip raw side-effect imports like import './styles.css'
+                        .replace(/import\s+ React.*?from\s+['"]react['"];?\n?/g, "")
+                        .replace(/import\s+.*?\s+from\s+['"]react['"];?\n?/g, "")
+                        .replace(/import\s+.*?\s+from\s+['"]lucide-react['"];?\n?/g, "")
+                        .replace(/import\s+.*?\s+from\s+['"]recharts['"];?\n?/g, "")
+                        .replace(/import\s+.*?\s+from\s+['"].*?['"];?\n?/g, "") // Generic strip for any other imports
+                        .replace(/export\s+default\s+/g, "window.__Component = ");
                       
                       return `
                       <html>
@@ -273,6 +281,10 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
                           <script src="https://cdn.tailwindcss.com"></script>
                           <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
                           <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+                          <script>
+                            // Silence Tailwind production warning
+                            window.tailwind = { config: { theme: { extend: {} } } };
+                          </script>
                           <style>
                             body { font-family: 'Inter', sans-serif; background: white; margin: 0; overflow-x: hidden; overflow-y: auto; min-height: 100vh; }
                             #root { min-height: 100vh; }
@@ -298,13 +310,8 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
                             };
 
                             try {
-                              ${cleanCode
-                                .replace(/import\s+React.*?from\s+['"']react['"'];?\n?/g, "")
-                                .replace(/import\s+\{[^}]+\}\s+from\s+['"']react['"'];?\n?/g, "")
-                                .replace(/import\s+.*?\s+from\s+['"']lucide-react['"'];?\n?/g, "")
-                                .replace(/import\s+.*?\s+from\s+['"']recharts['"'];?\n?/g, "")
-                                .replace(/export\s+default\s+/g, "window.__Component = ")
-                              }
+                              ${cleanCodeForBabel}
+                              
                               const App = window.__Component;
                               if (App) {
                                 createRoot(document.getElementById('root')).render(createElement(App));
