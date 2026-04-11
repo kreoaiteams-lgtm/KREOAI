@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   Search, History, Settings, User, ArrowUp, ArrowDown, Monitor, Database, Smartphone,
-  LayoutGrid, ChevronDown, ChevronLeft, Clock, Plus, Zap, FileText,
+  LayoutGrid, ChevronDown, ChevronLeft, Clock, Plus, Zap, FileText, X, Activity,
   Image as ImageIcon, BrainCircuit, Sparkles, Paperclip, Shuffle, MessageSquare, Mail,
   Share2, Globe, Link as LinkIcon, Copy, Info, CheckCircle2, Crown, Star
 } from "lucide-react";
@@ -755,6 +755,8 @@ const HomeScreen = ({
         const { data: { user } } = await supabase.auth.getUser();
         const shareToken = crypto.randomUUID();
 
+        setCurrentArtifactId(shareToken); // Optimistically set so the share link is ready
+
         const { data: newArtifact, error: insertError } = await supabase
           .from("artifacts")
           .insert({
@@ -769,6 +771,7 @@ const HomeScreen = ({
 
         if (!insertError && newArtifact) {
           setHistoryItems(prev => [newArtifact, ...prev.filter(i => i.id !== optimisticId)]);
+          // Prefer database ID if it returned one, though shareToken remains valid.
           setCurrentArtifactId(newArtifact.share_token || newArtifact.id);
           
           // Show upgrade popup after first manifestation
