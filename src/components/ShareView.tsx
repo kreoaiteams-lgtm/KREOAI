@@ -111,7 +111,7 @@ const ShareView: React.FC = () => {
                     <div className="h-6 w-[1px] bg-black/5" />
                     <div className="space-y-0.5">
                         <h1 className="text-sm font-bold tracking-tight line-clamp-1">Shared with you by the user nMW</h1>
-                        <p className="text-[9px] font-black uppercase tracking-widest text-[#1B3FBF]">KREO Collaborative Manifestation</p>
+                        <p className="text-[9px] font-black uppercase tracking-widest text-[#1B3FBF]">KREO High-Fidelity Read-Only Manifestation</p>
                     </div>
                 </div>
 

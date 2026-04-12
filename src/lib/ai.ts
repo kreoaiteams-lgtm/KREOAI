@@ -172,7 +172,6 @@ export const generateArtifact = async (prompt: string, chatHistory: {role: strin
       body: JSON.stringify({
         model: "sarvam-105b",
         messages: messages,
-        reasoning_effort: "high",
         max_tokens: 8192,
         temperature: 0.7,
       }),

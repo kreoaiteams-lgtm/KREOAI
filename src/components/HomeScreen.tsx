@@ -534,9 +534,9 @@ const HomeScreen = ({
 
   useEffect(() => {
     const loadData = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        setUserEmail(user.email || "");
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        setUserEmail(session.user.email || "");
         const { data, error } = await supabase
           .from("artifacts")
           .select("*")
@@ -1199,7 +1199,7 @@ const HomeScreen = ({
             <div className="flex justify-between items-center pb-6 border-b border-black/5 relative z-10">
               <div className="space-y-1">
                 <h3 className="text-2xl font-serif italic tracking-tight text-black">Share Manifestation</h3>
-                <p className="text-[10px] font-black uppercase tracking-widest text-[#0020C2]">Collaborative Link Active</p>
+                <p className="text-[10px] font-black uppercase tracking-widest text-[#0020C2]">Public View-Only Link Active</p>
               </div>
               <button onClick={() => setShareDialogOpen(false)} className="w-10 h-10 rounded-full bg-black/5 flex items-center justify-center text-black/40 hover:text-black transition-colors hover:bg-black/10">
                 <X size={16} />
