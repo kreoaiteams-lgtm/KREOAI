@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useMemo } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams, useLocation } from "react-router-dom";
 import {
   Search, History, Settings, User, ArrowUp, ArrowDown, Monitor, Database, Smartphone,
   LayoutGrid, ChevronDown, ChevronLeft, Clock, Plus, Zap, FileText, X, Activity,
@@ -461,16 +461,17 @@ const HomeScreen = ({
   const [clarificationRequest, setClarificationRequest] = useState<{ question: string, options: string[] } | null>(null);
 
   const [searchParams] = useSearchParams();
+  const location = useLocation();
 
   useEffect(() => {
-    const urlId = propUrlId || searchParams.get("id") || window.location.pathname.split('/').pop();
+    const urlId = propUrlId || searchParams.get("id") || (window.location.pathname.startsWith('/share/') ? window.location.pathname.split('/').pop() : null);
 
     if (urlId && urlId !== "" && !artifact && !isIncomingPortal) {
       setIsIncomingPortal(true);
       const fetchFromUrl = async () => {
         try {
           const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-          const isUuid = uuidRegex.test(urlId);
+          const isUuid = (urlId && uuidRegex.test(urlId));
 
           let query = supabase.from("artifacts").select("*");
           if (isUuid) {
@@ -489,7 +490,7 @@ const HomeScreen = ({
               setChatHistory([{ role: "user", content: data.prompt }, { role: "assistant", content: data.code, display: "Manifest restored from neural link." }]);
               setIsArtifactActive(true);
               setIsIncomingPortal(false);
-            }, 1500);
+            }, 1000); // Faster restore
             return;
           }
 
@@ -500,19 +501,25 @@ const HomeScreen = ({
             setArtifact(localMatch.code);
             setCurrentArtifactId(localMatch.share_token || localMatch.id);
             setQuery(localMatch.prompt);
-            setChatHistory([{ role: "user", content: localMatch.prompt }, { role: "assistant", content: localMatch.code, display: "Manifest restored from local memory." }]);
+            setChatHistory([{ role: "user", content: localMatch.prompt }, { role: "assistant", content: localMatch.code, display: "Manifest restored from local neural buffer." }]);
             setIsArtifactActive(true);
             setIsIncomingPortal(false);
           } else {
             setIsIncomingPortal(false);
           }
-        } catch (e) {
+        } catch (err) {
           setIsIncomingPortal(false);
         }
       };
       fetchFromUrl();
+    } else if (!urlId && artifact && !isSubmitting) {
+      // Manual navigation to root / with no ID while an artifact is currently set
+      setArtifact(null);
+      setCurrentArtifactId(null);
+      setChatHistory([]);
+      setIsArtifactActive(false);
     }
-  }, [searchParams, currentArtifactId, setIsArtifactActive]);
+  }, [searchParams, location.pathname, artifact, isIncomingPortal, isSubmitting]);
 
   useEffect(() => {
     if (currentArtifactId && !currentArtifactId.startsWith('opt-')) {
@@ -520,7 +527,7 @@ const HomeScreen = ({
       if (window.location.pathname !== newPath) {
         window.history.replaceState(null, '', newPath);
       }
-    } else if (!currentArtifactId && window.location.pathname !== '/') {
+    } else if (!currentArtifactId && window.location.pathname !== '/' && window.location.search === '') {
       window.history.replaceState(null, '', '/');
     }
   }, [currentArtifactId]);
