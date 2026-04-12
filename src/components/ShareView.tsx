@@ -110,7 +110,7 @@ const ShareView: React.FC = () => {
                     </Link>
                     <div className="h-6 w-[1px] bg-black/5" />
                     <div className="space-y-0.5">
-                        <h1 className="text-sm font-bold tracking-tight line-clamp-1">{artifact.prompt}</h1>
+                        <h1 className="text-sm font-bold tracking-tight line-clamp-1">Shared with you by the user nMW</h1>
                         <p className="text-[9px] font-black uppercase tracking-widest text-[#1B3FBF]">KREO Collaborative Manifestation</p>
                     </div>
                 </div>
@@ -122,10 +122,10 @@ const ShareView: React.FC = () => {
                 </div>
             </header>
 
-            <main className="flex-1 flex flex-col p-4 md:p-12 gap-12 max-w-[1400px] mx-auto w-full">
+            <main className="flex-1 flex flex-col p-4 md:p-6 gap-6 w-full max-w-[1800px] mx-auto">
                 
-                {/* Artifact Area - High-Fidelity Read-Only */}
-                <div className="flex-1 min-h-[70vh] rounded-[3rem] overflow-hidden shadow-2xl shadow-[#1B3FBF]/5 border border-black/[0.04]">
+                {/* Artifact Area - High-Fidelity Read-Only - Expanded for impact */}
+                <div className="flex-1 min-h-[85vh] rounded-[2.5rem] overflow-hidden shadow-2xl shadow-[#1B3FBF]/10 border border-black/[0.04] bg-white">
                    <ArtifactPanel code={artifact.code} prompt={artifact.prompt} readOnly={true} />
                 </div>
 
