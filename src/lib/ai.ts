@@ -157,9 +157,11 @@ export const generateArtifact = async (prompt: string, chatHistory: {role: strin
       enrichedPrompt += `\n\n[VISUAL ASSET PROVIDED]:\nA source image is available at this URL: ${imageUrl}. \nINSTRUCTION: You MUST place this image as the core visual foundation of the design (e.g. hero image, featured asset, or background focal point). Generate the UI architectural flow around this specific image. Use <img> tags with this URL.`;
     }
 
+    const sanitizedHistory = chatHistory.map(({ role, content }) => ({ role, content }));
+
     const messages = [
       { role: "system", content: AESTHETICS_SYSTEM_PROMPT },
-      ...chatHistory,
+      ...sanitizedHistory,
       { role: "user", content: enrichedPrompt },
     ];
 
@@ -178,7 +180,9 @@ export const generateArtifact = async (prompt: string, chatHistory: {role: strin
     });
 
     if (!response.ok) {
-      throw new Error(`Sarvam API error: ${response.statusText}`);
+        const errorData = await response.json().catch(() => ({}));
+        console.error("Sarvam API Detailed Error:", errorData);
+        throw new Error(`Sarvam API error: ${response.status} ${JSON.stringify(errorData)}`);
     }
 
     const data = await response.json();
