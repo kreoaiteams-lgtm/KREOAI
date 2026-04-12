@@ -308,6 +308,51 @@ export const generateArtifact = async (prompt: string, chatHistory: {role: strin
   }
 };
 
+export const narrateText = async (text: string) => {
+  if (!SARVAM_API_KEY) return;
+
+  try {
+    const response = await fetch("https://api.sarvam.ai/text-to-speech/stream", {
+        method: "POST",
+        headers: {
+            "api-subscription-key": SARVAM_API_KEY,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            text: text,
+            target_language_code: "en-IN", // Professional Indian-English for KREO
+            speaker: "shubh",
+            model: "bulbul:v3",
+            pace: 1.05,
+            speech_sample_rate: 22050,
+            output_audio_codec: "mp3",
+            enable_preprocessing: true
+        })
+    });
+    
+    if (!response.ok) {
+        throw new Error(`TTS HTTP error! status: ${response.status}`);
+    }
+    
+    // Process streaming audio
+    const chunks = [];
+    const reader = response.body?.getReader();
+    if (!reader) return;
+
+    while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        chunks.push(value);
+    }
+    
+    const blob = new Blob(chunks, { type: "audio/mpeg" });
+    const audio = new Audio(URL.createObjectURL(blob));
+    audio.play();
+  } catch (err) {
+    console.error("Narrate Manifestation Failed:", err);
+  }
+};
+
 function getDemoFallback(prompt: string): string {
   const p = prompt.toLowerCase();
   

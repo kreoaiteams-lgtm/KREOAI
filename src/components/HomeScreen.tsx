@@ -4,8 +4,10 @@ import {
   Search, History, Settings, User, ArrowUp, ArrowDown, Monitor, Database, Smartphone,
   LayoutGrid, ChevronDown, ChevronLeft, Clock, Plus, Zap, FileText, X, Activity,
   Image as ImageIcon, BrainCircuit, Sparkles, Paperclip, Shuffle, MessageSquare, Mail,
-  Share2, Globe, Link as LinkIcon, Copy, Info, CheckCircle2, Crown, Star
+  Share2, Globe, Link as LinkIcon, Copy, Info, CheckCircle2, Crown, Star, Volume2
 } from "lucide-react";
+
+import { narrateText } from "@/lib/ai";
 
 import KreoLogo from "./KreoLogo";
 import ArtifactPanel from "./ArtifactPanel";
@@ -1059,7 +1061,18 @@ const HomeScreen = ({
                       ? 'bg-[#1B3FBF] text-white rounded-tr-sm shadow-sm opacity-90'
                       : 'bg-white border border-black/[0.07] text-black/60 rounded-tl-sm shadow-sm'
                       }`}>
-                      {msg.display || msg.content}
+                      <div className="flex justify-between items-start gap-4">
+                        <div className="flex-1">{msg.display || msg.content}</div>
+                        {msg.role === 'assistant' && (
+                          <button 
+                            onClick={() => narrateText(msg.content)}
+                            className="p-1 rounded-md hover:bg-black/5 text-black/20 hover:text-[#1B3FBF] transition-all shrink-0"
+                            title="Narrate Manifestation"
+                          >
+                            <Volume2 size={12} />
+                          </button>
+                        )}
+                      </div>
                     </div>
                   </div>
                 ))}
