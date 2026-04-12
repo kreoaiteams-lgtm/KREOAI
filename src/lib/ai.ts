@@ -97,7 +97,7 @@ When existing code or a Mermaid flowchart is provided in the conversation histor
 4. Keep the original aesthetic, design system, and architecture intact, making only the localized modifications requested.
 `;
 
-const SARVAM_API_KEY = import.meta.env.VITE_SARVAM_API_KEY;
+const SARVAM_API_KEY = import.meta.env.VITE_SARVAM_API_KEY || "sk_5oxchpsn_jrBGzGJ0eu64wBHBdxXBb4Qk";
 const SARVAM_ENDPOINT = "https://api.sarvam.ai/v1/chat/completions";
 
 const NEEDS_SEARCH_REGEX = /(price|cost|today|latest|news|statistics|stats|vs|compare|rate|ranking|best|top|current|roi|bank|market|stock)/i;
