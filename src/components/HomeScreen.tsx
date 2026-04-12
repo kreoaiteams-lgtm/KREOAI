@@ -762,7 +762,17 @@ const HomeScreen = ({
         const { data: { user } } = await supabase.auth.getUser();
         const shareToken = crypto.randomUUID();
 
-        setCurrentArtifactId(shareToken); // Optimistically set so the share link is ready
+        // Mirror to Local Neural Buffer (Guest Persistence)
+        const localHistory = JSON.parse(localStorage.getItem('kreo_local_history') || '[]');
+        const localEntry = {
+          id: shareToken,
+          share_token: shareToken,
+          prompt: finalQuery,
+          code: code,
+          created_at: new Date().toISOString()
+        };
+        const updatedLocal = [localEntry, ...localHistory].slice(0, 20);
+        localStorage.setItem('kreo_local_history', JSON.stringify(updatedLocal));
 
         const { data: newArtifact, error: insertError } = await supabase
           .from("artifacts")
@@ -778,13 +788,17 @@ const HomeScreen = ({
 
         if (!insertError && newArtifact) {
           setHistoryItems(prev => [newArtifact, ...prev.filter(i => i.id !== optimisticId)]);
-          // Prefer database ID if it returned one, though shareToken remains valid.
           setCurrentArtifactId(newArtifact.share_token || newArtifact.id);
-          
-          // Show upgrade popup after first manifestation
-          if (manifestCount === 1) {
-            setTimeout(() => setShowUpgradePop(true), 2000);
+        } else {
+          // If cloud sync fails (guest or network), fallback to local buffer for visibility
+          if (!user) {
+            setHistoryItems(updatedLocal);
           }
+        }
+        
+        // Show upgrade popup after first manifestation
+        if (manifestCount === 1) {
+          setTimeout(() => setShowUpgradePop(true), 2000);
         }
       }
     } catch (err) {
