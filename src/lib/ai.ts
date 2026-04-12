@@ -169,7 +169,7 @@ export const generateArtifact = async (prompt: string, chatHistory: {role: strin
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "api-subscription-key": SARVAM_API_KEY,
+        "Authorization": `Bearer ${SARVAM_API_KEY}`,
       },
       body: JSON.stringify({
         model: "sarvam-105b",
