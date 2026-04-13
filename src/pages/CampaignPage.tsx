@@ -72,25 +72,9 @@ const CampaignPage: React.FC = () => {
               <div className="absolute inset-0 pointer-events-none mix-blend-multiply opacity-40"
                    style={{ backgroundImage: 'url("https://grainy-gradients.vercel.app/noise.svg")' }} />
 
-              <div className="relative z-10 w-full max-w-7xl px-8 flex flex-col md:flex-row items-center justify-between gap-12">
-                
-                {/* Left: Small intro text + button */}
-                <motion.div 
-                  initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2, duration: 0.8 }}
-                  className="w-full md:w-1/4 flex flex-col gap-6"
-                >
-                  <p className="text-sm font-medium text-black/70 leading-relaxed max-w-[200px]">
-                    KREO is a <span className="text-green-500">( neural engine )</span> project that celebrates high-fidelity architectural contributions. *
-                  </p>
-                  <button onClick={() => navigate('/')} className="bg-black text-white self-start px-6 py-3 text-xs font-bold flex items-center gap-2 hover:bg-black/80 transition-colors">
-                    Join Waitlist <ArrowDown size={14} />
-                  </button>
-                </motion.div>
-
-                {/* Right/Center: Massive staggered typography & shapes */}
-                <div className="w-full md:w-3/4 relative flex flex-col items-start gap-1 select-none">
+              <div className="relative z-10 w-full max-w-6xl px-8 flex flex-col items-center justify-center select-none pt-12">
                   
-                  {/* Line 1: build */}
+                  {/* Line 1: Build */}
                   <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="flex items-center gap-4">
                     {/* SVG Shape: Line + Orange Circle with Arrow */}
                     <svg width="120" height="60" viewBox="0 0 120 60" className="drop-shadow-sm">
@@ -100,7 +84,7 @@ const CampaignPage: React.FC = () => {
                       <path d="M 70 20 L 85 30 L 70 40 L 70 36 L 81 30 L 70 24 Z" fill="black" />
                     </svg>
                     
-                    <h1 className="text-[120px] font-bold text-black leading-none tracking-tight">build</h1>
+                    <h1 className="text-[120px] font-bold text-black leading-none tracking-tight">Build</h1>
                     
                     {/* SVG Shape: arrow up right & circles */}
                     <svg width="140" height="60" viewBox="0 0 140 60" className="ml-4 drop-shadow-sm">
@@ -116,12 +100,12 @@ const CampaignPage: React.FC = () => {
                     </svg>
                   </motion.div>
 
-                  {/* Line 2: beautiful */}
-                  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="flex items-center gap-6 ml-0">
-                    <h1 className="text-[120px] font-bold text-black leading-none tracking-tight">beautiful</h1>
+                  {/* Line 2: your */}
+                  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="flex items-center gap-6 -ml-20 mt-4">
+                    <h1 className="text-[120px] font-bold text-black leading-none tracking-tight">your</h1>
                     
                     {/* SVG Shape: yellow pill */}
-                    <svg width="160" height="80" viewBox="0 0 160 80" className="drop-shadow-sm">
+                    <svg width="160" height="80" viewBox="0 0 160 80" className="drop-shadow-sm scale-90">
                       <rect x="0" y="20" width="140" height="60" rx="30" fill="#facc15" />
                       <circle cx="40" cy="50" r="20" fill="#f97316" />
                       <circle cx="110" cy="50" r="12" stroke="black" strokeWidth="4" fill="none" />
@@ -129,23 +113,23 @@ const CampaignPage: React.FC = () => {
                     </svg>
                   </motion.div>
 
-                  {/* Line 3: product */}
-                  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} className="flex items-center gap-2 ml-16">
+                  {/* Line 3: imagination. */}
+                  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} className="flex items-center gap-2 -mr-12 mt-4 relative z-10">
                     {/* SVG Shape: purple and green half circles */}
-                    <svg width="80" height="80" viewBox="0 0 80 80" className="drop-shadow-sm mr-4">
+                    <svg width="70" height="70" viewBox="0 0 80 80" className="drop-shadow-sm mr-2 scale-90">
                       <path d="M 35 10 A 30 30 0 0 0 35 70 Z" fill="#a855f7" />
                       <path d="M 45 10 A 30 30 0 0 1 45 70 Z" fill="#22c55e" />
                     </svg>
                     
-                    <h1 className="text-[120px] font-bold text-black leading-none tracking-tight relative">
-                      products<span className="text-black">.</span>
+                    <h1 className="text-[110px] sm:text-[120px] font-bold text-black leading-none tracking-tight relative -mt-4">
+                      imagination<span className="text-black">.</span>
                     </h1>
                   </motion.div>
 
-                  {/* Line 4: faster / KREO */}
-                  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }} className="flex items-end gap-6 ml-12 relative pb-8">
+                  {/* Line 4: with KREO */}
+                  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }} className="flex items-end gap-6 relative mt-4">
                     <div className="relative">
-                      <h1 className="text-[120px] font-bold text-black leading-none tracking-tight mb-2">
+                      <h1 className="text-[100px] sm:text-[120px] font-bold text-black leading-none tracking-tight mb-2">
                         with <span className="text-[#1B3FBF] font-normal" style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }}>KREO</span>
                       </h1>
                       {/* Black underline */}
@@ -159,13 +143,12 @@ const CampaignPage: React.FC = () => {
                     </svg>
 
                     {/* SVG Shape: Orange and blue triangles */}
-                    <svg width="140" height="100" viewBox="0 0 140 100" className="ml-8 absolute -bottom-12 -right-32 drop-shadow-sm pointer-events-none">
+                    <svg width="140" height="100" viewBox="0 0 140 100" className="ml-8 absolute -bottom-12 -right-32 drop-shadow-sm pointer-events-none scale-90">
                       <polygon points="10,10 70,10 70,90" fill="#f97316" />
                       <polygon points="80,10 140,10 140,90" fill="#3b82f6" />
                     </svg>
                   </motion.div>
 
-                </div>
               </div>
 
               {/* Scroll cue absolute bottom tracking */}
