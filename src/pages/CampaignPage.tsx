@@ -62,103 +62,115 @@ const CampaignPage: React.FC = () => {
           <div>
 
             {/* ══════════════════════════════════════════
-                SECTION 1 — WHITE HERO
+                SECTION 1 — WHITE HERO (GEOMETRIC PLAYFUL)
             ══════════════════════════════════════════ */}
             <section
               style={{ scrollSnapAlign: 'start' }}
-              className="relative h-screen w-full bg-white flex flex-col items-center justify-center overflow-hidden"
+              className="relative h-screen w-full bg-[#f8f7f5] flex items-center justify-center overflow-hidden"
             >
-              {/* Dot grid */}
-              <div className="absolute inset-0 pointer-events-none opacity-[0.05]">
-                <svg width="100%" height="100%">
-                  <pattern id="dg" width="60" height="60" patternUnits="userSpaceOnUse">
-                    <circle cx="30" cy="30" r="1.5" fill="black" />
-                  </pattern>
-                  <rect width="100%" height="100%" fill="url(#dg)" />
-                </svg>
-              </div>
+              {/* Grain / Noise overlay exclusively for hero */}
+              <div className="absolute inset-0 pointer-events-none mix-blend-multiply opacity-40"
+                   style={{ backgroundImage: 'url("https://grainy-gradients.vercel.app/noise.svg")' }} />
 
-              {/* Ambient shapes */}
-              <div className="absolute inset-0 pointer-events-none overflow-hidden">
-                <motion.div
-                  animate={{ y: [0, -16, 0] }} transition={{ repeat: Infinity, duration: 5.5, ease: 'easeInOut' }}
-                  className="absolute top-[17%] left-[10%] w-14 h-14 rounded-full bg-yellow-400 mix-blend-multiply opacity-75"
-                />
-                <motion.div
-                  animate={{ x: [0, 14, 0] }} transition={{ repeat: Infinity, duration: 7, ease: 'easeInOut' }}
-                  className="absolute bottom-[18%] right-[8%] w-20 h-10 rounded-full bg-emerald-400 rotate-12 mix-blend-multiply opacity-55"
-                />
-              </div>
-
-              {/* Content */}
-              <div className="relative z-10 flex flex-col items-center gap-10 px-6">
-                {/* Eyebrow — pure sans, no TAN */}
-                <motion.span
-                  initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-                  className="text-[10px] font-black uppercase tracking-[0.8em] text-[#1B3FBF]"
+              <div className="relative z-10 w-full max-w-7xl px-8 flex flex-col md:flex-row items-center justify-between gap-12">
+                
+                {/* Left: Small intro text + button */}
+                <motion.div 
+                  initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2, duration: 0.8 }}
+                  className="w-full md:w-1/4 flex flex-col gap-6"
                 >
-                  Neural Identity // Series 01
-                </motion.span>
-
-                {/* Headline */}
-                <motion.div
-                  initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.85 }}
-                  className="flex flex-col items-center"
-                >
-                  {/* "Build with" — sans */}
-                  <p className="text-4xl md:text-5xl font-bold text-black tracking-tight leading-none">
-                    Build{' '}
-                    <span className="font-light italic text-black/20">with</span>
+                  <p className="text-sm font-medium text-black/70 leading-relaxed max-w-[200px]">
+                    KREO is a <span className="text-green-500">( neural engine )</span> project that celebrates high-fidelity architectural contributions. *
                   </p>
-
-                  {/* KREO — TAN-NIMBUS only */}
-                  <div className="relative mt-3">
-                    <h1
-                      style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }}
-                      className="text-[12vw] font-bold text-[#1B3FBF] tracking-tighter leading-none"
-                    >
-                      KREO
-                    </h1>
-
-                    {/* Floating pills */}
-                    <motion.div
-                      onMouseEnter={() => setIsHovered('sync')}
-                      onMouseLeave={() => setIsHovered(null)}
-                      animate={{ scale: isHovered === 'sync' ? 1.1 : 1 }}
-                      className="absolute -top-7 -left-16 px-5 py-2.5 bg-black text-white rounded-full flex items-center gap-2.5 shadow-xl cursor-pointer pointer-events-auto"
-                    >
-                      <Globe size={12} />
-                      <span className="text-[9px] font-black uppercase tracking-widest">Global Sync</span>
-                    </motion.div>
-
-                    <motion.div
-                      onMouseEnter={() => setIsHovered('neural')}
-                      onMouseLeave={() => setIsHovered(null)}
-                      animate={{ scale: isHovered === 'neural' ? 1.1 : 1 }}
-                      className="absolute -bottom-4 -right-14 px-5 py-2.5 bg-white border border-black/5 text-[#1B3FBF] rounded-full flex items-center gap-2.5 shadow-xl cursor-pointer pointer-events-auto"
-                    >
-                      <span className="text-[9px] font-black uppercase tracking-widest">Neural Core v3</span>
-                      <Zap size={12} className="fill-yellow-400 text-yellow-400" />
-                    </motion.div>
-                  </div>
+                  <button onClick={() => navigate('/')} className="bg-black text-white self-start px-6 py-3 text-xs font-bold flex items-center gap-2 hover:bg-black/80 transition-colors">
+                    Join Waitlist <ArrowDown size={14} />
+                  </button>
                 </motion.div>
 
-                {/* Sub-copy */}
-                <motion.p
-                  initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }}
-                  className="text-lg font-medium text-black/30 max-w-lg text-center leading-relaxed"
-                >
-                  The highest quality manifest engine for the modern architect.
-                  <br />One prompt. High-fidelity reality.
-                </motion.p>
+                {/* Right/Center: Massive staggered typography & shapes */}
+                <div className="w-full md:w-3/4 relative flex flex-col items-start gap-1 select-none">
+                  
+                  {/* Line 1: build */}
+                  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="flex items-center gap-4">
+                    {/* SVG Shape: Line + Orange Circle with Arrow */}
+                    <svg width="120" height="60" viewBox="0 0 120 60" className="drop-shadow-sm">
+                      <line x1="20" y1="30" x2="80" y2="30" stroke="black" strokeWidth="4" />
+                      <circle cx="20" cy="30" r="8" stroke="black" strokeWidth="4" fill="none" />
+                      <circle cx="80" cy="30" r="26" fill="#f97316" />
+                      <path d="M 70 20 L 85 30 L 70 40 L 70 36 L 81 30 L 70 24 Z" fill="black" />
+                    </svg>
+                    
+                    <h1 className="text-[120px] font-bold text-black leading-none tracking-tight">build</h1>
+                    
+                    {/* SVG Shape: arrow up right & circles */}
+                    <svg width="140" height="60" viewBox="0 0 140 60" className="ml-4 drop-shadow-sm">
+                      {/* Arrow corner */}
+                      <path d="M 10 40 L 10 45 L 30 45 L 30 25 L 25 25 L 25 40 Z" fill="black" />
+                      <path d="M 10 45 L 30 25" stroke="black" strokeWidth="4" />
+                      {/* Blue Circle */}
+                      <circle cx="70" cy="30" r="16" fill="#3b82f6" />
+                      {/* Black cross */}
+                      <path d="M 100 25 L 110 35 M 100 35 L 110 25" stroke="black" strokeWidth="4" strokeLinecap="round" />
+                      {/* Green circle */}
+                      <circle cx="130" cy="30" r="16" fill="#10b981" />
+                    </svg>
+                  </motion.div>
+
+                  {/* Line 2: beautiful */}
+                  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="flex items-center gap-6 ml-0">
+                    <h1 className="text-[120px] font-bold text-black leading-none tracking-tight">beautiful</h1>
+                    
+                    {/* SVG Shape: yellow pill */}
+                    <svg width="160" height="80" viewBox="0 0 160 80" className="drop-shadow-sm">
+                      <rect x="0" y="20" width="140" height="60" rx="30" fill="#facc15" />
+                      <circle cx="40" cy="50" r="20" fill="#f97316" />
+                      <circle cx="110" cy="50" r="12" stroke="black" strokeWidth="4" fill="none" />
+                      <line x1="20" y1="50" x2="110" y2="50" stroke="black" strokeWidth="4" strokeDasharray="6 4" />
+                    </svg>
+                  </motion.div>
+
+                  {/* Line 3: product */}
+                  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} className="flex items-center gap-2 ml-16">
+                    {/* SVG Shape: purple and green half circles */}
+                    <svg width="80" height="80" viewBox="0 0 80 80" className="drop-shadow-sm mr-4">
+                      <path d="M 35 10 A 30 30 0 0 0 35 70 Z" fill="#a855f7" />
+                      <path d="M 45 10 A 30 30 0 0 1 45 70 Z" fill="#22c55e" />
+                    </svg>
+                    
+                    <h1 className="text-[120px] font-bold text-black leading-none tracking-tight relative">
+                      products<span className="text-black">.</span>
+                    </h1>
+                  </motion.div>
+
+                  {/* Line 4: faster / KREO */}
+                  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }} className="flex items-end gap-6 ml-12 relative pb-8">
+                    <div className="relative">
+                      <h1 className="text-[120px] font-bold text-black leading-none tracking-tight mb-2">
+                        with <span className="text-[#1B3FBF] font-normal" style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }}>KREO</span>
+                      </h1>
+                      {/* Black underline */}
+                      <div className="absolute left-0 -bottom-2 w-[110%] h-3 bg-black rounded-full" />
+                    </div>
+                    
+                    {/* Small black atom symbol */}
+                    <svg width="30" height="30" viewBox="0 0 30 30" className="mb-4">
+                      <path d="M 15 5 A 5 5 0 0 0 15 25 A 5 5 0 0 0 15 5 Z" fill="none" stroke="black" strokeWidth="4" />
+                      <circle cx="15" cy="15" r="4" fill="black" />
+                    </svg>
+
+                    {/* SVG Shape: Orange and blue triangles */}
+                    <svg width="140" height="100" viewBox="0 0 140 100" className="ml-8 absolute -bottom-12 -right-32 drop-shadow-sm pointer-events-none">
+                      <polygon points="10,10 70,10 70,90" fill="#f97316" />
+                      <polygon points="80,10 140,10 140,90" fill="#3b82f6" />
+                    </svg>
+                  </motion.div>
+
+                </div>
               </div>
 
-              {/* Scroll cue */}
-              <div className="absolute bottom-8 flex flex-col items-center gap-2 text-black/20">
-                <span className="text-[9px] font-black uppercase tracking-[0.5em]">Claim your identity</span>
-                <motion.div animate={{ y: [0, 7, 0] }} transition={{ repeat: Infinity, duration: 1.8 }}>
-                  <ArrowDown size={13} />
-                </motion.div>
+              {/* Scroll cue absolute bottom tracking */}
+              <div className="absolute bottom-6 w-full flex justify-center text-black/30 animate-pulse">
+                <span className="text-[10px] font-bold uppercase tracking-[0.4em]">Scroll to Identity</span>
               </div>
             </section>
 
