@@ -16,6 +16,7 @@ import ShareView from "./components/ShareView.tsx";
 import ProjectRouter from "./components/ProjectRouter.tsx";
 import AuthScreen from "./components/AuthScreen.tsx";
 import PricingPage from "./pages/PricingPage.tsx";
+import CampaignPage from "./pages/CampaignPage.tsx";
 
 import { Analytics } from "@vercel/analytics/react";
 
@@ -39,6 +40,7 @@ const App = () => (
           <Route path="/link/:id" element={<ShareView />} />
           <Route path="/social-manifest" element={<SocialManagerPage />} />
           <Route path="/pricing" element={<PricingPage />} />
+          <Route path="/build" element={<CampaignPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
