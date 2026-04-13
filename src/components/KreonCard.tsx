@@ -213,8 +213,8 @@ const KreonCard: React.FC<KreonCardProps> = ({ userEmail }) => {
   const captureCard = async (): Promise<HTMLCanvasElement | null> => {
     if (!cardRef.current) return null;
     try {
-      const mod = await (import as any)('html2canvas').catch(() => null);
-      const html2canvas = mod?.default ?? mod;
+      const mod = await import('html2canvas').catch(() => null);
+      const html2canvas = (mod as any)?.default ?? mod;
       if (!html2canvas) return null;
       return await html2canvas(cardRef.current, {
         backgroundColor: '#030308',
