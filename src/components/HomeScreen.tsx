@@ -4,10 +4,11 @@ import {
   Search, History, Settings, User, ArrowUp, ArrowDown, Monitor, Database, Smartphone,
   LayoutGrid, ChevronDown, ChevronLeft, Clock, Plus, Zap, FileText, X, Activity,
   Image as ImageIcon, BrainCircuit, Sparkles, Paperclip, Shuffle, MessageSquare, Mail,
-  Share2, Globe, Link as LinkIcon, Copy, Info, CheckCircle2, Crown, Star, Volume2
+  Share2, Globe, Link as LinkIcon, Copy, Info, CheckCircle2, Crown, Star, Volume2, ShieldCheck, UserPlus
 } from "lucide-react";
 
 import { narrateText } from "@/lib/ai";
+import KreonCard from "./KreonCard";
 
 import KreoLogo from "./KreoLogo";
 import ArtifactPanel from "./ArtifactPanel";
@@ -434,6 +435,7 @@ const HomeScreen = ({
   });
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [currentArtifactId, setCurrentArtifactId] = useState<string | null>(() => localStorage.getItem('kreo_last_id'));
+  const [showKreonModal, setShowKreonModal] = useState(false);
 
   useEffect(() => {
     localStorage.setItem('kreo_last_query', query);
@@ -937,6 +939,12 @@ const HomeScreen = ({
                 <div className="text-[10px] font-black uppercase tracking-widest opacity-40">{userEmail}</div>
               </div>
             </div>
+            <button 
+              onClick={() => { setShowKreonModal(true); setProfileOpen(false); }} 
+              className="w-full py-4 mb-3 border border-[#1B3FBF]/20 bg-[#1B3FBF]/5 text-[#1B3FBF] text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-[#1B3FBF]/10 transition-all flex items-center justify-center gap-2"
+            >
+              <ShieldCheck size={14} /> View KREON ID
+            </button>
             <button onClick={handleLogout} className="w-full py-4 bg-red-500/10 text-red-500 text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-red-500/20 transition-all">Sign Out Portal</button>
           </div>
         </div>
@@ -1031,7 +1039,18 @@ const HomeScreen = ({
                 <h1 className="text-6xl italic tracking-tighter text-[#1B3FBF] mb-4 animate-in slide-in-from-bottom-2 duration-700" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>
                   Kreo {isPro && <span className="bg-[#1B3FBF] text-white text-[14px] font-black uppercase tracking-widest px-3 py-1 rounded-full align-middle ml-2">PRO</span>}
                 </h1>
-                <p className="text-[12px] font-black uppercase tracking-[0.7em] text-black/40 animate-pulse">
+                
+                {/* KREON Badge */}
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setShowKreonModal(true)}
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-[#1B3FBF]/5 border border-[#1B3FBF]/10 rounded-full text-[#1B3FBF] text-[10px] font-black uppercase tracking-[0.3em] hover:bg-[#1B3FBF]/10 transition-all shadow-sm"
+                >
+                  <UserPlus size={14} /> Become a KREON
+                </motion.button>
+
+                <p className="text-[12px] font-black uppercase tracking-[0.7em] text-black/40 animate-pulse mt-8">
                   {isIncomingPortal ? "Restoring Neural Manifest..." : loadingMessage}
                 </p>
               </div>
@@ -1255,6 +1274,27 @@ const HomeScreen = ({
           </motion.div>
         </div>
       )}
+      {/* KREON Identity Modal */}
+      <AnimatePresence>
+        {showKreonModal && (
+          <div className="fixed inset-0 z-[3000] flex items-center justify-center p-6 bg-white/60 backdrop-blur-2xl">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              className="relative"
+            >
+              <KreonCard userEmail={userEmail} />
+              <button 
+                onClick={() => setShowKreonModal(false)}
+                className="absolute -top-12 right-0 text-[10px] font-black uppercase tracking-[0.4em] text-black hover:text-[#1B3FBF] transition-colors"
+              >
+                Close Identity
+              </button>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
