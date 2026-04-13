@@ -2,15 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Zap, Globe, ShieldCheck, UserPlus, ArrowDown } from 'lucide-react';
-import KreonCard, { KreonCardVisual } from '../components/KreonCard';
+import KreonCard from '../components/KreonCard';
 
 /**
  * CampaignPage — "Build with KREO"
  *
  * 3 snap sections:
- *  1. White hero  — KREO smaller, "Build with" text
- *  2. Pure black  — Full-screen KREON certificate (the card IS the section)
- *  3. Black       — Details, perks, CTA, share
+ *  1. White hero        — KREO wordmark + "Build with"
+ *  2. Pure black        — KREON certificate fills the screen (card + share)
+ *  3. Black details     — perks, CTA, join registry
  */
 
 const CampaignPage: React.FC = () => {
@@ -25,61 +25,49 @@ const CampaignPage: React.FC = () => {
 
   return (
     <div
-      className="h-screen overflow-y-auto overflow-x-hidden relative snap-y snap-mandatory"
+      className="h-screen overflow-y-auto overflow-x-hidden relative"
       style={{ scrollSnapType: 'y mandatory' }}
     >
-      {/* Noise overlay */}
+      {/* Noise */}
       <div
-        className="fixed inset-0 z-[1000] pointer-events-none opacity-[0.04] mix-blend-overlay"
-        style={{ backgroundImage: 'url("https://grainy-gradients.vercel.app/noise.svg")' }}
+        className="fixed inset-0 z-[900] pointer-events-none opacity-[0.035]"
+        style={{ backgroundImage: 'url("https://grainy-gradients.vercel.app/noise.svg")', mixBlendMode: 'overlay' }}
       />
 
       <AnimatePresence mode="wait">
 
-        {/* ─────── STAGE 1: Identity Pop ─────── */}
+        {/* ─── REVEAL: identity pop ─── */}
         {stage === 'reveal' && (
           <motion.div
             key="reveal"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0, scale: 0.92, y: -30 }}
-            transition={{ exit: { duration: 0.5 } }}
-            className="fixed inset-0 z-[60] flex items-center justify-center bg-white"
+            exit={{ opacity: 0, scale: 0.93, y: -24 }}
+            transition={{ exit: { duration: 0.45 } }}
+            className="fixed inset-0 z-[800] flex items-center justify-center bg-white"
           >
             <motion.span
-              initial={{ scale: 0.5, opacity: 0 }}
+              initial={{ scale: 0.45, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              transition={{ type: 'spring', damping: 10, stiffness: 160 }}
-              className="text-[18vw] font-bold text-[#1B3FBF] tracking-tighter select-none"
+              transition={{ type: 'spring', damping: 9, stiffness: 150 }}
               style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }}
+              className="text-[16vw] font-bold text-[#1B3FBF] tracking-tighter select-none"
             >
               KREO
             </motion.span>
           </motion.div>
         )}
 
-        {/* ─────── STAGE 2: 3-section journey ─────── */}
         {stage === 'hero' && (
-          <div className="w-full">
+          <div>
 
-            {/*═══════════════════════════════════════════
-                  SECTION 1 — WHITE HERO
-            ═══════════════════════════════════════════*/}
+            {/* ══════════════════════════════════════════
+                SECTION 1 — WHITE HERO
+            ══════════════════════════════════════════ */}
             <section
-              className="relative h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-white snap-start"
+              style={{ scrollSnapAlign: 'start' }}
+              className="relative h-screen w-full bg-white flex flex-col items-center justify-center overflow-hidden"
             >
-              {/* Ambient shapes */}
-              <div className="absolute inset-0 pointer-events-none">
-                <motion.div animate={{ y: [0, -18, 0] }} transition={{ repeat: Infinity, duration: 6 }}
-                  className="absolute top-[16%] left-[11%] w-16 h-16 rounded-full bg-yellow-400 mix-blend-multiply opacity-80" />
-                <motion.div animate={{ x: [0, 16, 0] }} transition={{ repeat: Infinity, duration: 7 }}
-                  className="absolute bottom-[20%] right-[8%] w-24 h-12 rounded-full bg-emerald-400 rotate-12 mix-blend-multiply opacity-60" />
-                <svg className="absolute inset-0 w-full h-full opacity-[0.07]">
-                  <motion.path initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 2.5 }}
-                    d="M 80 350 Q 350 100 650 350" fill="none" stroke="black" strokeWidth="1.5" strokeDasharray="8 12" />
-                </svg>
-              </div>
-
               {/* Dot grid */}
               <div className="absolute inset-0 pointer-events-none opacity-[0.05]">
                 <svg width="100%" height="100%">
@@ -90,60 +78,75 @@ const CampaignPage: React.FC = () => {
                 </svg>
               </div>
 
+              {/* Ambient shapes */}
+              <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                <motion.div
+                  animate={{ y: [0, -16, 0] }} transition={{ repeat: Infinity, duration: 5.5, ease: 'easeInOut' }}
+                  className="absolute top-[17%] left-[10%] w-14 h-14 rounded-full bg-yellow-400 mix-blend-multiply opacity-75"
+                />
+                <motion.div
+                  animate={{ x: [0, 14, 0] }} transition={{ repeat: Infinity, duration: 7, ease: 'easeInOut' }}
+                  className="absolute bottom-[18%] right-[8%] w-20 h-10 rounded-full bg-emerald-400 rotate-12 mix-blend-multiply opacity-55"
+                />
+              </div>
+
               {/* Content */}
-              <div className="relative z-10 flex flex-col items-center gap-12 px-8">
-                {/* Eyebrow — sans only */}
+              <div className="relative z-10 flex flex-col items-center gap-10 px-6">
+                {/* Eyebrow — pure sans, no TAN */}
                 <motion.span
-                  initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
+                  initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
                   className="text-[10px] font-black uppercase tracking-[0.8em] text-[#1B3FBF]"
                 >
                   Neural Identity // Series 01
                 </motion.span>
 
+                {/* Headline */}
                 <motion.div
-                  initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9 }}
+                  initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.85 }}
                   className="flex flex-col items-center"
                 >
-                  {/* "Build with" — sans, no TAN */}
-                  <h2 className="text-4xl md:text-5xl font-bold text-black tracking-tight leading-none">
+                  {/* "Build with" — sans */}
+                  <p className="text-4xl md:text-5xl font-bold text-black tracking-tight leading-none">
                     Build{' '}
                     <span className="font-light italic text-black/20">with</span>
-                  </h2>
+                  </p>
 
-                  {/* "KREO" — only TAN-NIMBUS usage on this page */}
-                  <div className="relative mt-4">
+                  {/* KREO — TAN-NIMBUS only */}
+                  <div className="relative mt-3">
                     <h1
-                      className="text-[13vw] font-bold text-[#1B3FBF] tracking-tighter leading-none"
                       style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }}
+                      className="text-[12vw] font-bold text-[#1B3FBF] tracking-tighter leading-none"
                     >
                       KREO
                     </h1>
 
-                    {/* Pills */}
+                    {/* Floating pills */}
                     <motion.div
-                      onMouseEnter={() => setIsHovered('sync')} onMouseLeave={() => setIsHovered(null)}
-                      animate={{ scale: isHovered === 'sync' ? 1.12 : 1, x: isHovered === 'sync' ? -6 : 0 }}
-                      className="absolute -top-8 -left-20 px-6 py-3 bg-black text-white rounded-full flex items-center gap-3 shadow-2xl cursor-pointer pointer-events-auto"
+                      onMouseEnter={() => setIsHovered('sync')}
+                      onMouseLeave={() => setIsHovered(null)}
+                      animate={{ scale: isHovered === 'sync' ? 1.1 : 1 }}
+                      className="absolute -top-7 -left-16 px-5 py-2.5 bg-black text-white rounded-full flex items-center gap-2.5 shadow-xl cursor-pointer pointer-events-auto"
                     >
-                      <Globe size={13} />
+                      <Globe size={12} />
                       <span className="text-[9px] font-black uppercase tracking-widest">Global Sync</span>
                     </motion.div>
 
                     <motion.div
-                      onMouseEnter={() => setIsHovered('neural')} onMouseLeave={() => setIsHovered(null)}
-                      animate={{ scale: isHovered === 'neural' ? 1.12 : 1 }}
-                      className="absolute -bottom-4 -right-16 px-6 py-3 bg-white border border-black/5 text-[#1B3FBF] rounded-full flex items-center gap-3 shadow-2xl cursor-pointer pointer-events-auto"
+                      onMouseEnter={() => setIsHovered('neural')}
+                      onMouseLeave={() => setIsHovered(null)}
+                      animate={{ scale: isHovered === 'neural' ? 1.1 : 1 }}
+                      className="absolute -bottom-4 -right-14 px-5 py-2.5 bg-white border border-black/5 text-[#1B3FBF] rounded-full flex items-center gap-2.5 shadow-xl cursor-pointer pointer-events-auto"
                     >
                       <span className="text-[9px] font-black uppercase tracking-widest">Neural Core v3</span>
-                      <Zap size={13} className="fill-yellow-400 text-yellow-400" />
+                      <Zap size={12} className="fill-yellow-400 text-yellow-400" />
                     </motion.div>
                   </div>
                 </motion.div>
 
                 {/* Sub-copy */}
                 <motion.p
-                  initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.9 }}
-                  className="text-lg md:text-xl font-medium text-black/30 max-w-xl text-center leading-relaxed"
+                  initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }}
+                  className="text-lg font-medium text-black/30 max-w-lg text-center leading-relaxed"
                 >
                   The highest quality manifest engine for the modern architect.
                   <br />One prompt. High-fidelity reality.
@@ -151,166 +154,183 @@ const CampaignPage: React.FC = () => {
               </div>
 
               {/* Scroll cue */}
-              <div className="absolute bottom-10 flex flex-col items-center gap-3 text-black/20">
-                <span className="text-[9px] font-black uppercase tracking-[0.5em]">Scroll — Claim your identity</span>
-                <motion.div animate={{ y: [0, 8, 0] }} transition={{ repeat: Infinity, duration: 1.8 }}>
-                  <ArrowDown size={14} />
+              <div className="absolute bottom-8 flex flex-col items-center gap-2 text-black/20">
+                <span className="text-[9px] font-black uppercase tracking-[0.5em]">Claim your identity</span>
+                <motion.div animate={{ y: [0, 7, 0] }} transition={{ repeat: Infinity, duration: 1.8 }}>
+                  <ArrowDown size={13} />
                 </motion.div>
               </div>
             </section>
 
 
-            {/*═══════════════════════════════════════════
-                  SECTION 2 — BLACK KREON CERTIFICATE
-            ═══════════════════════════════════════════*/}
+            {/* ══════════════════════════════════════════
+                SECTION 2 — BLACK KREON CERTIFICATE
+            ══════════════════════════════════════════ */}
             <section
-              className="relative h-screen w-full flex flex-col items-center justify-center overflow-hidden snap-start"
-              style={{ background: '#000' }}
+              style={{ scrollSnapAlign: 'start', background: '#020208' }}
+              className="relative h-screen w-full flex flex-col items-center justify-center overflow-hidden"
             >
-              {/* Full-bleed abstract BG art */}
+              {/* Background nebula art */}
               <div className="absolute inset-0 pointer-events-none overflow-hidden">
-                {/* Big blue halo */}
-                <div className="absolute -top-40 -right-40 w-[500px] h-[500px] rounded-full"
-                  style={{ background: 'radial-gradient(circle, rgba(27,63,191,0.55) 0%, transparent 70%)' }} />
-                {/* Violet halo */}
-                <div className="absolute -bottom-40 -left-40 w-[500px] h-[500px] rounded-full"
-                  style={{ background: 'radial-gradient(circle, rgba(124,58,237,0.45) 0%, transparent 70%)' }} />
-                {/* Emerald accent */}
-                <div className="absolute top-1/3 right-10 w-64 h-64 rounded-full"
-                  style={{ background: 'radial-gradient(circle, rgba(16,185,129,0.25) 0%, transparent 70%)' }} />
+                {/* Blue top-right */}
+                <div className="absolute -top-48 -right-48 w-[520px] h-[520px] rounded-full"
+                  style={{ background: 'radial-gradient(circle, rgba(27,63,191,0.6) 0%, transparent 65%)' }} />
+                {/* Violet bottom-left */}
+                <div className="absolute -bottom-48 -left-48 w-[520px] h-[520px] rounded-full"
+                  style={{ background: 'radial-gradient(circle, rgba(109,40,217,0.5) 0%, transparent 65%)' }} />
+                {/* Emerald mid-right */}
+                <div className="absolute top-[40%] right-[5%] w-64 h-64 rounded-full"
+                  style={{ background: 'radial-gradient(circle, rgba(4,120,87,0.2) 0%, transparent 70%)' }} />
 
                 {/* Orbital rings */}
-                <svg className="absolute inset-0 w-full h-full opacity-10" viewBox="0 0 1440 900" fill="none">
-                  <ellipse cx="720" cy="450" rx="600" ry="380" stroke="white" strokeWidth="0.6" strokeDasharray="4 16" />
-                  <ellipse cx="720" cy="450" rx="420" ry="260" stroke="white" strokeWidth="0.4" strokeDasharray="2 20" />
-                  {/* Scattered dots */}
-                  {[...Array(40)].map((_, i) => (
+                <svg className="absolute inset-0 w-full h-full opacity-[0.09]" viewBox="0 0 1440 900" fill="none">
+                  <ellipse cx="720" cy="450" rx="650" ry="400" stroke="white" strokeWidth="0.6" strokeDasharray="3 16" />
+                  <ellipse cx="720" cy="450" rx="420" ry="260" stroke="white" strokeWidth="0.35" strokeDasharray="2 22" />
+                  {[...Array(36)].map((_, i) => (
                     <circle key={i}
-                      cx={(i * 113 + 80) % 1440}
-                      cy={(i * 79 + 60) % 900}
-                      r="1.2" fill="white" opacity="0.5"
-                    />
+                      cx={(i * 127 + 60) % 1440} cy={(i * 83 + 50) % 900}
+                      r="1.1" fill="white" opacity="0.4" />
                   ))}
                 </svg>
 
-                {/* Vertical subtle lines */}
-                <div className="absolute inset-y-0 left-[10%] w-[1px] bg-gradient-to-b from-transparent via-white/10 to-transparent" />
-                <div className="absolute inset-y-0 right-[10%] w-[1px] bg-gradient-to-b from-transparent via-white/10 to-transparent" />
+                {/* Side vertical accent lines */}
+                <div className="absolute inset-y-0 left-[8%] w-px bg-gradient-to-b from-transparent via-white/10 to-transparent" />
+                <div className="absolute inset-y-0 right-[8%] w-px bg-gradient-to-b from-transparent via-white/10 to-transparent" />
               </div>
 
-              {/* The Card — centered, scaled large */}
-              <div className="relative z-10 flex flex-col items-center gap-6">
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.88, y: 30 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  transition={{ type: 'spring', damping: 20, stiffness: 120, delay: 0.1 }}
-                  style={{ transform: 'scale(1.18)', transformOrigin: 'center' }}
-                >
-                  <KreonCard />
-                </motion.div>
-              </div>
+              {/* Section heading */}
+              <motion.p
+                initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
+                className="relative z-10 text-[9px] font-black uppercase tracking-[0.6em] text-white/25 mb-6"
+              >
+                Your KREON identity
+              </motion.p>
 
-              {/* Bottom scroll nudge */}
-              <div className="absolute bottom-8 flex flex-col items-center gap-3 text-white/20">
-                <span className="text-[9px] font-black uppercase tracking-[0.5em]">Your privileges await</span>
-                <motion.div animate={{ y: [0, 8, 0] }} transition={{ repeat: Infinity, duration: 1.8 }}>
-                  <ArrowDown size={14} />
+              {/* Card — rendered at natural size, no forced scale */}
+              <motion.div
+                initial={{ opacity: 0, y: 32, scale: 0.92 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ type: 'spring', damping: 22, stiffness: 130, delay: 0.1 }}
+                className="relative z-10"
+              >
+                <KreonCard />
+              </motion.div>
+
+              {/* Scroll nudge */}
+              <div className="absolute bottom-7 flex flex-col items-center gap-2 text-white/15">
+                <span className="text-[9px] font-black uppercase tracking-[0.5em]">Your privileges</span>
+                <motion.div animate={{ y: [0, 7, 0] }} transition={{ repeat: Infinity, duration: 1.8 }}>
+                  <ArrowDown size={12} />
                 </motion.div>
               </div>
             </section>
 
 
-            {/*═══════════════════════════════════════════
-                  SECTION 3 — BLACK DETAILS + CTA
-            ═══════════════════════════════════════════*/}
+            {/* ══════════════════════════════════════════
+                SECTION 3 — BLACK DETAILS + CTA
+            ══════════════════════════════════════════ */}
             <section
-              className="relative h-screen w-full flex flex-col items-center justify-center overflow-hidden snap-start"
-              style={{ background: '#050505' }}
+              style={{ scrollSnapAlign: 'start', background: '#040406' }}
+              className="relative h-screen w-full flex items-center justify-center overflow-hidden"
             >
-              {/* Subtle top border */}
-              <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+              <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
-              {/* Faint ambient glow */}
-              <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full pointer-events-none"
-                style={{ background: 'radial-gradient(circle, rgba(27,63,191,0.12) 0%, transparent 70%)' }} />
+              {/* Ambient glow */}
+              <div className="absolute top-1/3 left-1/3 w-80 h-80 rounded-full pointer-events-none"
+                style={{ background: 'radial-gradient(circle, rgba(27,63,191,0.1) 0%, transparent 70%)' }} />
 
-              <div className="relative z-10 flex flex-col md:flex-row items-center gap-24 max-w-6xl px-12 w-full">
+              <div className="relative z-10 max-w-5xl w-full px-12 grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
 
-                {/* Left: Identity manifest */}
-                <div className="flex-1 space-y-10">
-                  <div className="space-y-5">
-                    <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full border border-[#1B3FBF]/30 bg-[#1B3FBF]/10">
+                {/* Left: copy */}
+                <div className="space-y-8">
+                  <div className="space-y-4">
+                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#1B3FBF]/30 bg-[#1B3FBF]/8">
                       <ShieldCheck size={12} className="text-[#1B3FBF]" />
                       <span className="text-[10px] font-black uppercase tracking-widest text-[#1B3FBF]">Resident Protocol</span>
                     </div>
 
-                    {/* Sans — not TAN */}
-                    <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter leading-none">
+                    {/* sans — never TAN on text blocks */}
+                    <h2 className="text-5xl md:text-6xl font-black text-white tracking-tighter leading-none">
                       Become<br />a KREON.
                     </h2>
 
-                    <p className="text-lg font-medium text-white/35 max-w-md leading-relaxed">
-                      Once you join the studio, you manifest more than just artifacts.
-                      You become part of a lineage of architects who build the future.
+                    <p className="text-base font-medium text-white/35 max-w-sm leading-relaxed">
+                      Once you join the studio, you manifest more than artifacts.
+                      You earn a permanent numbered identity in the KREO lineage.
                     </p>
                   </div>
 
-                  {/* Perks list */}
+                  {/* Perks */}
                   <div className="space-y-3">
                     {[
-                      'Your numbered KREON ID — permanent, immutable',
-                      'Access to the Neural Manifestation Engine',
+                      'Permanent numbered KREON ID (#0001 → ∞)',
+                      'Full access to the Neural Manifestation Engine',
                       'Shareable certificate for your social identity',
-                      'Priority access to Series 02 + beyond',
+                      'Early access to Series 02 + all future drops',
                     ].map((perk, i) => (
                       <motion.div
                         key={i}
-                        initial={{ opacity: 0, x: -16 }}
+                        initial={{ opacity: 0, x: -14 }}
                         whileInView={{ opacity: 1, x: 0 }}
-                        transition={{ delay: i * 0.1 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: i * 0.08 }}
                         className="flex items-start gap-3"
                       >
-                        <div className="w-4 h-4 rounded-full border border-[#1B3FBF]/60 flex items-center justify-center mt-0.5 shrink-0">
+                        <div className="mt-1 w-3.5 h-3.5 rounded-full border border-[#1B3FBF]/50 flex-shrink-0 flex items-center justify-center">
                           <div className="w-1.5 h-1.5 rounded-full bg-[#1B3FBF]" />
                         </div>
-                        <p className="text-[13px] font-medium text-white/50">{perk}</p>
+                        <p className="text-[13px] text-white/45 font-medium leading-snug">{perk}</p>
                       </motion.div>
                     ))}
                   </div>
 
                   {/* CTA */}
-                  <div className="flex flex-col gap-4 pt-4">
+                  <div className="flex flex-col gap-3 pt-2">
                     <motion.button
                       onClick={() => navigate('/')}
-                      whileHover={{ scale: 1.04 }}
-                      whileTap={{ scale: 0.96 }}
-                      className="w-fit px-10 py-5 bg-white text-black rounded-full flex items-center gap-4 font-black text-[11px] uppercase tracking-[0.4em] shadow-2xl shadow-white/10"
+                      whileHover={{ scale: 1.03, y: -2 }}
+                      whileTap={{ scale: 0.97 }}
+                      className="w-fit px-10 py-4 bg-white text-black rounded-full flex items-center gap-3 font-black text-[11px] uppercase tracking-[0.35em] shadow-2xl shadow-white/10"
                     >
-                      <UserPlus size={16} /> Enter the Registry
+                      <UserPlus size={15} /> Enter the Registry
                     </motion.button>
-                    <p className="text-[10px] font-medium text-white/15 uppercase tracking-[0.2em]">
+                    <p className="text-[9px] text-white/15 uppercase tracking-[0.25em] font-medium">
                       Verified residency · Series 01
                     </p>
                   </div>
                 </div>
 
-                {/* Right: compact card repeat */}
-                <div className="flex-1 flex justify-center">
-                  <div className="opacity-60 scale-90">
-                    <KreonCard />
-                  </div>
+                {/* Right: stats */}
+                <div className="space-y-6">
+                  {[
+                    { label: 'Resident architects', value: '1,247+', accent: '#1B3FBF' },
+                    { label: 'Manifests created', value: '84K+', accent: '#6d28d9' },
+                    { label: 'Series', value: '01 of ∞', accent: '#047857' },
+                  ].map((stat, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, y: 16 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: i * 0.12 }}
+                      className="p-6 rounded-2xl border border-white/5 bg-white/[0.02]"
+                      style={{ borderLeft: `2px solid ${stat.accent}40` }}
+                    >
+                      <p className="text-[9px] font-black uppercase tracking-[0.4em] text-white/25 mb-1.5">{stat.label}</p>
+                      <p className="text-3xl font-black text-white tracking-tight">{stat.value}</p>
+                    </motion.div>
+                  ))}
                 </div>
               </div>
 
-              {/* Ghosted watermark */}
-              <span className="absolute bottom-0 right-8 text-[16vw] font-black text-white/[0.015] pointer-events-none tracking-tighter select-none">
+              {/* Ghost watermark */}
+              <span className="absolute bottom-0 right-8 text-[14vw] font-black text-white/[0.018] pointer-events-none tracking-tighter select-none">
                 LINEAGE
               </span>
             </section>
 
           </div>
         )}
-
       </AnimatePresence>
     </div>
   );
