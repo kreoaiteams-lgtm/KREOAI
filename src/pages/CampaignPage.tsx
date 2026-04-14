@@ -81,147 +81,132 @@ const CampaignPage: React.FC = () => {
           <div>
 
             {/* ══════════════════════════════════════════
-                SCREEN 1 — "WHAT YOU CAN DO WITH KREO" (REPEL LOGIC)
+                SCREEN 1 — "BUILD YOUR IMAGINATION" HERO
             ══════════════════════════════════════════ */}
             <section
               style={{ scrollSnapAlign: 'start' }}
               className="relative h-screen w-full bg-white flex flex-col items-center justify-center overflow-hidden"
-              onMouseMove={(e) => {
-                const rect = e.currentTarget.getBoundingClientRect();
-                setMousePos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
-              }}
             >
-              {/* Dot grid */}
-              <div className="absolute inset-0 pointer-events-none opacity-[0.03]">
+              {/* Dot grid bg */}
+              <div className="absolute inset-0 pointer-events-none opacity-[0.035]">
                 <svg width="100%" height="100%">
-                  <pattern id="dg1" width="40" height="40" patternUnits="userSpaceOnUse">
-                    <circle cx="20" cy="20" r="1.5" fill="black" />
+                  <pattern id="dg2" width="44" height="44" patternUnits="userSpaceOnUse">
+                    <circle cx="22" cy="22" r="1.5" fill="#1B3FBF" />
                   </pattern>
-                  <rect width="100%" height="100%" fill="url(#dg1)" />
+                  <rect width="100%" height="100%" fill="url(#dg2)" />
                 </svg>
               </div>
 
-              <div className="relative z-20 text-center pointer-events-none">
-                <span className="text-[10px] font-black uppercase tracking-[0.5em] text-[#1B3FBF] mb-4 block">
-                  Capability Engine
-                </span>
-                <h1 className="text-4xl md:text-6xl font-black text-black tracking-tight leading-none mb-4">
-                  What you can do with <br />
-                  <span className="text-[#1B3FBF]" style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }}>KREO</span>
-                </h1>
-                <p className="text-sm font-medium text-black/40">Move your mouse to interact</p>
+              {/* Large cobalt diagonal stripe accent — top right */}
+              <div className="absolute top-0 right-0 w-[500px] h-[500px] pointer-events-none overflow-hidden opacity-[0.04]">
+                <div className="absolute top-0 right-0 w-full h-full bg-[#1B3FBF] origin-top-right" style={{ clipPath: 'polygon(40% 0%, 100% 0%, 100% 60%)' }} />
+              </div>
+              {/* Bottom left accent */}
+              <div className="absolute bottom-0 left-0 w-[400px] h-[400px] pointer-events-none overflow-hidden opacity-[0.03]">
+                <div className="absolute bottom-0 left-0 w-full h-full bg-[#1B3FBF]" style={{ clipPath: 'polygon(0% 40%, 60% 100%, 0% 100%)' }} />
               </div>
 
-              {/* Floating repulsion items */}
-              {floatingItems.map((item, i) => {
-                // Calculate distance from mouse
-                const dx = mousePos.x - item.initialX;
-                const dy = mousePos.y - item.initialY;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                const repelRadius = 250;
-                
-                let ox = 0;
-                let oy = 0;
-                
-                if (distance < repelRadius && distance > 0) {
-                  const force = (repelRadius - distance) / repelRadius;
-                  ox = -(dx / distance) * force * 100;
-                  oy = -(dy / distance) * force * 100;
-                }
+              {/* Decorative dashed arrows — corners */}
+              <svg className="absolute top-[12%] left-[8%] opacity-20 pointer-events-none hidden md:block" width="90" height="28" viewBox="0 0 90 28" fill="none">
+                <path d="M4 14 L72 14" stroke="#1B3FBF" strokeWidth="1.2" strokeLinecap="round" strokeDasharray="6 5"/>
+                <path d="M65 6 L75 14 L65 22" stroke="#1B3FBF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+              </svg>
+              <svg className="absolute top-[12%] right-[8%] opacity-20 pointer-events-none hidden md:block scale-x-[-1]" width="90" height="28" viewBox="0 0 90 28" fill="none">
+                <path d="M4 14 L72 14" stroke="#1B3FBF" strokeWidth="1.2" strokeLinecap="round" strokeDasharray="6 5"/>
+                <path d="M65 6 L75 14 L65 22" stroke="#1B3FBF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+              </svg>
+              <svg className="absolute bottom-[14%] left-[8%] opacity-20 pointer-events-none hidden md:block rotate-[180deg]" width="90" height="28" viewBox="0 0 90 28" fill="none">
+                <path d="M4 14 L72 14" stroke="#1B3FBF" strokeWidth="1.2" strokeLinecap="round" strokeDasharray="6 5"/>
+                <path d="M65 6 L75 14 L65 22" stroke="#1B3FBF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+              </svg>
+              <svg className="absolute bottom-[14%] right-[8%] opacity-20 pointer-events-none hidden md:block rotate-[180deg] scale-x-[-1]" width="90" height="28" viewBox="0 0 90 28" fill="none">
+                <path d="M4 14 L72 14" stroke="#1B3FBF" strokeWidth="1.2" strokeLinecap="round" strokeDasharray="6 5"/>
+                <path d="M65 6 L75 14 L65 22" stroke="#1B3FBF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+              </svg>
+              {/* Centre top small asterisk */}
+              <svg className="absolute top-[8%] left-1/2 -translate-x-1/2 opacity-10 pointer-events-none" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <line x1="10" y1="1" x2="10" y2="19" stroke="#1B3FBF" strokeWidth="1.5" strokeLinecap="round"/>
+                <line x1="1" y1="10" x2="19" y2="10" stroke="#1B3FBF" strokeWidth="1.5" strokeLinecap="round"/>
+                <line x1="3" y1="3" x2="17" y2="17" stroke="#1B3FBF" strokeWidth="1.5" strokeLinecap="round"/>
+                <line x1="17" y1="3" x2="3" y2="17" stroke="#1B3FBF" strokeWidth="1.5" strokeLinecap="round"/>
+              </svg>
 
-                return (
-                  <motion.div
-                    key={i}
-                    animate={{ x: ox, y: oy }}
-                    transition={{ type: 'spring', stiffness: 200, damping: 20 }}
-                    style={{ position: 'absolute', left: `${item.left}%`, top: `${item.top}%` }}
-                    className={`px-6 py-4 rounded-full text-sm md:text-base font-black shadow-2xl border border-white/50 backdrop-blur-md cursor-default select-none ${item.color}`}
-                    whileHover={{ scale: 1.1, rotate: Math.random() > 0.5 ? 5 : -5 }}
-                  >
-                    {item.label}
-                  </motion.div>
-                );
-              })}
+              {/* Main content */}
+              <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-5xl w-full">
+                <motion.span
+                  initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.6 }}
+                  className="text-[10px] font-black uppercase tracking-[0.6em] text-[#1B3FBF]/60 mb-8 block"
+                >
+                  Creative Studio Engine
+                </motion.span>
 
-              <div className="absolute bottom-8 flex flex-col items-center gap-2 text-black/20">
-                <span className="text-[9px] font-black uppercase tracking-[0.5em]">Scroll down</span>
-                <motion.div animate={{ y: [0, 7, 0] }} transition={{ repeat: Infinity, duration: 1.8 }}>
-                  <ArrowDown size={13} />
-                </motion.div>
-              </div>
-            </section>
+                {/* Main headline — stacked large type */}
+                <motion.h1
+                  initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                  className="text-[11vw] font-black text-black tracking-tighter leading-[0.9] mb-0"
+                  style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
+                >
+                  Build your
+                </motion.h1>
 
-
-            {/* ══════════════════════════════════════════
-                SCREEN 2 — "BUILD YOUR IMAGINATION." (WHITE + GRAPHICS)
-            ══════════════════════════════════════════ */}
-            <section
-              style={{ scrollSnapAlign: 'start' }}
-              className="relative h-screen w-full bg-[#f8f9fa] flex flex-col items-center justify-center overflow-hidden"
-            >
-              {/* Grain */}
-              <div className="absolute inset-0 pointer-events-none mix-blend-multiply opacity-[0.04]"
-                   style={{ backgroundImage: 'url("https://grainy-gradients.vercel.app/noise.svg")' }} />
-
-              <div className="relative z-10 w-full max-w-5xl px-6 flex flex-col items-center justify-center text-center">
-                
-                {/* Smaller top text */}
-                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="relative mb-2">
-                  <h2 className="text-3xl sm:text-5xl md:text-6xl font-black text-black tracking-tight leading-[1]" style={{ fontFamily: "'Instrument Sans', sans-serif" }}>
-                    Build your
-                    <br />
+                {/* "imagination." with slight italic flavour */}
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.32, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                  className="relative"
+                >
+                  <h1 className="text-[11vw] font-black italic text-black tracking-tighter leading-[0.9]"
+                      style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>
                     imagination.
-                  </h2>
-                  
-                  {/* Graphics added around text */}
-                  <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 12, ease: "linear" }} className="absolute -top-16 -left-20 opacity-80 mix-blend-multiply hidden md:block">
-                    <svg width="80" height="80" viewBox="0 0 80 80"><path d="M 40 10 L 45 35 L 70 40 L 45 45 L 40 70 L 35 45 L 10 40 L 35 35 Z" fill="#facc15" /></svg>
-                  </motion.div>
-                  <motion.div animate={{ y: [0, -15, 0] }} transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }} className="absolute -bottom-12 -right-16 opacity-80 mix-blend-multiply hidden md:block">
-                    <svg width="60" height="60" viewBox="0 0 60 60"><circle cx="30" cy="30" r="24" fill="#3b82f6" /></svg>
-                  </motion.div>
-                  <motion.div animate={{ scale: [1, 1.1, 1], rotate: [15, 25, 15] }} transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }} className="absolute top-1/2 -right-32 opacity-80 mix-blend-multiply hidden md:block">
-                    <svg width="70" height="70" viewBox="0 0 70 70"><rect x="15" y="15" width="40" height="40" rx="8" fill="#f97316" /></svg>
-                  </motion.div>
-                  <motion.div animate={{ x: [0, 10, 0], y: [0, 10, 0] }} transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }} className="absolute bottom-full left-1/2 opacity-80 mix-blend-multiply hidden md:block">
-                    <svg width="40" height="40" viewBox="0 0 40 40"><polygon points="20,5 35,35 5,35" fill="#ec4899" /></svg>
-                  </motion.div>
-                  <motion.div animate={{ rotate: -360 }} transition={{ repeat: Infinity, duration: 20, ease: "linear" }} className="absolute top-1/4 -left-36 opacity-30 mix-blend-multiply hidden md:block">
-                    <svg width="120" height="120" viewBox="0 0 100 100">
-                      <circle cx="50" cy="50" r="48" fill="none" stroke="#22c55e" strokeWidth="2" strokeDasharray="10 10" />
-                    </svg>
-                  </motion.div>
+                  </h1>
+                  {/* Underline stroke */}
+                  <motion.div
+                    initial={{ scaleX: 0 }} animate={{ scaleX: 1 }}
+                    transition={{ delay: 0.9, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                    className="h-[3px] bg-[#1B3FBF] w-full origin-left rounded-full mt-1"
+                  />
                 </motion.div>
 
-                {/* BIGGER "with KREO" */}
-                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="mt-4 flex flex-col items-center justify-center relative z-10">
-                  <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-black/30 mb-1">with</span>
-                  <span className="text-6xl sm:text-[90px] font-bold text-[#1B3FBF] tracking-tighter leading-none" style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }}>
+                {/* "with KREO" — large, cobalt, TAN-NIMBUS */}
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                  className="flex items-baseline gap-5 mt-6"
+                >
+                  <span className="text-2xl font-black uppercase tracking-[0.15em] text-black/25"
+                        style={{ fontFamily: "'Satoshi', sans-serif" }}>
+                    with
+                  </span>
+                  <span className="text-[11vw] font-bold text-[#1B3FBF] tracking-tighter leading-none"
+                        style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }}>
                     KREO
                   </span>
                 </motion.div>
 
-                {/* CTA merged into this screen */}
-                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }} className="mt-14 flex flex-col items-center gap-3">
+                {/* CTA */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.65, duration: 0.7 }}
+                  className="mt-12 flex items-center gap-4"
+                >
                   <motion.button
                     onClick={() => navigate('/')}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="px-10 py-4 bg-black text-white rounded-full flex items-center gap-3 font-black text-xs uppercase tracking-[0.2em] shadow-xl hover:bg-[#1B3FBF] transition-colors"
+                    whileHover={{ scale: 1.04 }}
+                    whileTap={{ scale: 0.96 }}
+                    className="px-10 py-4 bg-[#1B3FBF] text-white rounded-full flex items-center gap-3 font-black text-[11px] uppercase tracking-[0.25em] shadow-2xl shadow-[#1B3FBF]/30 hover:bg-black transition-colors"
                   >
-                    <UserPlus size={16} /> Enter the Studio
+                    <UserPlus size={14} /> Enter the Studio
                   </motion.button>
-                  <div className="flex items-center gap-2 mt-2">
+                  <div className="flex items-center gap-2">
                     <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                    <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-black/40">Open for Registry</p>
+                    <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-black/30">Open Registry</p>
                   </div>
                 </motion.div>
-
               </div>
 
               {/* Scroll cue */}
-              <div className="absolute bottom-8 w-full flex justify-center text-black/20">
-                <span className="text-[9px] font-black uppercase tracking-[0.4em]">View Identity Protocol</span>
+              <div className="absolute bottom-8 flex flex-col items-center gap-2 text-black/20">
+                <span className="text-[9px] font-black uppercase tracking-[0.5em]">View Identity Protocol</span>
+                <motion.div animate={{ y: [0, 7, 0] }} transition={{ repeat: Infinity, duration: 1.8 }}>
+                  <ArrowDown size={13} />
+                </motion.div>
               </div>
             </section>
 
