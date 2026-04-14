@@ -106,30 +106,30 @@ const CampaignPage: React.FC = () => {
                 <div className="absolute bottom-0 left-0 w-full h-full bg-white" style={{ clipPath: 'polygon(0% 40%, 60% 100%, 0% 100%)' }} />
               </div>
 
-              {/* Productivity Floating Elements (Brightened) */}
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 0.6 }} transition={{ delay: 1 }} className="absolute inset-0 pointer-events-none">
-                <motion.div animate={{ y: [0, -20, 0], rotate: [0, 5, 0] }} transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }} className="absolute top-[20%] left-[15%]">
-                  <Presentation size={48} className="text-white" />
-                  <span className="text-[10px] font-bold uppercase tracking-widest mt-2 block opacity-80">Strategy</span>
+              {/* Productivity Floating Elements (High Visibility) */}
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 0.8 }} transition={{ delay: 1 }} className="absolute inset-0 pointer-events-none">
+                <motion.div animate={{ y: [0, -20, 0], rotate: [0, 5, 0] }} transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }} className="absolute top-[20%] left-[10%]">
+                  <Presentation size={64} className="text-white" />
+                  <span className="text-[12px] font-black uppercase tracking-widest mt-3 block opacity-90">Strategy</span>
                 </motion.div>
-                <motion.div animate={{ y: [0, 20, 0], rotate: [0, -5, 0] }} transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }} className="absolute top-[25%] right-[18%]">
-                  <Code2 size={44} className="text-white" />
-                  <span className="text-[10px] font-bold uppercase tracking-widest mt-2 block opacity-80">Engineering</span>
+                <motion.div animate={{ y: [0, 20, 0], rotate: [0, -5, 0] }} transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }} className="absolute top-[25%] right-[12%]">
+                  <Code2 size={60} className="text-white" />
+                  <span className="text-[12px] font-black uppercase tracking-widest mt-3 block opacity-90">Engineering</span>
                 </motion.div>
-                <motion.div animate={{ x: [0, 15, 0] }} transition={{ repeat: Infinity, duration: 7, ease: "easeInOut" }} className="absolute bottom-[25%] left-[20%]">
-                  <Table2 size={40} className="text-white" />
-                  <span className="text-[10px] font-bold uppercase tracking-widest mt-2 block opacity-80">Analysis</span>
+                <motion.div animate={{ x: [0, 15, 0] }} transition={{ repeat: Infinity, duration: 7, ease: "easeInOut" }} className="absolute bottom-[25%] left-[15%]">
+                  <Table2 size={56} className="text-white" />
+                  <span className="text-[12px] font-black uppercase tracking-widest mt-3 block opacity-90">Analysis</span>
                 </motion.div>
-                <motion.div animate={{ scale: [1, 1.1, 1] }} transition={{ repeat: Infinity, duration: 8, ease: "easeInOut" }} className="absolute bottom-[20%] right-[15%]">
-                  <GitGraph size={46} className="text-white" />
-                  <span className="text-[10px] font-bold uppercase tracking-widest mt-2 block opacity-80">Workflow</span>
+                <motion.div animate={{ scale: [1, 1.1, 1] }} transition={{ repeat: Infinity, duration: 8, ease: "easeInOut" }} className="absolute bottom-[20%] right-[10%] text-white">
+                  <GitGraph size={62} />
+                  <span className="text-[12px] font-black uppercase tracking-widest mt-3 block opacity-90 text-white">Workflow</span>
                 </motion.div>
                 {/* Smilies */}
-                <motion.div animate={{ rotate: [0, 360] }} transition={{ repeat: Infinity, duration: 20, ease: "linear" }} className="absolute top-[40%] right-[10%] opacity-30">
-                  <Smile size={32} className="text-white" />
+                <motion.div animate={{ rotate: [0, 360] }} transition={{ repeat: Infinity, duration: 20, ease: "linear" }} className="absolute top-[40%] right-[8%] opacity-60">
+                  <Smile size={48} className="text-white" />
                 </motion.div>
-                <motion.div animate={{ scale: [0.8, 1.2, 0.8] }} transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }} className="absolute bottom-[40%] left-[12%] opacity-30">
-                  <Smile size={24} className="text-white" />
+                <motion.div animate={{ scale: [0.8, 1.2, 0.8] }} transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }} className="absolute bottom-[40%] left-[8%] opacity-60">
+                  <Smile size={36} className="text-white" />
                 </motion.div>
               </motion.div>
 
@@ -190,9 +190,9 @@ const CampaignPage: React.FC = () => {
                 {/* "with KREO" — large, cobalt, TAN-NIMBUS */}
                 <motion.div
                   initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                  className="flex items-baseline gap-5 mt-6"
+                  className="flex items-baseline gap-6 mt-8"
                 >
-                  <span className="text-2xl font-black uppercase tracking-[0.15em] text-white/30"
+                  <span className="text-6xl font-black uppercase tracking-[0.2em] text-white"
                         style={{ fontFamily: "'Satoshi', sans-serif" }}>
                     with
                   </span>
@@ -433,8 +433,11 @@ const CampaignPage: React.FC = () => {
                 </div>
               </div>
               
-              <footer className="absolute bottom-4 text-center text-white/30 text-[9px] font-black uppercase tracking-[0.5em] w-full">
-                ©2026 KREO NEURAL STUDIO. ALL RIGHTS RESERVED.
+              <footer className="absolute bottom-0 h-48 flex flex-col items-center justify-end pb-12 w-full bg-gradient-to-t from-black to-transparent pointer-events-none">
+                <h2 className="text-[15vw] font-black text-white/[0.03] tracking-tighter leading-none select-none" style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }}>KREO</h2>
+                <div className="text-center text-white/40 text-[10px] font-black uppercase tracking-[0.6em] mb-2">
+                  ©2026 KREO NEURAL STUDIO. ALL RIGHTS RESERVED.
+                </div>
               </footer>
             </section>
 

@@ -308,6 +308,46 @@ export const generateArtifact = async (prompt: string, chatHistory: {role: strin
   }
 };
 
+/**
+ * Generate a Resident Bio from interview answers
+ */
+export const generateBio = async (answers: string[]) => {
+  if (!SARVAM_API_KEY) return "A creative force within the KREO ecosystem, dedicated to building new worlds.";
+
+  try {
+    const prompt = `Generate a cinematic, highly distinctive 1-sentence bio for a "KREO Resident" based on these 3 interview answers. Make it feel elite, architectural, and mysterious. 
+    Answers: 
+    1. ${answers[0]}
+    2. ${answers[1]}
+    3. ${answers[2]}
+    
+    Format: A single quote without surrounding text. Max 25 words.`;
+
+    const response = await fetch(SARVAM_ENDPOINT, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${SARVAM_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: "sarvam-105b",
+        messages: [
+          { role: "system", content: "You are the KREO Neural Studio architect. You summarize creative identities into elite resident bios." },
+          { role: "user", content: prompt },
+        ],
+        max_tokens: 100,
+        temperature: 0.8,
+      }),
+    });
+
+    const data = await response.json();
+    return data.choices[0].message.content.replace(/^["']|["']$/g, '').trim();
+  } catch (err) {
+    console.error("Bio generation failed:", err);
+    return "A manifestation of pure imagination, weaving through the KREO neural net.";
+  }
+};
+
 export const narrateText = async (text: string) => {
   if (!SARVAM_API_KEY) return;
 

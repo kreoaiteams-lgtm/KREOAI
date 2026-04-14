@@ -5,6 +5,7 @@ import { Share2, Download, Link, Check, Twitter } from 'lucide-react';
 interface KreonCardProps {
   userEmail?: string;
   interest?: KreonInterest;
+  bio?: string;
 }
 
 function getCardNumber(email?: string): string {
@@ -30,8 +31,8 @@ type KreonInterest = 'design' | 'tech' | 'architecture' | 'product' | 'art' | 's
 
 export const KreonCardVisual = React.forwardRef<
   HTMLDivElement,
-  { userEmail?: string; cardNumber: string; interest?: KreonInterest }
->(({ userEmail, cardNumber, interest = 'tech' }, ref) => {
+  { userEmail?: string; cardNumber: string; interest?: KreonInterest; bio?: string; isFlipped?: boolean }
+>(({ userEmail, cardNumber, interest = 'tech', bio, isFlipped = false }, ref) => {
   const displayName = userEmail
     ? userEmail.split('@')[0].replace(/[._]/g, ' ').toUpperCase()
     : 'KREO RESIDENT';
@@ -131,72 +132,78 @@ export const KreonCardVisual = React.forwardRef<
       style={{
         width: '340px',
         height: '480px',
-        backgroundColor: currentTheme.bg,
-        borderRadius: '32px',
-        position: 'relative',
-        overflow: 'hidden',
-        boxShadow: `0 40px 100px ${currentTheme.bg}60, inset 0 2px 4px rgba(255,255,255,0.3)`,
-        fontFamily: 'system-ui, sans-serif',
-        display: 'flex',
-        flexDirection: 'column',
+        transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
+        transformStyle: 'preserve-3d',
+        transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
       }}
     >
-      {/* ── Top Header ── */}
-      <div style={{ padding: '28px 28px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', zIndex: 10 }}>
-        <div style={{ padding: '6px 12px', background: currentTheme.color === 'white' ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.1)', borderRadius: '20px', color: currentTheme.color, fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-          {currentTheme.text}
+      {/* ── FRONT SIDE ── */}
+      <div 
+        style={{
+          position: 'absolute', inset: 0, backfaceVisibility: 'hidden',
+          backgroundColor: currentTheme.bg, borderRadius: '32px',
+          overflow: 'hidden', display: 'flex', flexDirection: 'column',
+          boxShadow: `0 40px 100px ${currentTheme.bg}60`,
+        }}
+      >
+        <div style={{ padding: '28px 28px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', zIndex: 10 }}>
+          <div style={{ padding: '6px 12px', background: currentTheme.color === 'white' ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.1)', borderRadius: '20px', color: currentTheme.color, fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+            {currentTheme.text}
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: currentTheme.color }}>
+            <span style={{ fontSize: '12px', fontWeight: 900, opacity: 0.7 }}>#</span>
+            <span style={{ fontSize: '18px', fontWeight: 900, letterSpacing: '0.05em' }}>{cardNumber}</span>
+          </div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: currentTheme.color }}>
-          <span style={{ fontSize: '12px', fontWeight: 900, opacity: 0.7 }}>#</span>
-          <span style={{ fontSize: '18px', fontWeight: 900, letterSpacing: '0.05em' }}>{cardNumber}</span>
+
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 0 }}>
+          <div style={{ width: '180px', height: '180px' }}>{currentTheme.graphic}</div>
         </div>
+
+        <div style={{ padding: '0 28px 28px', color: currentTheme.color, zIndex: 10, display: 'flex', flexDirection: 'column', gap: '2px' }}>
+          <h1 style={{ fontSize: '64px', fontWeight: 900, fontFamily: "'TAN-NIMBUS', sans-serif", letterSpacing: '-0.02em', lineHeight: 1, marginBottom: '8px' }}>KREO</h1>
+          <p style={{ fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.2em', opacity: 0.6 }}>Resident Architect</p>
+          <p style={{ fontSize: '20px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', lineHeight: 1.2 }}>{displayName}</p>
+        </div>
+        <div style={{ position: 'absolute', inset: 0, opacity: 0.1, backgroundImage: 'url("https://grainy-gradients.vercel.app/noise.svg")', mixBlendMode: 'overlay', pointerEvents: 'none' }}/>
       </div>
 
-      {/* ── Graphic ── */}
-      <div style={{
-        flex: 1,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        position: 'relative',
-        zIndex: 0,
-      }}>
-        <div style={{ width: '180px', height: '180px' }}>
-          {currentTheme.graphic}
+      {/* ── BACK SIDE ── */}
+      <div 
+        style={{
+          position: 'absolute', inset: 0, backfaceVisibility: 'hidden',
+          backgroundColor: '#000', borderRadius: '32px',
+          overflow: 'hidden', display: 'flex', flexDirection: 'column',
+          transform: 'rotateY(180deg)', border: '1px solid rgba(255,255,255,0.1)',
+          padding: '40px', color: 'white'
+        }}
+      >
+        <div style={{ spaceY: '12px' }}>
+           <div style={{ color: currentTheme.bg, fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.4em', marginBottom: '12px' }}>
+             Neural Summary
+           </div>
+           <div style={{ fontSize: '24px', fontWeight: 300, fontFamily: 'serif', fontStyle: 'italic', lineHeight: 1.4, opacity: 0.9 }}>
+             "{bio || 'Establishing creative identity...'}"
+           </div>
         </div>
+        
+        <div style={{ marginTop: 'auto', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '20px' }}>
+           <div style={{ fontSize: '8px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.2em', color: 'rgba(255,255,255,0.3)', marginBottom: '10px' }}> Registry Metadata </div>
+           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px' }}>
+                 <span style={{ opacity: 0.4 }}>STATUS</span>
+                 <span style={{ fontWeight: 800, color: currentTheme.bg }}>VERIFIED</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px' }}>
+                 <span style={{ opacity: 0.4 }}>LEVEL</span>
+                 <span style={{ fontWeight: 800 }}>BEYOND LIMIT</span>
+              </div>
+           </div>
+        </div>
+        
+        {/* Grain */}
+        <div style={{ position: 'absolute', inset: 0, opacity: 0.2, backgroundImage: 'url("https://grainy-gradients.vercel.app/noise.svg")', mixBlendMode: 'plus-lighter', pointerEvents: 'none' }}/>
       </div>
-
-      {/* ── Bottom Section ── */}
-      <div style={{
-        padding: '0 28px 28px',
-        color: currentTheme.color,
-        zIndex: 10,
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '2px',
-      }}>
-        <h1 style={{
-          fontSize: '64px', fontWeight: 900,
-          fontFamily: "'TAN-NIMBUS', sans-serif",
-          letterSpacing: '-0.02em', lineHeight: 1,
-          marginBottom: '8px',
-        }}>
-          KREO
-        </h1>
-        <p style={{ fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.2em', opacity: 0.6 }}>
-          Resident Architect
-        </p>
-        <p style={{ fontSize: '20px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', lineHeight: 1.2 }}>
-          {displayName}
-        </p>
-      </div>
-
-      {/* Grain */}
-      <div style={{
-        position: 'absolute', inset: 0, opacity: 0.1,
-        backgroundImage: 'url("https://grainy-gradients.vercel.app/noise.svg")',
-        mixBlendMode: 'overlay', pointerEvents: 'none', zIndex: 20
-      }}/>
     </div>
   );
 });
@@ -204,11 +211,12 @@ KreonCardVisual.displayName = 'KreonCardVisual';
 
 /* ─────────────────────────────────────────────── */
 
-const KreonCard: React.FC<KreonCardProps> = ({ userEmail, interest }) => {
+const KreonCard: React.FC<KreonCardProps> = ({ userEmail, interest, bio }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const [copied, setCopied] = useState(false);
   const [isCapturing, setIsCapturing] = useState(false);
   const [cardNumber] = useState(() => getCardNumber(userEmail));
+  const [isFlipped, setIsFlipped] = useState(false);
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(`${window.location.origin}/build`);
@@ -272,39 +280,34 @@ const KreonCard: React.FC<KreonCardProps> = ({ userEmail, interest }) => {
   const [[rotateX, rotateY], setRotation] = useState([0, 0]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    if (isFlipped) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
-    
-    // Scale down the rotation multiplier for a subtle 3D effect
-    const newRotateX = ((y - centerY) / centerY) * -20;  
-    const newRotateY = ((x - centerX) / centerX) * 20;
-    
+    const newRotateX = ((y - centerY) / centerY) * -15;  
+    const newRotateY = ((x - centerX) / centerX) * 15;
     setRotation([newRotateX, newRotateY]);
   };
 
-  const handleMouseLeave = () => {
-    setRotation([0, 0]);
-  };
-
   return (
-    <div className="flex flex-col items-center" style={{ gap: '20px' }}>
-      <motion.div
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        animate={{ rotateX, rotateY }}
-        transition={{ type: "spring", stiffness: 450, damping: 20 }}
-        style={{ perspective: 1000 }}
-      >
-        <KreonCardVisual ref={cardRef} userEmail={userEmail} cardNumber={cardNumber} interest={interest} />
-      </motion.div>
+    <div className="flex flex-col items-center" style={{ gap: '30px' }}>
+      <div style={{ perspective: '1200px' }}>
+        <motion.div
+          onClick={() => setIsFlipped(!isFlipped)}
+          onMouseMove={handleMouseMove}
+          onMouseLeave={() => setRotation([0, 0])}
+          animate={{ rotateX, rotateY }}
+          whileHover={{ scale: 1.02 }}
+          transition={{ type: "spring", stiffness: 400, damping: 25 }}
+          style={{ cursor: 'pointer' }}
+        >
+          <KreonCardVisual ref={cardRef} userEmail={userEmail} cardNumber={cardNumber} interest={interest} bio={bio} isFlipped={isFlipped} />
+        </motion.div>
+      </div>
 
-      {/* Share actions */}
-      <div style={{ display: 'flex', gap: '10px', width: '380px' }}>
-        {/* Copy link – primary */}
+      <div style={{ display: 'flex', gap: '10px', width: '340px' }}>
         <motion.button
           whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.96 }}
           onClick={handleCopyLink}
@@ -319,57 +322,9 @@ const KreonCard: React.FC<KreonCardProps> = ({ userEmail, interest }) => {
             transition: 'all 0.3s',
           }}
         >
-          <AnimatePresence mode="wait">
-            {copied ? (
-              <motion.span key="ok" initial={{ scale: 0.7, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ opacity: 0 }}
-                style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <Check size={13} /> Copied!
-              </motion.span>
-            ) : (
-              <motion.span key="cp" initial={{ scale: 0.7, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ opacity: 0 }}
-                style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <Link size={13} /> Share Link
-              </motion.span>
-            )}
-          </AnimatePresence>
+          {copied ? "Copied!" : "Share Link"}
         </motion.button>
 
-        {/* Download card */}
-        <motion.button
-          whileHover={{ scale: 1.08, y: -2 }} whileTap={{ scale: 0.96 }}
-          onClick={handleDownload}
-          style={{
-            width: '52px', height: '52px', borderRadius: '16px',
-            background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.1)',
-            color: '#fff', cursor: 'pointer',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            transition: 'all 0.2s',
-          }}
-        >
-          {isCapturing
-            ? <div style={{ width: '14px', height: '14px', border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }}/>
-            : <Download size={15} />
-          }
-        </motion.button>
-
-        {/* Twitter */}
-        <motion.button
-          whileHover={{ scale: 1.08, y: -2 }} whileTap={{ scale: 0.96 }}
-          onClick={() => window.open(
-            `https://twitter.com/intent/tweet?text=I%27m+KREON+%23${cardNumber}+%E2%80%94+Build+with+%23KREO+%E2%86%92&url=${encodeURIComponent(window.location.origin + '/build')}`,
-            '_blank'
-          )}
-          style={{
-            width: '52px', height: '52px', borderRadius: '16px',
-            background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.1)',
-            color: '#fff', cursor: 'pointer',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}
-        >
-          <Twitter size={15} />
-        </motion.button>
-
-        {/* Native share (with image) */}
         <motion.button
           whileHover={{ scale: 1.08, y: -2 }} whileTap={{ scale: 0.96 }}
           onClick={handleNativeShare}
@@ -383,11 +338,8 @@ const KreonCard: React.FC<KreonCardProps> = ({ userEmail, interest }) => {
           <Share2 size={15} />
         </motion.button>
       </div>
-
-      <style>{`
-        @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
-      `}</style>
+      
+      <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/30 animate-pulse">Click to flip card</p>
     </div>
   );
 };

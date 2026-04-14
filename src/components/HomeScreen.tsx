@@ -5,10 +5,10 @@ import {
   LayoutGrid, ChevronDown, ChevronLeft, Clock, Plus, Zap, FileText, X, Activity,
   Image as ImageIcon, BrainCircuit, Sparkles, Paperclip, Shuffle, MessageSquare, Mail,
   Share2, Globe, Link as LinkIcon, Copy, Info, CheckCircle2, Crown, Star, Volume2, ShieldCheck, UserPlus,
-  Presentation, Code2, Table2, GitGraph
+  Presentation, Code2, Table2, GitGraph, Smile
 } from "lucide-react";
 
-import { narrateText } from "@/lib/ai";
+import { narrateText, generateBio } from "@/lib/ai";
 import KreonCard from "./KreonCard";
 
 import KreoLogo from "./KreoLogo";
@@ -437,6 +437,39 @@ const HomeScreen = ({
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [currentArtifactId, setCurrentArtifactId] = useState<string | null>(() => localStorage.getItem('kreo_last_id'));
   const [showKreonModal, setShowKreonModal] = useState(false);
+  const [residentBio, setResidentBio] = useState(() => localStorage.getItem('kreo_resident_bio') || "");
+  const [isInterviewing, setIsInterviewing] = useState(false);
+  const [interviewPhase, setInterviewPhase] = useState(0);
+  const [interviewAnswers, setInterviewAnswers] = useState<string[]>([]);
+  const [interviewQuery, setInterviewQuery] = useState("");
+
+  const INTERVIEW_QUESTIONS = [
+    "What is the primary creative weapon you bring to the KREO registry?",
+    "If you could manifest one change in reality instantly, what would it be?",
+    "Which environment or atmosphere fuels your neural manifest the most?"
+  ];
+
+  const handleInterviewSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!interviewQuery.trim()) return;
+
+    const newAnswers = [...interviewAnswers, interviewQuery];
+    setInterviewAnswers(newAnswers);
+    setInterviewQuery("");
+
+    if (interviewPhase < 2) {
+      setInterviewPhase(interviewPhase + 1);
+    } else {
+      setIsInterviewing(false);
+      setLoadingMessage("Synthesizing your Resident Bio...");
+      setIsSubmitting(true);
+      const bio = await generateBio(newAnswers);
+      setResidentBio(bio);
+      localStorage.setItem('kreo_resident_bio', bio);
+      setIsSubmitting(false);
+      setShowKreonModal(true);
+    }
+  };
 
   useEffect(() => {
     localStorage.setItem('kreo_last_query', query);
@@ -953,7 +986,14 @@ const HomeScreen = ({
 
       <main className={`flex flex-col relative z-20 overflow-x-hidden ${artifact && isSplitView ? "h-screen overflow-hidden" : ""}`}>
         {(isSubmitting && !artifact) || isIncomingPortal ? (
-          <div className="fixed inset-0 z-[1000] flex flex-col items-center justify-center bg-white overflow-hidden">
+           <div className="fixed inset-0 z-[1000] flex flex-col items-center justify-center bg-white overflow-hidden">
+              {/* Dismiss Button */}
+              <button 
+                onClick={() => { setIsSubmitting(false); setIsIncomingPortal(false); }}
+                className="absolute top-10 right-10 z-[100] w-12 h-12 rounded-full glass-panel border border-black/5 flex items-center justify-center text-black/40 hover:text-[#1B3FBF] hover:bg-[#1B3FBF]/5 transition-all shadow-sm group"
+              >
+                <X size={20} className="group-hover:rotate-90 transition-transform" />
+              </button>
             <div className="absolute inset-0 bg-gradient-to-br from-[#f0f4ff] via-white to-[#fff8f0] pointer-events-none" />
             <div className="relative z-10 flex flex-col items-center gap-14 w-full h-full justify-center">
               
@@ -1047,9 +1087,9 @@ const HomeScreen = ({
                       strokeWidth="2.5" 
                       strokeLinecap="round" 
                       strokeDasharray="2 8"
-                      strokeOpacity="0.2"
+                      strokeOpacity="0.5"
                     />
-                    <path d="M140 42 L154 51 L142 60" stroke="#1B3FBF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" strokeOpacity="0.25"/>
+                    <path d="M140 42 L154 51 L142 60" stroke="#1B3FBF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" strokeOpacity="0.6"/>
                   </svg>
                   <div>
                     <span className="text-[11px] font-black uppercase tracking-[0.5em] text-[#1B3FBF]/40 block mb-2">Identity Confirmed</span>
@@ -1073,7 +1113,7 @@ const HomeScreen = ({
                   </div>
                 </motion.div>
 
-                {/* Right Side: Powers Unlocked */}
+                {/* Right Side: Identity Details */}
                 <motion.div
                   initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4, type: 'spring', stiffness: 120, damping: 20 }}
                   className="w-[340px] text-left flex flex-col gap-8"
@@ -1089,29 +1129,38 @@ const HomeScreen = ({
                       strokeWidth="2.5" 
                       strokeLinecap="round" 
                       strokeDasharray="2 8"
-                      strokeOpacity="0.2"
+                      strokeOpacity="0.5"
                     />
-                    <path d="M140 42 L154 51 L142 60" stroke="#1B3FBF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" strokeOpacity="0.25"/>
+                    <path d="M140 42 L154 51 L142 60" stroke="#1B3FBF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" strokeOpacity="0.6"/>
                   </svg>
-                  <span className="text-[11px] font-black uppercase tracking-[0.5em] text-[#1B3FBF]/40">Environment Status</span>
+                  <span className="text-[11px] font-black uppercase tracking-[0.5em] text-[#1B3FBF]/40">KREON PROFILE</span>
                   <div className="space-y-6">
+                    <div className="flex items-center gap-5">
+                      <div className="shrink-0 w-12 h-12 bg-[#1B3FBF]/10 rounded-full flex items-center justify-center text-[#1B3FBF] font-black text-lg border border-[#1B3FBF]/20">
+                        {userEmail?.[0].toUpperCase() || 'K'}
+                      </div>
+                      <div>
+                        <div className="text-[14px] font-black text-[#1B3FBF] uppercase tracking-widest">{userEmail?.split('@')[0] || 'GUEST'}</div>
+                        <div className="text-[11px] text-black/40 font-medium">Neural Manifestation Active</div>
+                      </div>
+                    </div>
                     {[
-                      { label: 'Neural Manifest', desc: 'Artifact engine online', icon: Presentation },
-                      { label: 'Studio Framing', desc: 'Interface protocol active', icon: Code2 },
-                      { label: 'Cloud Burst', desc: 'Universal sync ready', icon: GitGraph },
-                    ].map((power, i) => (
+                      { label: 'Environment', desc: 'Studio Protocol v4.2', icon: ShieldCheck },
+                      { label: 'Latency', desc: '12ms (Neural Sync)', icon: Zap },
+                      { label: 'Manifests', desc: chatHistory.length > 0 ? `${chatHistory.length} Created` : '0 Created', icon: LayoutGrid },
+                    ].map((item, i) => (
                       <motion.div
                         key={i}
                         initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.5 + i * 0.1 }}
                         className="flex items-start gap-5"
                       >
-                        <div className="shrink-0 mt-1 p-2.5 bg-[#1B3FBF]/5 rounded-xl border border-[#1B3FBF]/10">
-                          <power.icon size={18} className="text-[#1B3FBF]/60" />
+                        <div className="shrink-0 mt-1 p-2 bg-[#1B3FBF]/5 rounded-xl border border-[#1B3FBF]/10">
+                          <item.icon size={16} className="text-[#1B3FBF]/60" />
                         </div>
                         <div>
-                          <div className="text-[12px] font-black text-[#1B3FBF] uppercase tracking-widest">{power.label}</div>
-                          <div className="text-[11px] text-black/30 font-medium mt-0.5">{power.desc}</div>
+                          <div className="text-[11px] font-black text-[#1B3FBF] uppercase tracking-widest">{item.label}</div>
+                          <div className="text-[11px] text-black/30 font-medium mt-0.5">{item.desc}</div>
                         </div>
                       </motion.div>
                     ))}
@@ -1119,19 +1168,30 @@ const HomeScreen = ({
                 </motion.div>
               </div>
 
-              {/* Smaller decorative scatter */}
-              <div className="absolute inset-0 pointer-events-none opacity-20">
-                <svg className="absolute top-[18%] left-[45%]" width="24" height="24" viewBox="0 0 24 24" fill="none">
+              {/* Floating Decorative Elements (Graffiti Style) */}
+              <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                <motion.div animate={{ y: [0, -15, 0], rotate: [0, 10, 0] }} transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }} className="absolute top-[15%] left-[10%] text-[#1B3FBF]/10">
+                  <Presentation size={64} />
+                </motion.div>
+                <motion.div animate={{ y: [0, 15, 0], rotate: [0, -10, 0] }} transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }} className="absolute top-[20%] right-[12%] text-[#1B3FBF]/10">
+                  <Code2 size={56} />
+                </motion.div>
+                <motion.div animate={{ scale: [1, 1.2, 1], rotate: 360 }} transition={{ repeat: Infinity, duration: 15 }} className="absolute bottom-[25%] left-[15%] text-[#1B3FBF]/10">
+                  <GitGraph size={60} />
+                </motion.div>
+                <motion.div animate={{ rotate: [0, 360] }} transition={{ repeat: Infinity, duration: 12, ease: "linear" }} className="absolute top-[40%] right-[20%] text-[#1B3FBF]/25">
+                  <Smile size={48} />
+                </motion.div>
+                <motion.div animate={{ scale: [0.8, 1.3, 0.8] }} transition={{ repeat: Infinity, duration: 6 }} className="absolute bottom-[20%] right-[15%] text-[#1B3FBF]/25">
+                  <Smile size={32} />
+                </motion.div>
+                
+                {/* Secondary scatter */}
+                <svg className="absolute top-[18%] left-[45%] opacity-10" width="24" height="24" viewBox="0 0 24 24" fill="none">
                   <line x1="12" y1="2" x2="12" y2="22" stroke="#1B3FBF" strokeWidth="1"/>
                   <line x1="2" y1="12" x2="22" y2="12" stroke="#1B3FBF" strokeWidth="1"/>
                 </svg>
-                <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 10, ease: 'linear' }} className="absolute top-[25%] right-[40%] text-[#1B3FBF]">
-                  <Smile size={28} />
-                </motion.div>
-                <motion.div animate={{ y: [0, 10, 0] }} transition={{ repeat: Infinity, duration: 3 }} className="absolute bottom-[30%] left-[40%] text-[#1B3FBF]">
-                  <Smile size={20} />
-                </motion.div>
-                <svg className="absolute bottom-[20%] right-[45%]" width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <svg className="absolute bottom-[20%] right-[45%] opacity-10" width="32" height="32" viewBox="0 0 32 32" fill="none">
                   <circle cx="16" cy="16" r="12" stroke="#1B3FBF" strokeWidth="1" strokeDasharray="4 3"/>
                 </svg>
               </div>
@@ -1232,9 +1292,49 @@ const HomeScreen = ({
             </div>
           </div>
         ) : (
-          <div className="flex flex-col items-center w-full">
-            <section className="min-h-screen flex flex-col items-center justify-center gap-16 px-4 pb-32">
-              <div className="text-center space-y-8 pt-12 md:pt-16">
+          <div className="flex flex-col items-center w-full relative">
+            <section className="min-h-screen flex flex-col items-center justify-center gap-16 px-4 pb-32 relative w-full">
+              {/* Flanking Panels in Main Dashboard */}
+              <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 pointer-events-none hidden xl:flex justify-between items-center px-16 w-full h-[600px] z-10">
+                {/* Left: Identity */}
+                <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} className="w-[300px] text-left">
+                  <span className="text-[10px] font-black uppercase tracking-[0.5em] text-[#1B3FBF]/40 block mb-2">Verified Identity</span>
+                  <h3 className="text-4xl font-black text-[#1B3FBF] leading-tight tracking-tighter" style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }}>
+                    YOU ARE A<br/>KREON.
+                  </h3>
+                  <div className="mt-6 flex flex-col gap-3">
+                    {['Access Granted', 'Studio Active', 'Neural Linked'].map((t, i) => (
+                      <div key={i} className="flex items-center gap-3">
+                         <div className="w-1 h-1 rounded-full bg-[#1B3FBF]/30" />
+                         <span className="text-[9px] font-bold text-[#1B3FBF]/40 uppercase tracking-widest">{t}</span>
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+
+                {/* Right: User */}
+                <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} className="w-[300px] text-right flex flex-col items-end">
+                   <div className="flex items-center gap-4 mb-4">
+                      <div className="text-right">
+                         <div className="text-[14px] font-black text-[#1B3FBF] uppercase tracking-widest">{userEmail?.split('@')[0] || 'RESIDENT'}</div>
+                         <div className="text-[9px] text-black/40 font-bold tracking-tighter uppercase">Neural Buffer 100%</div>
+                      </div>
+                      <div className="w-10 h-10 rounded-full bg-[#1B3FBF]/10 flex items-center justify-center border border-[#1B3FBF]/20 text-[#1B3FBF]">
+                        <User size={16} />
+                      </div>
+                   </div>
+                   <div className="flex flex-col gap-4">
+                      {[{l:'Manifests', v: historyItems.length}, {l:'Latency', v:'12ms'}, {l:'Protocol', v:'v4.2'}].map((s, i) => (
+                        <div key={i} className="flex justify-end items-center gap-4">
+                           <span className="text-[9px] font-bold text-black/30 uppercase tracking-widest">{s.l}</span>
+                           <span className="text-[10px] font-black text-[#1B3FBF]">{s.v}</span>
+                        </div>
+                      ))}
+                   </div>
+                </motion.div>
+              </div>
+
+              <div className="text-center space-y-8 pt-12 md:pt-16 relative z-20">
                 <h1 className="text-7xl md:text-8xl font-light tracking-tighter leading-tight animate-in fade-in slide-in-from-top-12 duration-1000">
                   Build your <br />
                   <span className="text-yellow-accent italic font-serif px-2">imagination</span>
@@ -1393,7 +1493,42 @@ const HomeScreen = ({
               exit={{ opacity: 0, scale: 0.9 }}
               className="relative"
             >
-              <KreonCard userEmail={userEmail} />
+              {residentBio ? (
+                <KreonCard userEmail={userEmail} bio={residentBio} />
+              ) : (
+                <div className="bg-white w-[340px] h-[480px] rounded-[32px] p-10 flex flex-col justify-center items-center text-center space-y-8 shadow-2xl overflow-hidden relative">
+                   <div className="absolute top-0 left-0 w-full h-1 bg-[#1B3FBF]/10">
+                      <motion.div animate={{ width: `${(interviewPhase + 1) * 33}%` }} className="h-full bg-[#1B3FBF]" />
+                   </div>
+                   <div className="w-16 h-16 rounded-3xl bg-[#1B3FBF]/5 flex items-center justify-center text-[#1B3FBF] mb-4">
+                      <BrainCircuit size={32} />
+                   </div>
+                   <div className="space-y-4">
+                      <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[#1B3FBF]">Resident Setup</span>
+                      <h3 className="text-xl font-serif italic leading-tight text-black">
+                        {INTERVIEW_QUESTIONS[interviewPhase]}
+                      </h3>
+                   </div>
+                   <form onSubmit={handleInterviewSubmit} className="w-full space-y-4 pt-4">
+                      <input 
+                        autoFocus
+                        value={interviewQuery}
+                        onChange={(e) => setInterviewQuery(e.target.value)}
+                        placeholder="Manifest your answer..."
+                        className="w-full px-6 py-4 rounded-2xl bg-black/5 border border-black/5 text-sm outline-none focus:border-[#1B3FBF]/30 transition-all font-light"
+                      />
+                      <button type="submit" className="w-full py-4 bg-[#1B3FBF] text-white text-[10px] font-black uppercase tracking-[0.4em] rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-lg shadow-[#1B3FBF]/20">
+                        Continue Setup
+                      </button>
+                   </form>
+                   <div className="pt-4">
+                      <p className="text-[9px] font-medium text-black/30 uppercase tracking-widest">Neural Sync in Progress (0{interviewPhase + 1}/03)</p>
+                   </div>
+                   {/* Graffiti Sprinkles for Interview */}
+                   <Smile size={32} className="absolute -bottom-4 -left-4 text-[#1B3FBF]/5 rotate-12" />
+                   <Code2 size={48} className="absolute -top-6 -right-6 text-[#1B3FBF]/5 -rotate-12" />
+                </div>
+              )}
               <button 
                 onClick={() => setShowKreonModal(false)}
                 className="absolute -top-12 right-0 text-[10px] font-black uppercase tracking-[0.4em] text-white hover:text-white/70 transition-colors"
