@@ -293,38 +293,49 @@ const CampaignPage: React.FC = () => {
                 </motion.div>
 
                 {/* Main Row */}
-                <div className="flex flex-col md:flex-row items-center justify-center gap-16 w-full max-w-5xl">
+                <div className="flex flex-col md:flex-row items-center justify-center w-full max-w-6xl relative h-[500px]">
 
-                  {/* Left Side: What is a KREON? Explanation Popup */}
+                  {/* Left Side: Half Text */}
                   <motion.div
                     initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}
-                    className="flex-1 text-left bg-white/5 backdrop-blur-xl p-8 sm:p-10 rounded-3xl shadow-2xl border border-white/10"
+                    className="absolute left-0 top-1/2 -translate-y-1/2 w-[300px] text-left bg-white/5 backdrop-blur-xl p-6 md:p-8 rounded-3xl shadow-2xl border border-white/10 hidden md:block"
                   >
                     <div className="flex items-center gap-2 mb-4">
-                      <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
-                      <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white/50">Identity Protocol</span>
+                      <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                      <span className="text-[9px] font-black uppercase tracking-[0.3em] text-white/50">Identity Protocol</span>
                     </div>
-                    <h3 className="text-3xl font-black text-white mb-4">What is a KREON?</h3>
-                    <p className="text-sm font-medium text-white/70 leading-relaxed mb-6">
+                    <h3 className="text-2xl font-black text-white mb-3 tracking-tighter">What is a KREON?</h3>
+                    <p className="text-xs font-medium text-white/70 leading-relaxed">
                       A KREON isn't just a user account. It is your permanent, immutable identity in the KREO ecosystem. Every wireframe designed, every component exported, and every workspace built is permanently tied to this unique residency number.
-                    </p>
-                    <div className="h-px w-full bg-white/10 mb-6" />
-                    <p className="text-sm font-medium text-white/70 leading-relaxed">
-                      Choose your primary discipline above to construct your aesthetic marker. Claiming this card unlocks your permanent access to the studio engine.
                     </p>
                   </motion.div>
 
-                  {/* Right Side: The Dynamic Card */}
+                  {/* Center Side: The Dynamic Card */}
                   <motion.div
-                    className="flex-shrink-0 perspective-[1000px] relative group"
+                    className="flex-shrink-0 perspective-[1000px] relative z-20 group mx-auto"
                     key={cardInterest} // Force re-animation on change
                     initial={{ opacity: 0, scale: 0.95, y: 15 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     transition={{ type: 'spring', damping: 20, stiffness: 120 }}
                   >
                     {/* Glowing aura when hovered */}
-                    <div className="absolute inset-0 bg-white/20 blur-[50px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+                    <div className="absolute inset-0 bg-[#1B3FBF]/20 blur-[50px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
                     <KreonCard interest={cardInterest} />
+                  </motion.div>
+
+                  {/* Right Side: Half Text */}
+                  <motion.div
+                    initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4 }}
+                    className="absolute right-0 top-1/2 -translate-y-1/2 w-[300px] text-left bg-white/5 backdrop-blur-xl p-6 md:p-8 rounded-3xl shadow-2xl border border-white/10 hidden md:block"
+                  >
+                    <div className="flex items-center gap-2 mb-4">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
+                      <span className="text-[9px] font-black uppercase tracking-[0.3em] text-white/50">Access Tier</span>
+                    </div>
+                    <h3 className="text-2xl font-black text-white mb-3 tracking-tighter">Claim Your Spot</h3>
+                    <p className="text-xs font-medium text-white/70 leading-relaxed">
+                      Choose your primary discipline above to construct your aesthetic marker. Claiming this card unlocks your permanent access to the studio engine and future upgrades.
+                    </p>
                   </motion.div>
 
                 </div>

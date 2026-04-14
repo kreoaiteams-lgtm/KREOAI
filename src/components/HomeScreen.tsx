@@ -1036,19 +1036,9 @@ const HomeScreen = ({
               </div>
               
               <div className="text-center relative z-20">
-                <h1 className="text-6xl italic tracking-tighter text-[#1B3FBF] mb-4 animate-in slide-in-from-bottom-2 duration-700" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>
-                  Kreo {isPro && <span className="bg-[#1B3FBF] text-white text-[14px] font-black uppercase tracking-widest px-3 py-1 rounded-full align-middle ml-2">PRO</span>}
+                <h1 className="text-6xl tracking-tighter text-[#1B3FBF] mb-4 animate-in slide-in-from-bottom-2 duration-700" style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }}>
+                  KREO {isPro && <span className="bg-[#1B3FBF] text-white text-[14px] font-black uppercase tracking-widest px-3 py-1 rounded-full align-middle ml-2">PRO</span>}
                 </h1>
-                
-                {/* KREON Badge */}
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setShowKreonModal(true)}
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-[#1B3FBF]/5 border border-[#1B3FBF]/10 rounded-full text-[#1B3FBF] text-[10px] font-black uppercase tracking-[0.3em] hover:bg-[#1B3FBF]/10 transition-all shadow-sm"
-                >
-                  <UserPlus size={14} /> Become a KREON
-                </motion.button>
 
                 <p className="text-[12px] font-black uppercase tracking-[0.7em] text-black/40 animate-pulse mt-8">
                   {isIncomingPortal ? "Restoring Neural Manifest..." : loadingMessage}
@@ -1159,18 +1149,20 @@ const HomeScreen = ({
                 </div>
               </div>
             </section>
-            <section id="manifesto-section" className="w-full relative bg-white py-24 flex flex-col items-center z-30">
-              <div className="w-full max-w-7xl px-6 space-y-24">
-                <div className="text-center space-y-4">
-                  <span className="text-[10px] font-black tracking-[0.6em] uppercase text-[#1B3FBF]">The Situation</span>
-                  <h2 className="text-4xl md:text-6xl font-serif italic tracking-tighter text-black leading-tight">We all face situations...</h2>
+            <section id="manifesto-section" className="w-full relative bg-black py-48 flex flex-col items-center z-30">
+              <div className="w-full max-w-7xl px-6 space-y-24 text-center">
+                <div className="space-y-4">
+                  <span className="text-[10px] font-black tracking-[0.6em] uppercase text-white/40">The Situation</span>
+                  <h2 className="text-4xl md:text-6xl text-white tracking-tighter leading-tight font-medium" style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }}>
+                    The wall you hit at the worst time.
+                  </h2>
+                  <p className="text-white/60 font-medium max-w-lg mx-auto leading-relaxed mt-4">
+                    The idea is there. The visuals aren't. KREO bridges the gap between thoughts and reality instantly.
+                  </p>
                 </div>
-                <ScenariosGrid />
-                <TypingKreo />
-                <PossibilitiesPile />
-                <InteractiveVisualLoop theme={theme} />
-                <div className="flex justify-center pt-16">
-                   <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="px-12 py-6 rounded-full bg-black text-white text-[11px] font-black uppercase tracking-[0.4em] shadow-xl hover:scale-105 transition-all">Start Manifesting</button>
+                
+                <div className="flex justify-center pt-8">
+                   <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="px-12 py-6 rounded-full bg-white text-black text-[11px] font-black uppercase tracking-[0.4em] shadow-xl hover:scale-105 hover:bg-[#1B3FBF] hover:text-white transition-all">Start Manifesting</button>
                 </div>
               </div>
             </section>
@@ -1277,7 +1269,7 @@ const HomeScreen = ({
       {/* KREON Identity Modal */}
       <AnimatePresence>
         {showKreonModal && (
-          <div className="fixed inset-0 z-[3000] flex items-center justify-center p-6 bg-white/60 backdrop-blur-2xl">
+          <div className="fixed inset-0 z-[3000] flex items-center justify-center p-6 bg-black/90 backdrop-blur-3xl">
             <motion.div 
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -1287,7 +1279,7 @@ const HomeScreen = ({
               <KreonCard userEmail={userEmail} />
               <button 
                 onClick={() => setShowKreonModal(false)}
-                className="absolute -top-12 right-0 text-[10px] font-black uppercase tracking-[0.4em] text-black hover:text-[#1B3FBF] transition-colors"
+                className="absolute -top-12 right-0 text-[10px] font-black uppercase tracking-[0.4em] text-white hover:text-white/70 transition-colors"
               >
                 Close Identity
               </button>

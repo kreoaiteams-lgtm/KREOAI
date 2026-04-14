@@ -125,17 +125,21 @@ export const KreonCardVisual = React.forwardRef<
 
   const currentTheme = themes[interest];
 
+  // We are forcing the royal cobalt blue with white text for all cards per the request.
+  const overrideBg = '#1B3FBF';
+  const overrideColor = 'white';
+
   return (
     <div
       ref={ref}
       style={{
         width: '340px',
         height: '480px',
-        backgroundColor: currentTheme.bg,
+        backgroundColor: overrideBg,
         borderRadius: '32px',
         position: 'relative',
         overflow: 'hidden',
-        boxShadow: `0 40px 100px ${currentTheme.bg}40, inset 0 2px 4px rgba(255,255,255,0.3)`,
+        boxShadow: `0 40px 100px ${overrideBg}60, inset 0 2px 4px rgba(255,255,255,0.3)`,
         fontFamily: 'system-ui, sans-serif',
         display: 'flex',
         flexDirection: 'column',
@@ -143,10 +147,10 @@ export const KreonCardVisual = React.forwardRef<
     >
       {/* ── Top Header ── */}
       <div style={{ padding: '28px 28px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', zIndex: 10 }}>
-        <div style={{ padding: '6px 12px', background: currentTheme.color === 'white' ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.1)', borderRadius: '20px', color: currentTheme.color, fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+        <div style={{ padding: '6px 12px', background: overrideColor === 'white' ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.1)', borderRadius: '20px', color: overrideColor, fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
           {currentTheme.text}
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: currentTheme.color }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: overrideColor }}>
           <span style={{ fontSize: '12px', fontWeight: 900, opacity: 0.7 }}>#</span>
           <span style={{ fontSize: '18px', fontWeight: 900, letterSpacing: '0.05em' }}>{cardNumber}</span>
         </div>
@@ -161,7 +165,7 @@ export const KreonCardVisual = React.forwardRef<
         position: 'relative',
         zIndex: 0,
       }}>
-        <div style={{ width: '180px', height: '180px' }}>
+        <div style={{ width: '180px', height: '180px', filter: overrideColor === 'white' ? 'invert(1)' : 'none' }}>
           {currentTheme.graphic}
         </div>
       </div>
@@ -169,7 +173,7 @@ export const KreonCardVisual = React.forwardRef<
       {/* ── Bottom Section ── */}
       <div style={{
         padding: '0 28px 28px',
-        color: currentTheme.color,
+        color: overrideColor,
         zIndex: 10,
         display: 'flex',
         flexDirection: 'column',
@@ -269,9 +273,38 @@ const KreonCard: React.FC<KreonCardProps> = ({ userEmail, interest }) => {
     }
   };
 
+  const [[rotateX, rotateY], setRotation] = useState([0, 0]);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    
+    // Scale down the rotation multiplier for a subtle 3D effect
+    const newRotateX = ((y - centerY) / centerY) * -15;  
+    const newRotateY = ((x - centerX) / centerX) * 15;
+    
+    setRotation([newRotateX, newRotateY]);
+  };
+
+  const handleMouseLeave = () => {
+    setRotation([0, 0]);
+  };
+
   return (
     <div className="flex flex-col items-center" style={{ gap: '20px' }}>
-      <KreonCardVisual ref={cardRef} userEmail={userEmail} cardNumber={cardNumber} interest={interest} />
+      <motion.div
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        animate={{ rotateX, rotateY }}
+        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+        style={{ perspective: 1000 }}
+      >
+        <KreonCardVisual ref={cardRef} userEmail={userEmail} cardNumber={cardNumber} interest={interest} />
+      </motion.div>
 
       {/* Share actions */}
       <div style={{ display: 'flex', gap: '10px', width: '380px' }}>

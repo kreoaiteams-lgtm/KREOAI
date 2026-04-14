@@ -1,114 +1,93 @@
 import { useEffect, useState } from "react";
 import Lottie from "lottie-react";
+import { motion, AnimatePresence } from "framer-motion";
 import animationData from "./Hello (apple).json";
+
+const TAN = "'TAN-NIMBUS', sans-serif";
+const SATOSHI = "'Satoshi', sans-serif";
 
 /**
  * SplashScreen
- *
- * Sequence:
- *  0.2s  — Lottie animation starts
- *  2.4s  — KREO identity reveals
- *  3.4s  — Full splash fades out
- *  4.2s  — onComplete fires
+ * 
+ * Minimal, playful, emotional.
  */
 const SplashScreen = ({ onComplete }: { onComplete: () => void }) => {
-  const [phase, setPhase] = useState<"idle" | "lottie" | "reveal" | "exit">("idle");
+  const [phase, setPhase] = useState<"lottie" | "reveal" | "exit">("lottie");
 
   useEffect(() => {
-    // Neural Sequence Timing (Accelerated)
-    const t1 = setTimeout(() => setPhase("lottie"), 100);   // Start Lottie
-    const t2 = setTimeout(() => setPhase("reveal"), 1400);  // Reveal KREO
-    const t3 = setTimeout(() => setPhase("exit"),   2000);  // Fade out
-    const t4 = setTimeout(onComplete,               2400);  // Complete
-    return () => [t1, t2, t3, t4].forEach(clearTimeout);
+    const t1 = setTimeout(() => setPhase("reveal"), 1500); 
+    const t2 = setTimeout(() => setPhase("exit"), 3000); 
+    const t3 = setTimeout(onComplete, 3800); 
+    return () => [t1, t2, t3].forEach(clearTimeout);
   }, [onComplete]);
 
-  const lottieVisible = phase !== "idle" && phase !== "exit";
-  const kreoVisible   = phase === "reveal" || phase === "exit";
-  const exitActive    = phase === "exit";
-
   return (
-    <div
-      className="fixed inset-0 z-[1000] flex flex-col items-center justify-center bg-[#0020C2] overflow-hidden"
-      style={{
-        opacity:    exitActive ? 0 : 1,
-        transition: exitActive ? "opacity 1.0s cubic-bezier(0.4,0,0.2,1)" : "none",
-        pointerEvents: exitActive ? "none" : "auto",
-      }}
-    >
-      {/* Background Depth Gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/30 pointer-events-none" />
-
-      {/* Lottie Manifestation — Forced Pure White */}
-      <div 
-        className={`w-[600px] h-[600px] transition-all duration-1000 ${lottieVisible ? 'opacity-100 scale-100 blur-0' : 'opacity-0 scale-90 blur-xl'}`}
-        style={{ 
-           transform: kreoVisible ? 'translateY(-60px) scale(0.6)' : 'translateY(0) scale(1)',
-           filter: 'brightness(0) invert(1)' 
-        }}
-      >
-        <Lottie 
-          animationData={animationData} 
-          loop={false}
-          className="w-full h-full"
-        />
-      </div>
-
-      {/* Neural Graffiti Field — Celebrational Manifestation */}
-      <div className={`absolute inset-0 z-0 pointer-events-none transition-all duration-1000 ${kreoVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}>
-        {[...Array(40)].map((_, i) => {
-          const colors = ['bg-[#facc15]', 'bg-[#3b82f6]', 'bg-[#ef4444]', 'bg-[#10b981]', 'bg-white'];
-          const color = colors[i % colors.length];
-          const x = (Math.random() * 100);
-          const y = (Math.random() * 100);
-          const size = Math.random() * 0.8 + 0.2;
-          const rotation = Math.random() * 360;
-          const delay = (Math.random() * 0.5) + 's';
-          
-          return (
-            <div 
-              key={i}
-              className={`absolute animate-bounce ${color}`}
-              style={{
-                left: x + '%',
-                top: y + '%',
-                width: size + 'rem',
-                height: size + 'rem',
-                opacity: 0.6,
-                transform: `rotate(${rotation}deg)`,
-                animationDelay: delay,
-                borderRadius: i % 2 === 0 ? '50%' : '2px'
-              }}
-            />
-          );
-        })}
-      </div>
-
-      {/* KREO Identity Revelation */}
-      <div 
-        className={`absolute inset-0 flex flex-col items-center justify-center transition-all duration-1000 ${kreoVisible ? 'opacity-100 translate-y-12' : 'opacity-0 translate-y-20 blur-md'}`}
-      >
-        <span 
-          className="relative z-10 text-8xl md:text-9xl font-light font-serif italic tracking-tighter text-white"
-          style={{ textShadow: '0 0 50px rgba(255,255,255,0.4)' }}
+    <AnimatePresence>
+      {phase !== "exit" && (
+        <motion.div
+          exit={{ opacity: 0, y: -20, scale: 0.98 }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="fixed inset-0 z-[1000] flex flex-col items-center justify-center bg-[#1B3FBF] overflow-hidden"
         >
-          KREO
-        </span>
-        <span className="relative z-10 mt-8 text-[9px] font-black tracking-[0.6em] uppercase text-white/40">Studio Engaged</span>
-      </div>
+          {/* Confetti particles on reveal */}
+          {phase === "reveal" && (
+            <div className="absolute inset-0 pointer-events-none">
+              {[...Array(32)].map((_, i) => {
+                const colors = ['#facc15', '#fff', '#ec4899', '#22c55e', '#c084fc', '#f97316'];
+                const s = Math.random() * 0.6 + 0.3;
+                return (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, y: -20, scale: 0 }}
+                    animate={{ 
+                      opacity: [0, 0.8, 0], 
+                      y: Math.random() * 500 + 100, 
+                      x: (Math.random() - 0.5) * 200, 
+                      scale: s, 
+                      rotate: Math.random() * 360 
+                    }}
+                    transition={{ duration: 2.5, delay: Math.random() * 0.4, ease: 'easeOut' }}
+                    style={{ 
+                      position: 'absolute', 
+                      left: Math.random() * 100 + '%', 
+                      top: '-5%', 
+                      width: 8, 
+                      height: 8, 
+                      borderRadius: i % 2 === 0 ? '50%' : 2, 
+                      background: colors[i % colors.length] 
+                    }}
+                  />
+                );
+              })}
+            </div>
+          )}
 
-      {/* Atmospheric Bloom */}
-      <div
-        className="absolute rounded-full pointer-events-none"
-        style={{
-          width:  kreoVisible ? "350vmax" : "0vmax",
-          height: kreoVisible ? "350vmax" : "0vmax",
-          background: "radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%)",
-          transition: "width 2.5s cubic-bezier(0.2,1,0.3,1), height 2.5s cubic-bezier(0.2,1,0.3,1)",
-          opacity: exitActive ? 0 : 1,
-        }}
-      />
-    </div>
+          {/* Lottie */}
+          <motion.div
+            style={{ filter: 'brightness(0) invert(1)' }}
+            animate={{ 
+              scale: phase === 'reveal' ? 0.55 : 1,
+              y: phase === 'reveal' ? -80 : 0,
+            }}
+            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+            className="w-[480px] h-[480px] relative z-10"
+          >
+            <Lottie animationData={animationData} loop={false} className="w-full h-full" />
+          </motion.div>
+
+          {/* KREO reveal */}
+          <motion.div
+            className="absolute flex flex-col items-center"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: phase === 'reveal' ? 1 : 0, y: phase === 'reveal' ? 0 : 30 }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <span className="text-[18vw] font-bold text-white leading-none tracking-tighter mix-blend-overlay" style={{ fontFamily: TAN }}>KREO</span>
+            <span className="text-[9px] font-black tracking-[0.7em] uppercase text-white/30 mt-3" style={{ fontFamily: SATOSHI }}>Studio Engaged</span>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };
 

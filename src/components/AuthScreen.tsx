@@ -27,11 +27,12 @@ const AuthScreen = () => {
       if (isSignUp) {
         const { error } = await supabase.auth.signUp({ email, password });
         if (error) throw error;
-        toast.success("Check your email for confirmation!");
+        // Proceed to build page instead of confirmation
+        navigate("/build");
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        navigate("/");
+        navigate("/build");
       }
     } catch (err: any) {
       toast.error(err.message || "Authentication failed");
@@ -53,7 +54,7 @@ const AuthScreen = () => {
     <div className="relative z-10 flex min-h-screen items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <div className="flex flex-col items-center mb-12">
-          <h1 className="text-6xl font-serif italic text-foreground tracking-tighter" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>Kreo</h1>
+          <h1 className="text-6xl text-foreground tracking-tighter" style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }}>KREO</h1>
           <p className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground/30 mt-2">Why think when you can visualise</p>
         </div>
 
