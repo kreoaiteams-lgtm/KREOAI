@@ -316,10 +316,19 @@ const CampaignPage: React.FC = () => {
                     initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3, type: 'spring', stiffness: 120, damping: 20 }}
                     className="absolute left-0 top-1/2 -translate-y-1/2 w-[280px] text-left hidden md:flex flex-col gap-5"
                   >
-                    {/* Arrow pointing right toward card */}
-                    <svg className="mb-2" width="120" height="32" viewBox="0 0 120 32" fill="none">
-                      <path d="M4 16 L100 16" stroke="white" strokeWidth="1.2" strokeLinecap="round" strokeDasharray="6 4"/>
-                      <path d="M90 6 L104 16 L90 26" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+                    {/* Swirly Arrow pointing right toward card */}
+                    <svg className="mb-2" width="160" height="60" viewBox="0 0 160 60" fill="none">
+                      <motion.path 
+                        initial={{ pathLength: 0 }}
+                        animate={{ pathLength: 1 }}
+                        transition={{ delay: 0.6, duration: 1 }}
+                        d="M10 50 C 40 50, 60 10, 140 30" 
+                        stroke="white" 
+                        strokeWidth="1.5" 
+                        strokeLinecap="round" 
+                        strokeDasharray="6 4"
+                      />
+                      <path d="M130 22 L144 31 L132 40" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
                     </svg>
                     <div>
                       <span className="text-[9px] font-black uppercase tracking-[0.4em] text-white/40 block mb-2">Identity Confirmed</span>
@@ -360,10 +369,19 @@ const CampaignPage: React.FC = () => {
                     initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4, type: 'spring', stiffness: 120, damping: 20 }}
                     className="absolute right-0 top-1/2 -translate-y-1/2 w-[280px] text-left hidden md:flex flex-col gap-4"
                   >
-                    {/* Arrow pointing left toward card */}
-                    <svg className="mb-2 scale-x-[-1]" width="120" height="32" viewBox="0 0 120 32" fill="none">
-                      <path d="M4 16 L100 16" stroke="white" strokeWidth="1.2" strokeLinecap="round" strokeDasharray="6 4"/>
-                      <path d="M90 6 L104 16 L90 26" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+                    {/* Swirly Arrow pointing left toward card */}
+                    <svg className="mb-2 scale-x-[-1]" width="160" height="60" viewBox="0 0 160 60" fill="none">
+                      <motion.path 
+                        initial={{ pathLength: 0 }}
+                        animate={{ pathLength: 1 }}
+                        transition={{ delay: 0.8, duration: 1 }}
+                        d="M10 50 C 40 50, 60 10, 140 30" 
+                        stroke="white" 
+                        strokeWidth="1.5" 
+                        strokeLinecap="round" 
+                        strokeDasharray="6 4"
+                      />
+                      <path d="M130 22 L144 31 L132 40" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
                     </svg>
                     <span className="text-[9px] font-black uppercase tracking-[0.4em] text-white/40">Powers Unlocked</span>
                     {[

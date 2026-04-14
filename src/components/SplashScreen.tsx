@@ -68,12 +68,13 @@ const SplashScreen = ({ onComplete }: { onComplete: () => void }) => {
             {LETTERS.map((letter, i) => (
               <motion.span
                 key={letter}
-                initial={{ opacity: 0, y: 40, rotateX: -60 }}
-                animate={{ opacity: 1, y: 0, rotateX: 0 }}
+                initial={{ opacity: 0, scale: 0.2, rotate: -20, y: 20 }}
+                animate={{ opacity: 1, scale: 1, rotate: 0, y: 0 }}
                 transition={{
-                  delay: i * 0.18,
-                  duration: 0.55,
-                  ease: [0.16, 1, 0.3, 1],
+                  delay: i * 0.12,
+                  type: "spring",
+                  stiffness: 450,
+                  damping: 15,
                 }}
                 className="text-[22vw] font-bold text-[#1B3FBF] leading-none tracking-tighter select-none"
                 style={{ fontFamily: TAN, display: 'inline-block' }}
