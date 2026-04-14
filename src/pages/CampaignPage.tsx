@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Zap, Globe, ShieldCheck, UserPlus, ArrowDown, Presentation, Code2, Table2, GitGraph } from 'lucide-react';
+import { Zap, Globe, ShieldCheck, UserPlus, ArrowDown, Presentation, Code2, Table2, GitGraph, Smile } from 'lucide-react';
 import KreonCard from '../components/KreonCard';
 
 /**
@@ -124,6 +124,13 @@ const CampaignPage: React.FC = () => {
                   <GitGraph size={46} className="text-white" />
                   <span className="text-[10px] font-bold uppercase tracking-widest mt-2 block opacity-80">Workflow</span>
                 </motion.div>
+                {/* Smilies */}
+                <motion.div animate={{ rotate: [0, 360] }} transition={{ repeat: Infinity, duration: 20, ease: "linear" }} className="absolute top-[40%] right-[10%] opacity-30">
+                  <Smile size={32} className="text-white" />
+                </motion.div>
+                <motion.div animate={{ scale: [0.8, 1.2, 0.8] }} transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }} className="absolute bottom-[40%] left-[12%] opacity-30">
+                  <Smile size={24} className="text-white" />
+                </motion.div>
               </motion.div>
 
               {/* Decorative dashed arrows — corners */}
@@ -174,16 +181,10 @@ const CampaignPage: React.FC = () => {
                   initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.32, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                   className="relative"
                 >
-                  <h1 className="text-[9vw] font-black italic text-white tracking-tighter leading-[0.9]"
+                  <h1 className="text-[9vw] font-black italic text-[#FACC15] tracking-tighter leading-[0.9]"
                       style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>
                     imagination.
                   </h1>
-                  {/* Underline stroke */}
-                  <motion.div
-                    initial={{ scaleX: 0 }} animate={{ scaleX: 1 }}
-                    transition={{ delay: 0.9, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                    className="h-[3px] bg-white w-full origin-left rounded-full mt-1"
-                  />
                 </motion.div>
 
                 {/* "with KREO" — large, cobalt, TAN-NIMBUS */}
@@ -334,39 +335,39 @@ const CampaignPage: React.FC = () => {
                   {/* Left Side: You are a KREON */}
                   <motion.div
                     initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3, type: 'spring', stiffness: 120, damping: 20 }}
-                    className="absolute left-0 top-1/2 -translate-y-1/2 w-[280px] text-left hidden md:flex flex-col gap-5"
+                    className="absolute left-0 top-1/2 -translate-y-1/2 w-[340px] text-left hidden md:flex flex-col gap-6"
                   >
                     {/* Swirly Arrow pointing left toward info panel (Originating from Card) */}
-                    <svg className="mb-2 scale-x-[-1]" width="180" height="80" viewBox="0 0 160 60" fill="none">
+                    <svg className="mb-2 scale-x-[-1]" width="200" height="90" viewBox="0 0 160 60" fill="none">
                       <motion.path 
                         initial={{ pathLength: 0 }}
                         animate={{ pathLength: 1 }}
                         transition={{ delay: 0.6, duration: 1.2 }}
                         d="M10 30 C 60 10, 80 50, 150 50" 
                         stroke="white" 
-                        strokeWidth="2" 
+                        strokeWidth="2.5" 
                         strokeLinecap="round" 
-                        strokeDasharray="2 6"
+                        strokeDasharray="2 8"
                       />
-                      <path d="M140 42 L154 51 L142 60" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+                      <path d="M140 42 L154 51 L142 60" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
                     </svg>
                     <div>
-                      <span className="text-[9px] font-black uppercase tracking-[0.4em] text-white/40 block mb-2">Identity Confirmed</span>
-                      <h3 className="text-3xl font-black text-white leading-tight tracking-tighter" style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }}>
+                      <span className="text-[10px] font-black uppercase tracking-[0.5em] text-white/40 block mb-2">Identity Confirmed</span>
+                      <h3 className="text-4xl font-black text-white leading-tight tracking-tighter" style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }}>
                         You are a<br/>KREON.
                       </h3>
-                      <p className="text-xs text-white/60 leading-relaxed mt-3 font-medium">
+                      <p className="text-sm text-white/60 leading-relaxed mt-4 font-medium">
                         This card is your permanent residency in the KREO ecosystem. A living proof of your creative identity.
                       </p>
                     </div>
-                    <div className="flex flex-col gap-2 mt-1">
+                    <div className="flex flex-col gap-3 mt-1">
                       {['Unique Residency #', 'Permanent Identity', 'Studio Access'].map((item, i) => (
-                        <div key={i} className="flex items-center gap-3">
-                          <svg width="24" height="12" viewBox="0 0 24 12" fill="none">
-                            <path d="M2 6 L18 6" stroke="white" strokeWidth="1" strokeLinecap="round" strokeOpacity="0.5"/>
-                            <path d="M14 2 L20 6 L14 10" stroke="white" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" strokeOpacity="0.5" fill="none"/>
+                        <div key={i} className="flex items-center gap-4">
+                          <svg width="28" height="14" viewBox="0 0 24 12" fill="none">
+                            <path d="M2 6 L18 6" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeOpacity="0.5"/>
+                            <path d="M14 2 L20 6 L14 10" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" strokeOpacity="0.5" fill="none"/>
                           </svg>
-                          <span className="text-[10px] font-bold text-white/50 uppercase tracking-widest">{item}</span>
+                          <span className="text-[11px] font-bold text-white/50 uppercase tracking-widest">{item}</span>
                         </div>
                       ))}
                     </div>
@@ -387,23 +388,23 @@ const CampaignPage: React.FC = () => {
                   {/* Right Side: Lined arrows showing powers */}
                   <motion.div
                     initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4, type: 'spring', stiffness: 120, damping: 20 }}
-                    className="absolute right-0 top-1/2 -translate-y-1/2 w-[280px] text-left hidden md:flex flex-col gap-4"
+                    className="absolute right-0 top-1/2 -translate-y-1/2 w-[340px] text-left hidden md:flex flex-col gap-5"
                   >
                     {/* Swirly Arrow pointing right toward info panel (Originating from Card) */}
-                    <svg className="mb-2" width="180" height="80" viewBox="0 0 160 60" fill="none">
+                    <svg className="mb-2" width="200" height="90" viewBox="0 0 160 60" fill="none">
                       <motion.path 
                         initial={{ pathLength: 0 }}
                         animate={{ pathLength: 1 }}
                         transition={{ delay: 0.8, duration: 1.2 }}
                         d="M10 30 C 60 10, 80 50, 150 50" 
                         stroke="white" 
-                        strokeWidth="2" 
+                        strokeWidth="2.5" 
                         strokeLinecap="round" 
-                        strokeDasharray="2 6"
+                        strokeDasharray="2 8"
                       />
-                      <path d="M140 42 L154 51 L142 60" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+                      <path d="M140 42 L154 51 L142 60" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
                     </svg>
-                    <span className="text-[9px] font-black uppercase tracking-[0.4em] text-white/40">Powers Unlocked</span>
+                    <span className="text-[10px] font-black uppercase tracking-[0.5em] text-white/40">Powers Unlocked</span>
                     {[
                       { label: 'Generate Wireframes', desc: 'Instant UI from a prompt' },
                       { label: 'Export to Code', desc: 'Clean, production-ready HTML' },
@@ -414,16 +415,16 @@ const CampaignPage: React.FC = () => {
                         key={i}
                         initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.5 + i * 0.08 }}
-                        className="flex items-start gap-3 group/item"
+                        className="flex items-start gap-4 group/item"
                       >
                         {/* Lined arrow */}
-                        <svg className="shrink-0 mt-1" width="32" height="16" viewBox="0 0 32 16" fill="none">
-                          <path d="M2 8 L24 8" stroke="white" strokeWidth="1" strokeLinecap="round" strokeOpacity="0.4" className="group-hover/item:stroke-opacity-80 transition-all"/>
-                          <path d="M19 3 L26 8 L19 13" stroke="white" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" strokeOpacity="0.4" fill="none" className="group-hover/item:stroke-opacity-80 transition-all"/>
+                        <svg className="shrink-0 mt-1.5" width="40" height="20" viewBox="0 0 32 16" fill="none">
+                          <path d="M2 8 L24 8" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeOpacity="0.4" className="group-hover/item:stroke-opacity-80 transition-all"/>
+                          <path d="M19 3 L26 8 L19 13" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" strokeOpacity="0.4" fill="none" className="group-hover/item:stroke-opacity-80 transition-all"/>
                         </svg>
                         <div>
-                          <div className="text-[11px] font-black text-white/80 uppercase tracking-widest">{power.label}</div>
-                          <div className="text-[10px] text-white/40 font-medium mt-0.5">{power.desc}</div>
+                          <div className="text-[12px] font-black text-white/80 uppercase tracking-widest">{power.label}</div>
+                          <div className="text-[11px] text-white/40 font-medium mt-0.5">{power.desc}</div>
                         </div>
                       </motion.div>
                     ))}

@@ -1034,40 +1034,40 @@ const HomeScreen = ({
                 {/* Left Side: You are a KREON */}
                 <motion.div
                   initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3, type: 'spring', stiffness: 120, damping: 20 }}
-                  className="w-[280px] text-left flex flex-col gap-6"
+                  className="w-[340px] text-left flex flex-col gap-8"
                 >
                   {/* Swirly Arrow (Dotted/Card -> Panel direction) */}
-                  <svg className="mb-2 scale-x-[-1]" width="160" height="60" viewBox="0 0 160 60" fill="none">
+                  <svg className="mb-2 scale-x-[-1]" width="200" height="80" viewBox="0 0 160 60" fill="none">
                     <motion.path 
                       initial={{ pathLength: 0 }}
                       animate={{ pathLength: 1 }}
                       transition={{ delay: 0.6, duration: 1.2 }}
                       d="M10 30 C 60 10, 80 50, 150 50" 
                       stroke="#1B3FBF" 
-                      strokeWidth="2" 
+                      strokeWidth="2.5" 
                       strokeLinecap="round" 
-                      strokeDasharray="2 6"
+                      strokeDasharray="2 8"
                       strokeOpacity="0.2"
                     />
-                    <path d="M140 42 L154 51 L142 60" stroke="#1B3FBF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" strokeOpacity="0.25"/>
+                    <path d="M140 42 L154 51 L142 60" stroke="#1B3FBF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" strokeOpacity="0.25"/>
                   </svg>
                   <div>
-                    <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[#1B3FBF]/40 block mb-2">Identity Confirmed</span>
-                    <h3 className="text-4xl font-black text-[#1B3FBF] leading-tight tracking-tighter" style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }}>
+                    <span className="text-[11px] font-black uppercase tracking-[0.5em] text-[#1B3FBF]/40 block mb-2">Identity Confirmed</span>
+                    <h3 className="text-5xl font-black text-[#1B3FBF] leading-tight tracking-tighter" style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }}>
                       You are a<br/>KREON.
                     </h3>
-                    <p className="text-xs text-black/50 leading-relaxed mt-4 font-medium max-w-[240px]">
+                    <p className="text-sm text-black/50 leading-relaxed mt-5 font-medium max-w-[280px]">
                       Your permanent residency in the KREO ecosystem is now active.
                     </p>
                   </div>
-                  <div className="flex flex-col gap-3 mt-2">
+                  <div className="flex flex-col gap-4 mt-2">
                     {['Unique Residency #', 'Permanent Identity', 'Studio Access'].map((item, i) => (
-                      <div key={i} className="flex items-center gap-3">
-                        <svg width="24" height="12" viewBox="0 0 24 12" fill="none">
-                          <path d="M2 6 L18 6" stroke="#1B3FBF" strokeWidth="1" strokeLinecap="round" strokeOpacity="0.2"/>
-                          <path d="M14 2 L20 6 L14 10" stroke="#1B3FBF" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" strokeOpacity="0.2" fill="none"/>
+                      <div key={i} className="flex items-center gap-4">
+                        <svg width="28" height="14" viewBox="0 0 24 12" fill="none">
+                          <path d="M2 6 L18 6" stroke="#1B3FBF" strokeWidth="1.5" strokeLinecap="round" strokeOpacity="0.2"/>
+                          <path d="M14 2 L20 6 L14 10" stroke="#1B3FBF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" strokeOpacity="0.2" fill="none"/>
                         </svg>
-                        <span className="text-[10px] font-bold text-[#1B3FBF]/40 uppercase tracking-widest">{item}</span>
+                        <span className="text-[11px] font-bold text-[#1B3FBF]/40 uppercase tracking-widest">{item}</span>
                       </div>
                     ))}
                   </div>
@@ -1076,25 +1076,25 @@ const HomeScreen = ({
                 {/* Right Side: Powers Unlocked */}
                 <motion.div
                   initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4, type: 'spring', stiffness: 120, damping: 20 }}
-                  className="w-[280px] text-left flex flex-col gap-6"
+                  className="w-[340px] text-left flex flex-col gap-8"
                 >
                   {/* Swirly Arrow (Dotted/Card -> Panel direction) */}
-                  <svg className="mb-2" width="160" height="60" viewBox="0 0 160 60" fill="none">
+                  <svg className="mb-2" width="200" height="80" viewBox="0 0 160 60" fill="none">
                     <motion.path 
                       initial={{ pathLength: 0 }}
                       animate={{ pathLength: 1 }}
                       transition={{ delay: 0.8, duration: 1.2 }}
                       d="M10 30 C 60 10, 80 50, 150 50" 
                       stroke="#1B3FBF" 
-                      strokeWidth="2" 
+                      strokeWidth="2.5" 
                       strokeLinecap="round" 
-                      strokeDasharray="2 6"
+                      strokeDasharray="2 8"
                       strokeOpacity="0.2"
                     />
-                    <path d="M140 42 L154 51 L142 60" stroke="#1B3FBF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" strokeOpacity="0.25"/>
+                    <path d="M140 42 L154 51 L142 60" stroke="#1B3FBF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" strokeOpacity="0.25"/>
                   </svg>
-                  <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[#1B3FBF]/40">Environment Status</span>
-                  <div className="space-y-5">
+                  <span className="text-[11px] font-black uppercase tracking-[0.5em] text-[#1B3FBF]/40">Environment Status</span>
+                  <div className="space-y-6">
                     {[
                       { label: 'Neural Manifest', desc: 'Artifact engine online', icon: Presentation },
                       { label: 'Studio Framing', desc: 'Interface protocol active', icon: Code2 },
@@ -1104,14 +1104,14 @@ const HomeScreen = ({
                         key={i}
                         initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.5 + i * 0.1 }}
-                        className="flex items-start gap-4"
+                        className="flex items-start gap-5"
                       >
-                        <div className="shrink-0 mt-1 p-2 bg-[#1B3FBF]/5 rounded-lg border border-[#1B3FBF]/10">
-                          <power.icon size={16} className="text-[#1B3FBF]/60" />
+                        <div className="shrink-0 mt-1 p-2.5 bg-[#1B3FBF]/5 rounded-xl border border-[#1B3FBF]/10">
+                          <power.icon size={18} className="text-[#1B3FBF]/60" />
                         </div>
                         <div>
-                          <div className="text-[11px] font-black text-[#1B3FBF] uppercase tracking-widest">{power.label}</div>
-                          <div className="text-[10px] text-black/30 font-medium mt-0.5">{power.desc}</div>
+                          <div className="text-[12px] font-black text-[#1B3FBF] uppercase tracking-widest">{power.label}</div>
+                          <div className="text-[11px] text-black/30 font-medium mt-0.5">{power.desc}</div>
                         </div>
                       </motion.div>
                     ))}
@@ -1125,6 +1125,12 @@ const HomeScreen = ({
                   <line x1="12" y1="2" x2="12" y2="22" stroke="#1B3FBF" strokeWidth="1"/>
                   <line x1="2" y1="12" x2="22" y2="12" stroke="#1B3FBF" strokeWidth="1"/>
                 </svg>
+                <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 10, ease: 'linear' }} className="absolute top-[25%] right-[40%] text-[#1B3FBF]">
+                  <Smile size={28} />
+                </motion.div>
+                <motion.div animate={{ y: [0, 10, 0] }} transition={{ repeat: Infinity, duration: 3 }} className="absolute bottom-[30%] left-[40%] text-[#1B3FBF]">
+                  <Smile size={20} />
+                </motion.div>
                 <svg className="absolute bottom-[20%] right-[45%]" width="32" height="32" viewBox="0 0 32 32" fill="none">
                   <circle cx="16" cy="16" r="12" stroke="#1B3FBF" strokeWidth="1" strokeDasharray="4 3"/>
                 </svg>
