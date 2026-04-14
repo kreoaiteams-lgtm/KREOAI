@@ -1,23 +1,21 @@
 import { useEffect, useState } from "react";
-import Lottie from "lottie-react";
 import { motion, AnimatePresence } from "framer-motion";
-import animationData from "./Hello (apple).json";
 
 const TAN = "'TAN-NIMBUS', sans-serif";
 const SATOSHI = "'Satoshi', sans-serif";
 
-/**
- * SplashScreen
- * 
- * Minimal, playful, emotional.
- */
+const LETTERS = ['K', 'R', 'E', 'O'];
+
 const SplashScreen = ({ onComplete }: { onComplete: () => void }) => {
-  const [phase, setPhase] = useState<"lottie" | "reveal" | "exit">("lottie");
+  const [phase, setPhase] = useState<"type" | "hold" | "exit">("type");
 
   useEffect(() => {
-    const t1 = setTimeout(() => setPhase("reveal"), 1500); 
-    const t2 = setTimeout(() => setPhase("exit"), 3000); 
-    const t3 = setTimeout(onComplete, 3800); 
+    // type → hold after all letters appear (~1.2s)
+    const t1 = setTimeout(() => setPhase("hold"), 1400);
+    // hold → exit
+    const t2 = setTimeout(() => setPhase("exit"), 2800);
+    // call parent
+    const t3 = setTimeout(onComplete, 3500);
     return () => [t1, t2, t3].forEach(clearTimeout);
   }, [onComplete]);
 
@@ -25,66 +23,85 @@ const SplashScreen = ({ onComplete }: { onComplete: () => void }) => {
     <AnimatePresence>
       {phase !== "exit" && (
         <motion.div
-          exit={{ opacity: 0, y: -20, scale: 0.98 }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="fixed inset-0 z-[1000] flex flex-col items-center justify-center bg-[#1B3FBF] overflow-hidden"
+          key="splash"
+          exit={{ opacity: 0, scale: 0.96 }}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          className="fixed inset-0 z-[1000] flex flex-col items-center justify-center bg-white overflow-hidden"
         >
-          {/* Confetti particles on reveal */}
-          {phase === "reveal" && (
+          {/* Subtle grid in background */}
+          <div className="absolute inset-0 pointer-events-none opacity-[0.04]">
+            <svg width="100%" height="100%">
+              <pattern id="sg" width="48" height="48" patternUnits="userSpaceOnUse">
+                <circle cx="24" cy="24" r="1.5" fill="#1B3FBF" />
+              </pattern>
+              <rect width="100%" height="100%" fill="url(#sg)" />
+            </svg>
+          </div>
+
+          {/* Floating decorative dashes */}
+          {phase === "hold" && (
             <div className="absolute inset-0 pointer-events-none">
-              {[...Array(32)].map((_, i) => {
-                const colors = ['#facc15', '#fff', '#ec4899', '#22c55e', '#c084fc', '#f97316'];
-                const s = Math.random() * 0.6 + 0.3;
-                return (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, y: -20, scale: 0 }}
-                    animate={{ 
-                      opacity: [0, 0.8, 0], 
-                      y: Math.random() * 500 + 100, 
-                      x: (Math.random() - 0.5) * 200, 
-                      scale: s, 
-                      rotate: Math.random() * 360 
-                    }}
-                    transition={{ duration: 2.5, delay: Math.random() * 0.4, ease: 'easeOut' }}
-                    style={{ 
-                      position: 'absolute', 
-                      left: Math.random() * 100 + '%', 
-                      top: '-5%', 
-                      width: 8, 
-                      height: 8, 
-                      borderRadius: i % 2 === 0 ? '50%' : 2, 
-                      background: colors[i % colors.length] 
-                    }}
-                  />
-                );
-              })}
+              {[
+                { cx: '12%', cy: '20%', r: 0, deg: 0 },
+                { cx: '85%', cy: '15%', r: 0, deg: 45 },
+                { cx: '8%',  cy: '72%', r: 0, deg: -30 },
+                { cx: '90%', cy: '75%', r: 0, deg: 20 },
+              ].map((pos, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  animate={{ opacity: 0.15, scale: 1 }}
+                  transition={{ delay: i * 0.1, duration: 0.5 }}
+                  style={{ position: 'absolute', left: pos.cx, top: pos.cy, transform: `rotate(${pos.deg}deg)` }}
+                >
+                  <svg width="60" height="16" viewBox="0 0 60 16" fill="none">
+                    <path d="M2 8 L48 8" stroke="#1B3FBF" strokeWidth="1.2" strokeLinecap="round" strokeDasharray="5 4"/>
+                    <path d="M43 3 L50 8 L43 13" stroke="#1B3FBF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+                  </svg>
+                </motion.div>
+              ))}
             </div>
           )}
 
-          {/* Lottie */}
-          <motion.div
-            style={{ filter: 'brightness(0) invert(1)' }}
-            animate={{ 
-              scale: phase === 'reveal' ? 0.55 : 1,
-              y: phase === 'reveal' ? -80 : 0,
-            }}
-            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-            className="w-[480px] h-[480px] relative z-10"
-          >
-            <Lottie animationData={animationData} loop={false} className="w-full h-full" />
-          </motion.div>
+          {/* KREO letters — one by one */}
+          <div className="flex items-end gap-1 md:gap-3 relative z-10">
+            {LETTERS.map((letter, i) => (
+              <motion.span
+                key={letter}
+                initial={{ opacity: 0, y: 40, rotateX: -60 }}
+                animate={{ opacity: 1, y: 0, rotateX: 0 }}
+                transition={{
+                  delay: i * 0.18,
+                  duration: 0.55,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
+                className="text-[22vw] font-bold text-[#1B3FBF] leading-none tracking-tighter select-none"
+                style={{ fontFamily: TAN, display: 'inline-block' }}
+              >
+                {letter}
+              </motion.span>
+            ))}
+          </div>
 
-          {/* KREO reveal */}
-          <motion.div
-            className="absolute flex flex-col items-center"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: phase === 'reveal' ? 1 : 0, y: phase === 'reveal' ? 0 : 30 }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          {/* Tagline fades in after hold */}
+          <motion.span
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: phase === 'hold' ? 1 : 0, y: phase === 'hold' ? 0 : 10 }}
+            transition={{ duration: 0.6, ease: 'easeOut' }}
+            className="text-[11px] font-black tracking-[0.6em] uppercase text-[#1B3FBF]/40 mt-4 relative z-10"
+            style={{ fontFamily: SATOSHI }}
           >
-            <span className="text-[18vw] font-bold text-white leading-none tracking-tighter mix-blend-overlay" style={{ fontFamily: TAN }}>KREO</span>
-            <span className="text-[9px] font-black tracking-[0.7em] uppercase text-white/30 mt-3" style={{ fontFamily: SATOSHI }}>Studio Engaged</span>
-          </motion.div>
+            Studio Engaged
+          </motion.span>
+
+          {/* Cursor blink under text during type phase */}
+          {phase === 'type' && (
+            <motion.div
+              animate={{ opacity: [1, 0, 1] }}
+              transition={{ repeat: Infinity, duration: 0.6 }}
+              className="w-[3px] h-[14vw] bg-[#1B3FBF] rounded-full ml-2 relative z-10"
+            />
+          )}
         </motion.div>
       )}
     </AnimatePresence>
@@ -92,3 +109,4 @@ const SplashScreen = ({ onComplete }: { onComplete: () => void }) => {
 };
 
 export default SplashScreen;
+

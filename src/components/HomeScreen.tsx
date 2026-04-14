@@ -1027,6 +1027,61 @@ const HomeScreen = ({
                  </div>
               </div>
 
+              {/* Decorative lined arrows — flanking the center */}
+              <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+                {/* Left arrow pointing right toward center */}
+                <motion.svg
+                  initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.4, duration: 0.8 }}
+                  className="absolute left-[12%] top-1/2 -translate-y-1/2"
+                  width="100" height="28" viewBox="0 0 100 28" fill="none"
+                >
+                  <path d="M4 14 L80 14" stroke="#1B3FBF" strokeWidth="1" strokeLinecap="round" strokeDasharray="6 5" strokeOpacity="0.2"/>
+                  <path d="M73 6 L83 14 L73 22" stroke="#1B3FBF" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" fill="none" strokeOpacity="0.25"/>
+                </motion.svg>
+                {/* Right arrow pointing left toward center */}
+                <motion.svg
+                  initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.4, duration: 0.8 }}
+                  className="absolute right-[12%] top-1/2 -translate-y-1/2 scale-x-[-1]"
+                  width="100" height="28" viewBox="0 0 100 28" fill="none"
+                >
+                  <path d="M4 14 L80 14" stroke="#1B3FBF" strokeWidth="1" strokeLinecap="round" strokeDasharray="6 5" strokeOpacity="0.2"/>
+                  <path d="M73 6 L83 14 L73 22" stroke="#1B3FBF" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" fill="none" strokeOpacity="0.25"/>
+                </motion.svg>
+                {/* Top curved arrow pointing down */}
+                <motion.svg
+                  initial={{ opacity: 0, y: -15 }} animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.6, duration: 0.8 }}
+                  className="absolute top-[14%] left-1/2 -translate-x-1/2"
+                  width="60" height="60" viewBox="0 0 60 60" fill="none"
+                >
+                  <path d="M30 4 Q55 18 38 46" stroke="#1B3FBF" strokeWidth="1" strokeLinecap="round" fill="none" strokeDasharray="5 4" strokeOpacity="0.2"/>
+                  <path d="M32 39 L40 50 L28 50" stroke="#1B3FBF" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" fill="none" strokeOpacity="0.25"/>
+                </motion.svg>
+                {/* Top-left asterisk */}
+                <motion.svg
+                  initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 0.12, scale: 1 }}
+                  transition={{ delay: 0.7, duration: 0.5 }}
+                  className="absolute top-[20%] left-[20%]"
+                  width="24" height="24" viewBox="0 0 24 24" fill="none"
+                >
+                  <line x1="12" y1="2" x2="12" y2="22" stroke="#1B3FBF" strokeWidth="1.5" strokeLinecap="round"/>
+                  <line x1="2" y1="12" x2="22" y2="12" stroke="#1B3FBF" strokeWidth="1.5" strokeLinecap="round"/>
+                  <line x1="4" y1="4" x2="20" y2="20" stroke="#1B3FBF" strokeWidth="1.5" strokeLinecap="round"/>
+                  <line x1="20" y1="4" x2="4" y2="20" stroke="#1B3FBF" strokeWidth="1.5" strokeLinecap="round"/>
+                </motion.svg>
+                {/* Bottom-right dashed circle */}
+                <motion.svg
+                  initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 0.1, scale: 1 }}
+                  transition={{ delay: 0.8, duration: 0.5 }}
+                  className="absolute bottom-[18%] right-[20%]"
+                  width="32" height="32" viewBox="0 0 32 32" fill="none"
+                >
+                  <circle cx="16" cy="16" r="12" stroke="#1B3FBF" strokeWidth="1.2" strokeDasharray="4 3"/>
+                </motion.svg>
+              </div>
+
               <div className="relative w-48 h-48 flex items-center justify-center">
                 <div className="absolute inset-0 rounded-full bg-[#1B3FBF]/5 animate-ping" style={{ animationDuration: '3s' }} />
                 <div className="absolute inset-8 rounded-full bg-[#1B3FBF]/10 animate-pulse transition-all duration-1000 scale-110" />
