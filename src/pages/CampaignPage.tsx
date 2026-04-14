@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Zap, Globe, ShieldCheck, UserPlus, ArrowDown } from 'lucide-react';
+import { Zap, Globe, ShieldCheck, UserPlus, ArrowDown, Presentation, Code2, Table2, GitGraph } from 'lucide-react';
 import KreonCard from '../components/KreonCard';
 
 /**
@@ -85,57 +85,77 @@ const CampaignPage: React.FC = () => {
             ══════════════════════════════════════════ */}
             <section
               style={{ scrollSnapAlign: 'start' }}
-              className="relative h-screen w-full bg-white flex flex-col items-center justify-center overflow-hidden"
+              className="relative h-screen w-full bg-[#1B3FBF] flex flex-col items-center justify-center overflow-hidden"
             >
               {/* Dot grid bg */}
-              <div className="absolute inset-0 pointer-events-none opacity-[0.035]">
+              <div className="absolute inset-0 pointer-events-none opacity-[0.1]">
                 <svg width="100%" height="100%">
                   <pattern id="dg2" width="44" height="44" patternUnits="userSpaceOnUse">
-                    <circle cx="22" cy="22" r="1.5" fill="#1B3FBF" />
+                    <circle cx="22" cy="22" r="1.5" fill="white" />
                   </pattern>
                   <rect width="100%" height="100%" fill="url(#dg2)" />
                 </svg>
               </div>
 
-              {/* Large cobalt diagonal stripe accent — top right */}
-              <div className="absolute top-0 right-0 w-[500px] h-[500px] pointer-events-none overflow-hidden opacity-[0.04]">
-                <div className="absolute top-0 right-0 w-full h-full bg-[#1B3FBF] origin-top-right" style={{ clipPath: 'polygon(40% 0%, 100% 0%, 100% 60%)' }} />
+              {/* Large white diagonal stripe accent — top right */}
+              <div className="absolute top-0 right-0 w-[600px] h-[600px] pointer-events-none overflow-hidden opacity-[0.03]">
+                <div className="absolute top-0 right-0 w-full h-full bg-white origin-top-right" style={{ clipPath: 'polygon(40% 0%, 100% 0%, 100% 60%)' }} />
               </div>
               {/* Bottom left accent */}
               <div className="absolute bottom-0 left-0 w-[400px] h-[400px] pointer-events-none overflow-hidden opacity-[0.03]">
-                <div className="absolute bottom-0 left-0 w-full h-full bg-[#1B3FBF]" style={{ clipPath: 'polygon(0% 40%, 60% 100%, 0% 100%)' }} />
+                <div className="absolute bottom-0 left-0 w-full h-full bg-white" style={{ clipPath: 'polygon(0% 40%, 60% 100%, 0% 100%)' }} />
               </div>
 
+              {/* Productivity Floating Elements (Brightened) */}
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 0.6 }} transition={{ delay: 1 }} className="absolute inset-0 pointer-events-none">
+                <motion.div animate={{ y: [0, -20, 0], rotate: [0, 5, 0] }} transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }} className="absolute top-[20%] left-[15%]">
+                  <Presentation size={48} className="text-white" />
+                  <span className="text-[10px] font-bold uppercase tracking-widest mt-2 block opacity-80">Strategy</span>
+                </motion.div>
+                <motion.div animate={{ y: [0, 20, 0], rotate: [0, -5, 0] }} transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }} className="absolute top-[25%] right-[18%]">
+                  <Code2 size={44} className="text-white" />
+                  <span className="text-[10px] font-bold uppercase tracking-widest mt-2 block opacity-80">Engineering</span>
+                </motion.div>
+                <motion.div animate={{ x: [0, 15, 0] }} transition={{ repeat: Infinity, duration: 7, ease: "easeInOut" }} className="absolute bottom-[25%] left-[20%]">
+                  <Table2 size={40} className="text-white" />
+                  <span className="text-[10px] font-bold uppercase tracking-widest mt-2 block opacity-80">Analysis</span>
+                </motion.div>
+                <motion.div animate={{ scale: [1, 1.1, 1] }} transition={{ repeat: Infinity, duration: 8, ease: "easeInOut" }} className="absolute bottom-[20%] right-[15%]">
+                  <GitGraph size={46} className="text-white" />
+                  <span className="text-[10px] font-bold uppercase tracking-widest mt-2 block opacity-80">Workflow</span>
+                </motion.div>
+              </motion.div>
+
               {/* Decorative dashed arrows — corners */}
-              <svg className="absolute top-[12%] left-[8%] opacity-20 pointer-events-none hidden md:block" width="90" height="28" viewBox="0 0 90 28" fill="none">
-                <path d="M4 14 L72 14" stroke="#1B3FBF" strokeWidth="1.2" strokeLinecap="round" strokeDasharray="6 5"/>
-                <path d="M65 6 L75 14 L65 22" stroke="#1B3FBF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+              <svg className="absolute top-[12%] left-[8%] opacity-30 pointer-events-none hidden md:block" width="90" height="28" viewBox="0 0 90 28" fill="none">
+                <path d="M4 14 L72 14" stroke="white" strokeWidth="1.2" strokeLinecap="round" strokeDasharray="6 5"/>
+                <path d="M65 6 L75 14 L65 22" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
               </svg>
-              <svg className="absolute top-[12%] right-[8%] opacity-20 pointer-events-none hidden md:block scale-x-[-1]" width="90" height="28" viewBox="0 0 90 28" fill="none">
-                <path d="M4 14 L72 14" stroke="#1B3FBF" strokeWidth="1.2" strokeLinecap="round" strokeDasharray="6 5"/>
-                <path d="M65 6 L75 14 L65 22" stroke="#1B3FBF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+              <svg className="absolute top-[12%] right-[8%] opacity-30 pointer-events-none hidden md:block scale-x-[-1]" width="90" height="28" viewBox="0 0 90 28" fill="none">
+                <path d="M4 14 L72 14" stroke="white" strokeWidth="1.2" strokeLinecap="round" strokeDasharray="6 5"/>
+                <path d="M65 6 L75 14 L65 22" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
               </svg>
-              <svg className="absolute bottom-[14%] left-[8%] opacity-20 pointer-events-none hidden md:block rotate-[180deg]" width="90" height="28" viewBox="0 0 90 28" fill="none">
-                <path d="M4 14 L72 14" stroke="#1B3FBF" strokeWidth="1.2" strokeLinecap="round" strokeDasharray="6 5"/>
-                <path d="M65 6 L75 14 L65 22" stroke="#1B3FBF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+              <svg className="absolute bottom-[14%] left-[8%] opacity-30 pointer-events-none hidden md:block rotate-[180deg]" width="90" height="28" viewBox="0 0 90 28" fill="none">
+                <path d="M4 14 L72 14" stroke="white" strokeWidth="1.2" strokeLinecap="round" strokeDasharray="6 5"/>
+                <path d="M65 6 L75 14 L65 22" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
               </svg>
-              <svg className="absolute bottom-[14%] right-[8%] opacity-20 pointer-events-none hidden md:block rotate-[180deg] scale-x-[-1]" width="90" height="28" viewBox="0 0 90 28" fill="none">
-                <path d="M4 14 L72 14" stroke="#1B3FBF" strokeWidth="1.2" strokeLinecap="round" strokeDasharray="6 5"/>
-                <path d="M65 6 L75 14 L65 22" stroke="#1B3FBF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+              <svg className="absolute bottom-[14%] right-[8%] opacity-30 pointer-events-none hidden md:block rotate-[180deg] scale-x-[-1]" width="90" height="28" viewBox="0 0 90 28" fill="none">
+                <path d="M4 14 L72 14" stroke="white" strokeWidth="1.2" strokeLinecap="round" strokeDasharray="6 5"/>
+                <path d="M65 6 L75 14 L65 22" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
               </svg>
               {/* Centre top small asterisk */}
-              <svg className="absolute top-[8%] left-1/2 -translate-x-1/2 opacity-10 pointer-events-none" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                <line x1="10" y1="1" x2="10" y2="19" stroke="#1B3FBF" strokeWidth="1.5" strokeLinecap="round"/>
-                <line x1="1" y1="10" x2="19" y2="10" stroke="#1B3FBF" strokeWidth="1.5" strokeLinecap="round"/>
-                <line x1="3" y1="3" x2="17" y2="17" stroke="#1B3FBF" strokeWidth="1.5" strokeLinecap="round"/>
-                <line x1="17" y1="3" x2="3" y2="17" stroke="#1B3FBF" strokeWidth="1.5" strokeLinecap="round"/>
+              <svg className="absolute top-[8%] left-1/2 -translate-x-1/2 opacity-20 pointer-events-none" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <line x1="10" y1="1" x2="10" y2="19" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+                <line x1="1" y1="10" x2="19" y2="10" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+                <line x1="3" y1="3" x2="17" y2="17" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+                <line x1="17" y1="3" x2="3" y2="17" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
               </svg>
 
               {/* Main content */}
               <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-5xl w-full">
                 <motion.span
                   initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.6 }}
-                  className="text-[10px] font-black uppercase tracking-[0.6em] text-[#1B3FBF]/60 mb-8 block"
+                  className="text-[10px] font-black uppercase tracking-[0.6em] text-white/60 mb-8 block"
                 >
                   Creative Studio Engine
                 </motion.span>
@@ -143,7 +163,7 @@ const CampaignPage: React.FC = () => {
                 {/* Main headline — stacked large type */}
                 <motion.h1
                   initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                  className="text-[11vw] font-black text-black tracking-tighter leading-[0.9] mb-0"
+                  className="text-[9vw] font-black text-white tracking-tighter leading-[0.9] mb-0"
                   style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
                 >
                   Build your
@@ -154,7 +174,7 @@ const CampaignPage: React.FC = () => {
                   initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.32, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                   className="relative"
                 >
-                  <h1 className="text-[11vw] font-black italic text-black tracking-tighter leading-[0.9]"
+                  <h1 className="text-[9vw] font-black italic text-white tracking-tighter leading-[0.9]"
                       style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>
                     imagination.
                   </h1>
@@ -162,7 +182,7 @@ const CampaignPage: React.FC = () => {
                   <motion.div
                     initial={{ scaleX: 0 }} animate={{ scaleX: 1 }}
                     transition={{ delay: 0.9, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                    className="h-[3px] bg-[#1B3FBF] w-full origin-left rounded-full mt-1"
+                    className="h-[3px] bg-white w-full origin-left rounded-full mt-1"
                   />
                 </motion.div>
 
@@ -171,11 +191,11 @@ const CampaignPage: React.FC = () => {
                   initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                   className="flex items-baseline gap-5 mt-6"
                 >
-                  <span className="text-2xl font-black uppercase tracking-[0.15em] text-black/25"
+                  <span className="text-2xl font-black uppercase tracking-[0.15em] text-white/30"
                         style={{ fontFamily: "'Satoshi', sans-serif" }}>
                     with
                   </span>
-                  <span className="text-[11vw] font-bold text-[#1B3FBF] tracking-tighter leading-none"
+                  <span className="text-[9vw] font-bold text-white tracking-tighter leading-none"
                         style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }}>
                     KREO
                   </span>
@@ -190,19 +210,19 @@ const CampaignPage: React.FC = () => {
                     onClick={() => navigate('/')}
                     whileHover={{ scale: 1.04 }}
                     whileTap={{ scale: 0.96 }}
-                    className="px-10 py-4 bg-[#1B3FBF] text-white rounded-full flex items-center gap-3 font-black text-[11px] uppercase tracking-[0.25em] shadow-2xl shadow-[#1B3FBF]/30 hover:bg-black transition-colors"
+                    className="px-10 py-4 bg-white text-[#1B3FBF] rounded-full flex items-center gap-3 font-black text-[11px] uppercase tracking-[0.25em] shadow-2xl shadow-white/10 hover:bg-black hover:text-white transition-all"
                   >
                     <UserPlus size={14} /> Enter the Studio
                   </motion.button>
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                    <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-black/30">Open Registry</p>
+                    <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-white/40">Open Registry</p>
                   </div>
                 </motion.div>
               </div>
 
               {/* Scroll cue */}
-              <div className="absolute bottom-8 flex flex-col items-center gap-2 text-black/20">
+              <div className="absolute bottom-8 flex flex-col items-center gap-2 text-white/20">
                 <span className="text-[9px] font-black uppercase tracking-[0.5em]">View Identity Protocol</span>
                 <motion.div animate={{ y: [0, 7, 0] }} transition={{ repeat: Infinity, duration: 1.8 }}>
                   <ArrowDown size={13} />
@@ -316,19 +336,19 @@ const CampaignPage: React.FC = () => {
                     initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3, type: 'spring', stiffness: 120, damping: 20 }}
                     className="absolute left-0 top-1/2 -translate-y-1/2 w-[280px] text-left hidden md:flex flex-col gap-5"
                   >
-                    {/* Swirly Arrow pointing right toward card */}
-                    <svg className="mb-2" width="160" height="60" viewBox="0 0 160 60" fill="none">
+                    {/* Swirly Arrow pointing left toward info panel (Originating from Card) */}
+                    <svg className="mb-2 scale-x-[-1]" width="180" height="80" viewBox="0 0 160 60" fill="none">
                       <motion.path 
                         initial={{ pathLength: 0 }}
                         animate={{ pathLength: 1 }}
-                        transition={{ delay: 0.6, duration: 1 }}
-                        d="M10 50 C 40 50, 60 10, 140 30" 
+                        transition={{ delay: 0.6, duration: 1.2 }}
+                        d="M10 30 C 60 10, 80 50, 150 50" 
                         stroke="white" 
-                        strokeWidth="1.5" 
+                        strokeWidth="2" 
                         strokeLinecap="round" 
-                        strokeDasharray="6 4"
+                        strokeDasharray="2 6"
                       />
-                      <path d="M130 22 L144 31 L132 40" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+                      <path d="M140 42 L154 51 L142 60" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
                     </svg>
                     <div>
                       <span className="text-[9px] font-black uppercase tracking-[0.4em] text-white/40 block mb-2">Identity Confirmed</span>
@@ -369,19 +389,19 @@ const CampaignPage: React.FC = () => {
                     initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4, type: 'spring', stiffness: 120, damping: 20 }}
                     className="absolute right-0 top-1/2 -translate-y-1/2 w-[280px] text-left hidden md:flex flex-col gap-4"
                   >
-                    {/* Swirly Arrow pointing left toward card */}
-                    <svg className="mb-2 scale-x-[-1]" width="160" height="60" viewBox="0 0 160 60" fill="none">
+                    {/* Swirly Arrow pointing right toward info panel (Originating from Card) */}
+                    <svg className="mb-2" width="180" height="80" viewBox="0 0 160 60" fill="none">
                       <motion.path 
                         initial={{ pathLength: 0 }}
                         animate={{ pathLength: 1 }}
-                        transition={{ delay: 0.8, duration: 1 }}
-                        d="M10 50 C 40 50, 60 10, 140 30" 
+                        transition={{ delay: 0.8, duration: 1.2 }}
+                        d="M10 30 C 60 10, 80 50, 150 50" 
                         stroke="white" 
-                        strokeWidth="1.5" 
+                        strokeWidth="2" 
                         strokeLinecap="round" 
-                        strokeDasharray="6 4"
+                        strokeDasharray="2 6"
                       />
-                      <path d="M130 22 L144 31 L132 40" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+                      <path d="M140 42 L154 51 L142 60" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
                     </svg>
                     <span className="text-[9px] font-black uppercase tracking-[0.4em] text-white/40">Powers Unlocked</span>
                     {[
