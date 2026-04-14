@@ -26,7 +26,7 @@ function getCardNumber(email?: string): string {
   return padded;
 }
 
-type KreonInterest = 'design' | 'tech' | 'architecture' | 'product';
+type KreonInterest = 'design' | 'tech' | 'architecture' | 'product' | 'art' | 'sports' | 'music' | 'news';
 
 export const KreonCardVisual = React.forwardRef<
   HTMLDivElement,
@@ -75,6 +75,49 @@ export const KreonCardVisual = React.forwardRef<
           <rect x="20" y="20" width="25" height="60" rx="4" fill="black" />
           <rect x="55" y="40" width="25" height="40" rx="4" fill="white" />
           <circle cx="67.5" cy="20" r="8" fill="white" />
+        </svg>
+      )
+    },
+    art: {
+      bg: '#ec4899', text: 'Art & Culture', color: 'white',
+      graphic: (
+        <svg viewBox="0 0 100 100" className="opacity-90 mix-blend-overlay">
+          <path d="M30 70 A 30 30 0 0 1 70 30 L 70 70 Z" fill="white" />
+          <circle cx="45" cy="55" r="5" fill="#ec4899" />
+          <circle cx="60" cy="45" r="5" fill="#ec4899" />
+        </svg>
+      )
+    },
+    sports: {
+      bg: '#14b8a6', text: 'Sports & Active', color: 'white',
+      graphic: (
+        <svg viewBox="0 0 100 100" className="opacity-90 mix-blend-overlay">
+          <circle cx="50" cy="50" r="35" fill="none" stroke="white" strokeWidth="8" />
+          <path d="M20 50 C 40 30 60 30 80 50" fill="none" stroke="black" strokeWidth="6" />
+          <path d="M50 20 C 30 40 30 60 50 80" fill="none" stroke="black" strokeWidth="6" />
+        </svg>
+      )
+    },
+    music: {
+      bg: '#8b5cf6', text: 'Music & Audio', color: 'white',
+      graphic: (
+        <svg viewBox="0 0 100 100" className="opacity-90 mix-blend-overlay">
+          <rect x="30" y="20" width="40" height="60" rx="20" fill="none" stroke="white" strokeWidth="8" />
+          <circle cx="30" cy="80" r="10" fill="black" />
+          <circle cx="70" cy="80" r="10" fill="black" />
+          <line x1="30" y1="20" x2="30" y2="80" stroke="white" strokeWidth="8" />
+          <line x1="70" y1="20" x2="70" y2="80" stroke="white" strokeWidth="8" />
+        </svg>
+      )
+    },
+    news: {
+      bg: '#eab308', text: 'News & Insight', color: 'black',
+      graphic: (
+        <svg viewBox="0 0 100 100" className="opacity-90 mix-blend-overlay">
+          <rect x="20" y="20" width="60" height="60" rx="4" fill="white" />
+          <line x1="30" y1="35" x2="70" y2="35" stroke="black" strokeWidth="6" />
+          <line x1="30" y1="50" x2="70" y2="50" stroke="black" strokeWidth="6" />
+          <line x1="30" y1="65" x2="50" y2="65" stroke="black" strokeWidth="6" />
         </svg>
       )
     }

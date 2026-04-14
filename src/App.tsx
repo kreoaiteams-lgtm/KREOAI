@@ -11,6 +11,7 @@ import KreoPromo1 from "./components/KreoPromo1.tsx";
 import KreoPromo2 from "./components/KreoPromo2.tsx";
 import KreoPromo3 from "./components/KreoPromo3.tsx";
 import KreoPromo4 from "./components/KreoPromo4.tsx";
+import KreoPromo5 from "./components/KreoPromo5.tsx";
 import SocialManagerPage from "./components/SocialManagerPage.tsx";
 import ShareView from "./components/ShareView.tsx";
 import ProjectRouter from "./components/ProjectRouter.tsx";
@@ -36,6 +37,7 @@ const App = () => (
           <Route path="/promo2" element={<KreoPromo2 />} />
           <Route path="/promo3" element={<KreoPromo3 />} />
           <Route path="/promo4" element={<KreoPromo4 />} />
+          <Route path="/promo5" element={<KreoPromo5 />} />
           <Route path="/share/:id" element={<ShareView />} />
           <Route path="/link/:id" element={<ShareView />} />
           <Route path="/social-manifest" element={<SocialManagerPage />} />
