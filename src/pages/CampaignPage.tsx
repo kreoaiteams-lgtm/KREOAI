@@ -13,16 +13,21 @@ import KreonCard from '../components/KreonCard';
  *  3. Black details     — perks, CTA, join registry
  */
 const floatingItems = [
-  { label: 'Generate Wireframes', left: 10, top: 15, color: 'bg-blue-100/80 text-blue-700', initialX: window.innerWidth * 0.1, initialY: window.innerHeight * 0.15 },
-  { label: 'Export to Code', left: 80, top: 10, color: 'bg-indigo-100/80 text-indigo-700', initialX: window.innerWidth * 0.8, initialY: window.innerHeight * 0.1 },
-  { label: 'UI Prototyping', left: 75, top: 35, color: 'bg-green-100/80 text-green-700', initialX: window.innerWidth * 0.75, initialY: window.innerHeight * 0.35 },
-  { label: 'Live Collaboration', left: 15, top: 40, color: 'bg-orange-100/80 text-orange-700', initialX: window.innerWidth * 0.15, initialY: window.innerHeight * 0.4 },
-  { label: 'Component Library', left: 85, top: 60, color: 'bg-rose-100/80 text-rose-700', initialX: window.innerWidth * 0.85, initialY: window.innerHeight * 0.6 },
-  { label: 'Auto Layout', left: 5, top: 65, color: 'bg-yellow-100/80 text-yellow-700', initialX: window.innerWidth * 0.05, initialY: window.innerHeight * 0.65 },
-  { label: 'Design Systems', left: 60, top: 80, color: 'bg-purple-100/80 text-purple-700', initialX: window.innerWidth * 0.6, initialY: window.innerHeight * 0.8 },
-  { label: 'Version Control', left: 30, top: 85, color: 'bg-teal-100/80 text-teal-700', initialX: window.innerWidth * 0.3, initialY: window.innerHeight * 0.85 },
-  { label: 'Responsive Grids', left: 40, top: 10, color: 'bg-red-100/80 text-red-700', initialX: window.innerWidth * 0.4, initialY: window.innerHeight * 0.1 },
-  { label: 'Dark Mode Generator', left: 20, top: 80, color: 'bg-slate-100/80 text-slate-700', initialX: window.innerWidth * 0.2, initialY: window.innerHeight * 0.8 },
+  { label: 'Generate Wireframes', left: 8, top: 12, color: 'bg-blue-100/90 text-blue-700', initialX: window.innerWidth * 0.08, initialY: window.innerHeight * 0.12 },
+  { label: 'Export to Code', left: 82, top: 18, color: 'bg-indigo-100/90 text-indigo-700', initialX: window.innerWidth * 0.82, initialY: window.innerHeight * 0.18 },
+  { label: 'UI Prototyping', left: 68, top: 32, color: 'bg-green-100/90 text-green-700', initialX: window.innerWidth * 0.68, initialY: window.innerHeight * 0.32 },
+  { label: 'Live Collaboration', left: 12, top: 42, color: 'bg-orange-100/90 text-orange-700', initialX: window.innerWidth * 0.12, initialY: window.innerHeight * 0.42 },
+  { label: 'Component Library', left: 85, top: 58, color: 'bg-rose-100/90 text-rose-700', initialX: window.innerWidth * 0.85, initialY: window.innerHeight * 0.58 },
+  { label: 'Auto Layout', left: 5, top: 68, color: 'bg-yellow-100/90 text-yellow-700', initialX: window.innerWidth * 0.05, initialY: window.innerHeight * 0.68 },
+  { label: 'Design Systems', left: 62, top: 82, color: 'bg-purple-100/90 text-purple-700', initialX: window.innerWidth * 0.62, initialY: window.innerHeight * 0.82 },
+  { label: 'Version Control', left: 28, top: 86, color: 'bg-teal-100/90 text-teal-700', initialX: window.innerWidth * 0.28, initialY: window.innerHeight * 0.86 },
+  { label: 'Responsive Grids', left: 42, top: 10, color: 'bg-red-100/90 text-red-700', initialX: window.innerWidth * 0.42, initialY: window.innerHeight * 0.10 },
+  { label: 'Dark Mode Generator', left: 18, top: 80, color: 'bg-slate-100/90 text-slate-700', initialX: window.innerWidth * 0.18, initialY: window.innerHeight * 0.80 },
+  { label: 'Micro-Animations', left: 45, top: 25, color: 'bg-emerald-100/90 text-emerald-700', initialX: window.innerWidth * 0.45, initialY: window.innerHeight * 0.25 },
+  { label: 'Accessibility Tools', left: 25, top: 35, color: 'bg-cyan-100/90 text-cyan-700', initialX: window.innerWidth * 0.25, initialY: window.innerHeight * 0.35 },
+  { label: 'Real-time Analytics', left: 55, top: 48, color: 'bg-fuchsia-100/90 text-fuchsia-700', initialX: window.innerWidth * 0.55, initialY: window.innerHeight * 0.48 },
+  { label: 'Content Strategy', left: 40, top: 70, color: 'bg-lime-100/90 text-lime-700', initialX: window.innerWidth * 0.40, initialY: window.innerHeight * 0.70 },
+  { label: 'API Integrations', left: 75, top: 72, color: 'bg-sky-100/90 text-sky-700', initialX: window.innerWidth * 0.75, initialY: window.innerHeight * 0.72 },
 ];
 
 const CampaignPage: React.FC = () => {
@@ -130,7 +135,8 @@ const CampaignPage: React.FC = () => {
                     animate={{ x: ox, y: oy }}
                     transition={{ type: 'spring', stiffness: 200, damping: 20 }}
                     style={{ position: 'absolute', left: `${item.left}%`, top: `${item.top}%` }}
-                    className={`px-5 py-3 rounded-full text-xs font-bold shadow-lg border border-white/50 backdrop-blur-md cursor-default select-none ${item.color}`}
+                    className={`px-6 py-4 rounded-full text-sm md:text-base font-black shadow-2xl border border-white/50 backdrop-blur-md cursor-default select-none ${item.color}`}
+                    whileHover={{ scale: 1.1, rotate: Math.random() > 0.5 ? 5 : -5 }}
                   >
                     {item.label}
                   </motion.div>
@@ -168,14 +174,22 @@ const CampaignPage: React.FC = () => {
                   </h2>
                   
                   {/* Graphics added around text */}
-                  <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 12, ease: "linear" }} className="absolute -top-12 -left-16 opacity-80 mix-blend-multiply hidden md:block">
-                    <svg width="60" height="60" viewBox="0 0 60 60"><path d="M 30 10 L 32 28 L 50 30 L 32 32 L 30 50 L 28 32 L 10 30 L 28 28 Z" fill="#facc15" /></svg>
+                  <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 12, ease: "linear" }} className="absolute -top-16 -left-20 opacity-80 mix-blend-multiply hidden md:block">
+                    <svg width="80" height="80" viewBox="0 0 80 80"><path d="M 40 10 L 45 35 L 70 40 L 45 45 L 40 70 L 35 45 L 10 40 L 35 35 Z" fill="#facc15" /></svg>
                   </motion.div>
-                  <motion.div animate={{ y: [0, -10, 0] }} transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }} className="absolute -bottom-8 -right-12 opacity-80 mix-blend-multiply hidden md:block">
-                    <svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="16" fill="#3b82f6" /></svg>
+                  <motion.div animate={{ y: [0, -15, 0] }} transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }} className="absolute -bottom-12 -right-16 opacity-80 mix-blend-multiply hidden md:block">
+                    <svg width="60" height="60" viewBox="0 0 60 60"><circle cx="30" cy="30" r="24" fill="#3b82f6" /></svg>
                   </motion.div>
-                  <motion.div animate={{ scale: [1, 1.1, 1] }} transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }} className="absolute top-1/2 -right-24 opacity-80 mix-blend-multiply hidden md:block">
-                    <svg width="50" height="50" viewBox="0 0 50 50"><rect x="10" y="10" width="30" height="30" rx="6" fill="#f97316" transform="rotate(15 25 25)"/></svg>
+                  <motion.div animate={{ scale: [1, 1.1, 1], rotate: [15, 25, 15] }} transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }} className="absolute top-1/2 -right-32 opacity-80 mix-blend-multiply hidden md:block">
+                    <svg width="70" height="70" viewBox="0 0 70 70"><rect x="15" y="15" width="40" height="40" rx="8" fill="#f97316" /></svg>
+                  </motion.div>
+                  <motion.div animate={{ x: [0, 10, 0], y: [0, 10, 0] }} transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }} className="absolute bottom-full left-1/2 opacity-80 mix-blend-multiply hidden md:block">
+                    <svg width="40" height="40" viewBox="0 0 40 40"><polygon points="20,5 35,35 5,35" fill="#ec4899" /></svg>
+                  </motion.div>
+                  <motion.div animate={{ rotate: -360 }} transition={{ repeat: Infinity, duration: 20, ease: "linear" }} className="absolute top-1/4 -left-36 opacity-30 mix-blend-multiply hidden md:block">
+                    <svg width="120" height="120" viewBox="0 0 100 100">
+                      <circle cx="50" cy="50" r="48" fill="none" stroke="#22c55e" strokeWidth="2" strokeDasharray="10 10" />
+                    </svg>
                   </motion.div>
                 </motion.div>
 
@@ -217,13 +231,32 @@ const CampaignPage: React.FC = () => {
             ══════════════════════════════════════════ */}
             <section
               style={{ scrollSnapAlign: 'start' }}
-              className="relative h-screen w-full bg-[#f4f4f5] flex flex-col items-center justify-center overflow-hidden"
+              className="relative min-h-screen w-full bg-black flex flex-col items-center justify-center overflow-hidden py-24"
+              onMouseMove={(e) => {
+                const rect = e.currentTarget.getBoundingClientRect();
+                setMousePos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+              }}
             >
-              {/* Grain / Noise */}
-              <div className="absolute inset-0 pointer-events-none mix-blend-multiply opacity-[0.03]"
-                   style={{ backgroundImage: 'url("https://grainy-gradients.vercel.app/noise.svg")' }} />
+              {/* Grain / Noise + Grid bg */}
+              <div className="absolute inset-0 pointer-events-none opacity-[0.1]" style={{ backgroundImage: 'url("https://grainy-gradients.vercel.app/noise.svg")', mixBlendMode: 'overlay' }} />
+              <div className="absolute inset-0 pointer-events-none opacity-[0.1]">
+                <svg width="100%" height="100%">
+                  <pattern id="gridbg" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" strokeWidth="0.5"/></pattern>
+                  <rect width="100%" height="100%" fill="url(#gridbg)" />
+                </svg>
+              </div>
 
-              <div className="relative z-10 w-full max-w-6xl px-6 flex flex-col items-center justify-center text-center pt-8">
+              {/* Cursor trailing graphics */}
+              <motion.div
+                className="absolute pointer-events-none"
+                animate={{ x: mousePos.x - 150, y: mousePos.y - 150 }}
+                transition={{ type: 'tween', ease: 'linear', duration: 0.1 }}
+              >
+                <div className="w-[300px] h-[300px] border border-white/10 rounded-full animate-[spin_10s_linear_infinite]" />
+                <div className="absolute top-1/2 left-1/2 w-4 h-4 bg-white/20 rounded-full -translate-x-1/2 -translate-y-1/2" />
+              </motion.div>
+
+              <div className="relative z-10 w-full max-w-6xl px-6 flex flex-col items-center justify-center text-center">
                 
                 {/* Preference Toggle Buttons */}
                 <motion.div
@@ -246,12 +279,12 @@ const CampaignPage: React.FC = () => {
                         key={cat.id}
                         onClick={() => setCardInterest(cat.id as any)}
                         style={{
-                          backgroundColor: isActive ? cat.color : '#fff',
-                          color: isActive ? (cat.id === 'tech' || cat.id === 'art' || cat.id === 'sports' || cat.id === 'music' ? '#fff' : '#000') : '#000',
-                          border: isActive ? `1px solid ${cat.color}` : '1px solid rgba(0,0,0,0.1)',
-                          boxShadow: isActive ? `0 4px 14px ${cat.color}40` : '0 2px 4px rgba(0,0,0,0.02)',
+                          backgroundColor: isActive ? cat.color : 'rgba(255,255,255,0.05)',
+                          color: isActive ? (cat.id === 'tech' || cat.id === 'art' || cat.id === 'sports' || cat.id === 'music' ? '#fff' : '#000') : '#fff',
+                          border: isActive ? `1px solid ${cat.color}` : '1px solid rgba(255,255,255,0.1)',
+                          boxShadow: isActive ? `0 4px 20px ${cat.color}60` : 'none',
                         }}
-                        className="px-5 py-2.5 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wider transition-all duration-300 transform hover:-translate-y-1"
+                        className="px-6 py-3 rounded-full text-xs font-black uppercase tracking-wider transition-all duration-300 transform hover:-translate-y-1 backdrop-blur-md"
                       >
                         {cat.label}
                       </button>
@@ -260,40 +293,46 @@ const CampaignPage: React.FC = () => {
                 </motion.div>
 
                 {/* Main Row */}
-                <div className="flex flex-col md:flex-row items-center justify-center gap-12 w-full max-w-5xl">
+                <div className="flex flex-col md:flex-row items-center justify-center gap-16 w-full max-w-5xl">
 
                   {/* Left Side: What is a KREON? Explanation Popup */}
                   <motion.div
                     initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}
-                    className="flex-1 text-left bg-white p-8 sm:p-10 rounded-3xl shadow-2xl border border-black/5"
+                    className="flex-1 text-left bg-white/5 backdrop-blur-xl p-8 sm:p-10 rounded-3xl shadow-2xl border border-white/10"
                   >
                     <div className="flex items-center gap-2 mb-4">
                       <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
-                      <span className="text-[10px] font-black uppercase tracking-[0.3em] text-black/40">Identity Protocol</span>
+                      <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white/50">Identity Protocol</span>
                     </div>
-                    <h3 className="text-2xl font-bold text-black mb-4">What is a KREON?</h3>
-                    <p className="text-sm font-medium text-black/60 leading-relaxed mb-6">
+                    <h3 className="text-3xl font-black text-white mb-4">What is a KREON?</h3>
+                    <p className="text-sm font-medium text-white/70 leading-relaxed mb-6">
                       A KREON isn't just a user account. It is your permanent, immutable identity in the KREO ecosystem. Every wireframe designed, every component exported, and every workspace built is permanently tied to this unique residency number.
                     </p>
-                    <div className="h-px w-full bg-black/5 mb-6" />
-                    <p className="text-sm font-medium text-black/60 leading-relaxed">
+                    <div className="h-px w-full bg-white/10 mb-6" />
+                    <p className="text-sm font-medium text-white/70 leading-relaxed">
                       Choose your primary discipline above to construct your aesthetic marker. Claiming this card unlocks your permanent access to the studio engine.
                     </p>
                   </motion.div>
 
                   {/* Right Side: The Dynamic Card */}
                   <motion.div
-                    className="flex-shrink-0 perspective-[1000px]"
+                    className="flex-shrink-0 perspective-[1000px] relative group"
                     key={cardInterest} // Force re-animation on change
                     initial={{ opacity: 0, scale: 0.95, y: 15 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     transition={{ type: 'spring', damping: 20, stiffness: 120 }}
                   >
+                    {/* Glowing aura when hovered */}
+                    <div className="absolute inset-0 bg-white/20 blur-[50px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
                     <KreonCard interest={cardInterest} />
                   </motion.div>
 
                 </div>
               </div>
+              
+              <footer className="absolute bottom-4 text-center text-white/30 text-[9px] font-black uppercase tracking-[0.5em] w-full">
+                ©2026 KREO NEURAL STUDIO. ALL RIGHTS RESERVED.
+              </footer>
             </section>
 
           </div>

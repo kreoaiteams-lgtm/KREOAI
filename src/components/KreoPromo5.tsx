@@ -18,7 +18,7 @@ import animationData from './Hello (apple).json';
 ─────────────────────────────────────────────────────────────────── */
 
 const SATOSHI = "'Satoshi', sans-serif";
-const INSTRUMENT = "'Instrument Sans', sans-serif";
+const INSTRUMENT = "'Instrument Serif', serif";
 const TAN = "'TAN-NIMBUS', sans-serif";
 
 const SCENE_DURATION = [3800, 6000, 7000, 5500, 7000, 6000, 5000];
