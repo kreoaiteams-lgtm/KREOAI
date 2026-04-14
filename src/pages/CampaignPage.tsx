@@ -293,49 +293,117 @@ const CampaignPage: React.FC = () => {
                 </motion.div>
 
                 {/* Main Row */}
-                <div className="flex flex-col md:flex-row items-center justify-center w-full max-w-6xl relative h-[500px]">
+                <div className="flex flex-col md:flex-row items-center justify-center w-full max-w-6xl relative h-[600px]">
 
-                  {/* Left Side: Half Text */}
+                  {/* ── Decorative SVG graffiti / arrows scattered around ── */}
+                  {/* Top-left scribble arrow */}
+                  <svg className="absolute top-2 left-[18%] opacity-30 pointer-events-none" width="80" height="60" viewBox="0 0 80 60" fill="none">
+                    <path d="M10 50 Q20 10 60 20" stroke="white" strokeWidth="1.5" strokeLinecap="round" fill="none" strokeDasharray="4 3"/>
+                    <path d="M55 14 L64 22 L52 26" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+                  </svg>
+                  {/* Top-right small star/asterisk */}
+                  <svg className="absolute top-8 right-[20%] opacity-20 pointer-events-none" width="28" height="28" viewBox="0 0 28 28" fill="none">
+                    <line x1="14" y1="2" x2="14" y2="26" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+                    <line x1="2" y1="14" x2="26" y2="14" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+                    <line x1="5" y1="5" x2="23" y2="23" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+                    <line x1="23" y1="5" x2="5" y2="23" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+                  </svg>
+                  {/* Bottom-left curved arrow */}
+                  <svg className="absolute bottom-20 left-[22%] opacity-25 pointer-events-none" width="70" height="55" viewBox="0 0 70 55" fill="none">
+                    <path d="M60 10 Q20 10 15 40" stroke="white" strokeWidth="1.5" strokeLinecap="round" fill="none" strokeDasharray="5 3"/>
+                    <path d="M10 34 L17 44 L26 36" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+                  </svg>
+                  {/* Bottom-right circle sketch */}
+                  <svg className="absolute bottom-24 right-[22%] opacity-20 pointer-events-none" width="36" height="36" viewBox="0 0 36 36" fill="none">
+                    <circle cx="18" cy="18" r="14" stroke="white" strokeWidth="1.2" strokeDasharray="5 3"/>
+                  </svg>
+                  {/* Mid-left diagonal line */}
+                  <svg className="absolute top-1/2 left-[12%] -translate-y-1/2 opacity-15 pointer-events-none" width="40" height="80" viewBox="0 0 40 80" fill="none">
+                    <line x1="35" y1="5" x2="5" y2="75" stroke="white" strokeWidth="1" strokeLinecap="round" strokeDasharray="4 4"/>
+                  </svg>
+                  {/* Mid-right diagonal line */}
+                  <svg className="absolute top-1/2 right-[12%] -translate-y-1/2 opacity-15 pointer-events-none" width="40" height="80" viewBox="0 0 40 80" fill="none">
+                    <line x1="5" y1="5" x2="35" y2="75" stroke="white" strokeWidth="1" strokeLinecap="round" strokeDasharray="4 4"/>
+                  </svg>
+
+                  {/* Left Side: You are a KREON */}
                   <motion.div
-                    initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}
-                    className="absolute left-0 top-1/2 -translate-y-1/2 w-[300px] text-left bg-white/5 backdrop-blur-xl p-6 md:p-8 rounded-3xl shadow-2xl border border-white/10 hidden md:block"
+                    initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3, type: 'spring', stiffness: 120, damping: 20 }}
+                    className="absolute left-0 top-1/2 -translate-y-1/2 w-[280px] text-left hidden md:flex flex-col gap-5"
                   >
-                    <div className="flex items-center gap-2 mb-4">
-                      <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                      <span className="text-[9px] font-black uppercase tracking-[0.3em] text-white/50">Identity Protocol</span>
+                    {/* Arrow pointing right toward card */}
+                    <svg className="mb-2" width="120" height="32" viewBox="0 0 120 32" fill="none">
+                      <path d="M4 16 L100 16" stroke="white" strokeWidth="1.2" strokeLinecap="round" strokeDasharray="6 4"/>
+                      <path d="M90 6 L104 16 L90 26" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+                    </svg>
+                    <div>
+                      <span className="text-[9px] font-black uppercase tracking-[0.4em] text-white/40 block mb-2">Identity Confirmed</span>
+                      <h3 className="text-3xl font-black text-white leading-tight tracking-tighter" style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }}>
+                        You are a<br/>KREON.
+                      </h3>
+                      <p className="text-xs text-white/60 leading-relaxed mt-3 font-medium">
+                        This card is your permanent residency in the KREO ecosystem. A living proof of your creative identity.
+                      </p>
                     </div>
-                    <h3 className="text-2xl font-black text-white mb-3 tracking-tighter">What is a KREON?</h3>
-                    <p className="text-xs font-medium text-white/70 leading-relaxed">
-                      A KREON isn't just a user account. It is your permanent, immutable identity in the KREO ecosystem. Every wireframe designed, every component exported, and every workspace built is permanently tied to this unique residency number.
-                    </p>
+                    <div className="flex flex-col gap-2 mt-1">
+                      {['Unique Residency #', 'Permanent Identity', 'Studio Access'].map((item, i) => (
+                        <div key={i} className="flex items-center gap-3">
+                          <svg width="24" height="12" viewBox="0 0 24 12" fill="none">
+                            <path d="M2 6 L18 6" stroke="white" strokeWidth="1" strokeLinecap="round" strokeOpacity="0.5"/>
+                            <path d="M14 2 L20 6 L14 10" stroke="white" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" strokeOpacity="0.5" fill="none"/>
+                          </svg>
+                          <span className="text-[10px] font-bold text-white/50 uppercase tracking-widest">{item}</span>
+                        </div>
+                      ))}
+                    </div>
                   </motion.div>
 
-                  {/* Center Side: The Dynamic Card */}
+                  {/* Center: The Dynamic Card */}
                   <motion.div
-                    className="flex-shrink-0 perspective-[1000px] relative z-20 group mx-auto"
-                    key={cardInterest} // Force re-animation on change
+                    className="flex-shrink-0 relative z-20 group mx-auto"
+                    key={cardInterest}
                     initial={{ opacity: 0, scale: 0.95, y: 15 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     transition={{ type: 'spring', damping: 20, stiffness: 120 }}
                   >
-                    {/* Glowing aura when hovered */}
-                    <div className="absolute inset-0 bg-[#1B3FBF]/20 blur-[50px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+                    <div className="absolute inset-0 bg-[#1B3FBF]/20 blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
                     <KreonCard interest={cardInterest} />
                   </motion.div>
 
-                  {/* Right Side: Half Text */}
+                  {/* Right Side: Lined arrows showing powers */}
                   <motion.div
-                    initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4 }}
-                    className="absolute right-0 top-1/2 -translate-y-1/2 w-[300px] text-left bg-white/5 backdrop-blur-xl p-6 md:p-8 rounded-3xl shadow-2xl border border-white/10 hidden md:block"
+                    initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4, type: 'spring', stiffness: 120, damping: 20 }}
+                    className="absolute right-0 top-1/2 -translate-y-1/2 w-[280px] text-left hidden md:flex flex-col gap-4"
                   >
-                    <div className="flex items-center gap-2 mb-4">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
-                      <span className="text-[9px] font-black uppercase tracking-[0.3em] text-white/50">Access Tier</span>
-                    </div>
-                    <h3 className="text-2xl font-black text-white mb-3 tracking-tighter">Claim Your Spot</h3>
-                    <p className="text-xs font-medium text-white/70 leading-relaxed">
-                      Choose your primary discipline above to construct your aesthetic marker. Claiming this card unlocks your permanent access to the studio engine and future upgrades.
-                    </p>
+                    {/* Arrow pointing left toward card */}
+                    <svg className="mb-2 scale-x-[-1]" width="120" height="32" viewBox="0 0 120 32" fill="none">
+                      <path d="M4 16 L100 16" stroke="white" strokeWidth="1.2" strokeLinecap="round" strokeDasharray="6 4"/>
+                      <path d="M90 6 L104 16 L90 26" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+                    </svg>
+                    <span className="text-[9px] font-black uppercase tracking-[0.4em] text-white/40">Powers Unlocked</span>
+                    {[
+                      { label: 'Generate Wireframes', desc: 'Instant UI from a prompt' },
+                      { label: 'Export to Code', desc: 'Clean, production-ready HTML' },
+                      { label: 'Live Collaboration', desc: 'Share & iterate in real-time' },
+                      { label: 'Design Systems', desc: 'Tokens, palettes & components' },
+                    ].map((power, i) => (
+                      <motion.div
+                        key={i}
+                        initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.5 + i * 0.08 }}
+                        className="flex items-start gap-3 group/item"
+                      >
+                        {/* Lined arrow */}
+                        <svg className="shrink-0 mt-1" width="32" height="16" viewBox="0 0 32 16" fill="none">
+                          <path d="M2 8 L24 8" stroke="white" strokeWidth="1" strokeLinecap="round" strokeOpacity="0.4" className="group-hover/item:stroke-opacity-80 transition-all"/>
+                          <path d="M19 3 L26 8 L19 13" stroke="white" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" strokeOpacity="0.4" fill="none" className="group-hover/item:stroke-opacity-80 transition-all"/>
+                        </svg>
+                        <div>
+                          <div className="text-[11px] font-black text-white/80 uppercase tracking-widest">{power.label}</div>
+                          <div className="text-[10px] text-white/40 font-medium mt-0.5">{power.desc}</div>
+                        </div>
+                      </motion.div>
+                    ))}
                   </motion.div>
 
                 </div>

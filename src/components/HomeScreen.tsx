@@ -1040,6 +1040,16 @@ const HomeScreen = ({
                   KREO {isPro && <span className="bg-[#1B3FBF] text-white text-[14px] font-black uppercase tracking-widest px-3 py-1 rounded-full align-middle ml-2">PRO</span>}
                 </h1>
 
+                {/* KREON Badge */}
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setShowKreonModal(true)}
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-[#1B3FBF]/5 border border-[#1B3FBF]/10 rounded-full text-[#1B3FBF] text-[10px] font-black uppercase tracking-[0.3em] hover:bg-[#1B3FBF]/10 transition-all shadow-sm"
+                >
+                  <UserPlus size={14} /> View KREON ID
+                </motion.button>
+
                 <p className="text-[12px] font-black uppercase tracking-[0.7em] text-black/40 animate-pulse mt-8">
                   {isIncomingPortal ? "Restoring Neural Manifest..." : loadingMessage}
                 </p>
