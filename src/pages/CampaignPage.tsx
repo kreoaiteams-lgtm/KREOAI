@@ -25,6 +25,7 @@ const CampaignPage: React.FC = () => {
   const [stage, setStage] = useState<'reveal' | 'hero'>('reveal');
   const [isHovered, setIsHovered] = useState<string | null>(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [cardInterest, setCardInterest] = useState<'design' | 'tech' | 'architecture' | 'product'>('design');
 
   useEffect(() => {
     const t = setTimeout(() => setStage('hero'), 2000);
@@ -207,36 +208,73 @@ const CampaignPage: React.FC = () => {
 
 
             {/* ══════════════════════════════════════════
-                SCREEN 3 — BLACK KREON CERTIFICATE
+                SCREEN 3 — CONFIGURE YOUR CREATIVE IDENTITY
             ══════════════════════════════════════════ */}
             <section
-              style={{ scrollSnapAlign: 'start', background: '#020208' }}
-              className="relative h-screen w-full flex flex-col items-center justify-center overflow-hidden"
+              style={{ scrollSnapAlign: 'start' }}
+              className="relative h-screen w-full bg-[#f4f4f5] flex flex-col items-center justify-center overflow-hidden"
             >
-              <div className="absolute inset-x-0 top-0 h-[100px] bg-gradient-to-b from-black/80 to-transparent pointer-events-none z-20" />
+              {/* Grain / Noise */}
+              <div className="absolute inset-0 pointer-events-none mix-blend-multiply opacity-[0.03]"
+                   style={{ backgroundImage: 'url("https://grainy-gradients.vercel.app/noise.svg")' }} />
 
-              {/* Side vertical accent lines */}
-              <div className="absolute inset-y-0 left-[8%] w-px bg-gradient-to-b from-transparent via-white/10 to-transparent" />
-              <div className="absolute inset-y-0 right-[8%] w-px bg-gradient-to-b from-transparent via-white/10 to-transparent" />
+              <div className="relative z-10 w-full max-w-5xl px-6 flex flex-col items-center justify-center text-center">
+                
+                {/* Header */}
+                <motion.p
+                  initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
+                  className="text-[10px] sm:text-xs font-black uppercase tracking-[0.4em] text-black/40 mb-2"
+                >
+                  Configure Your Identity
+                </motion.p>
+                <motion.h2
+                  initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
+                  className="text-2xl sm:text-4xl font-bold text-black tracking-tight mb-8"
+                >
+                  Select your primary discipline.
+                </motion.h2>
 
-              {/* Section heading */}
-              <motion.p
-                initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-                className="relative z-10 text-[10px] font-black uppercase tracking-[0.6em] text-white/30 mb-8"
-              >
-                Your Permanent Identity
-              </motion.p>
+                {/* Preference Toggle Buttons */}
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
+                  className="flex flex-wrap items-center justify-center gap-3 mb-12"
+                >
+                  {[
+                    { id: 'design', label: 'Design & Visuals', color: '#c084fc' },
+                    { id: 'tech', label: 'Engineering', color: '#3b82f6' },
+                    { id: 'architecture', label: 'Architecture', color: '#22c55e' },
+                    { id: 'product', label: 'Product & Strategy', color: '#f97316' }
+                  ].map((cat) => {
+                    const isActive = cardInterest === cat.id;
+                    return (
+                      <button
+                        key={cat.id}
+                        onClick={() => setCardInterest(cat.id as any)}
+                        style={{
+                          backgroundColor: isActive ? cat.color : '#fff',
+                          color: isActive ? (cat.id === 'tech' ? '#fff' : '#000') : '#000',
+                          border: isActive ? `1px solid ${cat.color}` : '1px solid rgba(0,0,0,0.1)',
+                          boxShadow: isActive ? `0 4px 14px ${cat.color}60` : '0 2px 4px rgba(0,0,0,0.02)',
+                        }}
+                        className="px-6 py-3 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 transform hover:-translate-y-1"
+                      >
+                        {cat.label}
+                      </button>
+                    );
+                  })}
+                </motion.div>
 
-              {/* Card */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ type: 'spring', damping: 25, stiffness: 120, delay: 0.1 }}
-                className="relative z-10"
-              >
-                <KreonCard />
-              </motion.div>
-              
+                {/* The Dynamic Card */}
+                <motion.div
+                  key={cardInterest} // Force re-animation on change
+                  initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  transition={{ type: 'spring', damping: 20, stiffness: 120 }}
+                >
+                  <KreonCard interest={cardInterest} />
+                </motion.div>
+
+              </div>
             </section>
 
           </div>
