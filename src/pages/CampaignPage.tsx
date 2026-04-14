@@ -62,98 +62,56 @@ const CampaignPage: React.FC = () => {
           <div>
 
             {/* ══════════════════════════════════════════
-                SECTION 1 — WHITE HERO (GEOMETRIC PLAYFUL)
+                SECTION 1 — WHITE HERO (ULTRA-PREMIUM)
             ══════════════════════════════════════════ */}
             <section
               style={{ scrollSnapAlign: 'start' }}
-              className="relative h-screen w-full bg-[#f8f7f5] flex items-center justify-center overflow-hidden"
+              className="relative h-screen w-full bg-[#fcfcfc] flex flex-col items-center justify-center overflow-hidden"
             >
-              {/* Grain / Noise overlay exclusively for hero */}
-              <div className="absolute inset-0 pointer-events-none mix-blend-multiply opacity-40"
+              <div className="absolute inset-0 pointer-events-none mix-blend-multiply opacity-[0.03]"
                    style={{ backgroundImage: 'url("https://grainy-gradients.vercel.app/noise.svg")' }} />
 
-              <div className="relative z-10 w-full max-w-6xl px-8 flex flex-col items-center justify-center select-none pt-12">
-                  
-                  {/* Line 1: Build */}
-                  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="flex items-center gap-4">
-                    {/* SVG Shape: Line + Orange Circle with Arrow */}
-                    <svg width="120" height="60" viewBox="0 0 120 60" className="drop-shadow-sm">
-                      <line x1="20" y1="30" x2="80" y2="30" stroke="black" strokeWidth="4" />
-                      <circle cx="20" cy="30" r="8" stroke="black" strokeWidth="4" fill="none" />
-                      <circle cx="80" cy="30" r="26" fill="#f97316" />
-                      <path d="M 70 20 L 85 30 L 70 40 L 70 36 L 81 30 L 70 24 Z" fill="black" />
-                    </svg>
-                    
-                    <h1 className="text-[120px] font-bold text-black leading-none tracking-tight">Build</h1>
-                    
-                    {/* SVG Shape: arrow up right & circles */}
-                    <svg width="140" height="60" viewBox="0 0 140 60" className="ml-4 drop-shadow-sm">
-                      {/* Arrow corner */}
-                      <path d="M 10 40 L 10 45 L 30 45 L 30 25 L 25 25 L 25 40 Z" fill="black" />
-                      <path d="M 10 45 L 30 25" stroke="black" strokeWidth="4" />
-                      {/* Blue Circle */}
-                      <circle cx="70" cy="30" r="16" fill="#3b82f6" />
-                      {/* Black cross */}
-                      <path d="M 100 25 L 110 35 M 100 35 L 110 25" stroke="black" strokeWidth="4" strokeLinecap="round" />
-                      {/* Green circle */}
-                      <circle cx="130" cy="30" r="16" fill="#10b981" />
-                    </svg>
-                  </motion.div>
+              <div className="relative z-10 w-full max-w-5xl px-6 flex flex-col items-center justify-center text-center">
+                
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.8 }}
+                  className="mb-8"
+                >
+                  <p className="text-[10px] sm:text-xs font-black uppercase tracking-[0.5em] text-black/40">
+                    Neural Engine · Version 01
+                  </p>
+                </motion.div>
 
-                  {/* Line 2: your */}
-                  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="flex items-center gap-6 -ml-20 mt-4">
-                    <h1 className="text-[120px] font-bold text-black leading-none tracking-tight">your</h1>
-                    
-                    {/* SVG Shape: yellow pill */}
-                    <svg width="160" height="80" viewBox="0 0 160 80" className="drop-shadow-sm scale-90">
-                      <rect x="0" y="20" width="140" height="60" rx="30" fill="#facc15" />
-                      <circle cx="40" cy="50" r="20" fill="#f97316" />
-                      <circle cx="110" cy="50" r="12" stroke="black" strokeWidth="4" fill="none" />
-                      <line x1="20" y1="50" x2="110" y2="50" stroke="black" strokeWidth="4" strokeDasharray="6 4" />
-                    </svg>
-                  </motion.div>
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, duration: 1 }}>
+                  <h1 className="text-6xl sm:text-8xl md:text-[110px] font-bold text-black tracking-tight leading-[0.95]">
+                    Build your
+                    <br />
+                    imagination.
+                  </h1>
+                </motion.div>
 
-                  {/* Line 3: imagination. */}
-                  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} className="flex items-center gap-2 -mr-12 mt-4 relative z-10">
-                    {/* SVG Shape: purple and green half circles */}
-                    <svg width="70" height="70" viewBox="0 0 80 80" className="drop-shadow-sm mr-2 scale-90">
-                      <path d="M 35 10 A 30 30 0 0 0 35 70 Z" fill="#a855f7" />
-                      <path d="M 45 10 A 30 30 0 0 1 45 70 Z" fill="#22c55e" />
-                    </svg>
-                    
-                    <h1 className="text-[110px] sm:text-[120px] font-bold text-black leading-none tracking-tight relative -mt-4">
-                      imagination<span className="text-black">.</span>
-                    </h1>
-                  </motion.div>
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 1 }} className="mt-8 flex items-center justify-center gap-4">
+                  <span className="text-xl sm:text-2xl font-medium text-black/40 italic">with</span>
+                  <span className="text-3xl sm:text-5xl font-bold text-[#1B3FBF] tracking-tighter" style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }}>
+                    KREO
+                  </span>
+                </motion.div>
 
-                  {/* Line 4: with KREO */}
-                  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }} className="flex items-end gap-6 relative mt-4">
-                    <div className="relative">
-                      <h1 className="text-[100px] sm:text-[120px] font-bold text-black leading-none tracking-tight mb-2">
-                        with <span className="text-[#1B3FBF] font-normal" style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }}>KREO</span>
-                      </h1>
-                      {/* Black underline */}
-                      <div className="absolute left-0 -bottom-2 w-[110%] h-3 bg-black rounded-full" />
-                    </div>
-                    
-                    {/* Small black atom symbol */}
-                    <svg width="30" height="30" viewBox="0 0 30 30" className="mb-4">
-                      <path d="M 15 5 A 5 5 0 0 0 15 25 A 5 5 0 0 0 15 5 Z" fill="none" stroke="black" strokeWidth="4" />
-                      <circle cx="15" cy="15" r="4" fill="black" />
-                    </svg>
-
-                    {/* SVG Shape: Orange and blue triangles */}
-                    <svg width="140" height="100" viewBox="0 0 140 100" className="ml-8 absolute -bottom-12 -right-32 drop-shadow-sm pointer-events-none scale-90">
-                      <polygon points="10,10 70,10 70,90" fill="#f97316" />
-                      <polygon points="80,10 140,10 140,90" fill="#3b82f6" />
-                    </svg>
-                  </motion.div>
+                <motion.p
+                  initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7, duration: 1 }}
+                  className="mt-12 text-sm sm:text-lg text-black/50 max-w-lg mx-auto leading-relaxed"
+                >
+                  A prestige platform for architects to manifest ideas into reality at the speed of thought.
+                </motion.p>
 
               </div>
 
               {/* Scroll cue absolute bottom tracking */}
-              <div className="absolute bottom-6 w-full flex justify-center text-black/30 animate-pulse">
-                <span className="text-[10px] font-bold uppercase tracking-[0.4em]">Scroll to Identity</span>
+              <div className="absolute bottom-10 w-full flex flex-col items-center justify-center gap-3 text-black/30">
+                <span className="text-[9px] font-black uppercase tracking-[0.4em]">Scroll to Identity</span>
+                <motion.div animate={{ y: [0, 8, 0] }} transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}>
+                  <ArrowDown size={14} />
+                </motion.div>
               </div>
             </section>
 

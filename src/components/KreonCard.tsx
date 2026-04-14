@@ -39,149 +39,110 @@ export const KreonCardVisual = React.forwardRef<
       ref={ref}
       style={{
         width: '380px',
-        height: '520px',
-        background: '#0a0a0c', // Almost black titanium
+        height: '540px',
+        background: '#040406',
         borderRadius: '24px',
         position: 'relative',
         overflow: 'hidden',
-        boxShadow: '0 40px 100px rgba(0,0,0,0.8), inset 0 2px 2px rgba(255,255,255,0.15), inset 0 -2px 4px rgba(0,0,0,0.5)',
+        boxShadow: '0 40px 100px rgba(0,0,0,0.9), inset 0 1px 1px rgba(255,255,255,0.1)',
         fontFamily: 'system-ui, sans-serif',
       }}
     >
-      {/* ── Metallic / Frosted Texture ── */}
+      {/* ── Breathtaking Nebula Background ── */}
       <div style={{
-        position: 'absolute', inset: 0,
-        background: 'linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 40%, rgba(255,255,255,0.03) 100%)',
-        pointerEvents: 'none'
+        position: 'absolute', top: '-15%', right: '-15%',
+        width: '450px', height: '450px', borderRadius: '50%',
+        background: 'radial-gradient(circle, rgba(27,63,191,0.55) 0%, rgba(27,63,191,0.1) 40%, transparent 65%)',
+        filter: 'blur(30px)',
       }}/>
       <div style={{
-        position: 'absolute', inset: 0, opacity: 0.2,
+        position: 'absolute', bottom: '-15%', left: '-10%',
+        width: '400px', height: '400px', borderRadius: '50%',
+        background: 'radial-gradient(circle, rgba(109,40,217,0.45) 0%, rgba(109,40,217,0.1) 40%, transparent 65%)',
+        filter: 'blur(30px)',
+      }}/>
+      <div style={{
+        position: 'absolute', top: '40%', left: '40%',
+        transform: 'translate(-50%, -50%)',
+        width: '300px', height: '300px', borderRadius: '50%',
+        background: 'radial-gradient(circle, rgba(16,185,129,0.15) 0%, transparent 70%)',
+        filter: 'blur(20px)',
+      }}/>
+
+      {/* Grain / Noise over abstract background */}
+      <div style={{
+        position: 'absolute', inset: 0, opacity: 0.12,
         backgroundImage: 'url("https://grainy-gradients.vercel.app/noise.svg")',
         mixBlendMode: 'overlay', pointerEvents: 'none',
       }}/>
 
-      {/* ── Minimalist Grid Lines ── */}
-      <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0.2 }} viewBox="0 0 380 520">
-        <line x1="40" y1="0" x2="40" y2="520" stroke="rgba(255,255,255,0.1)" strokeWidth="1" />
-        <line x1="340" y1="0" x2="340" y2="520" stroke="rgba(255,255,255,0.1)" strokeWidth="1" />
-        <line x1="0" y1="80" x2="380" y2="80" stroke="rgba(255,255,255,0.1)" strokeWidth="1" />
-        <line x1="0" y1="440" x2="380" y2="440" stroke="rgba(255,255,255,0.1)" strokeWidth="1" />
-        {/* Corner dots */}
-        <circle cx="40" cy="80" r="2" fill="rgba(255,255,255,0.4)" />
-        <circle cx="340" cy="80" r="2" fill="rgba(255,255,255,0.4)" />
-        <circle cx="40" cy="440" r="2" fill="rgba(255,255,255,0.4)" />
-        <circle cx="340" cy="440" r="2" fill="rgba(255,255,255,0.4)" />
+      {/* Subtle orbital rings matching the campaign page vibe */}
+      <svg className="absolute inset-0 w-full h-full opacity-20" viewBox="0 0 380 540">
+        <circle cx="190" cy="270" r="220" stroke="white" strokeWidth="0.5" strokeDasharray="2 12" fill="none"/>
+        <circle cx="190" cy="270" r="140" stroke="white" strokeWidth="0.5" strokeDasharray="1 8" fill="none"/>
       </svg>
 
-      {/* ── The EMV Chip ── */}
+      {/* ── Glassmorphic Inner Certificate Panel ── */}
       <div style={{
-        position: 'absolute', top: '100px', left: '50px',
-        width: '44px', height: '34px',
-        background: 'linear-gradient(135deg, #d4af37 0%, #aa8529 50%, #f3e5ab 100%)',
-        borderRadius: '6px',
-        boxShadow: 'inset 0 0 2px rgba(0,0,0,0.5), 0 2px 4px rgba(0,0,0,0.3)',
-        overflow: 'hidden', display: 'flex', flexWrap: 'wrap', gap: '1px', padding: '2px'
+        position: 'absolute', inset: '16px', zIndex: 20,
+        borderRadius: '16px',
+        background: 'rgba(255,255,255,0.02)',
+        backdropFilter: 'blur(40px)',
+        WebkitBackdropFilter: 'blur(40px)',
+        border: '1px solid rgba(255,255,255,0.06)',
+        display: 'flex', flexDirection: 'column',
+        alignItems: 'center', justifyContent: 'center',
       }}>
-        {/* Faux chip contacts */}
-        <div style={{ width: '13px', height: '10px', background: 'rgba(0,0,0,0.1)', border: '1px solid rgba(0,0,0,0.15)', borderRadius: '1px' }} />
-        <div style={{ width: '10px', height: '10px', background: 'rgba(0,0,0,0.1)', border: '1px solid rgba(0,0,0,0.15)', borderRadius: '1px', flex: 1 }} />
-        <div style={{ width: '13px', height: '10px', background: 'rgba(0,0,0,0.1)', border: '1px solid rgba(0,0,0,0.15)', borderRadius: '1px' }} />
-        <div style={{ width: '13px', height: '8px', background: 'rgba(0,0,0,0.1)', border: '1px solid rgba(0,0,0,0.15)', borderRadius: '1px' }} />
-        <div style={{ width: '10px', height: '8px', background: 'rgba(0,0,0,0.1)', border: '1px solid rgba(0,0,0,0.15)', borderRadius: '1px', flex: 1 }} />
-        <div style={{ width: '13px', height: '8px', background: 'rgba(0,0,0,0.1)', border: '1px solid rgba(0,0,0,0.15)', borderRadius: '1px' }} />
-        <div style={{ width: '13px', height: '8px', background: 'rgba(0,0,0,0.1)', border: '1px solid rgba(0,0,0,0.15)', borderRadius: '1px' }} />
-        <div style={{ width: '10px', height: '8px', background: 'rgba(0,0,0,0.1)', border: '1px solid rgba(0,0,0,0.15)', borderRadius: '1px', flex: 1 }} />
-        <div style={{ width: '13px', height: '8px', background: 'rgba(0,0,0,0.1)', border: '1px solid rgba(0,0,0,0.15)', borderRadius: '1px' }} />
-      </div>
-
-      {/* ── Contactless Icon ── */}
-      <svg style={{ position: 'absolute', top: '105px', left: '110px', opacity: 0.6 }} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">
-        <path d="M 6 15 Q 10 12 6 9" />
-        <path d="M 10 18 Q 16 12 10 6" />
-        <path d="M 14 21 Q 22 12 14 3" />
-      </svg>
-
-      {/* ── Holographic Core KREO ── */}
-      <div style={{
-        position: 'absolute', top: '50%', left: '50%',
-        transform: 'translate(-50%, -50%)',
-        display: 'flex', flexDirection: 'column', alignItems: 'center'
-      }}>
-        {/* Glow halo */}
-        <div style={{
-          position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
-          width: '280px', height: '100px', background: 'radial-gradient(ellipse at center, rgba(27,63,191,0.5) 0%, transparent 60%)', filter: 'blur(15px)'
-        }}/>
-        <h1 style={{
-          fontSize: '94px', fontWeight: 700,
-          fontFamily: "'TAN-NIMBUS', sans-serif",
-          background: 'linear-gradient(to right, #e2e2e2 0%, #ffffff 50%, #909090 100%)',
-          WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-          lineHeight: 1, position: 'relative', zIndex: 10,
-          filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.8))'
-        }}>
-          KREO
-        </h1>
-        <div style={{
-          marginTop: '10px',
-          width: '180px', height: '1px',
-          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), #1B3FBF, rgba(255,255,255,0.2), transparent)'
-        }}/>
-      </div>
-
-      {/* ── Serial Number (Top Right) ── */}
-      <div style={{
-        position: 'absolute', top: '38px', right: '40px',
-        display: 'flex', alignItems: 'baseline', gap: '4px',
-      }}>
-        <span style={{ fontSize: '12px', fontWeight: 900, color: '#f3e5ab', letterSpacing: '0.1em' }}>№</span>
-        <span style={{ fontSize: '20px', fontWeight: 700, color: 'white', letterSpacing: '0.1em', fontVariantNumeric: 'tabular-nums', opacity: 0.9 }}>
-          {cardNumber}
-        </span>
-      </div>
-
-      {/* ── Edition Label (Top Left) ── */}
-      <div style={{ position: 'absolute', top: '42px', left: '40px' }}>
-        <p style={{ fontSize: '9px', fontWeight: 800, color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.3em' }}>
-          Series 01 // Black
-        </p>
-      </div>
-
-      {/* ── User Details & Security Feature ── */}
-      <div style={{
-        position: 'absolute', bottom: '40px', left: '40px', right: '40px',
-        display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end'
-      }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-          <p style={{ fontSize: '8px', fontWeight: 800, color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', letterSpacing: '0.4em' }}>
-            Authorized Signatory
+        
+        {/* Number and Label */}
+        <div style={{ position: 'absolute', top: '24px', left: '24px', right: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <p style={{ fontSize: '8px', fontWeight: 900, letterSpacing: '0.4em', color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase' }}>
+            Build with
           </p>
-          <p style={{ fontSize: '18px', fontWeight: 600, color: 'white', letterSpacing: '0.15em', textTransform: 'uppercase', textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px' }}>
+            <span style={{ fontSize: '10px', fontWeight: 900, letterSpacing: '0.2em', color: 'rgba(255,255,255,0.3)' }}>#</span>
+            <span style={{ fontSize: '20px', fontWeight: 900, color: 'rgba(255,255,255,0.8)', letterSpacing: '0.1em', fontVariantNumeric: 'tabular-nums' }}>
+              {cardNumber}
+            </span>
+          </div>
+        </div>
+
+        {/* Central Identity Area */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', padding: '0 24px' }}>
+          
+          <h1 style={{
+             fontSize: '100px', fontWeight: 700,
+             fontFamily: "'TAN-NIMBUS', sans-serif",
+             color: 'white', letterSpacing: '0.08em',
+             lineHeight: 1, textShadow: '0 10px 40px rgba(27,63,191,0.6)',
+             marginBottom: '20px'
+          }}>
+            KREO
+          </h1>
+
+          <div style={{
+             width: '100%', height: '1px', marginBottom: '24px',
+             background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.1), rgba(255,255,255,0.4), rgba(255,255,255,0.1), transparent)'
+          }}/>
+
+          <p style={{ fontSize: '9px', fontWeight: 900, letterSpacing: '0.4em', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: '6px' }}>
+            Resident Architect
+          </p>
+          <p style={{ fontSize: '18px', fontWeight: 700, letterSpacing: '0.15em', color: 'white', textTransform: 'uppercase', textAlign: 'center', textShadow: '0 2px 8px rgba(0,0,0,0.4)' }}>
             {displayName}
           </p>
+
         </div>
 
-        {/* Neural Sync "Hologram" Box */}
-        <div style={{
-          width: '36px', height: '36px',
-          background: 'linear-gradient(135deg, rgba(16,185,129,0.1), rgba(16,185,129,0.3))',
-          border: '1px solid rgba(16,185,129,0.5)',
-          borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center',
-          boxShadow: '0 0 16px rgba(16,185,129,0.3), inset 0 0 8px rgba(16,185,129,0.2)'
-        }}>
-          <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#10b981', animation: 'pulse 1.5s infinite' }} />
+        {/* Bottom Neural Status Indicator */}
+        <div style={{ position: 'absolute', bottom: '28px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#10b981', boxShadow: '0 0 10px rgba(16,185,129,0.8)', animation: 'pulse 2s infinite' }}/>
+          <span style={{ fontSize: '8px', fontWeight: 900, letterSpacing: '0.4em', color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase' }}>
+            Neural Sync Active
+          </span>
         </div>
-      </div>
 
-      {/* Embedded UV Text hidden logic */}
-      <div style={{
-        position: 'absolute', bottom: '110px', left: '40px',
-        fontSize: '7px', fontWeight: 900, color: 'rgba(255,255,255,0.08)',
-        letterSpacing: '0.6em', textTransform: 'uppercase', transform: 'rotate(-90deg)', transformOrigin: 'left bottom'
-      }}>
-        NEURAL ARCHITECTURE — ESTB. MMXXVI
       </div>
-      
     </div>
   );
 });
