@@ -1149,20 +1149,18 @@ const HomeScreen = ({
                 </div>
               </div>
             </section>
-            <section id="manifesto-section" className="w-full relative bg-black py-48 flex flex-col items-center z-30">
-              <div className="w-full max-w-7xl px-6 space-y-24 text-center">
-                <div className="space-y-4">
-                  <span className="text-[10px] font-black tracking-[0.6em] uppercase text-white/40">The Situation</span>
-                  <h2 className="text-4xl md:text-6xl text-white tracking-tighter leading-tight font-medium" style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }}>
-                    The wall you hit at the worst time.
-                  </h2>
-                  <p className="text-white/60 font-medium max-w-lg mx-auto leading-relaxed mt-4">
-                    The idea is there. The visuals aren't. KREO bridges the gap between thoughts and reality instantly.
-                  </p>
+            <section id="manifesto-section" className="w-full relative bg-white py-24 flex flex-col items-center z-30">
+              <div className="w-full max-w-7xl px-6 space-y-24">
+                <div className="text-center space-y-4">
+                  <span className="text-[10px] font-black tracking-[0.6em] uppercase text-[#1B3FBF]">The Situation</span>
+                  <h2 className="text-4xl md:text-6xl font-serif italic tracking-tighter text-black leading-tight">We all face situations...</h2>
                 </div>
-                
-                <div className="flex justify-center pt-8">
-                   <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="px-12 py-6 rounded-full bg-white text-black text-[11px] font-black uppercase tracking-[0.4em] shadow-xl hover:scale-105 hover:bg-[#1B3FBF] hover:text-white transition-all">Start Manifesting</button>
+                <ScenariosGrid />
+                <TypingKreo />
+                <PossibilitiesPile />
+                <InteractiveVisualLoop theme={theme} />
+                <div className="flex justify-center pt-16">
+                   <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="px-12 py-6 rounded-full bg-black text-white text-[11px] font-black uppercase tracking-[0.4em] shadow-xl hover:scale-105 transition-all">Start Manifesting</button>
                 </div>
               </div>
             </section>
