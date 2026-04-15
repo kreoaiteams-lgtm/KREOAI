@@ -22,6 +22,7 @@ import { createWorker } from "tesseract.js";
 import Dither from "./Dither";
 import { useToast } from "@/hooks/use-toast";
 import { AnimatePresence, motion } from "framer-motion";
+import Footer from "./Footer";
 
 interface HomeScreenProps {
   onCloudBurst: () => void;
@@ -1097,7 +1098,7 @@ const HomeScreen = ({
             </div>
           ) : artifact ? (
           <div className={`flex w-full h-screen animate-in fade-in slide-in-from-bottom-4 duration-700 ${isSplitView ? "flex-row overflow-hidden" : "flex-col items-center p-8 overflow-auto"}`}>
-            <div className={`${isSplitView ? "w-[420px] shrink-0" : "w-full max-w-4xl mb-6"} flex flex-col ${isSplitView ? "h-full" : "min-h-[50vh]"} overflow-hidden bg-[#f5f7ff] border-r border-black/[0.06]`}>
+            <div className={`${isSplitView ? "w-[420px] shrink-0" : "w-full max-w-2xl mb-6"} flex flex-col ${isSplitView ? "h-full" : "min-h-[50vh]"} overflow-hidden bg-[#f5f7ff] border-r border-black/[0.06]`}>
               <div className="shrink-0 flex justify-between items-center px-6 py-4 border-b border-black/[0.06] bg-white/90 backdrop-blur-xl">
                 <button
                   onClick={() => { setArtifact(null); setChatHistory([]); setCurrentArtifactId(null); window.history.replaceState(null, '', '/'); }}
@@ -1172,7 +1173,7 @@ const HomeScreen = ({
                   <span className="text-yellow-accent italic font-serif px-2">imagination</span>
                 </h1>
               </div>
-              <div className="w-full max-w-4xl">
+              <div className="w-full max-w-2xl">
                 <form onSubmit={handleSubmit}>
                   <div className={`flex items-center rounded-[1.8rem] px-6 py-4 shadow-2xl transition-all border ring-1 gap-3 ${theme === 'light' ? 'bg-white border-black/10 ring-black/5 text-black' : 'glass-panel border-white/20 ring-white/10 backdrop-blur-3xl text-white'}`}>
                     <div className={`flex items-center gap-2 pr-2 border-r leading-none ${theme === 'light' ? 'border-black/10' : 'border-white/10'}`}>
@@ -1215,6 +1216,7 @@ const HomeScreen = ({
                 </div>
               </div>
             </section>
+            <Footer />
           </div>
         )}
       </main>

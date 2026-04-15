@@ -186,7 +186,7 @@ export const KreonCardVisual = React.forwardRef<
            <div style={{ color: currentTheme.color, fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.4em', marginBottom: '12px', opacity: 0.6 }}>
              Neural Summary
            </div>
-           <div style={{ fontSize: '24px', fontWeight: 300, fontFamily: 'serif', fontStyle: 'italic', lineHeight: 1.4, opacity: 0.9 }}>
+           <div style={{ fontSize: '24px', fontWeight: 300, fontFamily: "'Satoshi', sans-serif", fontStyle: 'italic', lineHeight: 1.6, opacity: 0.9, letterSpacing: '0.02em' }}>
              "{bio || 'Establishing creative identity...'}"
            </div>
         </div>

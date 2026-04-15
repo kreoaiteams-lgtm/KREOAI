@@ -6,6 +6,7 @@ import {
   Wallet, Landmark
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import Footer from '../components/Footer';
 
 declare global {
   interface Window {
@@ -262,10 +263,7 @@ const Pricing = () => {
           </motion.div>
         )}
       </main>
-
-      <div className="fixed bottom-10 right-10 pointer-events-none opacity-[0.03]">
-        <h2 className="text-[10rem] font-black leading-none select-none tracking-tighter uppercase font-satoshi">KREO</h2>
-      </div>
+      <Footer />
     </div>
   );
 };

@@ -9,8 +9,12 @@ const NeuralMouse = () => {
     const handleMouseMove = (e: MouseEvent) => {
       setMousePos({ x: e.clientX, y: e.clientY });
       
-      const newFlare = { id: Date.now(), x: e.clientX, y: e.clientY };
-      setTrail((prev) => [...prev.slice(-12), newFlare]);
+      const newFlares = [
+        { id: Math.random() + Date.now(), x: e.clientX, y: e.clientY },
+        { id: Math.random() + Date.now(), x: e.clientX, y: e.clientY },
+        { id: Math.random() + Date.now(), x: e.clientX, y: e.clientY }
+      ];
+      setTrail((prev) => [...prev.slice(-45), ...newFlares]);
     };
 
     window.addEventListener('mousemove', handleMouseMove);

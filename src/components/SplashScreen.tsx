@@ -27,32 +27,32 @@ const SplashScreen = ({ onComplete }: { onComplete: () => void }) => {
         >
           {/* Enhanced background graphics (Neural Blueprint Style) */}
           <div className="absolute inset-0 pointer-events-none opacity-[0.08] overflow-hidden">
-            {/* Icons scatter */}
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="absolute inset-0">
-              <motion.div animate={{ y: [0, -40, 0], rotate: 10 }} transition={{ repeat: Infinity, duration: 8 }} className="absolute top-[8%] left-[12%] text-[#1B3FBF]">
-                <Presentation size={90} />
-              </motion.div>
-              <motion.div animate={{ y: [0, 40, 0], rotate: -10 }} transition={{ repeat: Infinity, duration: 9 }} className="absolute bottom-[10%] right-[12%] text-[#1B3FBF]">
-                <Code2 size={80} />
-              </motion.div>
-              <motion.div animate={{ scale: [1, 1.3, 1] }} transition={{ repeat: Infinity, duration: 6 }} className="absolute top-[25%] right-[15%] text-[#1B3FBF]">
-                <BrainCircuit size={64} />
-              </motion.div>
-              <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 30, ease: 'linear' }} className="absolute top-1/2 left-[8%] -translate-y-1/2 text-[#1B3FBF]">
-                <LayoutGrid size={56} />
-              </motion.div>
-              <motion.div animate={{ x: [-20, 20, -20] }} transition={{ repeat: Infinity, duration: 10 }} className="absolute bottom-[20%] left-[18%] text-[#1B3FBF]">
-                <Activity size={48} />
-              </motion.div>
-              <motion.div animate={{ scale: [1, 0.8, 1], opacity: [0.5, 1, 0.5] }} transition={{ repeat: Infinity, duration: 4 }} className="absolute top-[15%] right-[25%] text-[#1B3FBF]">
-                <Sparkles size={40} />
-              </motion.div>
-              <motion.div animate={{ rotate: -360 }} transition={{ repeat: Infinity, duration: 15, ease: 'linear' }} className="absolute bottom-[25%] right-[22%] text-[#1B3FBF]">
-                <Zap size={52} />
-              </motion.div>
-              <motion.div animate={{ y: [0, 15, 0] }} transition={{ repeat: Infinity, duration: 3 }} className="absolute top-[40%] left-[25%] text-[#1B3FBF]">
-                <Smile size={36} />
-              </motion.div>
+               {/* Extremely Dense Scatter */}
+               <motion.div animate={{ y: [0, -40, 0], rotate: 10 }} transition={{ repeat: Infinity, duration: 8 }} className="absolute top-[8%] left-[12%] text-[#1B3FBF]"><Presentation size={90} /></motion.div>
+               <motion.div animate={{ y: [0, 40, 0], rotate: -10 }} transition={{ repeat: Infinity, duration: 9 }} className="absolute bottom-[10%] right-[12%] text-[#1B3FBF]"><Code2 size={80} /></motion.div>
+               <motion.div animate={{ scale: [1, 1.3, 1] }} transition={{ repeat: Infinity, duration: 6 }} className="absolute top-[25%] right-[15%] text-[#1B3FBF]"><BrainCircuit size={64} /></motion.div>
+               <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 30, ease: 'linear' }} className="absolute top-1/2 left-[8%] -translate-y-1/2 text-[#1B3FBF]"><LayoutGrid size={56} /></motion.div>
+               <motion.div animate={{ x: [-20, 20, -20] }} transition={{ repeat: Infinity, duration: 10 }} className="absolute bottom-[20%] left-[18%] text-[#1B3FBF]"><Activity size={48} /></motion.div>
+               <motion.div animate={{ scale: [1, 0.8, 1], opacity: [0.5, 1, 0.5] }} transition={{ repeat: Infinity, duration: 4 }} className="absolute top-[15%] right-[25%] text-[#1B3FBF]"><Sparkles size={40} /></motion.div>
+               <motion.div animate={{ rotate: -360 }} transition={{ repeat: Infinity, duration: 15, ease: 'linear' }} className="absolute bottom-[25%] right-[22%] text-[#1B3FBF]"><Zap size={52} /></motion.div>
+               <motion.div animate={{ y: [0, 15, 0] }} transition={{ repeat: Infinity, duration: 3 }} className="absolute top-[40%] left-[25%] text-[#1B3FBF]"><Smile size={36} /></motion.div>
+
+               {/* New Additional Scatter */}
+               <div className="absolute top-[5%] right-[40%] text-[#1B3FBF]"><LayoutGrid size={40} /></div>
+               <div className="absolute top-[35%] right-[45%] text-[#1B3FBF]"><Zap size={30} /></div>
+               <div className="absolute bottom-[35%] left-[45%] text-[#1B3FBF]"><Code2 size={45} /></div>
+               <div className="absolute top-[55%] right-[12%] text-[#1B3FBF] opacity-40"><Presentation size={120} /></div>
+               <div className="absolute bottom-[5%] left-[30%] text-[#1B3FBF]"><Activity size={70} /></div>
+               <div className="absolute top-[20%] left-[40%] text-[#1B3FBF]"><BrainCircuit size={30} /></div>
+               <div className="absolute bottom-[40%] right-[40%] text-[#1B3FBF]"><Sparkles size={60} /></div>
+               <div className="absolute top-[65%] left-[15%] text-[#1B3FBF]"><LayoutGrid size={80} /></div>
+               <div className="absolute bottom-[15%] right-[45%] text-[#1B3FBF]"><Smile size={50} /></div>
+               <div className="absolute top-[45%] left-[5%] text-[#1B3FBF]"><Zap size={40} /></div>
+               <div className="absolute top-[10%] left-1/2 -translate-x-1/2 text-[#1B3FBF]"><BrainCircuit size={100} /></div>
+               <div className="absolute bottom-[10%] left-1/2 -translate-x-1/2 text-[#1B3FBF]"><LayoutGrid size={90} /></div>
+               <div className="absolute top-1/4 left-1/4 text-[#1B3FBF] opacity-50"><Code2 size={150} /></div>
+               <div className="absolute bottom-1/4 right-1/4 text-[#1B3FBF] opacity-50"><Presentation size={150} /></div>
             </motion.div>
 
             {/* Geometric Sprinkles */}
@@ -60,10 +60,14 @@ const SplashScreen = ({ onComplete }: { onComplete: () => void }) => {
               <circle cx="20%" cy="30%" r="2" fill="#1B3FBF" className="opacity-20" />
               <circle cx="80%" cy="70%" r="2" fill="#1B3FBF" className="opacity-20" />
               <circle cx="50%" cy="15%" r="3" fill="#1B3FBF" className="opacity-20" />
+              <circle cx="10%" cy="60%" r="3" fill="#1B3FBF" className="opacity-20" />
+              <circle cx="90%" cy="20%" r="2" fill="#1B3FBF" className="opacity-20" />
               <line x1="10%" y1="10%" x2="15%" y2="15%" stroke="#1B3FBF" strokeWidth="0.5" className="opacity-20" />
               <line x1="90%" y1="90%" x2="85%" y2="85%" stroke="#1B3FBF" strokeWidth="0.5" className="opacity-20" />
               <circle cx="50%" cy="50%" r="150" fill="none" stroke="#1B3FBF" strokeWidth="0.5" strokeDasharray="10 20" className="opacity-10" />
-              <circle cx="50%" cy="50%" r="300" fill="none" stroke="#1B3FBF" strokeWidth="0.5" strokeDasharray="5 15" className="opacity-5" />
+              <circle cx="50%" cy="50%" r="250" fill="none" stroke="#1B3FBF" strokeWidth="0.5" strokeDasharray="10 20" className="opacity-10" />
+              <circle cx="50%" cy="50%" r="400" fill="none" stroke="#1B3FBF" strokeWidth="0.5" strokeDasharray="5 15" className="opacity-5" />
+              <circle cx="50%" cy="50%" r="600" fill="none" stroke="#1B3FBF" strokeWidth="0.5" strokeDasharray="5 15" className="opacity-5" />
             </svg>
           </div>
 

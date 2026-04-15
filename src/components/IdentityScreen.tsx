@@ -32,9 +32,9 @@ const INTERESTS: { id: KreonInterest, label: string, icon: any }[] = [
 ];
 
 const QUESTIONS = [
-  "What is the primary creative weapon you bring to the KREO registry?",
-  "If you could manifest one change in reality instantly, what would it be?",
-  "Which environment or atmosphere fuels your neural manifest the most?"
+  "In three words, how would you define your creative identity to the registry?",
+  "Tell us more about yourself and the manifests you wish to architect.",
+  "How do you prefer to handle complex situations within a neural environment?"
 ];
 
 const IdentityScreen: React.FC<IdentityScreenProps> = ({ 
@@ -87,7 +87,7 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-[3000] bg-white overflow-hidden flex flex-col">
+    <div className="fixed inset-0 z-[3000] bg-white overflow-y-auto overflow-x-hidden flex flex-col">
       {/* Header */}
       <div className="absolute top-0 left-0 right-0 p-8 flex justify-between items-center z-[100]">
         <div className="flex items-center gap-3">
@@ -107,34 +107,56 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
           {phase === 'pref' && (
             <motion.div 
               key="pref"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="flex-1 flex flex-col items-center justify-center p-6 space-y-12"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="flex-1 flex flex-col md:flex-row h-full overflow-hidden"
             >
-              <div className="text-center space-y-4 max-w-xl">
-                 <span className="text-[10px] font-black uppercase tracking-[0.6em] text-[#1B3FBF]">Step 01 / Identity Alignment</span>
-                 <h1 className="text-4xl md:text-6xl font-serif italic text-black leading-tight tracking-tighter">
-                   Select your primary <br/> neural sector.
-                 </h1>
-                 <p className="text-sm font-light text-black/40 italic font-serif">Your choice defines the visual manifestation of your resident card.</p>
+              {/* Left Side: Buttons */}
+              <div className="w-full md:w-[45%] h-full bg-white flex flex-col justify-center p-12 md:p-20 space-y-12">
+                <div className="space-y-4">
+                  <span className="text-[10px] font-black uppercase tracking-[0.6em] text-[#1B3FBF]">Step 01 / Identity Alignment</span>
+                  <h1 className="text-4xl md:text-5xl font-serif italic text-black leading-tight tracking-tighter">
+                    Select your primary <br/> neural sector.
+                  </h1>
+                  <p className="text-sm font-light text-black/40 italic font-serif max-w-sm">Your choice defines the visual manifestation of your resident card and sectors.</p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 w-full max-w-md">
+                  {INTERESTS.map((item) => (
+                    <motion.button
+                      key={item.id}
+                      whileHover={{ scale: 1.02, y: -2 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => setInterest(item.id)}
+                      className={`p-6 rounded-3xl border flex flex-col items-center gap-3 transition-all group ${interest === item.id ? 'bg-[#1B3FBF] border-[#1B3FBF] shadow-xl shadow-[#1B3FBF]/20' : 'bg-[#f8f9ff] border-black/5 hover:border-[#1B3FBF]/20'}`}
+                    >
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${interest === item.id ? 'bg-white/20 text-white' : 'bg-white border border-black/5 text-black/20 group-hover:text-[#1B3FBF] group-hover:bg-[#1B3FBF]/5'}`}>
+                        <item.icon size={20} />
+                      </div>
+                      <span className={`text-[9px] font-black uppercase tracking-[0.2em] ${interest === item.id ? 'text-white' : 'text-black/40 group-hover:text-black'}`}>{item.label}</span>
+                    </motion.button>
+                  ))}
+                </div>
+
+                <div className="pt-8">
+                  <button 
+                    onClick={() => setPhase('interview')}
+                    className="px-12 py-6 bg-[#1B3FBF] text-white text-[11px] font-black uppercase tracking-[0.4em] rounded-full hover:scale-105 active:scale-95 transition-all shadow-xl shadow-[#1B3FBF]/20 flex items-center gap-4 w-fit"
+                  >
+                    Confirm Alignment <ChevronRight size={14} />
+                  </button>
+                </div>
               </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-3xl">
-                {INTERESTS.map((item) => (
-                  <motion.button
-                    key={item.id}
-                    whileHover={{ scale: 1.02, y: -4 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => handleInterestSelect(item.id)}
-                    className="p-8 rounded-[2rem] border border-black/5 bg-[#f8f9ff] flex flex-col items-center gap-4 hover:border-[#1B3FBF]/20 hover:bg-white hover:shadow-2xl hover:shadow-[#1B3FBF]/5 transition-all group"
-                  >
-                    <div className="w-12 h-12 rounded-2xl bg-white border border-black/5 flex items-center justify-center text-black/20 group-hover:text-[#1B3FBF] group-hover:bg-[#1B3FBF]/5 transition-all">
-                      <item.icon size={24} />
-                    </div>
-                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-black/40 group-hover:text-black transition-colors">{item.label}</span>
-                  </motion.button>
-                ))}
+              {/* Right Side: Card Preview */}
+              <div className="hidden md:flex flex-1 bg-[#f8f9ff] items-center justify-center relative overflow-hidden">
+                <div className="absolute inset-0 pointer-events-none opacity-[0.03]">
+                   <BrainCircuit size={600} className="absolute -bottom-40 -left-40 text-[#1B3FBF] rotate-12" />
+                </div>
+                <div className="scale-90 lg:scale-100 transition-transform duration-700">
+                  <KreonCardVisual cardNumber="----" userName={userName || "DHRUV"} userEmail={userEmail} interest={interest} bio="Establishing creative identity..." />
+                </div>
               </div>
             </motion.div>
           )}
@@ -215,7 +237,7 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
               key="reveal"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="flex-1 flex flex-col items-center justify-center p-6 relative"
+              className="flex-1 flex flex-col items-center justify-center p-12 py-32 relative"
             >
               {/* Flanking Panels (The logic from HomeScreen moved here) */}
               <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 pointer-events-none hidden xl:flex justify-between items-center px-24 w-full h-[600px] z-10">
@@ -229,9 +251,9 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
                     <path d="M140 42 L154 51 L142 60" stroke="#1B3FBF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" strokeOpacity="0.6"/>
                   </svg>
                   <div>
-                    <span className="text-[11px] font-black uppercase tracking-[0.5em] text-[#1B3FBF]/40 block mb-2">Identity Confirmed</span>
+                    <span className="text-[11px] font-black uppercase tracking-[0.5em] text-[#1B3FBF]/40 block mb-3">Identity Confirmed</span>
                     <h3 className="text-5xl font-black text-[#1B3FBF] leading-tight tracking-tighter" style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }}>
-                      Identity<br/>Manifested.
+                      You are a<br/>KREON.
                     </h3>
                     <p className="text-sm text-black/50 leading-relaxed mt-5 font-medium max-w-[280px]">
                       Your permanent residency in the KREO ecosystem is now active.
@@ -272,7 +294,7 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
                 </motion.div>
               </div>
 
-              <div className="z-20 scale-110">
+              <div className="z-20 scale-110 my-20">
                 <KreonCard userEmail={userEmail} userName={userName} interest={interest} bio={residentBio} cardNumber={cardNumber} />
               </div>
 
@@ -280,7 +302,7 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1 }}
-                className="mt-16 text-center space-y-6"
+                className="mt-24 text-center space-y-8 pb-16"
               >
                  <button 
                   onClick={onClose}
