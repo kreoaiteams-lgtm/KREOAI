@@ -240,7 +240,7 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
               className="flex-1 flex flex-col items-center justify-center p-12 py-32 relative"
             >
               {/* Flanking Panels (The logic from HomeScreen moved here) */}
-              <div className="absolute inset-x-0 top-[45%] -translate-y-1/2 pointer-events-none hidden xl:flex justify-between items-center px-24 w-full h-[600px] z-10">
+              <div className="absolute inset-x-0 top-[35%] -translate-y-1/2 pointer-events-none hidden xl:flex justify-between items-center px-24 w-full h-[600px] z-10">
                 {/* Left Side: Identity Details */}
                 <motion.div
                   initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.5 }}
