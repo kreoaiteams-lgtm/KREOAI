@@ -3,22 +3,22 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import Index from "./pages/Index.tsx";
-import NotFound from "./pages/NotFound.tsx";
-import Landing from "./pages/Landing.tsx";
-import KreoPromo from "./components/KreoPromo.tsx";
-import KreoPromo1 from "./components/KreoPromo1.tsx";
-import KreoPromo2 from "./components/KreoPromo2.tsx";
-import KreoPromo3 from "./components/KreoPromo3.tsx";
-import KreoPromo4 from "./components/KreoPromo4.tsx";
-import KreoPromo5 from "./components/KreoPromo5.tsx";
-import SocialManagerPage from "./components/SocialManagerPage.tsx";
-import ShareView from "./components/ShareView.tsx";
-import ProjectRouter from "./components/ProjectRouter.tsx";
-import AuthScreen from "./components/AuthScreen.tsx";
-import CampaignPage from "./pages/CampaignPage.tsx";
-import CardPage from "./pages/CardPage.tsx";
-import PricingPage from "./pages/PricingPage.tsx";
+import Index from "./pages/Index";
+import NotFound from "./pages/NotFound";
+import Landing from "./pages/Landing";
+import KreoPromo from "./components/KreoPromo";
+import KreoPromo1 from "./components/KreoPromo1";
+import KreoPromo2 from "./components/KreoPromo2";
+import KreoPromo3 from "./components/KreoPromo3";
+import KreoPromo4 from "./components/KreoPromo4";
+import KreoPromo5 from "./components/KreoPromo5";
+import SocialManagerPage from "./components/SocialManagerPage";
+import ShareView from "./components/ShareView";
+import ProjectRouter from "./components/ProjectRouter";
+import AuthScreen from "./components/AuthScreen";
+import CampaignPage from "./pages/CampaignPage";
+import CardPage from "./pages/CardPage";
+import Pricing from "./pages/PricingPage";
 import NeuralMouse from "@/components/NeuralMouse";
 
 import { Analytics } from "@vercel/analytics/react";
@@ -44,7 +44,7 @@ const App = () => (
           <Route path="/share/:id" element={<ShareView />} />
           <Route path="/link/:id" element={<ShareView />} />
           <Route path="/social-manifest" element={<SocialManagerPage />} />
-          <Route path="/pricing" element={<PricingPage />} />
+          <Route path="/pricing" element={<Pricing />} />
           <Route path="/build" element={<CampaignPage />} />
           <Route path="/card" element={<CardPage />} />
           <Route path="*" element={<NotFound />} />

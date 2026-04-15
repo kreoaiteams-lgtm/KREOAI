@@ -13,7 +13,7 @@ declare global {
   }
 }
 
-const PricingPage = () => {
+const Pricing = () => {
   const navigate = useNavigate();
   const [selectedPlan, setSelectedPlan] = useState<'free' | 'ultra' | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -270,4 +270,4 @@ const PricingPage = () => {
   );
 };
 
-export default PricingPage;
+export default Pricing;
