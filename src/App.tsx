@@ -18,6 +18,7 @@ import ProjectRouter from "./components/ProjectRouter.tsx";
 import AuthScreen from "./components/AuthScreen.tsx";
 import CampaignPage from "./pages/CampaignPage.tsx";
 import CardPage from "./pages/CardPage.tsx";
+import PricingPage from "./pages/PricingPage.tsx";
 import NeuralMouse from "@/components/NeuralMouse";
 
 import { Analytics } from "@vercel/analytics/react";
