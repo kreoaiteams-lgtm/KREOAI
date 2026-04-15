@@ -10,6 +10,7 @@ import {
 
 import { narrateText, generateBio } from "@/lib/ai";
 import KreonCard from "./KreonCard";
+import IdentityScreen from "./IdentityScreen";
 
 import KreoLogo from "./KreoLogo";
 import ArtifactPanel from "./ArtifactPanel";
@@ -438,38 +439,6 @@ const HomeScreen = ({
   const [currentArtifactId, setCurrentArtifactId] = useState<string | null>(() => localStorage.getItem('kreo_last_id'));
   const [showKreonModal, setShowKreonModal] = useState(false);
   const [residentBio, setResidentBio] = useState(() => localStorage.getItem('kreo_resident_bio') || "");
-  const [isInterviewing, setIsInterviewing] = useState(false);
-  const [interviewPhase, setInterviewPhase] = useState(0);
-  const [interviewAnswers, setInterviewAnswers] = useState<string[]>([]);
-  const [interviewQuery, setInterviewQuery] = useState("");
-
-  const INTERVIEW_QUESTIONS = [
-    "What is the primary creative weapon you bring to the KREO registry?",
-    "If you could manifest one change in reality instantly, what would it be?",
-    "Which environment or atmosphere fuels your neural manifest the most?"
-  ];
-
-  const handleInterviewSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!interviewQuery.trim()) return;
-
-    const newAnswers = [...interviewAnswers, interviewQuery];
-    setInterviewAnswers(newAnswers);
-    setInterviewQuery("");
-
-    if (interviewPhase < 2) {
-      setInterviewPhase(interviewPhase + 1);
-    } else {
-      setIsInterviewing(false);
-      setLoadingMessage("Synthesizing your Resident Bio...");
-      setIsSubmitting(true);
-      const bio = await generateBio(newAnswers);
-      setResidentBio(bio);
-      localStorage.setItem('kreo_resident_bio', bio);
-      setIsSubmitting(false);
-      setShowKreonModal(true);
-    }
-  };
 
   useEffect(() => {
     localStorage.setItem('kreo_last_query', query);
@@ -1068,104 +1037,6 @@ const HomeScreen = ({
                  </div>
               </div>
 
-              {/* Flanking Panels: Identity & Powers (Main App Integration) */}
-              <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 pointer-events-none hidden lg:flex justify-between items-center px-24 w-full h-[600px] z-10">
-                
-                {/* Left Side: You are a KREON */}
-                <motion.div
-                  initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3, type: 'spring', stiffness: 120, damping: 20 }}
-                  className="w-[340px] text-left flex flex-col gap-8"
-                >
-                  {/* Swirly Arrow (Dotted/Card -> Panel direction) */}
-                  <svg className="mb-2 scale-x-[-1]" width="200" height="80" viewBox="0 0 160 60" fill="none">
-                    <motion.path 
-                      initial={{ pathLength: 0 }}
-                      animate={{ pathLength: 1 }}
-                      transition={{ delay: 0.6, duration: 1.2 }}
-                      d="M10 30 C 60 10, 80 50, 150 50" 
-                      stroke="#1B3FBF" 
-                      strokeWidth="2.5" 
-                      strokeLinecap="round" 
-                      strokeDasharray="2 8"
-                      strokeOpacity="0.5"
-                    />
-                    <path d="M140 42 L154 51 L142 60" stroke="#1B3FBF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" strokeOpacity="0.6"/>
-                  </svg>
-                  <div>
-                    <span className="text-[11px] font-black uppercase tracking-[0.5em] text-[#1B3FBF]/40 block mb-2">Identity Confirmed</span>
-                    <h3 className="text-5xl font-black text-[#1B3FBF] leading-tight tracking-tighter" style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }}>
-                      You are a<br/>KREON.
-                    </h3>
-                    <p className="text-sm text-black/50 leading-relaxed mt-5 font-medium max-w-[280px]">
-                      Your permanent residency in the KREO ecosystem is now active.
-                    </p>
-                  </div>
-                  <div className="flex flex-col gap-4 mt-2">
-                    {['Unique Residency #', 'Permanent Identity', 'Studio Access'].map((item, i) => (
-                      <div key={i} className="flex items-center gap-4">
-                        <svg width="28" height="14" viewBox="0 0 24 12" fill="none">
-                          <path d="M2 6 L18 6" stroke="#1B3FBF" strokeWidth="1.5" strokeLinecap="round" strokeOpacity="0.2"/>
-                          <path d="M14 2 L20 6 L14 10" stroke="#1B3FBF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" strokeOpacity="0.2" fill="none"/>
-                        </svg>
-                        <span className="text-[11px] font-bold text-[#1B3FBF]/40 uppercase tracking-widest">{item}</span>
-                      </div>
-                    ))}
-                  </div>
-                </motion.div>
-
-                {/* Right Side: Identity Details */}
-                <motion.div
-                  initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4, type: 'spring', stiffness: 120, damping: 20 }}
-                  className="w-[340px] text-left flex flex-col gap-8"
-                >
-                  {/* Swirly Arrow (Dotted/Card -> Panel direction) */}
-                  <svg className="mb-2" width="200" height="80" viewBox="0 0 160 60" fill="none">
-                    <motion.path 
-                      initial={{ pathLength: 0 }}
-                      animate={{ pathLength: 1 }}
-                      transition={{ delay: 0.8, duration: 1.2 }}
-                      d="M10 30 C 60 10, 80 50, 150 50" 
-                      stroke="#1B3FBF" 
-                      strokeWidth="2.5" 
-                      strokeLinecap="round" 
-                      strokeDasharray="2 8"
-                      strokeOpacity="0.5"
-                    />
-                    <path d="M140 42 L154 51 L142 60" stroke="#1B3FBF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" strokeOpacity="0.6"/>
-                  </svg>
-                  <span className="text-[11px] font-black uppercase tracking-[0.5em] text-[#1B3FBF]/40">KREON PROFILE</span>
-                  <div className="space-y-6">
-                    <div className="flex items-center gap-5">
-                      <div className="shrink-0 w-12 h-12 bg-[#1B3FBF]/10 rounded-full flex items-center justify-center text-[#1B3FBF] font-black text-lg border border-[#1B3FBF]/20">
-                        {userEmail?.[0].toUpperCase() || 'K'}
-                      </div>
-                      <div>
-                        <div className="text-[14px] font-black text-[#1B3FBF] uppercase tracking-widest">{userEmail?.split('@')[0] || 'GUEST'}</div>
-                        <div className="text-[11px] text-black/40 font-medium">Neural Manifestation Active</div>
-                      </div>
-                    </div>
-                    {[
-                      { label: 'Environment', desc: 'Studio Protocol v4.2', icon: ShieldCheck },
-                      { label: 'Latency', desc: '12ms (Neural Sync)', icon: Zap },
-                      { label: 'Manifests', desc: chatHistory.length > 0 ? `${chatHistory.length} Created` : '0 Created', icon: LayoutGrid },
-                    ].map((item, i) => (
-                      <motion.div
-                        key={i}
-                        initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.5 + i * 0.1 }}
-                        className="flex items-start gap-5"
-                      >
-                        <div className="shrink-0 mt-1 p-2 bg-[#1B3FBF]/5 rounded-xl border border-[#1B3FBF]/10">
-                          <item.icon size={16} className="text-[#1B3FBF]/60" />
-                        </div>
-                        <div>
-                          <div className="text-[11px] font-black text-[#1B3FBF] uppercase tracking-widest">{item.label}</div>
-                          <div className="text-[11px] text-black/30 font-medium mt-0.5">{item.desc}</div>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
-                </motion.div>
               </div>
 
               {/* Floating Decorative Elements (Graffiti Style) */}
@@ -1294,45 +1165,7 @@ const HomeScreen = ({
         ) : (
           <div className="flex flex-col items-center w-full relative">
             <section className="min-h-screen flex flex-col items-center justify-center gap-16 px-4 pb-32 relative w-full">
-              {/* Flanking Panels in Main Dashboard */}
-              <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 pointer-events-none hidden xl:flex justify-between items-center px-16 w-full h-[600px] z-10">
-                {/* Left: Identity */}
-                <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} className="w-[300px] text-left">
-                  <span className="text-[10px] font-black uppercase tracking-[0.5em] text-[#1B3FBF]/40 block mb-2">Verified Identity</span>
-                  <h3 className="text-4xl font-black text-[#1B3FBF] leading-tight tracking-tighter" style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }}>
-                    YOU ARE A<br/>KREON.
-                  </h3>
-                  <div className="mt-6 flex flex-col gap-3">
-                    {['Access Granted', 'Studio Active', 'Neural Linked'].map((t, i) => (
-                      <div key={i} className="flex items-center gap-3">
-                         <div className="w-1 h-1 rounded-full bg-[#1B3FBF]/30" />
-                         <span className="text-[9px] font-bold text-[#1B3FBF]/40 uppercase tracking-widest">{t}</span>
-                      </div>
-                    ))}
-                  </div>
-                </motion.div>
 
-                {/* Right: User */}
-                <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} className="w-[300px] text-right flex flex-col items-end">
-                   <div className="flex items-center gap-4 mb-4">
-                      <div className="text-right">
-                         <div className="text-[14px] font-black text-[#1B3FBF] uppercase tracking-widest">{userEmail?.split('@')[0] || 'RESIDENT'}</div>
-                         <div className="text-[9px] text-black/40 font-bold tracking-tighter uppercase">Neural Buffer 100%</div>
-                      </div>
-                      <div className="w-10 h-10 rounded-full bg-[#1B3FBF]/10 flex items-center justify-center border border-[#1B3FBF]/20 text-[#1B3FBF]">
-                        <User size={16} />
-                      </div>
-                   </div>
-                   <div className="flex flex-col gap-4">
-                      {[{l:'Manifests', v: historyItems.length}, {l:'Latency', v:'12ms'}, {l:'Protocol', v:'v4.2'}].map((s, i) => (
-                        <div key={i} className="flex justify-end items-center gap-4">
-                           <span className="text-[9px] font-bold text-black/30 uppercase tracking-widest">{s.l}</span>
-                           <span className="text-[10px] font-black text-[#1B3FBF]">{s.v}</span>
-                        </div>
-                      ))}
-                   </div>
-                </motion.div>
-              </div>
 
               <div className="text-center space-y-8 pt-12 md:pt-16 relative z-20">
                 <h1 className="text-7xl md:text-8xl font-light tracking-tighter leading-tight animate-in fade-in slide-in-from-top-12 duration-1000">
@@ -1483,60 +1316,18 @@ const HomeScreen = ({
           </motion.div>
         </div>
       )}
-      {/* KREON Identity Modal */}
+      {/* KREON Identity Screen */}
       <AnimatePresence>
         {showKreonModal && (
-          <div className="fixed inset-0 z-[3000] flex items-center justify-center p-6 bg-black/90 backdrop-blur-3xl">
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              className="relative"
-            >
-              {residentBio ? (
-                <KreonCard userEmail={userEmail} bio={residentBio} />
-              ) : (
-                <div className="bg-white w-[340px] h-[480px] rounded-[32px] p-10 flex flex-col justify-center items-center text-center space-y-8 shadow-2xl overflow-hidden relative">
-                   <div className="absolute top-0 left-0 w-full h-1 bg-[#1B3FBF]/10">
-                      <motion.div animate={{ width: `${(interviewPhase + 1) * 33}%` }} className="h-full bg-[#1B3FBF]" />
-                   </div>
-                   <div className="w-16 h-16 rounded-3xl bg-[#1B3FBF]/5 flex items-center justify-center text-[#1B3FBF] mb-4">
-                      <BrainCircuit size={32} />
-                   </div>
-                   <div className="space-y-4">
-                      <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[#1B3FBF]">Resident Setup</span>
-                      <h3 className="text-xl font-serif italic leading-tight text-black">
-                        {INTERVIEW_QUESTIONS[interviewPhase]}
-                      </h3>
-                   </div>
-                   <form onSubmit={handleInterviewSubmit} className="w-full space-y-4 pt-4">
-                      <input 
-                        autoFocus
-                        value={interviewQuery}
-                        onChange={(e) => setInterviewQuery(e.target.value)}
-                        placeholder="Manifest your answer..."
-                        className="w-full px-6 py-4 rounded-2xl bg-black/5 border border-black/5 text-sm outline-none focus:border-[#1B3FBF]/30 transition-all font-light"
-                      />
-                      <button type="submit" className="w-full py-4 bg-[#1B3FBF] text-white text-[10px] font-black uppercase tracking-[0.4em] rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-lg shadow-[#1B3FBF]/20">
-                        Continue Setup
-                      </button>
-                   </form>
-                   <div className="pt-4">
-                      <p className="text-[9px] font-medium text-black/30 uppercase tracking-widest">Neural Sync in Progress (0{interviewPhase + 1}/03)</p>
-                   </div>
-                   {/* Graffiti Sprinkles for Interview */}
-                   <Smile size={32} className="absolute -bottom-4 -left-4 text-[#1B3FBF]/5 rotate-12" />
-                   <Code2 size={48} className="absolute -top-6 -right-6 text-[#1B3FBF]/5 -rotate-12" />
-                </div>
-              )}
-              <button 
-                onClick={() => setShowKreonModal(false)}
-                className="absolute -top-12 right-0 text-[10px] font-black uppercase tracking-[0.4em] text-white hover:text-white/70 transition-colors"
-              >
-                Close Identity
-              </button>
-            </motion.div>
-          </div>
+          <IdentityScreen 
+            userEmail={userEmail} 
+            initialBio={residentBio}
+            onClose={() => setShowKreonModal(false)}
+            onBioGenerated={(bio) => {
+              setResidentBio(bio);
+              localStorage.setItem('kreo_resident_bio', bio);
+            }}
+          />
         )}
       </AnimatePresence>
     </div>
