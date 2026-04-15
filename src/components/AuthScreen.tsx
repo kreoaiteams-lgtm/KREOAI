@@ -8,6 +8,7 @@ const AuthScreen = () => {
   const navigate = useNavigate();
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState("");
+  const [fullName, setFullName] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -25,14 +26,22 @@ const AuthScreen = () => {
     
     try {
       if (isSignUp) {
-        const { error } = await supabase.auth.signUp({ email, password });
+        if (!fullName && isSignUp) throw new Error("Full name is required for registration");
+        const { error } = await supabase.auth.signUp({ 
+          email, 
+          password, 
+          options: {
+            data: {
+              full_name: fullName
+            }
+          }
+        });
         if (error) throw error;
-        // Proceed to build page instead of confirmation
-        navigate("/build");
+        navigate("/card");
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        navigate("/build");
+        navigate("/card");
       }
     } catch (err: any) {
       toast.error(err.message || "Authentication failed");
@@ -60,6 +69,18 @@ const AuthScreen = () => {
 
         <div className="glass-panel rounded-2xl p-8 border-foreground/10 shadow-2xl">
           <form onSubmit={handleSubmit} className="space-y-4">
+            {isSignUp && (
+              <div>
+                <input
+                  type="text"
+                  placeholder="Full Name"
+                  disabled={loading}
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  className="glass-input w-full rounded-lg px-4 py-3 text-sm text-foreground placeholder:text-foreground/40 outline-none"
+                />
+              </div>
+            )}
             <div>
               <input
                 type="email"

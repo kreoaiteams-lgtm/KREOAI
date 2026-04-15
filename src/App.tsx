@@ -16,8 +16,9 @@ import SocialManagerPage from "./components/SocialManagerPage.tsx";
 import ShareView from "./components/ShareView.tsx";
 import ProjectRouter from "./components/ProjectRouter.tsx";
 import AuthScreen from "./components/AuthScreen.tsx";
-import PricingPage from "./pages/PricingPage.tsx";
 import CampaignPage from "./pages/CampaignPage.tsx";
+import CardPage from "./pages/CardPage.tsx";
+import NeuralMouse from "@/components/NeuralMouse";
 
 import { Analytics } from "@vercel/analytics/react";
 
@@ -26,6 +27,7 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
+      <NeuralMouse />
       <Toaster />
       <Sonner />
       <BrowserRouter>
@@ -43,6 +45,7 @@ const App = () => (
           <Route path="/social-manifest" element={<SocialManagerPage />} />
           <Route path="/pricing" element={<PricingPage />} />
           <Route path="/build" element={<CampaignPage />} />
+          <Route path="/card" element={<CardPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

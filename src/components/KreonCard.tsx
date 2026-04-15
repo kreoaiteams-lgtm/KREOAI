@@ -2,8 +2,9 @@ import React, { useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Share2, Download, Link, Check, Twitter } from 'lucide-react';
 
-interface KreonCardProps {
   userEmail?: string;
+  userName?: string;
+  cardNumber?: string;
   interest?: KreonInterest;
   bio?: string;
 }
@@ -31,11 +32,13 @@ type KreonInterest = 'design' | 'tech' | 'architecture' | 'product' | 'art' | 's
 
 export const KreonCardVisual = React.forwardRef<
   HTMLDivElement,
-  { userEmail?: string; cardNumber: string; interest?: KreonInterest; bio?: string; isFlipped?: boolean }
->(({ userEmail, cardNumber, interest = 'tech', bio, isFlipped = false }, ref) => {
-  const displayName = userEmail
-    ? userEmail.split('@')[0].replace(/[._]/g, ' ').toUpperCase()
-    : 'KREO RESIDENT';
+  { userEmail?: string; userName?: string; cardNumber: string; interest?: KreonInterest; bio?: string; isFlipped?: boolean }
+>(({ userEmail, userName, cardNumber, interest = 'tech', bio, isFlipped = false }, ref) => {
+  const displayName = userName 
+    ? userName.toUpperCase() 
+    : userEmail
+      ? userEmail.split('@')[0].replace(/[._]/g, ' ').toUpperCase()
+      : 'KREO RESIDENT';
 
   const themes: Record<KreonInterest, { bg: string, text: string, color: string, graphic: React.ReactNode }> = {
     design: {
@@ -172,14 +175,14 @@ export const KreonCardVisual = React.forwardRef<
       <div 
         style={{
           position: 'absolute', inset: 0, backfaceVisibility: 'hidden',
-          backgroundColor: '#000', borderRadius: '32px',
+          backgroundColor: currentTheme.bg, borderRadius: '32px',
           overflow: 'hidden', display: 'flex', flexDirection: 'column',
-          transform: 'rotateY(180deg)', border: '1px solid rgba(255,255,255,0.1)',
-          padding: '40px', color: 'white'
+          transform: 'rotateY(180deg)', border: `1px solid ${currentTheme.color === 'white' ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.1)'}`,
+          padding: '40px', color: currentTheme.color
         }}
       >
-        <div style={{ spaceY: '12px' }}>
-           <div style={{ color: currentTheme.bg, fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.4em', marginBottom: '12px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+           <div style={{ color: currentTheme.color, fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.4em', marginBottom: '12px', opacity: 0.6 }}>
              Neural Summary
            </div>
            <div style={{ fontSize: '24px', fontWeight: 300, fontFamily: 'serif', fontStyle: 'italic', lineHeight: 1.4, opacity: 0.9 }}>
@@ -187,12 +190,12 @@ export const KreonCardVisual = React.forwardRef<
            </div>
         </div>
         
-        <div style={{ marginTop: 'auto', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '20px' }}>
-           <div style={{ fontSize: '8px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.2em', color: 'rgba(255,255,255,0.3)', marginBottom: '10px' }}> Registry Metadata </div>
+        <div style={{ marginTop: 'auto', borderTop: `1px solid ${currentTheme.color === 'white' ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.1)'}`, paddingTop: '20px' }}>
+           <div style={{ fontSize: '8px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.2em', color: currentTheme.color, opacity: 0.4, marginBottom: '10px' }}> Registry Metadata </div>
            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px' }}>
                  <span style={{ opacity: 0.4 }}>STATUS</span>
-                 <span style={{ fontWeight: 800, color: currentTheme.bg }}>VERIFIED</span>
+                 <span style={{ fontWeight: 800 }}>VERIFIED</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px' }}>
                  <span style={{ opacity: 0.4 }}>LEVEL</span>
@@ -202,7 +205,7 @@ export const KreonCardVisual = React.forwardRef<
         </div>
         
         {/* Grain */}
-        <div style={{ position: 'absolute', inset: 0, opacity: 0.2, backgroundImage: 'url("https://grainy-gradients.vercel.app/noise.svg")', mixBlendMode: 'plus-lighter', pointerEvents: 'none' }}/>
+        <div style={{ position: 'absolute', inset: 0, opacity: 0.1, backgroundImage: 'url("https://grainy-gradients.vercel.app/noise.svg")', mixBlendMode: 'overlay', pointerEvents: 'none' }}/>
       </div>
     </div>
   );
@@ -211,12 +214,15 @@ KreonCardVisual.displayName = 'KreonCardVisual';
 
 /* ─────────────────────────────────────────────── */
 
-const KreonCard: React.FC<KreonCardProps> = ({ userEmail, interest, bio }) => {
+const KreonCard: React.FC<KreonCardProps> = ({ userEmail, userName, interest, bio, cardNumber: externalCardNumber }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const [copied, setCopied] = useState(false);
   const [isCapturing, setIsCapturing] = useState(false);
-  const [cardNumber] = useState(() => getCardNumber(userEmail));
   const [isFlipped, setIsFlipped] = useState(false);
+
+  // Fallback to internal generator if no external number provided
+  const [fallbackNumber] = useState(() => getCardNumber(userEmail));
+  const cardNumber = externalCardNumber || fallbackNumber;
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(`${window.location.origin}/build`);
@@ -303,7 +309,7 @@ const KreonCard: React.FC<KreonCardProps> = ({ userEmail, interest, bio }) => {
           transition={{ type: "spring", stiffness: 400, damping: 25 }}
           style={{ cursor: 'pointer' }}
         >
-          <KreonCardVisual ref={cardRef} userEmail={userEmail} cardNumber={cardNumber} interest={interest} bio={bio} isFlipped={isFlipped} />
+          <KreonCardVisual ref={cardRef} userEmail={userEmail} userName={userName} cardNumber={cardNumber} interest={interest} bio={bio} isFlipped={isFlipped} />
         </motion.div>
       </div>
 

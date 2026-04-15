@@ -10,9 +10,12 @@ import { generateBio } from '@/lib/ai';
 
 interface IdentityScreenProps {
   userEmail: string;
+  userName?: string;
   onClose: () => void;
-  onBioGenerated: (bio: string) => void;
+  onBioGenerated: (bio: string, interest: string) => void;
   initialBio?: string;
+  initialInterest?: string;
+  initialCardNumber?: string;
 }
 
 type KreonInterest = 'design' | 'tech' | 'architecture' | 'product' | 'art' | 'sports' | 'music' | 'news';
@@ -34,14 +37,29 @@ const QUESTIONS = [
   "Which environment or atmosphere fuels your neural manifest the most?"
 ];
 
-const IdentityScreen: React.FC<IdentityScreenProps> = ({ userEmail, onClose, onBioGenerated, initialBio }) => {
+const IdentityScreen: React.FC<IdentityScreenProps> = ({ 
+  userEmail, 
+  userName, 
+  onClose, 
+  onBioGenerated, 
+  initialBio,
+  initialInterest = 'tech',
+  initialCardNumber = '0000'
+}) => {
   const [phase, setPhase] = useState<'pref' | 'interview' | 'reveal'>(initialBio ? 'reveal' : 'pref');
-  const [interest, setInterest] = useState<KreonInterest>('tech');
+  const [interest, setInterest] = useState<KreonInterest>(initialInterest as KreonInterest);
   const [interviewPhase, setInterviewPhase] = useState(0);
   const [answers, setAnswers] = useState<string[]>([]);
   const [query, setQuery] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [residentBio, setResidentBio] = useState(initialBio || "");
+  const [cardNumber, setCardNumber] = useState(initialCardNumber);
+
+  useEffect(() => {
+    if (initialCardNumber && initialCardNumber !== '0000') {
+      setCardNumber(initialCardNumber);
+    }
+  }, [initialCardNumber]);
 
   const handleInterestSelect = (id: KreonInterest) => {
     setInterest(id);
@@ -62,7 +80,7 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({ userEmail, onClose, onB
       setIsGenerating(true);
       const bio = await generateBio(newAnswers);
       setResidentBio(bio);
-      onBioGenerated(bio);
+      onBioGenerated(bio, interest);
       setIsGenerating(false);
       setPhase('reveal');
     }
@@ -140,7 +158,7 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({ userEmail, onClose, onB
                   animate={{ rotateY: 0, opacity: 1, scale: 1 }}
                   transition={{ type: 'spring', stiffness: 100, damping: 20 }}
                 >
-                  <KreonCardVisual cardNumber="----" interest={interest} bio={answers.join(' ')} />
+                  <KreonCardVisual cardNumber="----" userName={userName} userEmail={userEmail} interest={interest} bio={answers.join(' ')} />
                 </motion.div>
               </div>
 
@@ -234,10 +252,10 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({ userEmail, onClose, onB
                   <div className="space-y-6">
                     <div className="flex items-center gap-5">
                       <div className="shrink-0 w-12 h-12 bg-[#1B3FBF]/10 rounded-full flex items-center justify-center text-[#1B3FBF] font-black text-lg border border-[#1B3FBF]/20">
-                        {userEmail?.[0].toUpperCase() || 'K'}
+                        {(userName?.[0] || userEmail?.[0] || 'K').toUpperCase()}
                       </div>
                       <div>
-                        <div className="text-[14px] font-black text-[#1B3FBF] uppercase tracking-widest">{userEmail?.split('@')[0] || 'GUEST'}</div>
+                        <div className="text-[14px] font-black text-[#1B3FBF] uppercase tracking-widest">{userName || userEmail?.split('@')[0] || 'GUEST'}</div>
                         <div className="text-[11px] text-black/40 font-medium">Neural Manifestation Active</div>
                       </div>
                     </div>
@@ -255,7 +273,7 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({ userEmail, onClose, onB
               </div>
 
               <div className="z-20 scale-110">
-                <KreonCard userEmail={userEmail} interest={interest} bio={residentBio} />
+                <KreonCard userEmail={userEmail} userName={userName} interest={interest} bio={residentBio} cardNumber={cardNumber} />
               </div>
 
               <motion.div 
