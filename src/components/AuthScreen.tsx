@@ -37,11 +37,11 @@ const AuthScreen = () => {
           }
         });
         if (error) throw error;
-        navigate("/card");
+        navigate("/onboarding");
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        navigate("/card");
+        navigate("/onboarding");
       }
     } catch (err: any) {
       toast.error(err.message || "Authentication failed");

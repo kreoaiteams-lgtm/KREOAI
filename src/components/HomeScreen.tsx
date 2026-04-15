@@ -45,9 +45,9 @@ const PLACEHOLDER_TEXTS = [
 ];
 
 const NEURAL_PROMPTS = [
-  "Manifest a high-fidelity PPT presentation for a VC pitch — cinematic slides, editorial typography, and architectural diagrams.",
-  "Create a professional Excel-style financial manifest for a SaaS company with live charts, MRR tables, and layout-clean budgeting tool.",
-  "Perform a neural PDF orchestration: manifest an interactive document viewer that identifies logical structures and extracts metadata.",
+  "Create a high-quality PPT presentation for a VC pitch — cinematic slides, beautiful typography, and clear diagrams.",
+  "Create a professional Excel-style financial report for a SaaS company with live charts, MRR tables, and clean budgeting tools.",
+  "Powerful PDF analysis: create an interactive document viewer that identifies structures and extracts data.",
   "Build a SaaS pricing page with glassmorphism cards, animated gradient backgrounds, and a toggle between monthly/annual billing.",
   "Design a stunning personal portfolio for a motion designer — dark theme, smooth scroll, project cards with hover reveal.",
   "Create a real-time crypto dashboard with live-updating sparklines, portfolio tracker, and a dark editorial aesthetic.",
@@ -65,8 +65,8 @@ const SCENARIOS = [
   { t: "Flowchart for a 40-page PDF.", s: "The exam is tomorrow. You need it visual." },
   { t: "Startup needs a landing page.", s: "No dev team? No problem." },
   { t: "Mockup in 10 minutes.", s: "You promised. KREO delivers." },
-  { t: "Scientific diagram check.", s: "Complex reality, simple manifestation." },
-  { t: "Client pitch at noon.", s: "Wow them before they speak." }
+  { t: "Scientific diagram check.", s: "Complex reality, simple design." },
+  { t: "Client pitch at noon.", s: "Wow them before you start." }
 ];
 
 const ScenariosGrid = () => (
@@ -86,9 +86,9 @@ const ScenariosGrid = () => (
 const SynthesisEngine = () => (
   <div className="grid grid-cols-1 md:grid-cols-3 gap-12 pt-10">
     {[
-      { step: "01", title: "Cognitive Input", desc: "Describe your intent in plain language or upload a source manifest." },
-      { step: "02", title: "Visual Orchestration", desc: "Our engine decomposes your intent and applies high-fidelity design weighting." },
-      { step: "03", title: "Digital Manifestation", desc: "A functional, aesthetic outcome is generated in seconds." }
+      { step: "01", title: "Your Idea", desc: "Describe your goal in plain language or upload a source file." },
+      { step: "02", title: "Visual Design", desc: "Our engine handles the visual structure and professional design details." },
+      { step: "03", title: "Final Build", desc: "A functional, beautiful outcome is generated in seconds." }
     ].map((item, i) => (
       <div key={i} className="space-y-6 text-center group">
         <div className="text-6xl font-serif italic text-black/5 group-hover:text-[#1B3FBF]/10 transition-colors duration-700">{item.step}</div>
@@ -121,7 +121,7 @@ const TypingKreo = () => {
           {text}
           <motion.span animate={{ opacity: [1, 0, 1] }} transition={{ repeat: Infinity, duration: 0.8 }} className="ml-2 inline-block w-[4px] h-[0.9em] bg-[#1B3FBF] align-middle" />
         </h1>
-        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.5 }} className="text-[#1B3FBF] text-[10px] font-black uppercase tracking-[1em] opacity-20 mt-8">Manifesting Reality</motion.p>
+        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.5 }} className="text-[#1B3FBF] text-[10px] font-black uppercase tracking-[1em] opacity-20 mt-8">Building your vision</motion.p>
       </div>
     </div>
   );
@@ -1212,7 +1212,7 @@ const HomeScreen = ({
                 <PossibilitiesPile />
                 <InteractiveVisualLoop theme={theme} />
                 <div className="flex justify-center pt-16">
-                   <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="px-12 py-6 rounded-full bg-black text-white text-[11px] font-black uppercase tracking-[0.4em] shadow-xl hover:scale-105 transition-all">Start Manifesting</button>
+                    <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="px-12 py-6 rounded-full bg-black text-white text-[11px] font-black uppercase tracking-[0.4em] shadow-xl hover:scale-105 transition-all">Start Creating</button>
                 </div>
               </div>
             </section>

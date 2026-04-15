@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import IdentityScreen from "@/components/IdentityScreen";
 import { supabase } from "@/lib/supabase";
 
-const CardPage = () => {
+const CardPage = ({ onboarding = false }: { onboarding?: boolean }) => {
   const navigate = useNavigate();
   const [userEmail, setUserEmail] = useState<string>("");
   const [userName, setUserName] = useState<string>("");
@@ -52,7 +52,13 @@ const CardPage = () => {
         userName={userName}
         initialBio={residentBio}
         initialInterest={residentInterest}
-        initialCardNumber={residentCardNumber}
+        initialPhase={onboarding ? 'pref' : 'reveal'}
+        onPhaseChange={(newPhase) => {
+          if (onboarding && newPhase === 'reveal') {
+            // Once we hit reveal in onboarding, move to the permanent /card path
+            navigate('/card');
+          }
+        }}
         onClose={() => navigate("/")}
         onBioGenerated={async (bio, interest) => {
           setResidentBio(bio);

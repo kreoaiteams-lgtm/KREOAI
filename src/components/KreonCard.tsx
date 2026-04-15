@@ -184,15 +184,15 @@ export const KreonCardVisual = React.forwardRef<
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
            <div style={{ color: currentTheme.color, fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.4em', marginBottom: '12px', opacity: 0.6 }}>
-             Neural Summary
+             ABOUT
            </div>
            <div style={{ fontSize: '24px', fontWeight: 300, fontFamily: "'Satoshi', sans-serif", fontStyle: 'italic', lineHeight: 1.6, opacity: 0.9, letterSpacing: '0.02em' }}>
-             "{bio || 'Establishing creative identity...'}"
+             "{bio || 'Loading...'}"
            </div>
         </div>
         
         <div style={{ marginTop: 'auto', borderTop: `1px solid ${currentTheme.color === 'white' ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.1)'}`, paddingTop: '20px' }}>
-           <div style={{ fontSize: '8px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.2em', color: currentTheme.color, opacity: 0.4, marginBottom: '10px' }}> Registry Metadata </div>
+           <div style={{ fontSize: '8px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.2em', color: currentTheme.color, opacity: 0.4, marginBottom: '10px' }}> Details </div>
            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px' }}>
                  <span style={{ opacity: 0.4 }}>STATUS</span>
@@ -335,7 +335,7 @@ const KreonCard: React.FC<KreonCardProps> = ({ userEmail, userName, interest, bi
               </motion.div>
               <div className="whitespace-nowrap">
                 <p className="text-[10px] font-black uppercase tracking-[0.4em] text-[#1B3FBF]">Flip to View</p>
-                <p className="text-[9px] font-medium text-black/30 uppercase tracking-[0.2em] mt-1">Manifest Identity</p>
+                <p className="text-[9px] font-medium text-black/30 uppercase tracking-[0.2em] mt-1">Profile View</p>
               </div>
             </motion.div>
           )}

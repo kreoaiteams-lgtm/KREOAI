@@ -46,6 +46,7 @@ const App = () => (
           <Route path="/social-manifest" element={<SocialManagerPage />} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/build" element={<CampaignPage />} />
+          <Route path="/onboarding" element={<CardPage onboarding={true} />} />
           <Route path="/card" element={<CardPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

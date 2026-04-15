@@ -16,6 +16,8 @@ interface IdentityScreenProps {
   initialBio?: string;
   initialInterest?: string;
   initialCardNumber?: string;
+  initialPhase?: 'pref' | 'interview' | 'reveal';
+  onPhaseChange?: (phase: 'pref' | 'interview' | 'reveal') => void;
 }
 
 type KreonInterest = 'design' | 'tech' | 'architecture' | 'product' | 'art' | 'sports' | 'music' | 'news';
@@ -44,9 +46,10 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
   onBioGenerated, 
   initialBio,
   initialInterest = 'tech',
-  initialCardNumber = '0000'
+  initialCardNumber = '0000',
+  initialPhase
 }) => {
-  const [phase, setPhase] = useState<'pref' | 'interview' | 'reveal'>(initialBio ? 'reveal' : 'pref');
+  const [phase, setPhase] = useState<'pref' | 'interview' | 'reveal'>(initialPhase || (initialBio ? 'reveal' : 'pref'));
   const [interest, setInterest] = useState<KreonInterest>(initialInterest as KreonInterest);
   const [interviewPhase, setInterviewPhase] = useState(0);
   const [answers, setAnswers] = useState<string[]>([]);
@@ -54,6 +57,10 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
   const [isGenerating, setIsGenerating] = useState(false);
   const [residentBio, setResidentBio] = useState(initialBio || "");
   const [cardNumber, setCardNumber] = useState(initialCardNumber);
+
+  useEffect(() => {
+    if (onPhaseChange) onPhaseChange(phase);
+  }, [phase, onPhaseChange]);
 
   useEffect(() => {
     if (initialCardNumber && initialCardNumber !== '0000') {
@@ -92,7 +99,7 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
       <div className="absolute top-0 left-0 right-0 p-8 flex justify-between items-center z-[100]">
         <div className={`flex items-center gap-3 transition-opacity duration-500 ${phase === 'reveal' ? 'opacity-0' : 'opacity-100'}`}>
           <div className="w-8 h-8 rounded-full bg-[#1B3FBF] flex items-center justify-center text-white font-bold text-xs ring-4 ring-[#1B3FBF]/10">K</div>
-          <span className="text-[10px] font-black uppercase tracking-[0.4em] text-black opacity-40">Neural Registry v4.2</span>
+          <span className="text-[10px] font-black uppercase tracking-[0.4em] text-black opacity-40">KREO Profiles</span>
         </div>
         <button 
           onClick={onClose}
@@ -144,7 +151,7 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
                     onClick={() => setPhase('interview')}
                     className="px-12 py-6 bg-[#1B3FBF] text-white text-[11px] font-black uppercase tracking-[0.4em] rounded-full hover:scale-105 active:scale-95 transition-all shadow-xl shadow-[#1B3FBF]/20 flex items-center gap-4 w-fit"
                   >
-                    Confirm Alignment <ChevronRight size={14} />
+                    Confirm <ChevronRight size={14} />
                   </button>
                 </div>
               </div>
@@ -193,7 +200,7 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
                             <div key={i} className={`h-1 rounded-full transition-all duration-500 ${i <= interviewPhase ? 'w-8 bg-[#1B3FBF]' : 'w-4 bg-[#1B3FBF]/10'}`} />
                           ))}
                        </div>
-                       <span className="text-[10px] font-black uppercase tracking-[0.5em] text-[#1B3FBF]">Neural Sync Phase 0{interviewPhase + 1}</span>
+                       <span className="text-[10px] font-black uppercase tracking-[0.5em] text-[#1B3FBF]">Step 0{interviewPhase + 1}</span>
                     </div>
 
                     <div className="space-y-8">
@@ -204,7 +211,7 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
                        {isGenerating ? (
                          <div className="flex items-center gap-4 text-[#1B3FBF]">
                             <div className="w-5 h-5 border-2 border-[#1B3FBF]/20 border-t-[#1B3FBF] rounded-full animate-spin" />
-                            <span className="text-[10px] font-black uppercase tracking-widest animate-pulse">Establishing Identity...</span>
+                            <span className="text-[10px] font-black uppercase tracking-widest animate-pulse">Setting things up...</span>
                          </div>
                        ) : (
                          <form onSubmit={handleAnswerSubmit} className="space-y-6">
@@ -212,14 +219,14 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
                               autoFocus 
                               value={query}
                               onChange={(e) => setQuery(e.target.value)}
-                              placeholder="Describe your intent..."
+                              placeholder="Tell us here..."
                               className="w-full bg-transparent border-b-2 border-black/5 py-4 text-xl outline-none focus:border-[#1B3FBF] transition-all placeholder:text-black/10 font-serif italic"
                             />
                             <button 
                               type="submit"
                               className="px-10 py-5 bg-[#1B3FBF] text-white text-[10px] font-black uppercase tracking-[0.4em] rounded-full hover:scale-105 active:scale-95 transition-all shadow-xl shadow-[#1B3FBF]/20 flex items-center gap-4"
                             >
-                              Continue Protocol <ChevronRight size={14} />
+                              Next <ChevronRight size={14} />
                             </button>
                          </form>
                        )}
