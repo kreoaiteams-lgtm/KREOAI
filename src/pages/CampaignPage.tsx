@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Zap, Globe, ShieldCheck, UserPlus, ArrowDown, Presentation, Code2, Table2, GitGraph, Smile } from 'lucide-react';
 import KreonCard from '../components/KreonCard';
+import Footer from '../components/Footer';
 
 /**
  * CampaignPage — "Build with KREO"
@@ -433,12 +434,11 @@ const CampaignPage: React.FC = () => {
                 </div>
               </div>
               
-              <footer className="absolute bottom-0 h-48 flex flex-col items-center justify-end pb-12 w-full bg-gradient-to-t from-black to-transparent pointer-events-none">
-                <h2 className="text-[15vw] font-black text-white/[0.03] tracking-tighter leading-none select-none" style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }}>KREO</h2>
-                <div className="text-center text-white/40 text-[10px] font-black uppercase tracking-[0.6em] mb-2">
-                  ©2026 KREO NEURAL STUDIO. ALL RIGHTS RESERVED.
-                </div>
-              </footer>
+            </section>
+
+            {/* Global Footer */}
+            <section className="snap-start h-auto bg-white">
+              <Footer />
             </section>
 
           </div>
