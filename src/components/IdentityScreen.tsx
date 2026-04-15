@@ -88,9 +88,9 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
 
   return (
     <div className="fixed inset-0 z-[3000] bg-white overflow-y-auto overflow-x-hidden flex flex-col">
-      {/* Header */}
+      {/* Header - Branding hidden in reveal phase per request */}
       <div className="absolute top-0 left-0 right-0 p-8 flex justify-between items-center z-[100]">
-        <div className="flex items-center gap-3">
+        <div className={`flex items-center gap-3 transition-opacity duration-500 ${phase === 'reveal' ? 'opacity-0' : 'opacity-100'}`}>
           <div className="w-8 h-8 rounded-full bg-[#1B3FBF] flex items-center justify-center text-white font-bold text-xs ring-4 ring-[#1B3FBF]/10">K</div>
           <span className="text-[10px] font-black uppercase tracking-[0.4em] text-black opacity-40">Neural Registry v4.2</span>
         </div>
