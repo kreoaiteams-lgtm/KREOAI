@@ -240,7 +240,7 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
               className="flex-1 flex flex-col items-center justify-center p-12 py-32 relative"
             >
               {/* Flanking Panels (The logic from HomeScreen moved here) */}
-              <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 pointer-events-none hidden xl:flex justify-between items-center px-24 w-full h-[600px] z-10">
+              <div className="absolute inset-x-0 top-[45%] -translate-y-1/2 pointer-events-none hidden xl:flex justify-between items-center px-24 w-full h-[600px] z-10">
                 {/* Left Side: Identity Details */}
                 <motion.div
                   initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.5 }}
@@ -261,37 +261,7 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
                   </div>
                 </motion.div>
 
-                {/* Right Side: Attributes */}
-                <motion.div
-                  initial={{ opacity: 0, x: 50 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.6 }}
-                  className="w-[340px] text-left flex flex-col gap-8"
-                >
-                  <svg className="mb-2" width="200" height="80" viewBox="0 0 160 60" fill="none">
-                    <path d="M10 30 C 60 10, 80 50, 150 50" stroke="#1B3FBF" strokeWidth="2.5" strokeLinecap="round" strokeDasharray="2 8" strokeOpacity="0.5" />
-                    <path d="M140 42 L154 51 L142 60" stroke="#1B3FBF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" strokeOpacity="0.6"/>
-                  </svg>
-                  <span className="text-[11px] font-black uppercase tracking-[0.5em] text-[#1B3FBF]/40">KREON PROFILE</span>
-                  <div className="space-y-6">
-                    <div className="flex items-center gap-5">
-                      <div className="shrink-0 w-12 h-12 bg-[#1B3FBF]/10 rounded-full flex items-center justify-center text-[#1B3FBF] font-black text-lg border border-[#1B3FBF]/20">
-                        {(userName?.[0] || userEmail?.[0] || 'K').toUpperCase()}
-                      </div>
-                      <div>
-                        <div className="text-[14px] font-black text-[#1B3FBF] uppercase tracking-widest">{userName || userEmail?.split('@')[0] || 'GUEST'}</div>
-                        <div className="text-[11px] text-black/40 font-medium">Neural Manifestation Active</div>
-                      </div>
-                    </div>
-                    <div className="flex flex-col gap-4">
-                       <div className="flex items-start gap-4 p-4 border border-[#1B3FBF]/10 rounded-2xl bg-[#1B3FBF]/5">
-                          <Sparkles size={16} className="text-[#1B3FBF] mt-1" />
-                          <div>
-                             <div className="text-[10px] font-black uppercase tracking-widest text-[#1B3FBF]">Sector Alignment</div>
-                             <div className="text-[12px] font-bold text-black uppercase mt-0.5">{interest}</div>
-                          </div>
-                       </div>
-                    </div>
-                  </div>
-                </motion.div>
+                <div className="w-[340px]" />
               </div>
 
               <div className="z-20 scale-110 my-20">
