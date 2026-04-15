@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Share2, Download, Link, Check, Twitter } from 'lucide-react';
 
+interface KreonCardProps {
   userEmail?: string;
   userName?: string;
   cardNumber?: string;
@@ -299,18 +300,46 @@ const KreonCard: React.FC<KreonCardProps> = ({ userEmail, userName, interest, bi
 
   return (
     <div className="flex flex-col items-center" style={{ gap: '30px' }}>
-      <div style={{ perspective: '1200px' }}>
-        <motion.div
-          onClick={() => setIsFlipped(!isFlipped)}
-          onMouseMove={handleMouseMove}
-          onMouseLeave={() => setRotation([0, 0])}
-          animate={{ rotateX, rotateY }}
-          whileHover={{ scale: 1.02 }}
-          transition={{ type: "spring", stiffness: 400, damping: 25 }}
-          style={{ cursor: 'pointer' }}
-        >
-          <KreonCardVisual ref={cardRef} userEmail={userEmail} userName={userName} cardNumber={cardNumber} interest={interest} bio={bio} isFlipped={isFlipped} />
-        </motion.div>
+      <div className="relative">
+        <div style={{ perspective: '1200px' }}>
+          <motion.div
+            onClick={() => setIsFlipped(!isFlipped)}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={() => setRotation([0, 0])}
+            animate={{ rotateX, rotateY }}
+            whileHover={{ scale: 1.02 }}
+            transition={{ type: "spring", stiffness: 400, damping: 25 }}
+            style={{ cursor: 'pointer' }}
+          >
+            <KreonCardVisual ref={cardRef} userEmail={userEmail} userName={userName} cardNumber={cardNumber} interest={interest} bio={bio} isFlipped={isFlipped} />
+          </motion.div>
+        </div>
+
+        {/* Floating Flip Arrow */}
+        <AnimatePresence>
+          {!isFlipped && (
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              className="absolute -right-32 top-1/2 -translate-y-1/2 hidden lg:flex flex-col items-center gap-4 pointer-events-none"
+            >
+              <motion.div
+                animate={{ y: [0, -10, 0] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                className="text-[#1B3FBF]"
+              >
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M19 12H5M12 19l-7-7 7-7" />
+                </svg>
+              </motion.div>
+              <div className="whitespace-nowrap">
+                <p className="text-[10px] font-black uppercase tracking-[0.4em] text-[#1B3FBF]">Flip to View</p>
+                <p className="text-[9px] font-medium text-black/30 uppercase tracking-[0.2em] mt-1">Manifest Identity</p>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       <div style={{ display: 'flex', gap: '10px', width: '340px' }}>
