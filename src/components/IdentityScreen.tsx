@@ -268,20 +268,7 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
                 <KreonCard userEmail={userEmail} userName={userName} interest={interest} bio={residentBio} cardNumber={cardNumber} />
               </div>
 
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1 }}
-                className="mt-24 text-center space-y-8 pb-16"
-              >
-                 <button 
-                  onClick={onClose}
-                  className="px-12 py-6 bg-black text-white text-[11px] font-black uppercase tracking-[0.5em] rounded-full shadow-2xl hover:scale-105 active:scale-95 transition-all"
-                 >
-                   Enter Neural Studio
-                 </button>
-                 <p className="text-[10px] font-black uppercase tracking-widest text-black/30">Your residency is now permanent across all manifests.</p>
-              </motion.div>
+              {/* Final Footer Area Removed per Request */}
             </motion.div>
           )}
         </AnimatePresence>
