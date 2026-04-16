@@ -14,7 +14,8 @@ const AuthScreen = () => {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
+      // Only redirect if they explicitly land on /login and have a firm session
+      if (session && window.location.pathname === '/login') {
         navigate("/");
       }
     });

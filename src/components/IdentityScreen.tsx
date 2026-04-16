@@ -95,64 +95,80 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-[3000] bg-white overflow-y-auto overflow-x-hidden flex flex-col">
-      {/* Header - Branding hidden in reveal phase per request */}
-      <div className="absolute top-0 left-0 right-0 p-8 flex justify-between items-center z-[100]">
-        <div className={`flex items-center gap-3 transition-opacity duration-500 ${phase === 'reveal' ? 'opacity-0' : 'opacity-100'}`}>
-          <div className="w-8 h-8 rounded-full bg-[#1B3FBF] flex items-center justify-center text-white font-bold text-xs ring-4 ring-[#1B3FBF]/10">K</div>
-          <span className="text-[10px] font-black uppercase tracking-[0.4em] text-black opacity-40">KREO Profiles</span>
-        </div>
-        <button 
-          onClick={onClose}
-          className="w-12 h-12 rounded-full bg-black/5 flex items-center justify-center text-black/40 hover:text-black hover:bg-black/10 transition-all group"
-        >
-          <X size={20} className="group-hover:rotate-90 transition-transform" />
-        </button>
+    <div className="fixed inset-0 z-[3000] bg-white overflow-hidden flex flex-col">
+      {/* Immersive Background Elements */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-[0.03]">
+        <BrainCircuit size={1000} className="absolute -top-1/4 -right-1/4 text-[#1B3FBF] rotate-12" />
+        <BrainCircuit size={800} className="absolute -bottom-1/4 -left-1/4 text-[#1B3FBF] -rotate-12" />
       </div>
 
-      <main className="flex-1 flex flex-col relative">
+      <main className="flex-1 flex flex-col relative z-10">
         <AnimatePresence mode="wait">
           {phase === 'pref' && (
             <motion.div 
               key="pref"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              exit={{ opacity: 0, x: -20 }}
               className="flex-1 flex flex-col md:flex-row h-full overflow-hidden"
             >
               {/* Left Side: Buttons */}
-              <div className="w-full md:w-[45%] h-full bg-white flex flex-col justify-center p-12 md:p-20 space-y-12">
-                <div className="space-y-4">
-                  <span className="text-[10px] font-black uppercase tracking-[0.6em] text-[#1B3FBF]">Step 01 / Identity Alignment</span>
-                  <h1 className="text-4xl md:text-5xl font-serif italic text-black leading-tight tracking-tighter">
-                    Select your primary <br/> neural sector.
+              <div className="w-full md:w-[60%] h-full flex flex-col justify-center px-12 md:px-24 py-20 space-y-16 overflow-y-auto">
+                <div className="space-y-6">
+                  <div className="flex items-center gap-4">
+                    <div className="h-[2px] w-12 bg-[#1B3FBF]" />
+                    <span className="text-[11px] font-black uppercase tracking-[0.6em] text-[#1B3FBF]">Step 01 / Identity Alignment</span>
+                  </div>
+                  <h1 className="text-6xl md:text-8xl font-serif italic text-black tracking-tighter leading-[0.9]">
+                    Select your primary <br/> creative sector.
                   </h1>
-                  <p className="text-sm font-light text-black/40 italic font-serif max-w-sm">Your choice defines the visual manifestation of your resident card and sectors.</p>
+                  <p className="text-base font-light text-black/40 italic font-serif max-w-lg leading-relaxed">
+                    Your choice defines the visual manifestation of your resident card and community sectors.
+                  </p>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3 w-full max-w-md">
-                  {INTERESTS.map((item) => (
+                <div className="grid grid-cols-2 gap-6 w-full max-w-2xl">
+                  {INTERESTS.map((item, i) => (
                     <motion.button
                       key={item.id}
-                      whileHover={{ scale: 1.02, y: -2 }}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.05 }}
+                      whileHover={{ scale: 1.02, y: -5 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => setInterest(item.id)}
-                      className={`p-6 rounded-3xl border flex flex-col items-center gap-3 transition-all group ${interest === item.id ? 'bg-[#1B3FBF] border-[#1B3FBF] shadow-xl shadow-[#1B3FBF]/20' : 'bg-[#f8f9ff] border-black/5 hover:border-[#1B3FBF]/20'}`}
+                      className={`relative p-10 rounded-[2.5rem] border transition-all duration-500 flex flex-col items-start gap-8 group overflow-hidden ${
+                        interest === item.id 
+                          ? 'bg-[#1B3FBF] border-[#1B3FBF] text-white shadow-2xl shadow-[#1B3FBF]/40' 
+                          : 'bg-white border-black/5 text-black hover:border-[#1B3FBF]/20 hover:bg-[#1B3FBF]/5 shadow-sm'
+                      }`}
                     >
-                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${interest === item.id ? 'bg-white/20 text-white' : 'bg-white border border-black/5 text-black/20 group-hover:text-[#1B3FBF] group-hover:bg-[#1B3FBF]/5'}`}>
-                        <item.icon size={20} />
+                      <div className={`p-5 rounded-2xl transition-all duration-500 ${
+                        interest === item.id ? 'bg-white/20 text-white' : 'bg-[#1B3FBF]/5 text-[#1B3FBF] group-hover:scale-110'
+                      }`}>
+                        <item.icon size={28} />
                       </div>
-                      <span className={`text-[9px] font-black uppercase tracking-[0.2em] ${interest === item.id ? 'text-white' : 'text-black/40 group-hover:text-black'}`}>{item.label}</span>
+                      <div className="space-y-1 text-left">
+                        <span className="text-[12px] font-black uppercase tracking-[0.4em] block">{item.label}</span>
+                        <span className={`text-[10px] font-medium opacity-40 uppercase tracking-widest ${interest === item.id ? 'text-white' : 'text-black'}`}>Manifest v4.2</span>
+                      </div>
+                      
+                      {interest === item.id && (
+                        <motion.div 
+                          layoutId="active-glow"
+                          className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent pointer-events-none"
+                        />
+                      )}
                     </motion.button>
                   ))}
                 </div>
 
-                <div className="pt-8">
+                <div className="pt-4">
                   <button 
                     onClick={() => setPhase('interview')}
-                    className="px-12 py-6 bg-[#1B3FBF] text-white text-[11px] font-black uppercase tracking-[0.4em] rounded-full hover:scale-105 active:scale-95 transition-all shadow-xl shadow-[#1B3FBF]/20 flex items-center gap-4 w-fit"
+                    className="group px-16 py-8 bg-[#1B3FBF] text-white text-[12px] font-black uppercase tracking-[0.5em] rounded-full hover:scale-105 active:scale-95 transition-all shadow-2xl shadow-[#1B3FBF]/30 flex items-center gap-6 w-fit"
                   >
-                    Confirm <ChevronRight size={14} />
+                    Confirm Selection <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
                   </button>
                 </div>
               </div>
@@ -162,9 +178,15 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
                 <div className="absolute inset-0 pointer-events-none opacity-[0.03]">
                    <BrainCircuit size={600} className="absolute -bottom-40 -left-40 text-[#1B3FBF] rotate-12" />
                 </div>
-                <div className="scale-90 lg:scale-100 transition-transform duration-700">
-                  <KreonCardVisual cardNumber="----" userName={userName || "DHRUV"} userEmail={userEmail} interest={interest} bio="Establishing creative identity..." />
-                </div>
+                <motion.div 
+                  key={interest}
+                  initial={{ opacity: 0, scale: 0.9, rotateY: 20 }}
+                  animate={{ opacity: 1, scale: 1, rotateY: 0 }}
+                  transition={{ type: "spring", stiffness: 100, damping: 20 }}
+                  className="scale-90 lg:scale-100"
+                >
+                  <KreonCardVisual cardNumber="----" userName={userName || "DHRUV"} userEmail={userEmail} interest={interest} bio="Loading..." />
+                </motion.div>
               </div>
             </motion.div>
           )}

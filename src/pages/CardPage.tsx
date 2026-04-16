@@ -14,29 +14,37 @@ const CardPage = ({ onboarding = false }: { onboarding?: boolean }) => {
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
+      // Don't navigate if session is still being determined or if we're already checking
       if (!session) {
-        navigate("/login");
-        return;
+        // Subtle wait to ensure it's not a transient 'null' session during refresh
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+          navigate("/login");
+          return;
+        }
       }
 
-      setUserEmail(session.user.email || "");
-      setUserName(session.user.user_metadata?.full_name || "");
+      const { data: { session: activeSession } } = await supabase.auth.getSession();
+      if (activeSession) {
+        setUserEmail(activeSession.user.email || "");
+        setUserName(activeSession.user.user_metadata?.full_name || "");
 
-      // Fetch Profile from DB
-      const { data: profile, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('user_id', session.user.id)
-        .single();
+        // Fetch Profile from DB
+        const { data: profile, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('user_id', activeSession.user.id)
+          .single();
 
-      if (!error && profile) {
-        setResidentBio(profile.bio || "");
-        setResidentInterest(profile.interest || "tech");
-        setResidentCardNumber(String(profile.card_number).padStart(4, '0'));
-      } else {
-        // Fallback to localStorage
-        setResidentBio(localStorage.getItem('kreo_resident_bio') || "");
-        setResidentCardNumber(localStorage.getItem('kreo_card_number') || "");
+        if (!error && profile) {
+          setResidentBio(profile.bio || "");
+          setResidentInterest(profile.interest || "tech");
+          setResidentCardNumber(String(profile.card_number).padStart(4, '0'));
+        } else {
+          // Fallback to localStorage
+          setResidentBio(localStorage.getItem('kreo_resident_bio') || "");
+          setResidentCardNumber(localStorage.getItem('kreo_card_number') || "");
+        }
       }
       
       setLoading(false);
