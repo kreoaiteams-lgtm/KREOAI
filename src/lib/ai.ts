@@ -202,9 +202,7 @@ export const generateArtifact = async (prompt: string, chatHistory: {role: strin
              const type = typeMatch && typeMatch[1] ? typeMatch[1].toLowerCase() : 'text';
              const code = b.replace(/^```.*?[\r\n]|```$/g, '').trim();
              
-             if (type === 'mermaid') {
-                 // Escape < and > to prevent browser from interpreting mermaid arrows as markup
-                 const safeCode = code.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+             const safeCode = code.replace(/</g, "&lt;").replace(/>/g, "&gt;");
                  return `<pre class="mermaid">\n${safeCode}\n</pre>`;
              } else {
                  return `<div class="code-header">${type.toUpperCase()} SNIPPET</div><pre><code class="language-${type}">${code.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</code></pre>`;
@@ -315,13 +313,17 @@ export const generateBio = async (answers: string[]) => {
   if (!SARVAM_API_KEY) return "A creative force within the KREO ecosystem, dedicated to building new worlds.";
 
   try {
-    const prompt = `Generate a cinematic, highly distinctive 1-sentence bio for a "KREO Resident" based on these 3 interview answers. Make it feel elite, architectural, and mysterious. 
-    Answers: 
-    1. ${answers[0]}
-    2. ${answers[1]}
-    3. ${answers[2]}
+    const QUESTIONS = [
+      "How would you describe your creative style?",
+      "What is your favorite tool or craft?",
+      "Where do you find your best ideas?"
+    ];
+    const prompt = `Summarize these three characteristics of a KREO Resident into a single, high-end, cinematic sentence:
+    - Style: ${answers[0]}
+    - Tool/Craft: ${answers[1]}
+    - Inspiration: ${answers[2]}
     
-    Format: A single quote without surrounding text. Max 25 words.`;
+    Make it feel architectural, sophisticated, and elite. A single quote without surrounding text. Max 25 words.`;
 
     const response = await fetch(SARVAM_ENDPOINT, {
       method: "POST",

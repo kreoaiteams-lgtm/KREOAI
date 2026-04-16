@@ -34,9 +34,9 @@ const INTERESTS: { id: KreonInterest, label: string, icon: any }[] = [
 ];
 
 const QUESTIONS = [
-  "What are three words that describe you?",
-  "What do you want to build with KREO?",
-  "How do you usually solve problems?"
+  "How would you describe your creative style?",
+  "What is your favorite tool or craft?",
+  "Where do you find your best ideas?"
 ];
 
 const IdentityScreen: React.FC<IdentityScreenProps> = ({ 
@@ -276,16 +276,28 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
                      <h3 className="text-4xl md:text-5xl font-serif italic text-[#1B3FBF] leading-tight tracking-tight">
                         Welcome to <br/>KREO.
                      </h3>
-                    <p className="text-sm text-black/50 leading-relaxed mt-5 font-medium max-w-[280px]">
-                      Your account is ready. You can now start building.
+                    <p className="text-sm text-black/40 leading-relaxed mt-5 font-medium max-w-[280px]">
+                      Your account is ready. You are now part of our growing community.
                     </p>
+                    
+                    <div className="mt-8 pt-8 border-t border-black/5 flex items-center gap-6">
+                       <div className="flex flex-col">
+                          <span className="text-[8px] font-black uppercase tracking-[0.3em] text-black/20">RESIDENT CENSUS</span>
+                          <span className="text-sm font-serif italic text-[#1B3FBF]">#{cardNumber} of 2,048</span>
+                       </div>
+                    </div>
                   </div>
                 </motion.div>
 
                 <div className="w-[340px]" />
               </div>
 
-              <div className="z-20 scale-110 my-20">
+              <div className="z-20 scale-100 md:scale-110 my-10 flex flex-col items-center gap-8">
+                <div className="flex flex-col items-center gap-2 opacity-40">
+                   <div className="h-[1px] w-8 bg-black/10" />
+                   <span className="text-[10px] font-black uppercase tracking-[0.5em] text-black/40">Resident ID</span>
+                   <span className="text-3xl font-serif italic text-black/60">#{cardNumber}</span>
+                </div>
                 <KreonCard userEmail={userEmail} userName={userName} interest={interest} bio={residentBio} cardNumber={cardNumber} />
               </div>
 
