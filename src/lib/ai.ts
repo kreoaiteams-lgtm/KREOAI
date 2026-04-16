@@ -202,10 +202,11 @@ export const generateArtifact = async (prompt: string, chatHistory: {role: strin
              const type = typeMatch && typeMatch[1] ? typeMatch[1].toLowerCase() : 'text';
              const code = b.replace(/^```.*?[\r\n]|```$/g, '').trim();
              
-             const safeCode = code.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-                 return `<pre class="mermaid">\n${safeCode}\n</pre>`;
+             if (type === 'mermaid') {
+                  const safeCode = code.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                  return `<pre class="mermaid">\n${safeCode}\n</pre>`;
              } else {
-                 return `<div class="code-header">${type.toUpperCase()} SNIPPET</div><pre><code class="language-${type}">${code.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</code></pre>`;
+                  return `<div class="code-header">${type.toUpperCase()} SNIPPET</div><pre><code class="language-${type}">${code.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</code></pre>`;
              }
         }).join('\n\n');
 
