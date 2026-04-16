@@ -117,47 +117,40 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
                 <div className="space-y-6">
                   <div className="flex items-center gap-4">
                     <div className="h-[2px] w-12 bg-[#1B3FBF]" />
-                    <span className="text-[11px] font-black uppercase tracking-[0.6em] text-[#1B3FBF]">Step 01 / Identity Alignment</span>
+                    <span className="text-[11px] font-black uppercase tracking-[0.6em] text-[#1B3FBF]">Step 01 / Setup</span>
                   </div>
-                  <h1 className="text-5xl md:text-6xl font-serif italic text-black tracking-tighter leading-[1.1]">
-                    Select your primary <br/> creative sector.
+                  <h1 className="text-4xl md:text-5xl font-serif italic text-black tracking-tighter leading-tight whitespace-nowrap">
+                    Choose your interest.
                   </h1>
-                  <p className="text-base font-light text-black/40 italic font-serif max-w-lg leading-relaxed">
-                    Your choice defines the visual manifestation of your resident card and community sectors.
-                  </p>
                 </div>
 
-                <div className="grid grid-cols-2 gap-6 w-full max-w-2xl">
+                <div className="flex flex-col gap-3 w-full max-w-md">
                   {INTERESTS.map((item, i) => (
                     <motion.button
                       key={item.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: i * 0.05 }}
-                      whileHover={{ scale: 1.02, y: -5 }}
+                      whileHover={{ x: 10 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => setInterest(item.id)}
-                      className={`relative p-10 rounded-[2.5rem] border transition-all duration-500 flex flex-col items-start gap-8 group overflow-hidden ${
+                      className={`relative w-full p-4 rounded-2xl border transition-all duration-300 flex items-center gap-6 group overflow-hidden ${
                         interest === item.id 
-                          ? 'bg-[#1B3FBF] border-[#1B3FBF] text-white shadow-2xl shadow-[#1B3FBF]/40' 
+                          ? 'bg-[#1B3FBF] border-[#1B3FBF] text-white shadow-xl shadow-[#1B3FBF]/20' 
                           : 'bg-white border-black/5 text-black hover:border-[#1B3FBF]/20 hover:bg-[#1B3FBF]/5 shadow-sm'
                       }`}
                     >
-                      <div className={`p-5 rounded-2xl transition-all duration-500 ${
-                        interest === item.id ? 'bg-white/20 text-white' : 'bg-[#1B3FBF]/5 text-[#1B3FBF] group-hover:scale-110'
+                      <div className={`p-2.5 rounded-xl transition-all duration-500 ${
+                        interest === item.id ? 'bg-white/20 text-white' : 'bg-[#1B3FBF]/5 text-[#1B3FBF]'
                       }`}>
-                        <item.icon size={28} />
+                        <item.icon size={18} />
                       </div>
-                      <div className="space-y-1 text-left">
-                        <span className="text-[12px] font-black uppercase tracking-[0.4em] block">{item.label}</span>
-                        <span className={`text-[10px] font-medium opacity-40 uppercase tracking-widest ${interest === item.id ? 'text-white' : 'text-black'}`}>Manifest v4.2</span>
+                      <div className="flex-1 text-left">
+                        <span className="text-[12px] font-black uppercase tracking-[0.3em] block">{item.label}</span>
                       </div>
                       
                       {interest === item.id && (
-                        <motion.div 
-                          layoutId="active-glow"
-                          className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent pointer-events-none"
-                        />
+                        <Check size={16} className="text-white mr-2" />
                       )}
                     </motion.button>
                   ))}
@@ -166,9 +159,9 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
                 <div className="pt-4">
                   <button 
                     onClick={() => setPhase('interview')}
-                    className="group px-16 py-8 bg-[#1B3FBF] text-white text-[12px] font-black uppercase tracking-[0.5em] rounded-full hover:scale-105 active:scale-95 transition-all shadow-2xl shadow-[#1B3FBF]/30 flex items-center gap-6 w-fit"
+                    className="group px-12 py-6 bg-[#1B3FBF] text-white text-[11px] font-black uppercase tracking-[0.5em] rounded-full hover:scale-105 active:scale-95 transition-all shadow-xl shadow-[#1B3FBF]/30 flex items-center gap-6 w-fit"
                   >
-                    Confirm Selection <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                    Confirm <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
                   </button>
                 </div>
               </div>
