@@ -1,33 +1,34 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// ─── TAN-NIMBUS FONT STYLE ───────────────────────────────────────────────────
 const TAN: React.CSSProperties = { fontFamily: "'TAN-NIMBUS', sans-serif" };
 
 // ─── SCENE DURATIONS ────────────────────────────────────────────────────────
 const SCENE_DURATION = [
-  6000,  // 0: Opening hook
-  5000,  // 1: "You have ideas"
-  5500,  // 2: KREO Splash
-  7500,  // 3: The Studio — typing prompt
-  8000,  // 4: Manifest — PPT
-  7500,  // 5: Manifest — Dashboard
-  7000,  // 6: Manifest — Brand Toolkit
-  6000,  // 7: "More than a tool"
-  5500,  // 8: KREON intro text
-  11000, // 9: Cards in circle reveal
-  7000,  // 10: Single card closeup
-  6000,  // 11: Possibilities flood
-  7000,  // 12: Finale
+  6000,  // 0: "You wake up with an idea."
+  5500,  // 1: "Stop waiting for the right moment."
+  5000,  // 2: KREO Splash
+  7500,  // 3: Studio — typing
+  8000,  // 4: PPT result
+  7500,  // 5: Dashboard result
+  7000,  // 6: Brand toolkit
+  5500,  // 7: "Not just a tool."
+  5500,  // 8: "Your creative home."
+  5500,  // 9: KREON reveal
+  5000,  // 10: "Your card. Your number."
+  13000, // 11: Card circle — one by one
+  10000, // 12: Card worlds — full screen takeover
+  5500,  // 13: Possibilities
+  6500,  // 14: Finale
 ];
 const TOTAL_SCENES = SCENE_DURATION.length;
 
-// ─── REAL CARD THEMES (from KreonCard.tsx) ──────────────────────────────────
+// ─── CARD THEMES ─────────────────────────────────────────────────────────────
 const CARD_THEMES = [
   {
     id: 'tech', bg: '#3b82f6', text: 'Engineering', color: 'white',
     graphic: (
-      <svg viewBox="0 0 100 100" className="opacity-90 mix-blend-overlay">
+      <svg viewBox="0 0 100 100" style={{ opacity: 0.9, mixBlendMode: 'overlay' as const }}>
         <rect x="15" y="25" width="70" height="50" rx="8" fill="white"/>
         <path d="M 30 40 L 45 50 L 30 60" fill="none" stroke="black" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"/>
         <line x1="55" y1="60" x2="70" y2="60" stroke="black" strokeWidth="6" strokeLinecap="round"/>
@@ -37,7 +38,7 @@ const CARD_THEMES = [
   {
     id: 'design', bg: '#c084fc', text: 'Design & Visuals', color: 'black',
     graphic: (
-      <svg viewBox="0 0 100 100" className="opacity-90 mix-blend-overlay">
+      <svg viewBox="0 0 100 100" style={{ opacity: 0.9, mixBlendMode: 'overlay' as const }}>
         <circle cx="50" cy="50" r="40" fill="white"/>
         <path d="M50 10 C 70 10 90 30 90 50 C 90 70 70 90 50 90 Z" fill="black"/>
         <circle cx="30" cy="40" r="6" fill="black"/>
@@ -48,7 +49,7 @@ const CARD_THEMES = [
   {
     id: 'art', bg: '#ec4899', text: 'Art & Culture', color: 'white',
     graphic: (
-      <svg viewBox="0 0 100 100" className="opacity-90 mix-blend-overlay">
+      <svg viewBox="0 0 100 100" style={{ opacity: 0.9, mixBlendMode: 'overlay' as const }}>
         <path d="M30 70 A 30 30 0 0 1 70 30 L 70 70 Z" fill="white"/>
         <circle cx="45" cy="55" r="5" fill="#ec4899"/>
         <circle cx="60" cy="45" r="5" fill="#ec4899"/>
@@ -58,7 +59,7 @@ const CARD_THEMES = [
   {
     id: 'product', bg: '#f97316', text: 'Product Strategy', color: 'black',
     graphic: (
-      <svg viewBox="0 0 100 100" className="opacity-90 mix-blend-overlay">
+      <svg viewBox="0 0 100 100" style={{ opacity: 0.9, mixBlendMode: 'overlay' as const }}>
         <rect x="20" y="20" width="25" height="60" rx="4" fill="black"/>
         <rect x="55" y="40" width="25" height="40" rx="4" fill="white"/>
         <circle cx="67.5" cy="20" r="8" fill="white"/>
@@ -68,7 +69,7 @@ const CARD_THEMES = [
   {
     id: 'music', bg: '#8b5cf6', text: 'Music & Audio', color: 'white',
     graphic: (
-      <svg viewBox="0 0 100 100" className="opacity-90 mix-blend-overlay">
+      <svg viewBox="0 0 100 100" style={{ opacity: 0.9, mixBlendMode: 'overlay' as const }}>
         <rect x="30" y="20" width="40" height="60" rx="20" fill="none" stroke="white" strokeWidth="8"/>
         <circle cx="30" cy="80" r="10" fill="black"/>
         <circle cx="70" cy="80" r="10" fill="black"/>
@@ -80,7 +81,7 @@ const CARD_THEMES = [
   {
     id: 'sports', bg: '#14b8a6', text: 'Sports & Active', color: 'white',
     graphic: (
-      <svg viewBox="0 0 100 100" className="opacity-90 mix-blend-overlay">
+      <svg viewBox="0 0 100 100" style={{ opacity: 0.9, mixBlendMode: 'overlay' as const }}>
         <circle cx="50" cy="50" r="35" fill="none" stroke="white" strokeWidth="8"/>
         <path d="M20 50 C 40 30 60 30 80 50" fill="none" stroke="black" strokeWidth="6"/>
         <path d="M50 20 C 30 40 30 60 50 80" fill="none" stroke="black" strokeWidth="6"/>
@@ -90,7 +91,7 @@ const CARD_THEMES = [
   {
     id: 'architecture', bg: '#22c55e', text: 'Architecture', color: 'black',
     graphic: (
-      <svg viewBox="0 0 100 100" className="opacity-90 mix-blend-overlay">
+      <svg viewBox="0 0 100 100" style={{ opacity: 0.9, mixBlendMode: 'overlay' as const }}>
         <polygon points="50,20 20,80 80,80" fill="white"/>
         <polygon points="50,20 50,80 80,80" fill="black"/>
         <circle cx="50" cy="50" r="10" fill="#22c55e"/>
@@ -100,7 +101,7 @@ const CARD_THEMES = [
   {
     id: 'news', bg: '#eab308', text: 'News & Insight', color: 'black',
     graphic: (
-      <svg viewBox="0 0 100 100" className="opacity-90 mix-blend-overlay">
+      <svg viewBox="0 0 100 100" style={{ opacity: 0.9, mixBlendMode: 'overlay' as const }}>
         <rect x="20" y="20" width="60" height="60" rx="4" fill="white"/>
         <line x1="30" y1="35" x2="70" y2="35" stroke="black" strokeWidth="6"/>
         <line x1="30" y1="50" x2="70" y2="50" stroke="black" strokeWidth="6"/>
@@ -110,264 +111,226 @@ const CARD_THEMES = [
   },
 ];
 
-// ─── MINI CARD (used in circle scene) ───────────────────────────────────────
-const MiniCard = ({ theme, name, num, delay, visible }: { theme: typeof CARD_THEMES[0]; name: string; num: string; delay: number; visible: boolean }) => (
-  <motion.div
-    initial={{ opacity: 0, scale: 0.6, y: 40 }}
-    animate={{ opacity: visible ? 1 : 0, scale: visible ? 1 : 0.6, y: visible ? 0 : 40 }}
-    transition={{ delay, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-    style={{
-      width: '160px',
-      height: '220px',
+// ─── CARD COMPONENT (real design) ────────────────────────────────────────────
+const KreonCardReal = ({
+  theme, name, num, width = 260, height = 360
+}: {
+  theme: typeof CARD_THEMES[0]; name: string; num: string; width?: number; height?: number;
+}) => {
+  const gSize = Math.round(width * 0.55);
+  const kreoSize = Math.round(width * 0.2);
+  const nameSize = Math.round(width * 0.065);
+
+  return (
+    <div style={{
+      width, height,
       backgroundColor: theme.bg,
-      borderRadius: '24px',
+      borderRadius: Math.round(width * 0.12),
       overflow: 'hidden',
       display: 'flex',
       flexDirection: 'column',
-      boxShadow: `0 20px 60px ${theme.bg}60`,
+      boxShadow: `0 ${Math.round(height * 0.12)}px ${Math.round(height * 0.28)}px ${theme.bg}70`,
+      position: 'relative',
       flexShrink: 0,
-    }}
-  >
-    {/* Top bar */}
-    <div style={{ padding: '12px 14px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-      <div style={{
-        padding: '3px 8px',
-        background: theme.color === 'white' ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.1)',
-        borderRadius: '20px',
-        color: theme.color,
-        fontSize: '7px',
-        fontWeight: 800,
-        textTransform: 'uppercase' as const,
-        letterSpacing: '0.08em',
-      }}>
-        {theme.text}
+    }}>
+      {/* Top row */}
+      <div style={{ padding: `${Math.round(width * 0.08)}px ${Math.round(width * 0.08)}px 0`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', zIndex: 10 }}>
+        <div style={{
+          padding: `${Math.round(width * 0.02)}px ${Math.round(width * 0.05)}px`,
+          background: theme.color === 'white' ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.12)',
+          borderRadius: 40, color: theme.color,
+          fontSize: Math.round(width * 0.04), fontWeight: 800,
+          textTransform: 'uppercase', letterSpacing: '0.08em',
+        }}>
+          {theme.text}
+        </div>
+        <span style={{ fontSize: Math.round(width * 0.065), fontWeight: 900, color: theme.color, opacity: 0.8 }}>#{num}</span>
       </div>
-      <span style={{ fontSize: '10px', fontWeight: 900, color: theme.color, opacity: 0.7 }}>#{num}</span>
-    </div>
-    {/* Graphic */}
-    <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ width: '80px', height: '80px' }}>{theme.graphic}</div>
-    </div>
-    {/* Bottom */}
-    <div style={{ padding: '0 14px 14px', color: theme.color }}>
-      <h1 style={{ fontSize: '28px', fontWeight: 900, ...TAN, letterSpacing: '-0.02em', lineHeight: 1, marginBottom: '4px' }}>KREO</h1>
-      <p style={{ fontSize: '9px', fontWeight: 800, textTransform: 'uppercase' as const, letterSpacing: '0.15em', opacity: 0.6, lineHeight: 1.2 }}>Resident</p>
-      <p style={{ fontSize: '10px', fontWeight: 800, textTransform: 'uppercase' as const, letterSpacing: '0.04em', lineHeight: 1.2 }}>{name}</p>
-    </div>
-    <div style={{ position: 'absolute', inset: 0, opacity: 0.07, backgroundImage: 'url("https://grainy-gradients.vercel.app/noise.svg")', mixBlendMode: 'overlay', pointerEvents: 'none' }} />
-  </motion.div>
-);
 
-// ─── FULL CARD (used in closeup scene) ──────────────────────────────────────
-const FullCard = ({ theme, name, num }: { theme: typeof CARD_THEMES[0]; name: string; num: string }) => (
-  <div style={{
-    width: '300px', height: '420px',
-    backgroundColor: theme.bg, borderRadius: '32px',
-    overflow: 'hidden', display: 'flex', flexDirection: 'column',
-    boxShadow: `0 60px 120px ${theme.bg}70`,
-    position: 'relative',
-  }}>
-    <div style={{ padding: '24px 24px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', zIndex: 10 }}>
-      <div style={{
-        padding: '5px 10px',
-        background: theme.color === 'white' ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.1)',
-        borderRadius: '20px', color: theme.color,
-        fontSize: '9px', fontWeight: 800,
-        textTransform: 'uppercase' as const, letterSpacing: '0.1em',
-      }}>
-        {theme.text}
+      {/* Graphic */}
+      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ width: gSize, height: gSize }}>{theme.graphic}</div>
       </div>
-      <span style={{ fontSize: '16px', fontWeight: 900, color: theme.color, opacity: 0.8 }}>#{num}</span>
-    </div>
-    <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ width: '140px', height: '140px' }}>{theme.graphic}</div>
-    </div>
-    <div style={{ padding: '0 24px 24px', color: theme.color, zIndex: 10 }}>
-      <h1 style={{ fontSize: '52px', fontWeight: 900, ...TAN, letterSpacing: '-0.02em', lineHeight: 1, marginBottom: '6px' }}>KREO</h1>
-      <p style={{ fontSize: '9px', fontWeight: 800, textTransform: 'uppercase' as const, letterSpacing: '0.2em', opacity: 0.5 }}>Resident Architect</p>
-      <p style={{ fontSize: '17px', fontWeight: 800, textTransform: 'uppercase' as const, letterSpacing: '0.05em', lineHeight: 1.2 }}>{name}</p>
-    </div>
-    <div style={{ position: 'absolute', inset: 0, opacity: 0.08, backgroundImage: 'url("https://grainy-gradients.vercel.app/noise.svg")', mixBlendMode: 'overlay', pointerEvents: 'none' }} />
-  </div>
-);
 
-// ─── SCENE 0: Opening Hook ───────────────────────────────────────────────────
+      {/* Bottom */}
+      <div style={{ padding: `0 ${Math.round(width * 0.08)}px ${Math.round(width * 0.08)}px`, color: theme.color, zIndex: 10 }}>
+        <div style={{ fontSize: kreoSize, fontWeight: 900, ...TAN, letterSpacing: '-0.02em', lineHeight: 1, marginBottom: Math.round(width * 0.03) }}>KREO</div>
+        <div style={{ fontSize: Math.round(width * 0.038), fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.15em', opacity: 0.5, marginBottom: 4 }}>Resident</div>
+        <div style={{ fontSize: nameSize, fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', lineHeight: 1.2 }}>{name}</div>
+      </div>
+
+      {/* Grain */}
+      <div style={{ position: 'absolute', inset: 0, opacity: 0.08, backgroundImage: 'url("https://grainy-gradients.vercel.app/noise.svg")', mixBlendMode: 'overlay', pointerEvents: 'none' }} />
+    </div>
+  );
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SCENES
+// ─────────────────────────────────────────────────────────────────────────────
+
 const Scene0 = () => (
-  <div className="fixed inset-0 bg-white flex flex-col items-center justify-center text-center px-10 overflow-hidden">
-    <motion.div
-      initial={{ scaleX: 0 }}
-      animate={{ scaleX: 1 }}
-      transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-      className="h-[2px] w-32 bg-[#1B3FBF] mb-12 origin-left"
-    />
-    {['You wake up with an idea.', 'But no time to build it.', 'Until now.'].map((line, i) => (
+  <div className="fixed inset-0 bg-white flex flex-col items-center justify-center text-center px-10">
+    {['You wake up', 'with an idea.'].map((line, i) => (
       <motion.h1
         key={i}
-        initial={{ opacity: 0, y: 30 }}
+        initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: i * 0.7, duration: 1, ease: [0.16, 1, 0.3, 1] }}
-        className={`font-serif italic tracking-tighter leading-tight ${i === 2 ? 'text-[#1B3FBF]' : 'text-black'}`}
-        style={{ fontSize: 'clamp(2.5rem, 6vw, 5rem)' }}
+        transition={{ delay: i * 0.6, duration: 1, ease: [0.16, 1, 0.3, 1] }}
+        className="text-black font-serif italic tracking-tighter leading-none"
+        style={{ fontSize: 'clamp(4rem, 10vw, 9rem)' }}
       >
         {line}
       </motion.h1>
     ))}
+    <motion.div
+      initial={{ scaleX: 0 }}
+      animate={{ scaleX: 1 }}
+      transition={{ delay: 1.6, duration: 1 }}
+      className="h-1 bg-[#1B3FBF] mt-10 origin-left"
+      style={{ width: 'clamp(80px, 15vw, 200px)' }}
+    />
   </div>
 );
 
-// ─── SCENE 1: "You have ideas" ───────────────────────────────────────────────
 const Scene1 = () => (
-  <div className="fixed inset-0 bg-[#1B3FBF] flex flex-col items-center justify-center text-center px-12 overflow-hidden">
-    <div className="absolute inset-0 opacity-10">
-      {[...Array(24)].map((_, i) => (
-        <motion.div
-          key={i}
-          className="absolute rounded-full bg-white"
-          style={{ left: `${(i * 4.2) % 100}%`, top: `${(i * 7.3) % 100}%`, width: `${(i % 4) + 1}px`, height: `${(i % 4) + 1}px` }}
-          animate={{ opacity: [0.2, 0.8, 0.2] }}
-          transition={{ repeat: Infinity, duration: 2 + (i % 3), delay: (i * 0.3) % 2 }}
-        />
-      ))}
-    </div>
+  <div className="fixed inset-0 bg-[#1B3FBF] flex flex-col items-center justify-center text-center px-10 overflow-hidden">
+    {[...Array(20)].map((_, i) => (
+      <motion.div key={i} className="absolute rounded-full bg-white/10"
+        style={{ width: (i % 5 + 1) * 40, height: (i % 5 + 1) * 40, left: `${(i * 5.3) % 100}%`, top: `${(i * 7.1) % 100}%` }}
+        animate={{ scale: [1, 1.3, 1], opacity: [0.1, 0.3, 0.1] }}
+        transition={{ repeat: Infinity, duration: 3 + i % 4, delay: i * 0.4 }}
+      />
+    ))}
     <motion.h1
-      initial={{ opacity: 0, y: 50 }}
+      initial={{ opacity: 0, y: 60 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-      className="text-white font-serif italic tracking-tighter leading-tight"
-      style={{ fontSize: 'clamp(3rem, 8vw, 7rem)' }}
+      transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+      className="text-white font-serif italic tracking-tighter leading-tight relative z-10"
+      style={{ fontSize: 'clamp(3.5rem, 9vw, 8rem)' }}
     >
-      Stop waiting for <br />
-      <span className="not-italic font-light opacity-60">the right moment.</span>
+      Stop waiting<br />for the right moment.
     </motion.h1>
-    <motion.p
+    <motion.h2
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ delay: 1.2 }}
-      className="text-white/60 text-xl font-light mt-8 max-w-lg leading-relaxed"
+      transition={{ delay: 1.4 }}
+      className="text-white/50 font-serif italic tracking-tighter relative z-10 mt-6"
+      style={{ fontSize: 'clamp(1.8rem, 4vw, 3.5rem)' }}
     >
-      Everything you've been imagining — a dashboard, a pitch, a plan — can exist in seconds.
-    </motion.p>
+      The moment is now.
+    </motion.h2>
   </div>
 );
 
-// ─── SCENE 2: KREO Splash ────────────────────────────────────────────────────
 const Scene2 = () => {
   const [show, setShow] = useState(false);
-  useEffect(() => { const t = setTimeout(() => setShow(true), 1000); return () => clearTimeout(t); }, []);
+  useEffect(() => { const t = setTimeout(() => setShow(true), 900); return () => clearTimeout(t); }, []);
   return (
     <div className="fixed inset-0 bg-[#1B3FBF] flex items-center justify-center overflow-hidden">
       {[...Array(5)].map((_, i) => (
-        <motion.div
-          key={i}
-          className="absolute rounded-full border border-white/10"
-          animate={{ scale: [1, 1.08, 1], opacity: [0.4, 0.1, 0.4] }}
-          transition={{ repeat: Infinity, duration: 4 + i, delay: i * 0.6 }}
+        <motion.div key={i} className="absolute rounded-full border border-white/10"
+          animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.08, 0.3] }}
+          transition={{ repeat: Infinity, duration: 4 + i, delay: i * 0.7 }}
           style={{ width: `${(i + 1) * 18}vw`, height: `${(i + 1) * 18}vw` }}
         />
       ))}
       <div className="text-center relative z-10">
-        <motion.h1
-          initial={{ opacity: 0, scale: 0.7 }}
-          animate={{ opacity: show ? 1 : 0, scale: show ? 1 : 0.7 }}
-          transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
-          style={{ ...TAN, fontSize: 'clamp(6rem, 18vw, 18rem)', color: 'white', letterSpacing: '-0.02em', lineHeight: 1, textShadow: '0 0 150px rgba(255,255,255,0.2)' }}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.6 }}
+          animate={{ opacity: show ? 1 : 0, scale: show ? 1 : 0.6 }}
+          transition={{ duration: 1.6, ease: [0.16, 1, 0.3, 1] }}
+          style={{ ...TAN, fontSize: 'clamp(7rem, 20vw, 20rem)', color: 'white', letterSpacing: '-0.02em', lineHeight: 1, textShadow: '0 0 180px rgba(255,255,255,0.25)' }}
         >
           KREO
-        </motion.h1>
-        <motion.p
+        </motion.div>
+        <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: show ? 1 : 0, y: show ? 0 : 10 }}
-          transition={{ delay: 0.8 }}
-          className="text-white/40 text-lg font-light mt-4 tracking-widest"
+          transition={{ delay: 1 }}
+          className="text-white/50 font-serif italic mt-4"
+          style={{ fontSize: 'clamp(1.5rem, 3vw, 2.5rem)' }}
         >
           Your AI Studio
-        </motion.p>
+        </motion.div>
       </div>
     </div>
   );
 };
 
-// ─── SCENE 3: The Studio ─────────────────────────────────────────────────────
-const PROMPT = "Create a cinematic pitch deck for a climate-tech startup Series A...";
+const PROMPT = "Create a cinematic pitch deck for a climate-tech startup raising Series A...";
 const Scene3 = () => {
   const [typed, setTyped] = useState('');
   useEffect(() => {
     let i = 0;
-    const t = setInterval(() => { setTyped(PROMPT.slice(0, i + 1)); i++; if (i >= PROMPT.length) clearInterval(t); }, 55);
+    const t = setInterval(() => { setTyped(PROMPT.slice(0, i + 1)); i++; if (i >= PROMPT.length) clearInterval(t); }, 48);
     return () => clearInterval(t);
   }, []);
   return (
-    <div className="fixed inset-0 bg-white flex flex-col items-center justify-center px-6">
-      <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="absolute top-0 left-0 right-0 h-14 border-b border-black/5 flex items-center px-8 justify-between">
-        <span style={{ ...TAN, fontSize: '1.4rem', color: '#1B3FBF' }}>KREO</span>
-        <div className="flex gap-2">
-          {['History', 'Pricing', 'Account'].map((item) => (
-            <span key={item} className="text-black/20 text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full border border-black/5">{item}</span>
-          ))}
+    <div className="fixed inset-0 bg-white flex flex-col items-center justify-center px-10 gap-12">
+      <motion.h1
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="font-serif italic text-black tracking-tighter text-center"
+        style={{ fontSize: 'clamp(3rem, 7vw, 6.5rem)', lineHeight: 1.05 }}
+      >
+        One line.<br /><span className="text-[#1B3FBF]">Anything.</span>
+      </motion.h1>
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5 }}
+        className="w-full max-w-3xl flex items-center gap-4 bg-white border-2 border-black/8 rounded-[2rem] px-8 py-6 shadow-2xl shadow-black/5"
+      >
+        <div className="w-10 h-10 bg-[#1B3FBF] rounded-xl flex items-center justify-center shrink-0">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <div className="flex-1 font-serif italic text-black/40 leading-snug" style={{ fontSize: 'clamp(1.1rem, 2vw, 1.5rem)' }}>
+          {typed}
+          <motion.span animate={{ opacity: [1, 0, 1] }} transition={{ repeat: Infinity, duration: 0.8 }} className="ml-0.5 inline-block w-[2px] h-[1em] bg-[#1B3FBF] align-middle" />
+        </div>
+        <div className="w-12 h-12 bg-[#1B3FBF] rounded-xl flex items-center justify-center shrink-0">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
         </div>
       </motion.div>
-      <div className="w-full max-w-2xl space-y-12">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="text-center">
-          <h1 className="font-serif italic text-black tracking-tighter leading-tight" style={{ fontSize: 'clamp(2.5rem, 6vw, 5rem)' }}>
-            One line.<br /><span className="text-[#1B3FBF]">Anything you need.</span>
-          </h1>
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.7 }}
-          className="flex items-center gap-4 bg-white border border-black/10 rounded-[2rem] px-7 py-5 shadow-2xl shadow-black/5"
-        >
-          <div className="w-8 h-8 bg-[#1B3FBF] rounded-xl flex items-center justify-center shrink-0">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          </div>
-          <div className="flex-1 text-lg text-black/40 font-light font-serif italic">
-            {typed}
-            <motion.span animate={{ opacity: [1, 0, 1] }} transition={{ repeat: Infinity, duration: 0.8 }} className="ml-0.5 inline-block w-[2px] h-[1em] bg-[#1B3FBF] align-middle" />
-          </div>
-          <div className="w-10 h-10 bg-[#1B3FBF] rounded-xl flex items-center justify-center shrink-0">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
-          </div>
-        </motion.div>
-      </div>
     </div>
   );
 };
 
-// ─── SCENE 4: PPT Result ─────────────────────────────────────────────────────
 const Scene4 = () => (
-  <div className="fixed inset-0 bg-[#f0f4ff] flex flex-col items-center justify-center px-6 gap-6">
-    <motion.h2 initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-[#1B3FBF] font-serif italic text-3xl tracking-tight">Your pitch deck, ready.</motion.h2>
-    <motion.div
-      initial={{ opacity: 0, scale: 0.95, y: 30 }}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
-      transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-      className="w-full max-w-5xl h-[460px] bg-white rounded-[3rem] border border-black/5 flex overflow-hidden shadow-2xl"
-    >
-      <div className="w-1/5 bg-[#f8f9ff] border-r border-black/5 p-6 flex flex-col gap-3">
+  <div className="fixed inset-0 bg-[#f0f4ff] flex flex-col items-center justify-center px-8 gap-6">
+    <motion.h1 initial={{ opacity: 0, y: -30 }} animate={{ opacity: 1, y: 0 }}
+      className="text-[#1B3FBF] font-serif italic tracking-tighter text-center"
+      style={{ fontSize: 'clamp(2.5rem, 5vw, 4.5rem)' }}>
+      Your pitch deck, ready.
+    </motion.h1>
+    <motion.div initial={{ opacity: 0, scale: 0.95, y: 30 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
+      className="w-full max-w-5xl bg-white rounded-[3rem] border border-black/5 flex overflow-hidden shadow-2xl" style={{ height: '420px' }}>
+      <div className="w-[180px] bg-[#f8f9ff] border-r border-black/5 p-6 flex flex-col gap-3 shrink-0">
         <div className="h-3 w-16 bg-black/10 rounded-full mb-4" />
         {[...Array(5)].map((_, i) => (
-          <div key={i} className={`h-14 rounded-xl border p-2.5 space-y-1.5 ${i === 0 ? 'bg-white border-[#1B3FBF] shadow-sm' : 'bg-black/5 border-transparent'}`}>
+          <div key={i} className={`h-12 rounded-xl border p-2.5 space-y-1.5 ${i === 0 ? 'bg-white border-[#1B3FBF] shadow-sm' : 'bg-black/5 border-transparent'}`}>
             <div className="h-1.5 w-2/3 bg-black/20 rounded-full" />
             <div className="h-1.5 w-1/2 bg-black/10 rounded-full" />
           </div>
         ))}
       </div>
-      <div className="flex-1 p-14 flex flex-col justify-between relative">
-        <div className="absolute top-10 right-10 text-black/10 text-xs font-black uppercase tracking-widest">KREO / GENERATED LIVE</div>
-        <div className="space-y-6">
-          <motion.h2 initial={{ x: 40, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.4 }} className="font-serif italic text-black leading-none tracking-tighter" style={{ fontSize: '3.5rem' }}>
-            The Climate <br />Opportunity
+      <div className="flex-1 p-12 flex flex-col justify-between">
+        <div className="space-y-5">
+          <motion.h2 initial={{ x: 40, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.4 }}
+            className="font-serif italic text-black leading-none tracking-tighter" style={{ fontSize: '3.2rem' }}>
+            The Climate<br />Opportunity
           </motion.h2>
-          <motion.div initial={{ width: 0 }} animate={{ width: '160px' }} transition={{ delay: 0.8, duration: 1 }} className="h-1.5 bg-[#1B3FBF]" />
-          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }} className="text-black/40 text-lg font-light max-w-lg leading-relaxed">
-            Global climate-tech investments surpassed $1.1T in 2025, driven by policy shifts across 64 nations.
+          <motion.div initial={{ width: 0 }} animate={{ width: '140px' }} transition={{ delay: 0.8, duration: 1 }} className="h-1.5 bg-[#1B3FBF]" />
+          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}
+            className="text-black/40 font-light leading-relaxed" style={{ fontSize: '1.15rem', maxWidth: '420px' }}>
+            Global climate-tech hit $1.1 trillion in 2025 — the opportunity of a generation.
           </motion.p>
         </div>
-        <div className="flex gap-4 items-end">
-          {[60, 80, 50, 90, 70].map((h, i) => (
-            <motion.div key={i} initial={{ height: 0 }} animate={{ height: `${h}px` }} transition={{ delay: 0.6 + i * 0.1, duration: 0.8 }}
-              className="w-10 rounded-t-xl" style={{ background: i === 3 ? '#1B3FBF' : '#1B3FBF20' }} />
+        <div className="flex gap-3 items-end">
+          {[60, 80, 50, 90, 70, 85].map((h, i) => (
+            <motion.div key={i} initial={{ height: 0 }} animate={{ height: h }} transition={{ delay: 0.7 + i * 0.1, duration: 0.7 }}
+              className="w-10 rounded-t-xl" style={{ background: i === 3 ? '#1B3FBF' : '#1B3FBF22' }} />
           ))}
         </div>
       </div>
@@ -375,40 +338,36 @@ const Scene4 = () => (
   </div>
 );
 
-// ─── SCENE 5: Dashboard Result ───────────────────────────────────────────────
 const Scene5 = () => (
-  <div className="fixed inset-0 bg-[#f0f4ff] flex flex-col items-center justify-center px-6 gap-6">
-    <motion.h2 initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-[#1B3FBF] font-serif italic text-3xl tracking-tight">Your dashboard, built in seconds.</motion.h2>
-    <motion.div
-      initial={{ opacity: 0, scale: 0.95, y: 30 }}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
-      transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-      className="w-full max-w-5xl h-[460px] bg-white rounded-[3rem] border border-black/5 flex overflow-hidden shadow-2xl"
-    >
-      <div className="w-56 bg-black p-8 flex flex-col gap-5">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-[#1B3FBF]" />
-          <span className="text-white text-xs font-bold uppercase tracking-widest">Insights</span>
-        </div>
-        {['Overview', 'Revenue', 'Users', 'Campaigns'].map((item, i) => (
-          <div key={item} className={`text-sm py-2 px-3 rounded-xl ${i === 0 ? 'bg-[#1B3FBF] text-white' : 'text-white/30'}`}>{item}</div>
+  <div className="fixed inset-0 bg-[#f0f4ff] flex flex-col items-center justify-center px-8 gap-6">
+    <motion.h1 initial={{ opacity: 0, y: -30 }} animate={{ opacity: 1, y: 0 }}
+      className="text-[#1B3FBF] font-serif italic tracking-tighter text-center"
+      style={{ fontSize: 'clamp(2.5rem, 5vw, 4.5rem)' }}>
+      Your dashboard, in seconds.
+    </motion.h1>
+    <motion.div initial={{ opacity: 0, scale: 0.95, y: 30 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
+      className="w-full max-w-5xl bg-white rounded-[3rem] border border-black/5 flex overflow-hidden shadow-2xl" style={{ height: '420px' }}>
+      <div className="w-52 bg-black p-7 flex flex-col gap-5 shrink-0">
+        <div className="w-9 h-9 rounded-xl bg-[#1B3FBF]" />
+        {['Overview', 'Revenue', 'Users', 'Reports'].map((item, i) => (
+          <div key={item} className={`text-sm font-medium py-2.5 px-3 rounded-xl ${i === 0 ? 'bg-[#1B3FBF] text-white' : 'text-white/25'}`}>{item}</div>
         ))}
       </div>
-      <div className="flex-1 p-10 space-y-7 bg-white">
+      <div className="flex-1 p-10 space-y-6">
         <div className="flex justify-between items-center">
-          <h3 className="text-2xl font-serif italic text-black">Revenue Overview</h3>
-          <div className="flex items-center gap-2 text-green-500 text-sm font-bold"><div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" /> Live</div>
+          <h3 className="font-serif italic text-black tracking-tight" style={{ fontSize: '1.8rem' }}>Revenue Overview</h3>
+          <div className="flex items-center gap-2 text-green-500 font-bold"><div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" /> Live</div>
         </div>
-        <div className="grid grid-cols-3 gap-5">
-          {[{ label: 'MRR', value: '$48,200', up: true }, { label: 'Users', value: '12,841', up: true }, { label: 'Churn', value: '1.2%', up: false }].map((kpi, i) => (
-            <motion.div key={i} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 + i * 0.15 }} className="bg-[#f8f9ff] rounded-2xl p-5 space-y-2">
-              <div className="text-black/20 text-xs font-black uppercase tracking-widest">{kpi.label}</div>
-              <div className="text-3xl font-light text-black tracking-tighter">{kpi.value}</div>
-              <div className={`text-xs font-bold ${kpi.up ? 'text-green-500' : 'text-red-400'}`}>{kpi.up ? '↑ +8.4%' : '↓ -0.3%'}</div>
+        <div className="grid grid-cols-3 gap-4">
+          {[{ label: 'MRR', value: '$48,200' }, { label: 'Users', value: '12,841' }, { label: 'ARR', value: '$580K' }].map((kpi, i) => (
+            <motion.div key={i} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 + i * 0.15 }}
+              className="bg-[#f8f9ff] rounded-2xl p-5 space-y-2">
+              <div className="text-black/30 font-bold uppercase tracking-widest" style={{ fontSize: '0.8rem' }}>{kpi.label}</div>
+              <div className="text-black font-light tracking-tighter" style={{ fontSize: '2rem' }}>{kpi.value}</div>
             </motion.div>
           ))}
         </div>
-        <div className="h-24 flex items-end gap-2">
+        <div className="h-20 flex items-end gap-2">
           {[40, 55, 35, 70, 60, 85, 75, 90, 65, 95, 80, 100].map((h, i) => (
             <motion.div key={i} initial={{ height: 0 }} animate={{ height: `${h}%` }} transition={{ delay: 0.5 + i * 0.05, duration: 0.6 }}
               className="flex-1 rounded-t-lg bg-[#1B3FBF]/10 relative overflow-hidden">
@@ -421,96 +380,117 @@ const Scene5 = () => (
   </div>
 );
 
-// ─── SCENE 6: Brand Toolkit ──────────────────────────────────────────────────
 const Scene6 = () => (
-  <div className="fixed inset-0 bg-[#f0f4ff] flex flex-col items-center justify-center px-6 gap-6">
-    <motion.h2 initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-[#1B3FBF] font-serif italic text-3xl tracking-tight">Your brand, designed for you.</motion.h2>
-    <motion.div
-      initial={{ opacity: 0, scale: 0.95, y: 30 }}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
-      transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-      className="w-full max-w-4xl h-[420px] bg-white rounded-[3rem] border border-black/5 flex overflow-hidden shadow-2xl"
-    >
-      <div className="w-1/2 flex flex-col items-center justify-center border-r border-black/5 p-14 space-y-6">
-        <motion.div initial={{ rotate: -12, scale: 0.7, opacity: 0 }} animate={{ rotate: 0, scale: 1, opacity: 1 }} transition={{ delay: 0.4, duration: 1, ease: [0.16, 1, 0.3, 1] }}
-          className="w-40 h-40 bg-black rounded-[3rem] flex items-center justify-center shadow-2xl">
+  <div className="fixed inset-0 bg-[#f0f4ff] flex flex-col items-center justify-center px-8 gap-6">
+    <motion.h1 initial={{ opacity: 0, y: -30 }} animate={{ opacity: 1, y: 0 }}
+      className="text-[#1B3FBF] font-serif italic tracking-tighter text-center"
+      style={{ fontSize: 'clamp(2.5rem, 5vw, 4.5rem)' }}>
+      Your brand, designed.
+    </motion.h1>
+    <motion.div initial={{ opacity: 0, scale: 0.95, y: 30 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
+      className="w-full max-w-4xl bg-white rounded-[3rem] border border-black/5 flex overflow-hidden shadow-2xl" style={{ height: '380px' }}>
+      <div className="w-1/2 flex flex-col items-center justify-center border-r border-black/5 p-12 space-y-5">
+        <motion.div initial={{ rotate: -15, scale: 0.7, opacity: 0 }} animate={{ rotate: 0, scale: 1, opacity: 1 }} transition={{ delay: 0.4, duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+          className="w-36 h-36 bg-black rounded-[2.5rem] flex items-center justify-center shadow-2xl">
           <span className="text-white font-serif italic" style={{ fontSize: '5rem' }}>N</span>
         </motion.div>
-        <div className="text-center">
-          <p className="text-black text-base font-black uppercase tracking-widest">Neura AI</p>
-          <p className="text-black/30 text-xs font-bold uppercase tracking-widest mt-1">Designed by KREO</p>
-        </div>
+        <div className="text-black font-black uppercase tracking-widest text-center" style={{ fontSize: '1.1rem' }}>Neura AI</div>
       </div>
-      <div className="w-1/2 p-14 flex flex-col justify-center space-y-8">
+      <div className="w-1/2 p-12 flex flex-col justify-center space-y-8">
         <div className="space-y-3">
-          <p className="text-black/30 text-xs font-black uppercase tracking-widest">Palette</p>
+          <div className="text-black/40 font-bold uppercase tracking-widest" style={{ fontSize: '0.9rem' }}>Palette</div>
           <div className="flex gap-4">
             {['#000000', '#1B3FBF', '#FACC15', '#F8F9FF'].map((c, i) => (
-              <motion.div key={i} initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.5 + i * 0.1 }}
-                className="w-12 h-12 rounded-2xl border border-black/5 shadow-inner" style={{ backgroundColor: c }} />
+              <motion.div key={i} initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.5 + i * 0.1 }}
+                className="w-14 h-14 rounded-2xl border border-black/5 shadow-sm" style={{ backgroundColor: c }} />
             ))}
           </div>
         </div>
-        <div className="space-y-2">
-          <p className="text-black/30 text-xs font-black uppercase tracking-widest">Typography</p>
-          <h2 className="font-serif italic text-black tracking-tighter" style={{ fontSize: '3rem', lineHeight: 1 }}>Instrument</h2>
-          <h2 className="font-light text-black/30 tracking-tight text-2xl">Satoshi / Inter</h2>
+        <div>
+          <div className="text-black/40 font-bold uppercase tracking-widest mb-2" style={{ fontSize: '0.9rem' }}>Typography</div>
+          <div className="font-serif italic text-black tracking-tighter" style={{ fontSize: '2.8rem', lineHeight: 1 }}>Instrument</div>
+          <div className="text-black/30 font-light" style={{ fontSize: '1.6rem' }}>Satoshi</div>
         </div>
       </div>
     </motion.div>
   </div>
 );
 
-// ─── SCENE 7: More than a tool ───────────────────────────────────────────────
 const Scene7 = () => (
   <div className="fixed inset-0 bg-white flex flex-col items-center justify-center text-center px-10">
-    {['KREO is not just a tool.', 'It is your creative home.'].map((line, i) => (
-      <motion.h1
-        key={i}
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: i * 0.8, duration: 1, ease: [0.16, 1, 0.3, 1] }}
+    {["KREO is not just a tool.", "It is something more."].map((line, i) => (
+      <motion.h1 key={i}
+        initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: i * 0.9, duration: 1, ease: [0.16, 1, 0.3, 1] }}
         className={`font-serif italic tracking-tighter leading-tight ${i === 1 ? 'text-[#1B3FBF]' : 'text-black'}`}
-        style={{ fontSize: 'clamp(2.5rem, 6vw, 5.5rem)' }}
-      >
+        style={{ fontSize: 'clamp(3rem, 7vw, 6.5rem)' }}>
         {line}
       </motion.h1>
     ))}
-    <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2 }} className="text-black/30 text-lg font-light mt-10 max-w-lg leading-relaxed">
-      Every person who joins KREO becomes something more. A Resident. A Dreamer. A Creator.
-    </motion.p>
   </div>
 );
 
-// ─── SCENE 8: KREON Intro ────────────────────────────────────────────────────
 const Scene8 = () => (
-  <div className="fixed inset-0 bg-[#1B3FBF] flex flex-col items-center justify-center text-center px-10 overflow-hidden">
-    {[...Array(4)].map((_, i) => (
-      <motion.div key={i} className="absolute rounded-full border border-white/10"
-        animate={{ scale: [1, 1.08, 1], opacity: [0.3, 0.1, 0.3] }}
-        transition={{ repeat: Infinity, duration: 5 + i, delay: i * 0.8 }}
-        style={{ width: `${(i + 1) * 22}vw`, height: `${(i + 1) * 22}vw` }}
-      />
+  <div className="fixed inset-0 bg-white flex flex-col items-center justify-center text-center px-10">
+    {["It is your", "creative home."].map((line, i) => (
+      <motion.h1 key={i}
+        initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: i * 0.7, duration: 1, ease: [0.16, 1, 0.3, 1] }}
+        className={`font-serif italic tracking-tighter leading-tight ${i === 1 ? 'text-[#1B3FBF]' : 'text-black'}`}
+        style={{ fontSize: 'clamp(3.5rem, 9vw, 8.5rem)' }}>
+        {line}
+      </motion.h1>
     ))}
-    <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-white/40 text-sm font-light uppercase tracking-widest mb-8">
-      Introducing
-    </motion.p>
-    <motion.h1
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ delay: 0.4, duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-      style={{ ...TAN, fontSize: 'clamp(5rem, 16vw, 14rem)', color: 'white', letterSpacing: '-0.02em', lineHeight: 1 }}
-    >
-      KREON
-    </motion.h1>
-    <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1 }}
-      className="text-white/60 text-xl font-light mt-8 max-w-lg leading-relaxed">
-      Your identity inside KREO. Your card. Your story. Your number.
-    </motion.p>
+    <motion.h2 initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.8 }}
+      className="text-black/25 font-serif italic tracking-tighter mt-8"
+      style={{ fontSize: 'clamp(1.5rem, 3vw, 3rem)' }}>
+      Every creator deserves a place to belong.
+    </motion.h2>
   </div>
 );
 
-// ─── SCENE 9: Cards in Circle ─────────────────────────────────────────────────
+const Scene9 = () => {
+  const [show, setShow] = useState(false);
+  useEffect(() => { const t = setTimeout(() => setShow(true), 700); return () => clearTimeout(t); }, []);
+  return (
+    <div className="fixed inset-0 bg-[#1B3FBF] flex items-center justify-center overflow-hidden">
+      {[...Array(5)].map((_, i) => (
+        <motion.div key={i} className="absolute rounded-full border border-white/10"
+          animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.08, 0.3] }}
+          transition={{ repeat: Infinity, duration: 5 + i, delay: i * 0.7 }}
+          style={{ width: `${(i + 1) * 20}vw`, height: `${(i + 1) * 20}vw` }}
+        />
+      ))}
+      <div className="text-center relative z-10">
+        <motion.div initial={{ opacity: 0, scale: 0.6 }} animate={{ opacity: show ? 1 : 0, scale: show ? 1 : 0.6 }} transition={{ duration: 1.6, ease: [0.16, 1, 0.3, 1] }}
+          style={{ ...TAN, fontSize: 'clamp(5rem, 18vw, 16rem)', color: 'white', letterSpacing: '-0.02em', lineHeight: 1, textShadow: '0 0 160px rgba(255,255,255,0.2)' }}>
+          KREON
+        </motion.div>
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: show ? 1 : 0, y: show ? 0 : 10 }} transition={{ delay: 1.1 }}
+          className="text-white/50 font-serif italic mt-6"
+          style={{ fontSize: 'clamp(1.4rem, 3vw, 2.5rem)' }}>
+          Your identity inside KREO.
+        </motion.div>
+      </div>
+    </div>
+  );
+};
+
+const Scene10 = () => (
+  <div className="fixed inset-0 bg-white flex flex-col items-center justify-center text-center px-10">
+    {["Your card.", "Your number.", "Your story."].map((line, i) => (
+      <motion.h1 key={i}
+        initial={{ opacity: 0, x: i % 2 === 0 ? -60 : 60 }} animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: i * 0.6, duration: 1, ease: [0.16, 1, 0.3, 1] }}
+        className="font-serif italic tracking-tighter leading-tight"
+        style={{ fontSize: 'clamp(3.5rem, 9vw, 8rem)', color: i === 2 ? '#1B3FBF' : 'black' }}>
+        {line}
+      </motion.h1>
+    ))}
+  </div>
+);
+
+// ─── SCENE 11: CARDS IN CIRCLE — large, static circle, dramatic entrances ──
 const CIRCLE_CARDS = [
   { theme: CARD_THEMES[0], name: 'ARJUN S.', num: '0001' },
   { theme: CARD_THEMES[1], name: 'SARA K.', num: '0042' },
@@ -519,171 +499,200 @@ const CIRCLE_CARDS = [
   { theme: CARD_THEMES[4], name: 'PRIYA T.', num: '0389' },
   { theme: CARD_THEMES[5], name: 'ZEN O.', num: '0512' },
   { theme: CARD_THEMES[6], name: 'ALI H.', num: '0778' },
-  { theme: CARD_THEMES[7], name: 'DHRUV G.', num: '0042' },
+  { theme: CARD_THEMES[7], name: 'DHRUV G.', num: '1024' },
 ];
 
-const Scene9 = () => {
+const Scene11 = () => {
   const [visibleCount, setVisibleCount] = useState(0);
   const total = CIRCLE_CARDS.length;
-  const radius = 320; // px
+  const CARD_W = 180;
+  const CARD_H = 248;
+  const RADIUS = 340;
 
   useEffect(() => {
     let c = 0;
-    const t = setInterval(() => {
-      c++;
-      setVisibleCount(c);
-      if (c >= total) clearInterval(t);
-    }, 800);
-    return () => clearInterval(t);
+    // First card appears at 1s, then every 1.1s
+    const t = setTimeout(() => {
+      const interval = setInterval(() => {
+        c++;
+        setVisibleCount(c);
+        if (c >= total) clearInterval(interval);
+      }, 1100);
+      setVisibleCount(1);
+      c = 1;
+      return () => clearInterval(interval);
+    }, 700);
+    return () => clearTimeout(t);
   }, []);
 
   return (
-    <div className="fixed inset-0 bg-white flex flex-col items-center justify-center overflow-hidden">
-      {/* Center label */}
+    <div className="fixed inset-0 bg-white flex items-center justify-center overflow-hidden">
+      {/* Subtle center pulse */}
+      {[1, 2, 3].map(i => (
+        <motion.div key={i} className="absolute rounded-full border border-[#1B3FBF]/8"
+          animate={{ scale: [1, 1.06, 1], opacity: [0.4, 0.1, 0.4] }}
+          transition={{ repeat: Infinity, duration: 4 + i * 1.5, delay: i * 0.6 }}
+          style={{ width: RADIUS * 2 * 0.6 * i, height: RADIUS * 2 * 0.6 * i }}
+        />
+      ))}
+
+      {/* Center KREON label */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 1.5 }}
-        className="absolute z-20 text-center pointer-events-none"
+        initial={{ opacity: 0, scale: 0.7 }}
+        animate={{ opacity: visibleCount >= 4 ? 1 : 0, scale: visibleCount >= 4 ? 1 : 0.7 }}
+        transition={{ duration: 0.8 }}
+        className="absolute z-30 text-center pointer-events-none"
       >
-        <h1 style={{ ...TAN, fontSize: '4rem', color: '#1B3FBF', letterSpacing: '-0.02em', lineHeight: 1 }}>KREON</h1>
-        <p className="text-black/30 text-sm font-light mt-2">Every card is yours.</p>
+        <div style={{ ...TAN, fontSize: 'clamp(3rem, 6vw, 5.5rem)', color: '#1B3FBF', letterSpacing: '-0.02em', lineHeight: 1 }}>KREON</div>
       </motion.div>
 
-      {/* Rotating ring */}
-      <motion.div
-        animate={{ rotate: 360 }}
-        transition={{ duration: 60, repeat: Infinity, ease: 'linear' }}
-        className="absolute"
-        style={{ width: radius * 2, height: radius * 2 }}
-      >
-        {CIRCLE_CARDS.map((card, i) => {
-          const angle = (i / total) * 2 * Math.PI - Math.PI / 2;
-          const x = Math.cos(angle) * radius;
-          const y = Math.sin(angle) * radius;
-          return (
-            <motion.div
-              key={i}
-              style={{
-                position: 'absolute',
-                left: '50%',
-                top: '50%',
-                transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`,
-              }}
-            >
-              {/* Counter-rotate so cards stay upright */}
-              <motion.div
-                animate={{ rotate: -360 }}
-                transition={{ duration: 60, repeat: Infinity, ease: 'linear' }}
-              >
-                <MiniCard
-                  theme={card.theme}
-                  name={card.name}
-                  num={card.num}
-                  delay={i * 0.3}
-                  visible={i < visibleCount}
-                />
-              </motion.div>
-            </motion.div>
-          );
-        })}
-      </motion.div>
+      {/* Cards positioned in a static circle */}
+      {CIRCLE_CARDS.map((card, i) => {
+        const angle = (i / total) * 2 * Math.PI - Math.PI / 2;
+        const cx = Math.cos(angle) * RADIUS;
+        const cy = Math.sin(angle) * RADIUS;
+
+        return (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, scale: 0, x: 0, y: 0 }}
+            animate={{
+              opacity: i < visibleCount ? 1 : 0,
+              scale: i < visibleCount ? 1 : 0,
+              x: i < visibleCount ? cx - CARD_W / 2 : 0,
+              y: i < visibleCount ? cy - CARD_H / 2 : 0,
+            }}
+            transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+            style={{ position: 'absolute' }}
+          >
+            <KreonCardReal theme={card.theme} name={card.name} num={card.num} width={CARD_W} height={CARD_H} />
+          </motion.div>
+        );
+      })}
     </div>
   );
 };
 
-// ─── SCENE 10: Single Card Closeup ──────────────────────────────────────────
-const Scene10 = () => {
-  const [cardIdx, setCardIdx] = useState(0);
+// ─── SCENE 12: CARD WORLDS — full-screen color takeover ─────────────────────
+const SHOWCASE_CARDS = [
+  { theme: CARD_THEMES[0], name: 'ARJUN S.', num: '0001', word: 'Engineer.' },
+  { theme: CARD_THEMES[1], name: 'SARA K.', num: '0042', word: 'Designer.' },
+  { theme: CARD_THEMES[2], name: 'MAYA L.', num: '0108', word: 'Artist.' },
+  { theme: CARD_THEMES[3], name: 'RAVI M.', num: '0247', word: 'Builder.' },
+  { theme: CARD_THEMES[4], name: 'PRIYA T.', num: '0389', word: 'Creator.' },
+];
+
+const Scene12 = () => {
+  const [idx, setIdx] = useState(0);
   useEffect(() => {
-    const t = setInterval(() => setCardIdx(p => (p + 1) % CARD_THEMES.length), 1400);
+    const t = setInterval(() => setIdx(p => (p + 1) % SHOWCASE_CARDS.length), 1900);
     return () => clearInterval(t);
   }, []);
 
-  const theme = CARD_THEMES[cardIdx];
+  const current = SHOWCASE_CARDS[idx];
+  const textColor = current.theme.color === 'white' ? 'rgba(255,255,255,0.9)' : 'rgba(0,0,0,0.9)';
+  const dimColor = current.theme.color === 'white' ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.3)';
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center overflow-hidden" style={{ backgroundColor: theme.bg, transition: 'background-color 0.8s ease' }}>
+    <div
+      className="fixed inset-0 flex items-center justify-center overflow-hidden"
+      style={{ backgroundColor: current.theme.bg, transition: 'background-color 1s cubic-bezier(0.4,0,0.2,1)' }}
+    >
       {/* Background rings */}
-      {[...Array(3)].map((_, i) => (
+      {[1, 2].map(i => (
         <motion.div key={i} className="absolute rounded-full border border-white/10"
-          animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.1, 0.3] }}
-          transition={{ repeat: Infinity, duration: 4 + i, delay: i * 0.6 }}
-          style={{ width: `${(i + 1) * 30}vw`, height: `${(i + 1) * 30}vw` }}
+          animate={{ scale: [1, 1.12, 1], opacity: [0.3, 0.08, 0.3] }}
+          transition={{ repeat: Infinity, duration: 5 + i * 2, delay: i * 0.8 }}
+          style={{ width: `${i * 65}vw`, height: `${i * 65}vw` }}
         />
       ))}
 
-      <div className="flex items-center gap-20 relative z-10">
+      <div className="relative z-10 flex items-center gap-16 px-16">
+        {/* Word — large, left */}
         <AnimatePresence mode="wait">
           <motion.div
-            key={cardIdx}
-            initial={{ opacity: 0, x: -60, rotateY: -20 }}
-            animate={{ opacity: 1, x: 0, rotateY: 0 }}
-            exit={{ opacity: 0, x: 60, rotateY: 20 }}
-            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-            style={{ perspective: '800px' }}
+            key={idx + '-text'}
+            initial={{ opacity: 0, x: -80 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 80 }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            className="flex-1"
           >
-            <FullCard theme={theme} name="YOUR NAME" num="000X" />
+            <div style={{ color: dimColor, fontSize: 'clamp(1.2rem, 2.5vw, 2rem)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.3em', marginBottom: '1rem' }}>
+              {current.theme.text}
+            </div>
+            <div style={{ color: textColor, fontFamily: 'serif', fontStyle: 'italic', fontSize: 'clamp(5rem, 13vw, 12rem)', letterSpacing: '-0.03em', lineHeight: 0.9 }}>
+              {current.word}
+            </div>
+            <div style={{ color: dimColor, fontSize: 'clamp(1.4rem, 3vw, 2.8rem)', fontFamily: 'serif', fontStyle: 'italic', marginTop: '1.5rem', lineHeight: 1.4 }}>
+              Every KREON belongs to someone real.
+            </div>
           </motion.div>
         </AnimatePresence>
 
+        {/* Card */}
         <AnimatePresence mode="wait">
           <motion.div
-            key={cardIdx}
-            initial={{ opacity: 0, x: 40 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -40 }}
-            transition={{ duration: 0.6 }}
-            className="space-y-4 max-w-xs"
+            key={idx + '-card'}
+            initial={{ opacity: 0, y: 60, rotate: 6 }}
+            animate={{ opacity: 1, y: 0, rotate: 0 }}
+            exit={{ opacity: 0, y: -60, rotate: -6 }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            style={{ perspective: 1000 }}
           >
-            <div style={{ color: theme.color === 'white' ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.3)', fontSize: '10px', fontWeight: 900, textTransform: 'uppercase' as const, letterSpacing: '0.4em' }}>
-              {theme.text}
-            </div>
-            <h2 style={{ color: theme.color === 'white' ? 'white' : 'black', fontSize: '2.5rem', fontFamily: 'serif', fontStyle: 'italic', letterSpacing: '-0.02em', lineHeight: 1.1 }}>
-              Your card.<br />Your identity.
-            </h2>
-            <p style={{ color: theme.color === 'white' ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.4)', fontSize: '1rem', fontWeight: 300, lineHeight: 1.6 }}>
-              Every KREON is unique. Colored by your passion. Numbered by your place in history.
-            </p>
+            <KreonCardReal
+              theme={current.theme}
+              name={current.name}
+              num={current.num}
+              width={300}
+              height={420}
+            />
           </motion.div>
         </AnimatePresence>
+      </div>
+
+      {/* Bottom dots */}
+      <div className="absolute bottom-10 left-0 right-0 flex justify-center gap-3">
+        {SHOWCASE_CARDS.map((_, i) => (
+          <div key={i} className="rounded-full transition-all duration-500"
+            style={{ width: i === idx ? 28 : 8, height: 8, backgroundColor: textColor, opacity: i === idx ? 0.9 : 0.2 }} />
+        ))}
       </div>
     </div>
   );
 };
 
-// ─── SCENE 11: Possibilities ─────────────────────────────────────────────────
+// ─── SCENE 13: Possibilities ─────────────────────────────────────────────────
 const PILE = [
-  "Pitch Decks", "SaaS Dashboards", "Flowcharts", "Brand Kits",
-  "Landing Pages", "Financial Models", "Storyboards", "API Docs",
-  "System Architecture", "Mind Maps", "Style Guides", "Legal Briefs",
-  "Marketing Funnels", "Course Curriculum", "Portfolio Sites", "KREON Cards",
-  "Audit Reports", "UI Mockups",
+  "Pitch Decks", "SaaS Dashboards", "Flowcharts", "Brand Kits", "Landing Pages",
+  "Financial Models", "Storyboards", "API Docs", "System Architecture",
+  "Mind Maps", "Style Guides", "Legal Briefs", "KREON Cards", "UI Mockups",
 ];
 
-const Scene11 = () => {
+const Scene13 = () => {
   const [count, setCount] = useState(0);
-  const positions = useMemo(() => PILE.map(() => ({ x: (Math.random() * 70) - 35, y: (Math.random() * 50) - 25, r: (Math.random() * 30) - 15 })), []);
+  const positions = useMemo(() => PILE.map(() => ({ x: (Math.random() * 68) - 34, y: (Math.random() * 48) - 24, r: (Math.random() * 28) - 14 })), []);
   useEffect(() => {
     let c = 0;
-    const t = setInterval(() => { c++; setCount(c); if (c >= PILE.length) clearInterval(t); }, 240);
+    const t = setInterval(() => { c++; setCount(c); if (c >= PILE.length) clearInterval(t); }, 220);
     return () => clearInterval(t);
   }, []);
   return (
     <div className="fixed inset-0 bg-white flex flex-col items-center justify-center overflow-hidden">
-      <motion.h1 initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="absolute top-14 font-serif italic text-black tracking-tighter text-5xl md:text-6xl text-center z-[100] pointer-events-none">
+      <motion.h1 initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+        className="absolute top-12 font-serif italic text-black tracking-tighter text-center z-[100] pointer-events-none"
+        style={{ fontSize: 'clamp(3rem, 7vw, 6rem)' }}>
         Build without limits.
       </motion.h1>
-      <div className="relative flex-1 w-full flex items-center justify-center mt-10">
+      <div className="relative flex-1 w-full flex items-center justify-center">
         {PILE.map((text, i) => (
-          <motion.div
-            key={i}
+          <motion.div key={i}
             initial={{ opacity: 0, scale: 0.5, y: 100 }}
             animate={{ opacity: i < count ? 1 : 0, scale: i < count ? 1 : 0.5, x: `${positions[i].x}vw`, y: `${positions[i].y}vh`, rotate: positions[i].r, zIndex: i }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute min-w-[200px] px-7 py-4 bg-[#1B3FBF] rounded-[2rem] flex items-center justify-center shadow-xl"
-          >
-            <span className="text-white font-serif italic text-lg tracking-tight">{text}</span>
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            className="absolute bg-[#1B3FBF] rounded-[2rem] flex items-center justify-center shadow-xl"
+            style={{ minWidth: '220px', padding: '14px 28px' }}>
+            <span className="text-white font-serif italic" style={{ fontSize: '1.25rem' }}>{text}</span>
           </motion.div>
         ))}
       </div>
@@ -691,27 +700,26 @@ const Scene11 = () => {
   );
 };
 
-// ─── SCENE 12: Finale ────────────────────────────────────────────────────────
-const Scene12 = () => {
+// ─── SCENE 14: Finale ────────────────────────────────────────────────────────
+const Scene14 = () => {
   const [text, setText] = useState('');
   const target = 'KREO';
   useEffect(() => {
     let i = 0;
-    const t = setInterval(() => { setText(target.slice(0, i + 1)); i++; if (i >= target.length) clearInterval(t); }, 400);
+    const t = setInterval(() => { setText(target.slice(0, i + 1)); i++; if (i >= target.length) clearInterval(t); }, 380);
     return () => clearInterval(t);
   }, []);
-
   return (
-    <div className="fixed inset-0 bg-white flex flex-col items-center justify-center text-center gap-10 overflow-hidden">
-      <div>
-        <motion.h1 className="tracking-tighter leading-none" style={{ ...TAN, fontSize: 'clamp(8rem, 20vw, 18rem)', color: '#1B3FBF' }}>
-          {text}
-          <motion.span animate={{ opacity: [1, 0, 1] }} transition={{ repeat: Infinity, duration: 0.8 }} className="ml-1 inline-block bg-[#1B3FBF] align-middle" style={{ width: '0.06em', height: '1em' }} />
-        </motion.h1>
-      </div>
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 2 }} className="space-y-3">
-        <p className="text-[#1B3FBF] text-lg font-light tracking-widest opacity-50">creoai.vercel.app</p>
-        <p className="text-black/20 text-sm font-medium uppercase tracking-widest">Your Studio. Your KREON. Your World.</p>
+    <div className="fixed inset-0 bg-white flex flex-col items-center justify-center text-center gap-8 overflow-hidden">
+      <motion.div style={{ ...TAN, fontSize: 'clamp(9rem, 22vw, 20rem)', color: '#1B3FBF', letterSpacing: '-0.02em', lineHeight: 1 }}>
+        {text}
+        <motion.span animate={{ opacity: [1, 0, 1] }} transition={{ repeat: Infinity, duration: 0.8 }}
+          style={{ display: 'inline-block', width: '0.06em', height: '1em', backgroundColor: '#1B3FBF', verticalAlign: 'middle', marginLeft: 4 }} />
+      </motion.div>
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 2.2 }}
+        className="font-serif italic text-[#1B3FBF]/40"
+        style={{ fontSize: 'clamp(1.4rem, 3vw, 2.5rem)' }}>
+        creoai.vercel.app
       </motion.div>
     </div>
   );
@@ -738,24 +746,28 @@ export default function KreoPromo6() {
     return () => clearInterval(intervalRef.current);
   }, [scene]);
 
-  const scenes = [<Scene0 />, <Scene1 />, <Scene2 />, <Scene3 />, <Scene4 />, <Scene5 />, <Scene6 />, <Scene7 />, <Scene8 />, <Scene9 />, <Scene10 />, <Scene11 />, <Scene12 />];
+  const scenes = [
+    <Scene0 />, <Scene1 />, <Scene2 />, <Scene3 />,
+    <Scene4 />, <Scene5 />, <Scene6 />, <Scene7 />,
+    <Scene8 />, <Scene9 />, <Scene10 />, <Scene11 />,
+    <Scene12 />, <Scene13 />, <Scene14 />,
+  ];
 
   return (
     <div className="relative w-full h-screen overflow-hidden cursor-default select-none bg-white">
       {/* Scene dots */}
       <div className="fixed top-8 right-10 z-[6000] flex items-center gap-1.5">
         {Array.from({ length: TOTAL_SCENES }).map((_, i) => (
-          <div key={i} className={`rounded-full transition-all duration-500 ${i === scene ? 'w-6 h-2 bg-[#1B3FBF]' : 'w-2 h-2 bg-black/10'}`} />
+          <div key={i} className="rounded-full transition-all duration-500"
+            style={{ width: i === scene ? 24 : 8, height: 8, backgroundColor: i === scene ? '#1B3FBF' : 'rgba(0,0,0,0.1)' }} />
         ))}
       </div>
-      {/* Scene */}
       <AnimatePresence mode="wait">
-        <motion.div key={scene} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.7 }} className="w-full h-full">
+        <motion.div key={scene} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.65 }} className="w-full h-full">
           {scenes[scene]}
         </motion.div>
       </AnimatePresence>
-      {/* Progress */}
-      <div className="fixed bottom-0 left-0 w-full h-[3px] z-[6000] bg-black/5">
+      <div className="fixed bottom-0 left-0 w-full bg-black/5" style={{ height: 3, zIndex: 6000 }}>
         <div className="h-full bg-[#1B3FBF] transition-all duration-[50ms]" style={{ width: `${progress}%` }} />
       </div>
     </div>
