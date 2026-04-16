@@ -235,7 +235,7 @@ const Scene2 = () => {
           style={{ width: `${(i + 1) * 18}vw`, height: `${(i + 1) * 18}vw` }}
         />
       ))}
-      <div className="text-center relative z-10">
+      <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
         <motion.div
           initial={{ opacity: 0, scale: 0.6 }}
           animate={{ opacity: show ? 1 : 0, scale: show ? 1 : 0.6 }}
@@ -243,15 +243,6 @@ const Scene2 = () => {
           style={{ ...TAN, fontSize: 'clamp(7rem, 20vw, 20rem)', color: 'white', letterSpacing: '-0.02em', lineHeight: 1, textShadow: '0 0 180px rgba(255,255,255,0.25)' }}
         >
           KREO
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: show ? 1 : 0, y: show ? 0 : 10 }}
-          transition={{ delay: 1 }}
-          className="text-white/50 font-serif italic mt-4"
-          style={{ fontSize: 'clamp(1.5rem, 3vw, 2.5rem)' }}
-        >
-          Your AI Studio
         </motion.div>
       </div>
     </div>
@@ -461,15 +452,10 @@ const Scene9 = () => {
           style={{ width: `${(i + 1) * 20}vw`, height: `${(i + 1) * 20}vw` }}
         />
       ))}
-      <div className="text-center relative z-10">
+      <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
         <motion.div initial={{ opacity: 0, scale: 0.6 }} animate={{ opacity: show ? 1 : 0, scale: show ? 1 : 0.6 }} transition={{ duration: 1.6, ease: [0.16, 1, 0.3, 1] }}
-          style={{ ...TAN, fontSize: 'clamp(5rem, 18vw, 16rem)', color: 'white', letterSpacing: '-0.02em', lineHeight: 1, textShadow: '0 0 160px rgba(255,255,255,0.2)' }}>
+          style={{ ...TAN, fontSize: 'clamp(6rem, 18vw, 18rem)', color: 'white', letterSpacing: '-0.02em', lineHeight: 1, textShadow: '0 0 160px rgba(255,255,255,0.2)' }}>
           KREON
-        </motion.div>
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: show ? 1 : 0, y: show ? 0 : 10 }} transition={{ delay: 1.1 }}
-          className="text-white/50 font-serif italic mt-6"
-          style={{ fontSize: 'clamp(1.4rem, 3vw, 2.5rem)' }}>
-          Your identity inside KREO.
         </motion.div>
       </div>
     </div>
@@ -504,76 +490,49 @@ const CIRCLE_CARDS = [
 
 const Scene11 = () => {
   const [visibleCount, setVisibleCount] = useState(0);
-  const total = CIRCLE_CARDS.length;
-  const CARD_W = 180;
-  const CARD_H = 248;
-  const RADIUS = 340;
 
   useEffect(() => {
     let c = 0;
-    // First card appears at 1s, then every 1.1s
-    const t = setTimeout(() => {
-      const interval = setInterval(() => {
-        c++;
-        setVisibleCount(c);
-        if (c >= total) clearInterval(interval);
-      }, 1100);
-      setVisibleCount(1);
-      c = 1;
-      return () => clearInterval(interval);
-    }, 700);
-    return () => clearTimeout(t);
+    const interval = setInterval(() => {
+      c++;
+      setVisibleCount(c);
+      if (c >= 4) clearInterval(interval);
+    }, 800);
+    return () => clearInterval(interval);
   }, []);
 
   return (
-    <div className="fixed inset-0 bg-white flex items-center justify-center overflow-hidden">
-      {/* Subtle center pulse */}
-      {[1, 2, 3].map(i => (
-        <motion.div key={i} className="absolute rounded-full border border-[#1B3FBF]/8"
-          animate={{ scale: [1, 1.06, 1], opacity: [0.4, 0.1, 0.4] }}
-          transition={{ repeat: Infinity, duration: 4 + i * 1.5, delay: i * 0.6 }}
-          style={{ width: RADIUS * 2 * 0.6 * i, height: RADIUS * 2 * 0.6 * i }}
-        />
-      ))}
+    <div className="fixed inset-0 bg-white flex items-center justify-center overflow-hidden px-10">
+      {/* PERFECT CENTER KREON */}
+      <div className="absolute inset-0 flex items-center justify-center z-30 pointer-events-none">
+        <motion.div
+           initial={{ opacity: 0, scale: 0.8 }}
+           animate={{ opacity: 1, scale: 1 }}
+           transition={{ duration: 1 }}
+           style={{ ...TAN, fontSize: 'clamp(6rem, 16vw, 16rem)', color: '#1B3FBF', letterSpacing: '-0.02em', lineHeight: 1, textShadow: '0 0 100px rgba(27,63,191,0.2)' }}
+        >
+          KREON
+        </motion.div>
+      </div>
 
-      {/* Center KREON label */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.7 }}
-        animate={{ opacity: visibleCount >= 4 ? 1 : 0, scale: visibleCount >= 4 ? 1 : 0.7 }}
-        transition={{ duration: 0.8 }}
-        className="absolute z-30 text-center pointer-events-none"
-      >
-        <div style={{ ...TAN, fontSize: 'clamp(3rem, 6vw, 5.5rem)', color: '#1B3FBF', letterSpacing: '-0.02em', lineHeight: 1 }}>KREON</div>
-      </motion.div>
-
-      {/* Cards positioned in a static circle */}
-      {CIRCLE_CARDS.map((card, i) => {
-        const angle = (i / total) * 2 * Math.PI - Math.PI / 2;
-        const cx = Math.cos(angle) * RADIUS;
-        const cy = Math.sin(angle) * RADIUS;
-
-        return (
+      {/* Very Simple Horizontal Card Row */}
+      <div className="relative z-10 flex items-center justify-center gap-6 w-full flex-wrap">
+        {[CIRCLE_CARDS[0], CIRCLE_CARDS[1], CIRCLE_CARDS[2], CIRCLE_CARDS[3]].map((card, i) => (
           <motion.div
             key={i}
-            initial={{ opacity: 0, scale: 0, x: 0, y: 0 }}
-            animate={{
-              opacity: i < visibleCount ? 1 : 0,
-              scale: i < visibleCount ? 1 : 0,
-              x: i < visibleCount ? cx - CARD_W / 2 : 0,
-              y: i < visibleCount ? cy - CARD_H / 2 : 0,
-            }}
-            transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-            style={{ position: 'absolute' }}
+            initial={{ opacity: 0, y: 50, scale: 0.9 }}
+            animate={{ opacity: i < visibleCount ? 1 : 0, y: i < visibleCount ? 0 : 50, scale: i < visibleCount ? 1 : 0.9 }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           >
-            <KreonCardReal theme={card.theme} name={card.name} num={card.num} width={CARD_W} height={CARD_H} />
+            <KreonCardReal theme={card.theme} name={card.name} num={card.num} width={260} height={360} />
           </motion.div>
-        );
-      })}
+        ))}
+      </div>
     </div>
   );
 };
 
-// ─── SCENE 12: CARD WORLDS — full-screen color takeover ─────────────────────
+// ─── SCENE 12: CARD WORLDS — highly simplified ──────────────────────────────
 const SHOWCASE_CARDS = [
   { theme: CARD_THEMES[0], name: 'ARJUN S.', num: '0001', word: 'Engineer.' },
   { theme: CARD_THEMES[1], name: 'SARA K.', num: '0042', word: 'Designer.' },
@@ -585,78 +544,50 @@ const SHOWCASE_CARDS = [
 const Scene12 = () => {
   const [idx, setIdx] = useState(0);
   useEffect(() => {
-    const t = setInterval(() => setIdx(p => (p + 1) % SHOWCASE_CARDS.length), 1900);
+    const t = setInterval(() => setIdx(p => (p + 1) % SHOWCASE_CARDS.length), 2000);
     return () => clearInterval(t);
   }, []);
 
   const current = SHOWCASE_CARDS[idx];
-  const textColor = current.theme.color === 'white' ? 'rgba(255,255,255,0.9)' : 'rgba(0,0,0,0.9)';
-  const dimColor = current.theme.color === 'white' ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.3)';
 
   return (
     <div
       className="fixed inset-0 flex items-center justify-center overflow-hidden"
-      style={{ backgroundColor: current.theme.bg, transition: 'background-color 1s cubic-bezier(0.4,0,0.2,1)' }}
+      style={{ backgroundColor: current.theme.bg, transition: 'background-color 0.8s ease' }}
     >
-      {/* Background rings */}
-      {[1, 2].map(i => (
-        <motion.div key={i} className="absolute rounded-full border border-white/10"
-          animate={{ scale: [1, 1.12, 1], opacity: [0.3, 0.08, 0.3] }}
-          transition={{ repeat: Infinity, duration: 5 + i * 2, delay: i * 0.8 }}
-          style={{ width: `${i * 65}vw`, height: `${i * 65}vw` }}
-        />
-      ))}
-
-      <div className="relative z-10 flex items-center gap-16 px-16">
-        {/* Word — large, left */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
         <AnimatePresence mode="wait">
-          <motion.div
-            key={idx + '-text'}
-            initial={{ opacity: 0, x: -80 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 80 }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="flex-1"
-          >
-            <div style={{ color: dimColor, fontSize: 'clamp(1.2rem, 2.5vw, 2rem)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.3em', marginBottom: '1rem' }}>
-              {current.theme.text}
-            </div>
-            <div style={{ color: textColor, fontFamily: 'serif', fontStyle: 'italic', fontSize: 'clamp(5rem, 13vw, 12rem)', letterSpacing: '-0.03em', lineHeight: 0.9 }}>
+           <motion.div 
+              key={idx + "-text"}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 0.15, scale: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.5 }}
+              className="font-serif italic text-white" style={{ fontSize: 'clamp(6rem, 18vw, 18rem)', lineHeight: 0.8, fontWeight: 900, whiteSpace: 'nowrap' }}
+           >
               {current.word}
-            </div>
-            <div style={{ color: dimColor, fontSize: 'clamp(1.4rem, 3vw, 2.8rem)', fontFamily: 'serif', fontStyle: 'italic', marginTop: '1.5rem', lineHeight: 1.4 }}>
-              Every KREON belongs to someone real.
-            </div>
-          </motion.div>
+           </motion.div>
         </AnimatePresence>
+      </div>
 
-        {/* Card */}
+      <div className="relative z-10 flex items-center justify-center">
         <AnimatePresence mode="wait">
           <motion.div
             key={idx + '-card'}
-            initial={{ opacity: 0, y: 60, rotate: 6 }}
-            animate={{ opacity: 1, y: 0, rotate: 0 }}
-            exit={{ opacity: 0, y: -60, rotate: -6 }}
-            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-            style={{ perspective: 1000 }}
+            initial={{ opacity: 0, scale: 0.9, y: 30 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 1.1, y: -30 }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
           >
             <KreonCardReal
               theme={current.theme}
               name={current.name}
               num={current.num}
-              width={300}
-              height={420}
+              width={340}
+              height={480}
             />
           </motion.div>
         </AnimatePresence>
-      </div>
-
-      {/* Bottom dots */}
-      <div className="absolute bottom-10 left-0 right-0 flex justify-center gap-3">
-        {SHOWCASE_CARDS.map((_, i) => (
-          <div key={i} className="rounded-full transition-all duration-500"
-            style={{ width: i === idx ? 28 : 8, height: 8, backgroundColor: textColor, opacity: i === idx ? 0.9 : 0.2 }} />
-        ))}
       </div>
     </div>
   );
