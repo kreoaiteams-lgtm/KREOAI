@@ -34,9 +34,9 @@ const INTERESTS: { id: KreonInterest, label: string, icon: any }[] = [
 ];
 
 const QUESTIONS = [
-  "In three words, how would you define your creative identity to the registry?",
-  "Tell us more about yourself and the manifests you wish to architect.",
-  "How do you prefer to handle complex situations within a neural environment?"
+  "What are three words that describe you?",
+  "What do you want to build with KREO?",
+  "How do you usually solve problems?"
 ];
 
 const IdentityScreen: React.FC<IdentityScreenProps> = ({ 
@@ -117,10 +117,10 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
                     <div className="h-[1px] w-8 bg-[#1B3FBF]/40" />
-                    <span className="text-[9px] font-black uppercase tracking-[0.5em] text-[#1B3FBF]/60">Alignment Step 01</span>
+                    <span className="text-[9px] font-black uppercase tracking-[0.4em] text-[#1B3FBF]/60">Step 01 / Basics</span>
                   </div>
-                  <h1 className="text-3xl md:text-4xl font-serif italic text-black tracking-tight leading-tight">
-                    Choose your interest.
+                  <h1 className="text-3xl md:text-5xl font-serif italic text-black tracking-tight leading-tight">
+                    What are you into?
                   </h1>
                 </div>
 
@@ -214,12 +214,12 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
                             <div key={i} className={`h-1 rounded-full transition-all duration-500 ${i <= interviewPhase ? 'w-8 bg-[#1B3FBF]' : 'w-4 bg-[#1B3FBF]/10'}`} />
                           ))}
                        </div>
-                       <span className="text-[10px] font-black uppercase tracking-[0.5em] text-[#1B3FBF]">Step 0{interviewPhase + 1}</span>
+                       <span className="text-[9px] font-black uppercase tracking-[0.4em] text-[#1B3FBF]">Step 02 / About you</span>
                     </div>
 
                     <div className="space-y-8">
                        <h2 className="text-3xl md:text-5xl font-serif italic text-black leading-tight tracking-tighter h-32">
-                         {isGenerating ? "Synthesizing bio..." : QUESTIONS[interviewPhase]}
+                         {isGenerating ? "Just a moment..." : QUESTIONS[interviewPhase]}
                        </h2>
                        
                        {isGenerating ? (
@@ -272,12 +272,12 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
                     <path d="M140 42 L154 51 L142 60" stroke="#1B3FBF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" strokeOpacity="0.6"/>
                   </svg>
                   <div>
-                    <span className="text-[11px] font-black uppercase tracking-[0.5em] text-[#1B3FBF]/40 block mb-3">Identity Confirmed</span>
-                    <h3 className="text-5xl font-black text-[#1B3FBF] leading-tight tracking-tighter" style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }}>
-                      You are a<br/>KREON.
-                    </h3>
+                    <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[#1B3FBF]/40 block mb-3">HI THERE</span>
+                     <h3 className="text-4xl md:text-5xl font-serif italic text-[#1B3FBF] leading-tight tracking-tight">
+                        Welcome to <br/>KREO.
+                     </h3>
                     <p className="text-sm text-black/50 leading-relaxed mt-5 font-medium max-w-[280px]">
-                      Your permanent residency in the KREO ecosystem is now active.
+                      Your account is ready. You can now start building.
                     </p>
                   </div>
                 </motion.div>
