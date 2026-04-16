@@ -95,7 +95,7 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-[3000] bg-white overflow-hidden flex flex-col">
+    <div className="fixed inset-0 z-[3000] bg-white overflow-y-auto flex flex-col">
       {/* Immersive Background Elements */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-[0.03]">
         <BrainCircuit size={1000} className="absolute -top-1/4 -right-1/4 text-[#1B3FBF] rotate-12" />
@@ -110,16 +110,16 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0, x: -20 }}
-              className="flex-1 flex flex-col md:flex-row h-full overflow-hidden"
+              className="flex-1 flex flex-col md:flex-row h-auto min-h-full"
             >
               {/* Left Side: Buttons */}
-              <div className="w-full md:w-[60%] h-full flex flex-col justify-center px-12 md:px-24 py-20 space-y-16 overflow-y-auto">
+              <div className="w-full md:w-[60%] flex flex-col justify-center px-12 md:px-24 py-20 space-y-16">
                 <div className="space-y-6">
                   <div className="flex items-center gap-4">
                     <div className="h-[2px] w-12 bg-[#1B3FBF]" />
                     <span className="text-[11px] font-black uppercase tracking-[0.6em] text-[#1B3FBF]">Step 01 / Identity Alignment</span>
                   </div>
-                  <h1 className="text-6xl md:text-8xl font-serif italic text-black tracking-tighter leading-[0.9]">
+                  <h1 className="text-5xl md:text-6xl font-serif italic text-black tracking-tighter leading-[1.1]">
                     Select your primary <br/> creative sector.
                   </h1>
                   <p className="text-base font-light text-black/40 italic font-serif max-w-lg leading-relaxed">
