@@ -911,12 +911,12 @@ const HomeScreen = ({
       {settingsOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-md" onClick={() => setSettingsOpen(false)} />
-          <div className={`relative w-full max-w-sm p-8 rounded-[2.5rem] border animate-in zoom-in-95 duration-200 ${theme === 'light' ? 'bg-white border-black/5 shadow-2xl' : 'glass-panel border-white/10 shadow-2xl'}`}>
-            <h2 className="text-2xl font-serif italic mb-8">Atmosphere Control</h2>
+          <div className="relative w-full max-w-sm p-10 rounded-[3rem] bg-white border border-black/5 animate-in zoom-in-95 duration-300 shadow-2xl font-satoshi">
+            <h2 className="text-2xl font-medium tracking-tight mb-8">Atmosphere Control</h2>
             <div className="space-y-6">
-              <div className="flex bg-foreground/5 p-1 rounded-2xl">
+              <div className="flex bg-black/5 p-1.5 rounded-2xl">
                 {(["light", "dark", "ultra"] as const).map((m) => (
-                  <button key={m} onClick={() => setTheme(m)} className={`flex-1 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${theme === m ? "bg-[#0020C2] text-white shadow-lg" : "text-foreground/40"}`}>{m}</button>
+                   <button key={m} onClick={() => setTheme(m)} className={`flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${theme === m ? "bg-[#1B3FBF] text-white shadow-lg" : "text-black/40 hover:text-black"}`}>{m}</button>
                 ))}
               </div>
               <div className="flex items-center justify-between p-4 rounded-2xl bg-[#0020C2]/5 border border-[#0020C2]/10">
@@ -932,24 +932,32 @@ const HomeScreen = ({
 
       {profileOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-md" onClick={() => setProfileOpen(false)} />
-          <div className={`relative w-full max-w-sm p-8 rounded-[2.5rem] border animate-in zoom-in-95 duration-200 ${theme === 'light' ? 'bg-white border-black/5' : 'glass-panel border-white/10'}`}>
-            <div className="flex flex-col items-center gap-4 mb-8">
-              <div className="w-20 h-20 rounded-full bg-[#0020C2] flex items-center justify-center text-white text-3xl font-bold">
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-md" onClick={() => setProfileOpen(false)} />
+          <div className="relative w-full max-w-sm p-10 rounded-[3rem] bg-white border border-black/5 animate-in zoom-in-95 duration-300 shadow-2xl font-satoshi">
+            <div className="flex flex-col items-center gap-6 mb-10">
+              <div className="w-24 h-24 rounded-full bg-[#1B3FBF] flex items-center justify-center text-white text-4xl font-bold shadow-lg shadow-[#1B3FBF]/20">
                 {userEmail.charAt(0).toUpperCase()}
               </div>
-              <div className="text-center">
-                <div className="font-serif italic text-xl">{userEmail.split('@')[0]}</div>
-                <div className="text-[10px] font-black uppercase tracking-widest opacity-40">{userEmail}</div>
+              <div className="text-center space-y-1">
+                <div className="text-2xl font-medium tracking-tight text-black">{userEmail.split('@')[0]}</div>
+                <div className="text-[10px] font-black uppercase tracking-[0.3em] text-black/30">{userEmail}</div>
               </div>
             </div>
+            <div className="space-y-3">
+              <button 
+                onClick={() => { setShowKreonModal(true); setProfileOpen(false); }} 
+                className="w-full py-5 border border-[#1B3FBF]/10 bg-[#1B3FBF]/5 text-[#1B3FBF] text-[10px] font-black uppercase tracking-[0.4em] rounded-2xl hover:bg-[#1B3FBF]/10 transition-all flex items-center justify-center gap-2 group"
+              >
+                <ShieldCheck size={14} className="group-hover:scale-110 transition-transform" /> View KREON ID
+              </button>
+              <button onClick={handleLogout} className="w-full py-5 bg-red-500/5 text-red-500 text-[10px] font-black uppercase tracking-[0.4em] rounded-2xl hover:bg-red-500/10 transition-all font-black">Sign Out Portal</button>
+            </div>
             <button 
-              onClick={() => { setShowKreonModal(true); setProfileOpen(false); }} 
-              className="w-full py-4 mb-3 border border-[#1B3FBF]/20 bg-[#1B3FBF]/5 text-[#1B3FBF] text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-[#1B3FBF]/10 transition-all flex items-center justify-center gap-2"
+              onClick={() => setProfileOpen(false)}
+              className="w-full text-center mt-8 text-[9px] font-black uppercase tracking-widest text-black/20 hover:text-black transition-colors"
             >
-              <ShieldCheck size={14} /> View KREON ID
+              Close Menu
             </button>
-            <button onClick={handleLogout} className="w-full py-4 bg-red-500/10 text-red-500 text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-red-500/20 transition-all">Sign Out Portal</button>
           </div>
         </div>
       )}
