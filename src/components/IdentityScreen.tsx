@@ -47,7 +47,8 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
   initialBio,
   initialInterest = 'tech',
   initialCardNumber = '0000',
-  initialPhase
+  initialPhase,
+  onPhaseChange
 }) => {
   const [phase, setPhase] = useState<'pref' | 'interview' | 'reveal'>(initialPhase || (initialBio ? 'reveal' : 'pref'));
   const [interest, setInterest] = useState<KreonInterest>(initialInterest as KreonInterest);
