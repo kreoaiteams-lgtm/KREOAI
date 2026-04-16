@@ -113,70 +113,68 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
               className="flex-1 flex flex-col md:flex-row h-auto min-h-full"
             >
               {/* Left Side: Buttons */}
-              <div className="w-full md:w-[60%] flex flex-col justify-center px-12 md:px-24 py-20 space-y-16">
-                <div className="space-y-6">
-                  <div className="flex items-center gap-4">
-                    <div className="h-[2px] w-12 bg-[#1B3FBF]" />
-                    <span className="text-[11px] font-black uppercase tracking-[0.6em] text-[#1B3FBF]">Step 01 / Setup</span>
+              <div className="w-full md:w-[50%] flex flex-col justify-start px-12 md:px-24 py-16 md:py-24 space-y-12">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="h-[1px] w-8 bg-[#1B3FBF]/40" />
+                    <span className="text-[9px] font-black uppercase tracking-[0.5em] text-[#1B3FBF]/60">Alignment Step 01</span>
                   </div>
-                  <h1 className="text-4xl md:text-5xl font-serif italic text-black tracking-tighter leading-tight whitespace-nowrap">
+                  <h1 className="text-3xl md:text-4xl font-serif italic text-black tracking-tight leading-tight">
                     Choose your interest.
                   </h1>
                 </div>
 
-                <div className="flex flex-col gap-3 w-full max-w-md">
+                <div className="grid grid-cols-2 gap-3 w-full max-w-xl pr-12">
                   {INTERESTS.map((item, i) => (
                     <motion.button
                       key={item.id}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: i * 0.05 }}
-                      whileHover={{ x: 10 }}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.04 }}
+                      whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => setInterest(item.id)}
-                      className={`relative w-full p-4 rounded-2xl border transition-all duration-300 flex items-center gap-6 group overflow-hidden ${
+                      className={`relative w-full px-4 py-3 rounded-xl border transition-all duration-300 flex items-center gap-4 group ${
                         interest === item.id 
-                          ? 'bg-[#1B3FBF] border-[#1B3FBF] text-white shadow-xl shadow-[#1B3FBF]/20' 
-                          : 'bg-white border-black/5 text-black hover:border-[#1B3FBF]/20 hover:bg-[#1B3FBF]/5 shadow-sm'
+                          ? 'bg-[#1B3FBF] border-[#1B3FBF] text-white shadow-lg shadow-[#1B3FBF]/20' 
+                          : 'bg-[#f8f9ff] border-black/5 text-black hover:border-[#1B3FBF]/20'
                       }`}
                     >
-                      <div className={`p-2.5 rounded-xl transition-all duration-500 ${
-                        interest === item.id ? 'bg-white/20 text-white' : 'bg-[#1B3FBF]/5 text-[#1B3FBF]'
+                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${
+                        interest === item.id ? 'bg-white/20 text-white' : 'bg-white border border-black/5 text-[#1B3FBF] group-hover:bg-[#1B3FBF]/5'
                       }`}>
-                        <item.icon size={18} />
+                        <item.icon size={15} />
                       </div>
-                      <div className="flex-1 text-left">
-                        <span className="text-[12px] font-black uppercase tracking-[0.3em] block">{item.label}</span>
-                      </div>
+                      <span className="text-[10px] font-black uppercase tracking-[0.2em] flex-1 text-left">{item.label}</span>
                       
                       {interest === item.id && (
-                        <Check size={16} className="text-white mr-2" />
+                        <Check size={12} className="text-white" />
                       )}
                     </motion.button>
                   ))}
                 </div>
 
-                <div className="pt-4">
+                <div className="pt-2">
                   <button 
                     onClick={() => setPhase('interview')}
-                    className="group px-12 py-6 bg-[#1B3FBF] text-white text-[11px] font-black uppercase tracking-[0.5em] rounded-full hover:scale-105 active:scale-95 transition-all shadow-xl shadow-[#1B3FBF]/30 flex items-center gap-6 w-fit"
+                    className="group px-10 py-5 bg-[#1B3FBF] text-white text-[10px] font-black uppercase tracking-[0.4em] rounded-full hover:scale-105 active:scale-95 transition-all shadow-xl shadow-[#1B3FBF]/20 flex items-center gap-4 w-fit"
                   >
-                    Confirm <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                    Next <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
                   </button>
                 </div>
               </div>
 
               {/* Right Side: Card Preview */}
-              <div className="hidden md:flex flex-1 bg-[#f8f9ff] items-center justify-center relative overflow-hidden">
+              <div className="hidden md:flex flex-1 bg-[#f8f9ff] items-start justify-center pt-24 relative overflow-hidden">
                 <div className="absolute inset-0 pointer-events-none opacity-[0.03]">
                    <BrainCircuit size={600} className="absolute -bottom-40 -left-40 text-[#1B3FBF] rotate-12" />
                 </div>
                 <motion.div 
                   key={interest}
-                  initial={{ opacity: 0, scale: 0.9, rotateY: 20 }}
-                  animate={{ opacity: 1, scale: 1, rotateY: 0 }}
+                  initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
                   transition={{ type: "spring", stiffness: 100, damping: 20 }}
-                  className="scale-90 lg:scale-100"
+                  className="scale-90 lg:scale-[0.85] origin-top"
                 >
                   <KreonCardVisual cardNumber="----" userName={userName || "DHRUV"} userEmail={userEmail} interest={interest} bio="Loading..." />
                 </motion.div>
