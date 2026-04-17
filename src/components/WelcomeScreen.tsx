@@ -73,7 +73,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ isVisible, onClose }) => 
             >
               <div className="space-y-4">
                 <h1 className="text-6xl md:text-8xl font-serif italic tracking-tighter leading-none">
-                  Welcome to <span className="not-italic font-black uppercase text-yellow-400">Kreo</span>
+                  Welcome to <span style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }} className="not-italic uppercase text-yellow-400 tracking-tight">KREO</span>
                 </h1>
                 <p className="text-white/40 text-[11px] font-black tracking-[0.8em] uppercase">Build Your Imagination</p>
               </div>

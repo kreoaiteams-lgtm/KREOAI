@@ -258,7 +258,7 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
               key="reveal"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="flex-1 flex flex-col items-center justify-center p-12 py-32 relative"
+              className="flex-1 flex flex-col items-center justify-center p-12 py-8 relative"
             >
               {/* Flanking Panels (The logic from HomeScreen moved here) */}
               <div className="absolute inset-x-0 top-[35%] -translate-y-1/2 pointer-events-none hidden xl:flex justify-between items-center px-24 w-full h-[600px] z-10">
@@ -274,7 +274,8 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
                   <div>
                     <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[#1B3FBF]/40 block mb-3">HI THERE</span>
                      <h3 className="text-4xl md:text-5xl font-serif italic text-[#1B3FBF] leading-tight tracking-tight">
-                        Welcome to <br/>KREO.
+                        Welcome to <br/>
+                        <span style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }} className="not-italic text-5xl md:text-6xl tracking-tight">KREO</span>.
                      </h3>
                     <p className="text-sm text-black/40 leading-relaxed mt-5 font-medium max-w-[280px]">
                       Your account is ready. You are now part of our growing community.
@@ -292,11 +293,11 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
                 <div className="w-[340px]" />
               </div>
 
-              <div className="z-20 scale-100 md:scale-110 my-10 flex flex-col items-center gap-8">
-                <div className="flex flex-col items-center gap-2 opacity-40">
+              <div className="z-20 scale-100 md:scale-110 my-4 flex flex-col items-center gap-6">
+                <div className="flex flex-col items-center gap-1 opacity-40">
                    <div className="h-[1px] w-8 bg-black/10" />
                    <span className="text-[10px] font-black uppercase tracking-[0.5em] text-black/40">Resident ID</span>
-                   <span className="text-3xl font-serif italic text-black/60">#{cardNumber}</span>
+                   <span className="text-2xl font-serif italic text-black/60">#{cardNumber}</span>
                 </div>
                 <KreonCard userEmail={userEmail} userName={userName} interest={interest} bio={residentBio} cardNumber={cardNumber} />
               </div>
