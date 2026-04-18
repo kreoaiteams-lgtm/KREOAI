@@ -483,15 +483,22 @@ const HomeScreen = ({
         try {
           const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
           const isUuid = (urlId && uuidRegex.test(urlId));
+          const isLocal = urlId?.startsWith('local-') || urlId?.startsWith('opt-');
 
-          let query = supabase.from("artifacts").select("*");
-          if (isUuid) {
-            query = query.or(`share_token.eq.${urlId},id.eq.${urlId}`);
-          } else {
-            query = query.eq("share_token", urlId);
+          let data = null;
+          let error = null;
+
+          if (!isLocal) {
+            let query = supabase.from("artifacts").select("id, prompt, code, created_at, user_id, share_token");
+            if (isUuid) {
+              query = query.or(`share_token.eq.${urlId},id.eq.${urlId}`);
+            } else {
+              query = query.eq("share_token", urlId);
+            }
+            const result = await query.single();
+            data = result.data;
+            error = result.error;
           }
-
-          const { data, error } = await query.single();
 
           if (!error && data) {
             setTimeout(() => {
@@ -1040,9 +1047,25 @@ const HomeScreen = ({
            <div className="fixed inset-0 z-[1000] flex flex-col items-center justify-center bg-white overflow-hidden">
               {/* Cinematic Full-Screen Background */}
               <div className="absolute inset-0 bg-[#0020C2] pointer-events-none overflow-hidden">
+                <Dither className="opacity-20 mix-blend-overlay" />
                 <div className="absolute inset-0 opacity-40 mix-blend-screen scale-150 rotate-12">
                    <img src="/cloud_left.png" className="absolute top-0 left-0 w-full h-full object-cover animate-pulse" style={{ animationDuration: '8s' }} alt="" />
                    <img src="/cloud_right.png" className="absolute bottom-0 right-0 w-full h-full object-cover animate-pulse" style={{ animationDuration: '10s' }} alt="" />
+                </div>
+                {/* Wavy Neural Lines */}
+                <div className="absolute inset-0 z-0">
+                  <svg className="w-full h-full opacity-20" viewBox="0 0 1440 800" fill="none">
+                    <motion.path 
+                      animate={{ d: ["M0 400 Q 360 300 720 400 T 1440 400", "M0 400 Q 360 500 720 400 T 1440 400", "M0 400 Q 360 300 720 400 T 1440 400"] }}
+                      transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+                      d="M0 400 Q 360 300 720 400 T 1440 400" stroke="white" strokeWidth="2"
+                    />
+                    <motion.path 
+                      animate={{ d: ["M0 450 Q 360 350 720 450 T 1440 450", "M0 450 Q 360 550 720 450 T 1440 450", "M0 450 Q 360 350 720 450 T 1440 450"] }}
+                      transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                      d="M0 450 Q 360 350 720 450 T 1440 450" stroke="white" strokeWidth="1" opacity="0.5"
+                    />
+                  </svg>
                 </div>
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0020C2]/50 to-[#0020C2]" />
               </div>

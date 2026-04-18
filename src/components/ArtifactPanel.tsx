@@ -361,13 +361,36 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
                       return `
                       <html>
                         <head>
+                          <script>
+                            // Standard KREO Manifest Header: Silence CDN & Setup Neural Roots
+                            window.tailwind = { 
+                              config: { 
+                                theme: { 
+                                  extend: { 
+                                    colors: { primary: '${primaryColor}' },
+                                    borderRadius: { xl: '${borderRadius}' }
+                                  } 
+                                } 
+                              } 
+                            };
+                            window.onerror = (message, source, lineno, colno, error) => {
+                              const root = document.getElementById('root');
+                              if (root) {
+                                root.innerHTML =
+                                  '<div style="padding: 4rem; background: #000; color: #fff; font-family: sans-serif; border: 1px solid rgba(255,255,255,0.1); border-radius: 3rem; margin: 3rem; text-align: center; box-shadow: 0 40px 80px rgba(0,0,0,0.5);">' +
+                                    '<div style="font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5em; color: #ff3e3e; margin-bottom: 2rem;">Neural Manifest Collision</div>' +
+                                    '<h3 style="font-size: 1.8rem; font-weight: 300; line-height: 1.4; margin-bottom: 2rem; color: #eee;">' + message + '</h3>' +
+                                    '<div style="display: inline-block; padding: 1rem 2rem; background: #111; border-radius: 1rem; font-family: monospace; font-size: 0.7rem; color: #555;">' +
+                                      'TRACER: Line ' + lineno + ' / Col ' + colno +
+                                    '</div>' +
+                                  '</div>';
+                              }
+                              return true;
+                            };
+                          </script>
                           <script src="https://cdn.tailwindcss.com"></script>
                           <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
                           <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-                          <script>
-                            // Silence Tailwind production warning
-                            window.tailwind = { config: { theme: { extend: {} } } };
-                          </script>
                           <style>
                             :root {
                               --primary: ${primaryColor};
