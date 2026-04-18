@@ -439,6 +439,9 @@ const HomeScreen = ({
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [currentArtifactId, setCurrentArtifactId] = useState<string | null>(() => localStorage.getItem('kreo_last_id'));
   const [showKreonModal, setShowKreonModal] = useState(false);
+  const [showWebCaptureModal, setShowWebCaptureModal] = useState(false);
+  const [captureUrl, setCaptureUrl] = useState("");
+  const [isCapturing, setIsCapturing] = useState(false);
   const [residentBio, setResidentBio] = useState(() => localStorage.getItem('kreo_resident_bio') || "");
 
   useEffect(() => {
@@ -1160,7 +1163,7 @@ const HomeScreen = ({
                   <div className="absolute left-3 top-1/2 -translate-y-1/2">
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <button type="button" onClick={() => { const url = prompt("Enter URL to mimic aesthetics:"); if(url) setQuery(prev => prev + ` Mimic the style of ${url}`) }} className="p-2 text-black/30 hover:text-[#1B3FBF] hover:bg-[#1B3FBF]/10 rounded-lg transition-all">
+                        <button type="button" onClick={() => setShowWebCaptureModal(true)} className="p-2 text-black/30 hover:text-[#1B3FBF] hover:bg-[#1B3FBF]/10 rounded-lg transition-all">
                           <Globe size={18} />
                         </button>
                       </TooltipTrigger>
@@ -1203,7 +1206,7 @@ const HomeScreen = ({
                       </button>
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <button type="button" onClick={() => { const url = prompt("Enter URL to extract style from:"); if(url) setQuery(prev => prev ? `${prev} Mimic style of ${url}` : `Mimic style of ${url}`) }} className="p-2 text-foreground/40 hover:text-[#1B3FBF]">
+                          <button type="button" onClick={() => setShowWebCaptureModal(true)} className="p-2 text-foreground/40 hover:text-[#1B3FBF]">
                             <Globe size={20} />
                           </button>
                         </TooltipTrigger>
@@ -1360,6 +1363,68 @@ const HomeScreen = ({
           />
         )}
       </AnimatePresence>
+      {showWebCaptureModal && (
+        <div className="fixed inset-0 z-[3000] flex items-center justify-center p-6 bg-black/60 backdrop-blur-xl animate-in fade-in duration-300">
+          <motion.div 
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="bg-white w-full max-w-lg rounded-[3rem] p-10 space-y-8 shadow-2xl relative overflow-hidden"
+          >
+            <div className="absolute top-0 right-0 w-40 h-40 bg-[#1B3FBF]/5 blur-[60px] rounded-full" />
+            
+            <div className="flex justify-between items-center pb-6 border-b border-black/5 relative z-10">
+              <div className="space-y-1">
+                <h3 className="text-2xl font-serif italic tracking-tight text-black">Web Capture Style</h3>
+                <p className="text-[10px] font-black uppercase tracking-widest text-[#1B3FBF]">Extract brand aesthetics from any URL</p>
+              </div>
+              <button onClick={() => setShowWebCaptureModal(false)} className="w-10 h-10 rounded-full bg-black/5 flex items-center justify-center text-black/40 hover:text-black transition-colors hover:bg-black/10">
+                <X size={16} />
+              </button>
+            </div>
+
+            <div className="space-y-6 relative z-10">
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-black/40">Target URL</label>
+                <input 
+                  autoFocus
+                  type="url"
+                  placeholder="https://example.com"
+                  className="w-full bg-[#f5f7ff] border border-black/5 rounded-2xl px-6 py-4 text-sm outline-none focus:border-[#1B3FBF]/30 transition-all font-light"
+                  value={captureUrl}
+                  onChange={(e) => setCaptureUrl(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && captureUrl) {
+                      setQuery(prev => prev ? `${prev} Mimic style of ${captureUrl}` : `Mimic style of ${captureUrl}`);
+                      setShowWebCaptureModal(false);
+                      setCaptureUrl("");
+                    }
+                  }}
+                />
+              </div>
+
+              <div className="p-4 bg-[#1B3FBF]/5 rounded-2xl border border-[#1B3FBF]/10">
+                 <p className="text-[11px] font-serif italic text-[#1B3FBF] leading-relaxed">
+                   KREO will analyze the site's design system, typography, and color palette to manifest a matching aesthetic for your next generation.
+                 </p>
+              </div>
+
+              <button 
+                onClick={() => {
+                  if (captureUrl) {
+                    setQuery(prev => prev ? `${prev} Mimic style of ${captureUrl}` : `Mimic style of ${captureUrl}`);
+                    setShowWebCaptureModal(false);
+                    setCaptureUrl("");
+                  }
+                }}
+                disabled={!captureUrl}
+                className="w-full py-5 bg-[#1B3FBF] text-white text-[10px] font-black uppercase tracking-[0.4em] rounded-full shadow-xl hover:scale-105 active:scale-95 transition-all disabled:opacity-50"
+              >
+                Extract Aesthetics
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 };
