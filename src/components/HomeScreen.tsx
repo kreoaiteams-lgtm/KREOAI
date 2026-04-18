@@ -548,11 +548,25 @@ const HomeScreen = ({
       const { data: { session } } = await supabase.auth.getSession();
       if (session?.user) {
         setUserEmail(session.user.email || "");
+        fetchArtifacts();
+      }
+    };
+    
+    const fetchArtifacts = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+        
         const { data, error } = await supabase
-          .from("artifacts")
-          .select("*")
-          .order("created_at", { ascending: false });
-        if (!error && data) setHistoryItems(data);
+          .from('artifacts')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false });
+          
+        if (error) throw error;
+        if (data) setHistoryItems(data);
+      } catch (err) {
+        console.error("Neural history sync failed:", err);
       }
     };
     loadData();
@@ -1095,19 +1109,28 @@ const HomeScreen = ({
                   KREO {isPro && <span className="bg-[#1B3FBF] text-white text-[14px] font-black uppercase tracking-widest px-3 py-1 rounded-full align-middle ml-2">PRO</span>}
                 </h1>
 
-                {/* KREON Badge */}
                 <motion.button
-                  whileHover={{ scale: 1.05 }}
+                  whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(0,32,194,0.3)" }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setShowKreonModal(true)}
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-[#1B3FBF]/5 border border-[#1B3FBF]/10 rounded-full text-[#1B3FBF] text-[10px] font-black uppercase tracking-[0.3em] hover:bg-[#1B3FBF]/10 transition-all shadow-sm"
+                  className="inline-flex items-center gap-2 px-10 py-5 bg-[#0020C2] text-white text-[11px] font-black uppercase tracking-[0.5em] rounded-full hover:bg-[#1B3FBF] transition-all shadow-[0_15px_30px_rgba(0,32,194,0.2)] relative z-20"
                 >
-                  <UserPlus size={14} /> View KREON ID
+                  <UserPlus size={14} className="animate-pulse" /> Identity Portal
                 </motion.button>
 
-                <p className="text-[12px] font-black uppercase tracking-[0.7em] text-black/40 animate-pulse mt-8">
-                  {isIncomingPortal ? "Restoring Neural Manifest..." : loadingMessage}
-                </p>
+                <div className="flex flex-col items-center gap-4 mt-12">
+                   <p className="text-[12px] font-black uppercase tracking-[0.8em] text-[#1B3FBF]/40 animate-pulse">
+                     {isIncomingPortal ? "Restoring Neural Manifest..." : loadingMessage}
+                   </p>
+                   <div className="w-48 h-[1px] bg-black/5 relative overflow-hidden">
+                      <motion.div 
+                        initial={{ x: "-100%" }}
+                        animate={{ x: "100%" }}
+                        transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                        className="absolute inset-0 bg-[#1B3FBF]"
+                      />
+                   </div>
+                </div>
               </div>
             </div>
           ) : artifact ? (
@@ -1364,47 +1387,54 @@ const HomeScreen = ({
         )}
       </AnimatePresence>
       {showWebCaptureModal && (
-        <div className="fixed inset-0 z-[3000] flex items-center justify-center p-6 bg-black/60 backdrop-blur-xl animate-in fade-in duration-300">
+        <div className="fixed inset-0 z-[3000] flex items-center justify-center p-6 bg-[#0020C2]/10 backdrop-blur-2xl animate-in fade-in duration-500">
           <motion.div 
-            initial={{ scale: 0.95, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            className="bg-white w-full max-w-lg rounded-[3rem] p-10 space-y-8 shadow-2xl relative overflow-hidden"
+            initial={{ scale: 0.9, opacity: 0, y: 30 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            className="bg-white w-full max-w-xl rounded-[4rem] p-12 space-y-10 shadow-[0_40px_100px_rgba(0,0,0,0.1)] relative overflow-hidden text-center"
           >
-            <div className="absolute top-0 right-0 w-40 h-40 bg-[#1B3FBF]/5 blur-[60px] rounded-full" />
+            <div className="absolute top-0 right-0 w-64 h-64 bg-[#1B3FBF]/5 blur-[80px] rounded-full -translate-y-1/2 translate-x-1/2" />
+            <div className="absolute bottom-0 left-0 w-48 h-48 bg-[#1B3FBF]/5 blur-[60px] rounded-full translate-y-1/2 -translate-x-1/2" />
             
-            <div className="flex justify-between items-center pb-6 border-b border-black/5 relative z-10">
-              <div className="space-y-1">
-                <h3 className="text-2xl font-serif italic tracking-tight text-black">Web Capture Style</h3>
-                <p className="text-[10px] font-black uppercase tracking-widest text-[#1B3FBF]">Extract brand aesthetics from any URL</p>
+            <div className="flex flex-col items-center gap-4 relative z-10">
+              <div className="w-16 h-16 bg-[#1B3FBF]/5 rounded-3xl flex items-center justify-center text-[#1B3FBF] mb-2">
+                <Globe size={32} />
               </div>
-              <button onClick={() => setShowWebCaptureModal(false)} className="w-10 h-10 rounded-full bg-black/5 flex items-center justify-center text-black/40 hover:text-black transition-colors hover:bg-black/10">
-                <X size={16} />
+              <div className="space-y-2">
+                <h3 className="text-5xl font-serif italic tracking-tighter text-black" style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }}>Web Capture</h3>
+                <p className="text-[10px] font-black uppercase tracking-[0.6em] text-[#1B3FBF]">Neural Aesthetics Extraction</p>
+              </div>
+              <button onClick={() => setShowWebCaptureModal(false)} className="absolute top-0 right-0 p-4 text-black/20 hover:text-black transition-colors">
+                <X size={24} />
               </button>
             </div>
 
-            <div className="space-y-6 relative z-10">
-              <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-black/40">Target URL</label>
-                <input 
-                  autoFocus
-                  type="url"
-                  placeholder="https://example.com"
-                  className="w-full bg-[#f5f7ff] border border-black/5 rounded-2xl px-6 py-4 text-sm outline-none focus:border-[#1B3FBF]/30 transition-all font-light"
-                  value={captureUrl}
-                  onChange={(e) => setCaptureUrl(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' && captureUrl) {
-                      setQuery(prev => prev ? `${prev} Mimic style of ${captureUrl}` : `Mimic style of ${captureUrl}`);
-                      setShowWebCaptureModal(false);
-                      setCaptureUrl("");
-                    }
-                  }}
-                />
+            <div className="space-y-8 relative z-10 w-full max-w-md mx-auto">
+              <div className="space-y-3">
+                <label className="text-[10px] font-black uppercase tracking-[0.8em] text-black/30 block">Target Architecture</label>
+                <div className="relative">
+                  <input 
+                    autoFocus
+                    type="url"
+                    placeholder="https://example.com"
+                    className="w-full bg-[#f8faff] border-2 border-transparent rounded-[2rem] px-8 py-6 text-lg outline-none focus:border-[#1B3FBF]/20 focus:bg-white transition-all font-light text-center placeholder:text-black/10 shadow-inner"
+                    value={captureUrl}
+                    onChange={(e) => setCaptureUrl(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && captureUrl) {
+                        setQuery(prev => prev ? `${prev} Mimic style of ${captureUrl}` : `Mimic style of ${captureUrl}`);
+                        setShowWebCaptureModal(false);
+                        setCaptureUrl("");
+                      }
+                    }}
+                  />
+                </div>
               </div>
 
-              <div className="p-4 bg-[#1B3FBF]/5 rounded-2xl border border-[#1B3FBF]/10">
-                 <p className="text-[11px] font-serif italic text-[#1B3FBF] leading-relaxed">
-                   KREO will analyze the site's design system, typography, and color palette to manifest a matching aesthetic for your next generation.
+              <div className="p-8 bg-[#1B3FBF]/5 rounded-[2.5rem] border border-[#1B3FBF]/10 relative group">
+                 <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white px-4 py-1 rounded-full border border-[#1B3FBF]/10 text-[8px] font-black uppercase tracking-widest text-[#1B3FBF]">Intelligence Note</div>
+                 <p className="text-sm font-serif italic text-[#1B3FBF]/60 leading-relaxed">
+                   KREO will deconstruct the target's semantic design system, capturing its chromatic soul and structural rhythm to manifest your vision.
                  </p>
               </div>
 
@@ -1417,9 +1447,9 @@ const HomeScreen = ({
                   }
                 }}
                 disabled={!captureUrl}
-                className="w-full py-5 bg-[#1B3FBF] text-white text-[10px] font-black uppercase tracking-[0.4em] rounded-full shadow-xl hover:scale-105 active:scale-95 transition-all disabled:opacity-50"
+                className="w-full py-6 bg-[#1B3FBF] text-white text-[11px] font-black uppercase tracking-[0.6em] rounded-full shadow-2xl shadow-[#1B3FBF]/30 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50"
               >
-                Extract Aesthetics
+                Capture Essence
               </button>
             </div>
           </motion.div>
