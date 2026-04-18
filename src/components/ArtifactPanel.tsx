@@ -330,6 +330,25 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
                         .replace(/```(jsx|tsx|javascript|js|html|react-native|react)?/g, "")
                         .replace(/```/g, "")
                         .trim();
+
+                      // Detection: If code doesn't look like React/HTML code (e.g. it's a clarification prompt), render as a UI card
+                      const isProbableText = !cleanCode.includes('import ') && !cleanCode.includes('export default') && !cleanCode.includes('function') && !cleanCode.includes('const') && !cleanCode.includes('<');
+                      if (isProbableText) {
+                        return `
+                        <html>
+                          <head>
+                             <script src="https://cdn.tailwindcss.com"></script>
+                             <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+                          </head>
+                          <body style="margin:0; font-family: 'Inter', sans-serif; background: #f8f9fa; display: flex; align-items:center; justify-content:center; height:100vh; overflow:hidden;">
+                            <div class="max-w-xl p-16 bg-white rounded-[3rem] shadow-2xl border border-black/[0.03] text-center animate-in zoom-in-95 duration-700">
+                               <div class="text-[9px] font-black uppercase tracking-[0.4em] text-[#1B3FBF] mb-12">Neural Clarification</div>
+                               <h3 class="text-2xl text-black font-light leading-relaxed tracking-tight">${cleanCode.replace(/\n/g, '<br/>')}</h3>
+                            </div>
+                          </body>
+                        </html>`;
+                      }
+
                       const cleanCodeForBabel = cleanCode
                         .replace(/import\s+['"].*?['"];?/g, "") // Strip raw side-effect imports like import './styles.css'
                         .replace(/import\s+ React.*?from\s+['"]react['"];?\n?/g, "")

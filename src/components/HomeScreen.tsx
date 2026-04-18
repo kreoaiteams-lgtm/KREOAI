@@ -544,14 +544,6 @@ const HomeScreen = ({
   }, [currentArtifactId]);
 
   useEffect(() => {
-    const loadData = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session?.user) {
-        setUserEmail(session.user.email || "");
-        fetchArtifacts();
-      }
-    };
-    
     const fetchArtifacts = async () => {
       try {
         const { data: { user } } = await supabase.auth.getUser();
@@ -563,10 +555,21 @@ const HomeScreen = ({
           .eq('user_id', user.id)
           .order('created_at', { ascending: false });
           
-        if (error) throw error;
+        if (error) {
+          console.error("Neural history sync failed:", error);
+          return;
+        }
         if (data) setHistoryItems(data);
       } catch (err) {
-        console.error("Neural history sync failed:", err);
+        // Silent fail for non-critical history fetch
+      }
+    };
+
+    const loadData = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        setUserEmail(session.user.email || "");
+        fetchArtifacts();
       }
     };
     loadData();
@@ -985,155 +988,83 @@ const HomeScreen = ({
       <main className={`flex flex-col relative z-20 overflow-x-hidden ${artifact && isSplitView ? "h-screen overflow-hidden" : ""}`}>
         {(isSubmitting && !artifact) || isIncomingPortal ? (
            <div className="fixed inset-0 z-[1000] flex flex-col items-center justify-center bg-white overflow-hidden">
+              {/* Cinematic Full-Screen Background */}
+              <div className="absolute inset-0 bg-[#0020C2] pointer-events-none overflow-hidden">
+                <div className="absolute inset-0 opacity-40 mix-blend-screen scale-150 rotate-12">
+                   <img src="/cloud_left.png" className="absolute top-0 left-0 w-full h-full object-cover animate-pulse" style={{ animationDuration: '8s' }} alt="" />
+                   <img src="/cloud_right.png" className="absolute bottom-0 right-0 w-full h-full object-cover animate-pulse" style={{ animationDuration: '10s' }} alt="" />
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0020C2]/50 to-[#0020C2]" />
+              </div>
+
               {/* Dismiss Button */}
               <button 
                 onClick={() => { setIsSubmitting(false); setIsIncomingPortal(false); }}
-                className="absolute top-10 right-10 z-[100] w-12 h-12 rounded-full glass-panel border border-black/5 flex items-center justify-center text-black/40 hover:text-[#1B3FBF] hover:bg-[#1B3FBF]/5 transition-all shadow-sm group"
+                className="absolute top-10 right-10 z-[100] w-12 h-12 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/20 transition-all shadow-xl group"
               >
                 <X size={20} className="group-hover:rotate-90 transition-transform" />
               </button>
-            <div className="absolute inset-0 bg-gradient-to-br from-[#f0f4ff] via-white to-[#fff8f0] pointer-events-none" />
-            <div className="relative z-10 flex flex-col items-center gap-14 w-full h-full justify-center">
-              
-              {/* High-Fidelity Neural Archetypes scattered around the screen */}
-              <div className="absolute inset-x-0 inset-y-0 w-full h-full pointer-events-none">
-                 <div className="relative h-full w-full">
-                    {[
-                      { delay: 0.2, x: "-35%", y: "-38%", type: "pricing", title: "Ultra Tier", value: "$49/mo" },
-                      { delay: 1.0, x: "32%", y: "-42%", type: "metric", title: "Neural Fidelity", value: "99.2%" },
-                      { delay: 1.8, x: "-38%", y: "25%", type: "toggle", title: "Real-time Sync", active: true },
-                      { delay: 0.5, x: "38%", y: "35%", type: "chart", title: "Project Growth" },
-                      { delay: 1.5, x: "-18%", y: "42%", type: "profile", name: "Dhruv Gautam", role: "Archon" },
-                      { delay: 2.2, x: "42%", y: "-15%", type: "skeleton", height: "40px", width: "120px" },
-                      { delay: 0.8, x: "0%", y: "45%", type: "skeleton", height: "20px", width: "200px" },
-                      { delay: 3.0, x: "-45%", y: "-10%", type: "skeleton", height: "100px", width: "80px" }
-                    ].map((frag, idx) => (
-                      <motion.div
-                        key={idx}
-                        initial={{ opacity: 0, scale: 0.8, y: 40 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        transition={{ 
-                          delay: frag.delay, 
-                          duration: 2.5, 
-                          repeat: Infinity, 
-                          repeatType: "reverse",
-                          repeatDelay: 2
-                        }}
-                        className="absolute p-4 md:p-6 bg-white/40 backdrop-blur-3xl border border-white/60 rounded-[2.5rem] shadow-2xl flex flex-col gap-3 min-w-[180px] group hover:border-[#1B3FBF]/20 transition-all duration-1000"
-                        style={{ left: `50%`, top: `50%`, transform: `translate(${frag.x}, ${frag.y})` }}
-                      >
-                         {frag.type === 'pricing' && (
-                            <div className="space-y-4">
-                               <div className="flex justify-between items-center"><span className="text-[7px] font-black uppercase text-[#1B3FBF]/40">Active Tier</span><Crown size={10} className="text-yellow-500" /></div>
-                               <div className="text-xl font-serif italic text-black">{frag.value}</div>
-                               <div className="h-1.5 w-full bg-black/5 rounded-full overflow-hidden"><motion.div animate={{ x: ["-100%", "100%"] }} transition={{ repeat: Infinity, duration: 3 }} className="w-full h-full bg-[#1B3FBF]/30" /></div>
-                            </div>
-                         )}
-                         {frag.type === 'metric' && (
-                            <div className="space-y-2">
-                               <div className="flex items-center gap-1.5"><Activity size={10} className="text-[#1B3FBF]" /><span className="text-[7px] font-black uppercase text-[#1B3FBF]/40">{frag.title}</span></div>
-                               <div className="text-2xl font-light tracking-tighter text-black">{frag.value}</div>
-                            </div>
-                         )}
-                         {frag.type === 'toggle' && (
-                            <div className="flex items-center justify-between gap-4">
-                               <span className="text-[8px] font-bold text-black/40">{frag.title}</span>
-                               <div className="w-8 h-4 bg-[#1B3FBF] rounded-full p-0.5 flex justify-end items-center"><div className="w-3 h-3 bg-white rounded-full shadow-sm" /></div>
-                            </div>
-                         )}
-                         {frag.type === 'chart' && (
-                            <div className="space-y-3">
-                               <span className="text-[7px] font-black uppercase text-[#1B3FBF]/40">{frag.title}</span>
-                               <div className="h-12 flex items-end gap-1 px-1">
-                                  {[40, 70, 45, 90, 60, 80].map((h, i) => <motion.div key={i} animate={{ height: [`${h}%`, `${h+10}%`, `${h}%`] }} transition={{ repeat: Infinity, duration: 2, delay: i * 0.2 }} className="flex-1 bg-[#1B3FBF]/10 rounded-full" />)}
-                               </div>
-                            </div>
-                         )}
-                         {frag.type === 'profile' && (
-                            <div className="flex items-center gap-3">
-                               <div className="w-8 h-8 rounded-full bg-[#1B3FBF]/10 flex items-center justify-center text-[#1B3FBF] font-black text-[10px]">{frag.name[0]}</div>
-                               <div className="leading-tight"><div className="text-[10px] font-bold text-black">{frag.name}</div><div className="text-[8px] text-black/30 italic font-serif">{frag.role}</div></div>
-                            </div>
-                         )}
-                         {frag.type === 'skeleton' && (
-                            <div className="space-y-2" style={{ width: frag.width }}>
-                               <div className="h-2 bg-black/5 rounded-full w-2/3" />
-                               <div className="bg-black/5 rounded-xl border border-black/5" style={{ height: frag.height }} />
-                            </div>
-                         )}
-                      </motion.div>
-                    ))}
-                 </div>
-              </div>
 
-              </div>
-
-              {/* Floating Decorative Elements (Graffiti Style) */}
-              <div className="absolute inset-0 pointer-events-none overflow-hidden">
-                <motion.div animate={{ y: [0, -15, 0], rotate: [0, 10, 0] }} transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }} className="absolute top-[15%] left-[10%] text-[#1B3FBF]/10">
-                  <Presentation size={64} />
-                </motion.div>
-                <motion.div animate={{ y: [0, 15, 0], rotate: [0, -10, 0] }} transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }} className="absolute top-[20%] right-[12%] text-[#1B3FBF]/10">
-                  <Code2 size={56} />
-                </motion.div>
-                <motion.div animate={{ scale: [1, 1.2, 1], rotate: 360 }} transition={{ repeat: Infinity, duration: 15 }} className="absolute bottom-[25%] left-[15%] text-[#1B3FBF]/10">
-                  <GitGraph size={60} />
-                </motion.div>
-                <motion.div animate={{ rotate: [0, 360] }} transition={{ repeat: Infinity, duration: 12, ease: "linear" }} className="absolute top-[40%] right-[20%] text-[#1B3FBF]/25">
-                  <Smile size={48} />
-                </motion.div>
-                <motion.div animate={{ scale: [0.8, 1.3, 0.8] }} transition={{ repeat: Infinity, duration: 6 }} className="absolute bottom-[20%] right-[15%] text-[#1B3FBF]/25">
-                  <Smile size={32} />
-                </motion.div>
-                
-                {/* Secondary scatter */}
-                <svg className="absolute top-[18%] left-[45%] opacity-10" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <line x1="12" y1="2" x2="12" y2="22" stroke="#1B3FBF" strokeWidth="1"/>
-                  <line x1="2" y1="12" x2="22" y2="12" stroke="#1B3FBF" strokeWidth="1"/>
-                </svg>
-                <svg className="absolute bottom-[20%] right-[45%] opacity-10" width="32" height="32" viewBox="0 0 32 32" fill="none">
-                  <circle cx="16" cy="16" r="12" stroke="#1B3FBF" strokeWidth="1" strokeDasharray="4 3"/>
-                </svg>
-              </div>
-
-              <div className="relative w-48 h-48 flex items-center justify-center">
-                <div className="absolute inset-0 rounded-full bg-[#1B3FBF]/5 animate-ping" style={{ animationDuration: '3s' }} />
-                <div className="absolute inset-8 rounded-full bg-[#1B3FBF]/10 animate-pulse transition-all duration-1000 scale-110" />
-                <div className="relative w-24 h-24 rounded-full bg-[#1B3FBF] flex items-center justify-center shadow-[0_0_80px_rgba(27,63,191,0.4)] animate-in zoom-in-50 duration-700">
-                  <div className="w-4 h-4 rounded-full bg-white shadow-inner animate-[pulse_1.5s_ease-in-out_infinite]" />
-                </div>
-              </div>
-              
-              <div className="text-center relative z-20">
-                <h1 className="text-6xl tracking-tighter text-[#1B3FBF] mb-4 animate-in slide-in-from-bottom-2 duration-700" style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }}>
-                  KREO {isPro && <span className="bg-[#1B3FBF] text-white text-[14px] font-black uppercase tracking-widest px-3 py-1 rounded-full align-middle ml-2">PRO</span>}
-                </h1>
-
-                <motion.button
-                  whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(0,32,194,0.3)" }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setShowKreonModal(true)}
-                  className="inline-flex items-center gap-2 px-10 py-5 bg-[#0020C2] text-white text-[11px] font-black uppercase tracking-[0.5em] rounded-full hover:bg-[#1B3FBF] transition-all shadow-[0_15px_30px_rgba(0,32,194,0.2)] relative z-20"
-                >
-                  <UserPlus size={14} className="animate-pulse" /> Identity Portal
-                </motion.button>
-
-                <div className="flex flex-col items-center gap-4 mt-12">
-                   <p className="text-[12px] font-black uppercase tracking-[0.8em] text-[#1B3FBF]/40 animate-pulse">
-                     {isIncomingPortal ? "Restoring Neural Manifest..." : loadingMessage}
-                   </p>
-                   <div className="w-48 h-[1px] bg-black/5 relative overflow-hidden">
-                      <motion.div 
-                        initial={{ x: "-100%" }}
-                        animate={{ x: "100%" }}
-                        transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                        className="absolute inset-0 bg-[#1B3FBF]"
-                      />
+              <div className="relative z-10 flex flex-col items-center gap-10">
+                <div className="relative drop-shadow-[0_0_50px_rgba(255,255,255,0.3)]">
+                   <div className="absolute inset-0 bg-white/20 rounded-full blur-3xl animate-pulse scale-150" />
+                   
+                   {/* Artistic Doodles around Logo */}
+                   <div className="absolute inset-0 -m-20 pointer-events-none scale-125">
+                      <svg className="w-full h-full opacity-60" viewBox="0 0 200 200" fill="none">
+                         {/* Circle Doodle */}
+                         <motion.path 
+                           initial={{ pathLength: 0, opacity: 0 }}
+                           animate={{ pathLength: 1, opacity: 1 }}
+                           transition={{ duration: 2, delay: 0.5 }}
+                           d="M100,20 C140,20 180,60 180,100 C180,140 140,180 100,180 C60,180 20,140 20,100 C20,60 60,20 100,20" 
+                           stroke="white" strokeWidth="0.5" strokeDasharray="4 4"
+                         />
+                         {/* Abstract Sketch Lines */}
+                         <motion.path 
+                           initial={{ pathLength: 0 }} animate={{ pathLength: 1 }}
+                           transition={{ duration: 1.5, delay: 1 }}
+                           d="M20,20 L50,50 M180,180 L150,150 M180,20 L150,50 M20,180 L50,150" 
+                           stroke="white" strokeWidth="0.5" opacity="0.3"
+                         />
+                         <motion.circle 
+                           initial={{ scale: 0 }} animate={{ scale: 1 }}
+                           transition={{ type: "spring", delay: 1.2 }}
+                           cx="100" cy="10" r="2" fill="white" 
+                         />
+                      </svg>
                    </div>
+                   
+                   <KreoLogo className="scale-[2.5] text-white relative z-10" />
+                </div>
+
+                <div className="flex flex-col items-center gap-6 mt-10">
+                  <motion.button
+                    whileHover={{ scale: 1.05, boxShadow: "0 20px 60px rgba(255,255,255,0.3)" }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setShowKreonModal(true)}
+                    className="inline-flex items-center gap-3 px-10 py-5 bg-white text-[#0020C2] text-[11px] font-black uppercase tracking-[0.5em] rounded-full hover:scale-105 active:scale-95 transition-all shadow-2xl relative z-20"
+                  >
+                    <UserPlus size={16} /> Identity Portal
+                  </motion.button>
+
+                  <div className="flex flex-col items-center gap-3">
+                     <p className="text-[14px] font-serif italic text-white/60 tracking-widest animate-pulse">
+                       {isIncomingPortal ? "Restoring Neural Manifest..." : loadingMessage}
+                     </p>
+                     <div className="w-64 h-[1px] bg-white/10 relative overflow-hidden rounded-full">
+                        <motion.div 
+                          initial={{ x: "-100%" }}
+                          animate={{ x: "100%" }}
+                          transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+                          className="absolute inset-0 bg-white"
+                        />
+                     </div>
+                  </div>
                 </div>
               </div>
             </div>
-          ) : artifact ? (
+          ) : artifact ? (  ) : artifact ? (
           <div className={`flex w-full h-screen animate-in fade-in slide-in-from-bottom-4 duration-700 ${isSplitView ? "flex-row overflow-hidden" : "flex-col items-center p-8 overflow-auto"}`}>
             <div className={`${isSplitView ? "w-[420px] shrink-0" : "w-full max-w-2xl mb-6"} flex flex-col ${isSplitView ? "h-full" : "min-h-[50vh]"} overflow-hidden bg-[#f5f7ff] border-r border-black/[0.06]`}>
               <div className="shrink-0 flex justify-between items-center px-6 py-4 border-b border-black/[0.06] bg-white/90 backdrop-blur-xl">
@@ -1400,9 +1331,9 @@ const HomeScreen = ({
               <div className="w-16 h-16 bg-[#1B3FBF]/5 rounded-3xl flex items-center justify-center text-[#1B3FBF] mb-2">
                 <Globe size={32} />
               </div>
-              <div className="space-y-2">
+              <div className="space-y-1">
                 <h3 className="text-5xl font-serif italic tracking-tighter text-black" style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }}>Web Capture</h3>
-                <p className="text-[10px] font-black uppercase tracking-[0.6em] text-[#1B3FBF]">Neural Aesthetics Extraction</p>
+                <p className="text-[11px] font-serif italic text-[#1B3FBF] uppercase tracking-widest opacity-60">Copy any website design</p>
               </div>
               <button onClick={() => setShowWebCaptureModal(false)} className="absolute top-0 right-0 p-4 text-black/20 hover:text-black transition-colors">
                 <X size={24} />
@@ -1411,13 +1342,12 @@ const HomeScreen = ({
 
             <div className="space-y-8 relative z-10 w-full max-w-md mx-auto">
               <div className="space-y-3">
-                <label className="text-[10px] font-black uppercase tracking-[0.8em] text-black/30 block">Target Architecture</label>
                 <div className="relative">
                   <input 
                     autoFocus
                     type="url"
                     placeholder="https://example.com"
-                    className="w-full bg-[#f8faff] border-2 border-transparent rounded-[2rem] px-8 py-6 text-lg outline-none focus:border-[#1B3FBF]/20 focus:bg-white transition-all font-light text-center placeholder:text-black/10 shadow-inner"
+                    className="w-full bg-[#f8faff] border-2 border-transparent rounded-[2rem] px-8 py-6 text-lg outline-none focus:border-[#1B3FBF]/20 focus:bg-white transition-all font-light text-center placeholder:text-black/10 shadow-inner text-black"
                     value={captureUrl}
                     onChange={(e) => setCaptureUrl(e.target.value)}
                     onKeyDown={(e) => {
@@ -1431,13 +1361,6 @@ const HomeScreen = ({
                 </div>
               </div>
 
-              <div className="p-8 bg-[#1B3FBF]/5 rounded-[2.5rem] border border-[#1B3FBF]/10 relative group">
-                 <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white px-4 py-1 rounded-full border border-[#1B3FBF]/10 text-[8px] font-black uppercase tracking-widest text-[#1B3FBF]">Intelligence Note</div>
-                 <p className="text-sm font-serif italic text-[#1B3FBF]/60 leading-relaxed">
-                   KREO will deconstruct the target's semantic design system, capturing its chromatic soul and structural rhythm to manifest your vision.
-                 </p>
-              </div>
-
               <button 
                 onClick={() => {
                   if (captureUrl) {
@@ -1449,7 +1372,7 @@ const HomeScreen = ({
                 disabled={!captureUrl}
                 className="w-full py-6 bg-[#1B3FBF] text-white text-[11px] font-black uppercase tracking-[0.6em] rounded-full shadow-2xl shadow-[#1B3FBF]/30 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50"
               >
-                Capture Essence
+                Capture Design
               </button>
             </div>
           </motion.div>
