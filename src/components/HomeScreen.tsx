@@ -530,14 +530,14 @@ const HomeScreen = ({
         }
       };
       fetchFromUrl();
-    } else if (!urlId && artifact && !isSubmitting) {
-      // Manual navigation to root / with no ID while an artifact is currently set
+    } else if (!urlId && artifact && !isSubmitting && !window.location.pathname.startsWith('/share/')) {
+      // Only reset if we navigated to root with NO share path and NO ID
       setArtifact(null);
       setCurrentArtifactId(null);
       setChatHistory([]);
       setIsArtifactActive(false);
     }
-  }, [searchParams, location.pathname, artifact, isIncomingPortal, isSubmitting]);
+  }, [searchParams, location.pathname, isIncomingPortal, isSubmitting]);
 
   useEffect(() => {
     if (currentArtifactId && !currentArtifactId.startsWith('opt-')) {
