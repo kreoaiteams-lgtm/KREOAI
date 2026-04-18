@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>KREO — The Solution</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap');
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --cobalt: #0a0f1e;
+      --gold: #c9a84c;
+      --cloud: #e8eaf0;
+      --muted: rgba(232,234,240,0.25);
+    }
+
+    html, body {
+      width: 100%;
+      background: var(--cobalt);
+      overflow-x: hidden;
+      font-family: 'Instrument Serif', Georgia, serif;
+    }
+
+    /* Noise grain overlay */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      opacity: 0.4; pointer-events: none; z-index: 100;
+    }
+
+    /* ── SCREEN 1: THE SOLUTION ── */
+    .screen-solution {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .glow {
+      position: absolute;
+      width: 70vw; height: 70vw;
+      background: radial-gradient(circle, rgba(201,168,76,0.07) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+      animation: breathe 8s ease-in-out infinite;
+    }
+
+    @keyframes breathe {
+      0%, 100% { transform: scale(1); opacity: 0.7; }
+      50% { transform: scale(1.12); opacity: 1; }
+    }
+
+    .wordmark {
+      position: fixed;
+      top: 2.5rem; left: 3rem;
+      font-size: 0.7rem;
+      letter-spacing: 0.5em;
+      text-transform: uppercase;
+      color: var(--muted);
+      opacity: 0;
+      transition: opacity 0.8s ease 0.2s;
+      z-index: 50;
+    }
+    .wordmark.vis { opacity: 1; }
+
+    .s1-kicker {
+      font-size: clamp(0.6rem, 1vw, 0.75rem);
+      letter-spacing: 0.5em;
+      text-transform: uppercase;
+      color: var(--gold);
+      opacity: 0;
+      margin-bottom: 2.5rem;
+      transition: all 1s ease 0.3s;
+      transform: translateY(20px);
+    }
+    .s1-kicker.vis { opacity: 0.7; transform: translateY(0); }
+
+    .s1-headline {
+      font-size: clamp(3.5rem, 9vw, 8.5rem);
+      font-weight: 400;
+      color: var(--cloud);
+      line-height: 1.0;
+      letter-spacing: -0.04em;
+      max-width: 1100px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .word {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(50px);
+      transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .word.gold { color: var(--gold); font-style: italic; }
+    .word.vis { opacity: 1; transform: translateY(0); }
+
+    .rule {
+      position: absolute;
+      bottom: 10vh;
+      width: 0;
+      height: 1px;
+      background: var(--gold);
+      opacity: 0.3;
+      transition: width 2s cubic-bezier(0.16, 1, 0.3, 1) 3s;
+    }
+    .rule.vis { width: 120px; }
+
+    /* ── SCREEN 2: WHAT YOU CAN DO ── */
+    .screen-features {
+      width: 100vw;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 8rem 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .glow-blue {
+      position: absolute;
+      top: 20%; left: 50%;
+      transform: translateX(-50%);
+      width: 60vw; height: 60vw;
+      background: radial-gradient(circle, rgba(27,63,191,0.12) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .s2-kicker {
+      font-size: clamp(0.6rem, 1vw, 0.75rem);
+      letter-spacing: 0.5em;
+      text-transform: uppercase;
+      color: var(--gold);
+      opacity: 0;
+      margin-bottom: 2rem;
+      transition: all 1s ease;
+      transform: translateY(20px);
+    }
+    .s2-kicker.vis { opacity: 0.7; transform: translateY(0); }
+
+    .s2-headline {
+      font-size: clamp(2.5rem, 6vw, 5.5rem);
+      font-weight: 400;
+      color: var(--cloud);
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      text-align: center;
+      max-width: 800px;
+      margin-bottom: 5rem;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 1s ease 0.2s;
+    }
+    .s2-headline em { color: var(--gold); font-style: italic; }
+    .s2-headline.vis { opacity: 1; transform: translateY(0); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+      width: 100%;
+      max-width: 1100px;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 2rem;
+      padding: 2.5rem 2rem;
+      text-align: left;
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.8s cubic-bezier(0.16,1,0.3,1), background 0.3s, border-color 0.3s;
+    }
+    .card.vis { opacity: 1; transform: translateY(0); }
+    .card:hover {
+      background: rgba(201,168,76,0.04);
+      border-color: rgba(201,168,76,0.3);
+    }
+
+    .card-icon {
+      font-size: 2rem;
+      margin-bottom: 1.2rem;
+      display: block;
+    }
+
+    .card h3 {
+      font-size: 1.7rem;
+      color: var(--gold);
+      font-style: italic;
+      font-weight: 400;
+      margin-bottom: 0.8rem;
+    }
+
+    .card p {
+      font-size: 1rem;
+      color: var(--cloud);
+      opacity: 0.5;
+      line-height: 1.65;
+      font-family: 'Instrument Serif', Georgia, serif;
+    }
+  </style>
+</head>
+<body>
+
+  <p class="wordmark" id="wm">KREO</p>
+
+  <!-- SCREEN 1: THE SOLUTION -->
+  <section class="screen-solution">
+    <div class="glow"></div>
+
+    <p class="s1-kicker" id="kicker">Neural Design Intelligence</p>
+
+    <h1 class="s1-headline">
+      <span class="word" id="w0">No</span>&nbsp;
+      <span class="word" id="w1">matter</span>&nbsp;
+      <span class="word gold" id="w2">what,</span><br>
+      <span class="word" id="w3">KREO</span>&nbsp;
+      <span class="word" id="w4">is</span>&nbsp;
+      <span class="word" id="w5">the</span>&nbsp;
+      <span class="word gold" id="w6">solution.</span>
+    </h1>
+
+    <div class="rule" id="rule"></div>
+  </section>
+
+  <!-- SCREEN 2: WHAT YOU CAN DO -->
+  <section class="screen-features">
+    <div class="glow-blue"></div>
+
+    <p class="s2-kicker reveal" data-delay="0">What you can do with KREO</p>
+
+    <h2 class="s2-headline reveal" data-delay="100">
+      From a single thought<br>to a <em>complete digital reality</em>.
+    </h2>
+
+    <div class="grid">
+      <div class="card reveal" data-delay="200">
+        <span class="card-icon">✦</span>
+        <h3>Manifest</h3>
+        <p>Turn a prompt into a fully working product — apps, websites, dashboards, anything.</p>
+      </div>
+      <div class="card reveal" data-delay="350">
+        <span class="card-icon">◎</span>
+        <h3>Web Capture</h3>
+        <p>Paste any URL and KREO instantly mirrors its design aesthetic into your new creation.</p>
+      </div>
+      <div class="card reveal" data-delay="500">
+        <span class="card-icon">◈</span>
+        <h3>Live Edit</h3>
+        <p>Point, click, refine. Edit any element of your design without touching a line of code.</p>
+      </div>
+      <div class="card reveal" data-delay="650">
+        <span class="card-icon">⬡</span>
+        <h3>Export</h3>
+        <p>Ship your manifestations as HTML, ZIP bundles, PPTX decks, or straight to Canva.</p>
+      </div>
+      <div class="card reveal" data-delay="800">
+        <span class="card-icon">◉</span>
+        <h3>Brand Kit</h3>
+        <p>Lock in your visual identity once. Every future creation reflects your brand automatically.</p>
+      </div>
+      <div class="card reveal" data-delay="950">
+        <span class="card-icon">∿</span>
+        <h3>Slideshows</h3>
+        <p>Generate cinematic, editorial-grade presentation decks from a single sentence.</p>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Screen 1 — staggered word reveal
+    const wordDelays = [0, 300, 700, 1400, 1800, 2050, 2300];
+    document.querySelectorAll('.word').forEach((w, i) => {
+      setTimeout(() => w.classList.add('vis'), wordDelays[i] + 400);
+    });
+    setTimeout(() => document.getElementById('kicker').classList.add('vis'), 300);
+    setTimeout(() => document.getElementById('wm').classList.add('vis'), 200);
+    setTimeout(() => document.getElementById('rule').classList.add('vis'), 3000);
+
+    // Screen 2 — intersection observer reveals
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const delay = parseInt(entry.target.dataset.delay || '0', 10);
+          setTimeout(() => entry.target.classList.add('vis'), delay);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>

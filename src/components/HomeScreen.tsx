@@ -1056,14 +1056,16 @@ const HomeScreen = ({
                 <div className="absolute inset-0 z-0">
                   <svg className="w-full h-full opacity-20" viewBox="0 0 1440 800" fill="none">
                     <motion.path 
+                      initial={{ d: "M0 400 Q 360 300 720 400 T 1440 400" }}
                       animate={{ d: ["M0 400 Q 360 300 720 400 T 1440 400", "M0 400 Q 360 500 720 400 T 1440 400", "M0 400 Q 360 300 720 400 T 1440 400"] }}
                       transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-                      d="M0 400 Q 360 300 720 400 T 1440 400" stroke="white" strokeWidth="2"
+                      stroke="white" strokeWidth="2"
                     />
                     <motion.path 
+                      initial={{ d: "M0 450 Q 360 350 720 450 T 1440 450" }}
                       animate={{ d: ["M0 450 Q 360 350 720 450 T 1440 450", "M0 450 Q 360 550 720 450 T 1440 450", "M0 450 Q 360 350 720 450 T 1440 450"] }}
                       transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                      d="M0 450 Q 360 350 720 450 T 1440 450" stroke="white" strokeWidth="1" opacity="0.5"
+                      stroke="white" strokeWidth="1" opacity="0.5"
                     />
                   </svg>
                 </div>
