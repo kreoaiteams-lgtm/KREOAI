@@ -87,7 +87,7 @@ If the user's prompt is vague or does NOT explicitly mention a style, you MUST d
 - **Minimalist but Filled**: Use white space as a deliberate design element. Large margins and massive typography should make the page feel 'complete' despite having few UI elements.
 
 Output ONLY THE CODE (and Mermaid flowchart if applicable) inside triple backticks.
-CRITICAL ENFORCEMENT: The code MUST be 100% complete, practical, and functional. Do NOT output partial files, do NOT leave out logic, and do NOT use gimmicks or placeholders. It must be a fully working, production-grade application entirely contained within a single file.
+CRITICAL ENFORCEMENT: The code MUST be 100% complete and end with a valid closing tag (</html> or closing brace). NEVER stop mid-output. NEVER truncate CSS, JS, or HTML. If content is long, simplify the design but ALWAYS output a complete, valid file. An incomplete file is a failure.
 
 ## ITERATIVE EDITING PROTOCOL
 When existing code or a Mermaid flowchart is provided in the conversation history, this is your BASE OBJECT.
@@ -174,7 +174,7 @@ export const generateArtifact = async (prompt: string, chatHistory: {role: strin
       body: JSON.stringify({
         model: "sarvam-105b",
         messages: messages,
-        max_tokens: 4096,
+        max_tokens: 8192,
         temperature: 0.7,
       }),
     });
