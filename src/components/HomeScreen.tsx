@@ -1118,14 +1118,51 @@ const HomeScreen = ({
                      <p className="text-[14px] font-serif italic text-white/60 tracking-widest animate-pulse">
                        {isIncomingPortal ? "Restoring Neural Manifest..." : loadingMessage}
                      </p>
-                     <div className="w-80 h-2 bg-white/10 relative overflow-hidden rounded-full shadow-[0_0_20px_rgba(255,255,255,0.1)]">
-                        <motion.div 
-                          initial={{ x: "-100%" }}
-                          animate={{ x: "100%" }}
-                          transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
-                          className="absolute inset-0 bg-white shadow-[0_0_15px_rgba(255,255,255,0.8)]"
-                        />
-                     </div>
+                     {/* Squiggly Google-style loader */}
+                     <svg width="320" height="24" viewBox="0 0 320 24" fill="none" className="overflow-visible">
+                       <defs>
+                         <style>{`
+                           @keyframes squiggle {
+                             0%   { d: path("M0 12 C20 4, 40 20, 60 12 C80 4, 100 20, 120 12 C140 4, 160 20, 180 12 C200 4, 220 20, 240 12 C260 4, 280 20, 300 12 C310 7, 315 10, 320 12"); }
+                             25%  { d: path("M0 12 C20 20, 40 4, 60 12 C80 20, 100 4, 120 12 C140 20, 160 4, 180 12 C200 20, 220 4, 240 12 C260 20, 280 4, 300 12 C310 17, 315 14, 320 12"); }
+                             50%  { d: path("M0 12 C20 4, 40 20, 60 12 C80 4, 100 20, 120 12 C140 4, 160 20, 180 12 C200 4, 220 20, 240 12 C260 4, 280 20, 300 12 C310 7, 315 10, 320 12"); }
+                             75%  { d: path("M0 12 C20 20, 40 4, 60 12 C80 20, 100 4, 120 12 C140 20, 160 4, 180 12 C200 20, 220 4, 240 12 C260 20, 280 4, 300 12 C310 17, 315 14, 320 12"); }
+                             100% { d: path("M0 12 C20 4, 40 20, 60 12 C80 4, 100 20, 120 12 C140 4, 160 20, 180 12 C200 4, 220 20, 240 12 C260 4, 280 20, 300 12 C310 7, 315 10, 320 12"); }
+                           }
+                           @keyframes squiggle-glow {
+                             0%   { d: path("M0 12 C20 4, 40 20, 60 12 C80 4, 100 20, 120 12 C140 4, 160 20, 180 12 C200 4, 220 20, 240 12 C260 4, 280 20, 300 12 C310 7, 315 10, 320 12"); }
+                             25%  { d: path("M0 12 C20 20, 40 4, 60 12 C80 20, 100 4, 120 12 C140 20, 160 4, 180 12 C200 20, 220 4, 240 12 C260 20, 280 4, 300 12 C310 17, 315 14, 320 12"); }
+                             50%  { d: path("M0 12 C20 4, 40 20, 60 12 C80 4, 100 20, 120 12 C140 4, 160 20, 180 12 C200 4, 220 20, 240 12 C260 4, 280 20, 300 12 C310 7, 315 10, 320 12"); }
+                             75%  { d: path("M0 12 C20 20, 40 4, 60 12 C80 20, 100 4, 120 12 C140 20, 160 4, 180 12 C200 20, 220 4, 240 12 C260 20, 280 4, 300 12 C310 17, 315 14, 320 12"); }
+                             100% { d: path("M0 12 C20 4, 40 20, 60 12 C80 4, 100 20, 120 12 C140 4, 160 20, 180 12 C200 4, 220 20, 240 12 C260 4, 280 20, 300 12 C310 7, 315 10, 320 12"); }
+                           }
+                           .squiggle-track { stroke: rgba(255,255,255,0.12); }
+                           .squiggle-line {
+                             stroke: white;
+                             stroke-dasharray: 180 320;
+                             stroke-dashoffset: 0;
+                             animation: squiggle 1.8s ease-in-out infinite, dash-move 1.8s linear infinite;
+                             filter: drop-shadow(0 0 8px rgba(255,255,255,0.9));
+                           }
+                           @keyframes dash-move {
+                             0%   { stroke-dashoffset: 320; }
+                             100% { stroke-dashoffset: -320; }
+                           }
+                         `}</style>
+                       </defs>
+                       {/* Track */}
+                       <path
+                         className="squiggle-track"
+                         d="M0 12 C20 4, 40 20, 60 12 C80 4, 100 20, 120 12 C140 4, 160 20, 180 12 C200 4, 220 20, 240 12 C260 4, 280 20, 300 12 C310 7, 315 10, 320 12"
+                         strokeWidth="2.5" strokeLinecap="round" fill="none"
+                       />
+                       {/* Animated squiggly bar */}
+                       <path
+                         className="squiggle-line"
+                         d="M0 12 C20 4, 40 20, 60 12 C80 4, 100 20, 120 12 C140 4, 160 20, 180 12 C200 4, 220 20, 240 12 C260 4, 280 20, 300 12 C310 7, 315 10, 320 12"
+                         strokeWidth="2.5" strokeLinecap="round" fill="none"
+                       />
+                     </svg>
                   </div>
                 </div>
               </div>
