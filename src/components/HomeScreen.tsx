@@ -5,7 +5,7 @@ import {
   LayoutGrid, ChevronDown, ChevronLeft, Clock, Plus, Zap, FileText, X, Activity,
   Image as ImageIcon, BrainCircuit, Sparkles, Paperclip, Shuffle, MessageSquare, Mail,
   Share2, Globe, Palette, Link as LinkIcon, Copy, Info, CheckCircle2, Crown, Star, Volume2, ShieldCheck, UserPlus,
-  Presentation, Code2, Table2, GitGraph, Smile
+  Presentation, Code2, Table2, GitGraph, Smile, Trash2
 } from "lucide-react";
 
 import { narrateText, generateBio } from "@/lib/ai";
@@ -547,19 +547,32 @@ const HomeScreen = ({
     const fetchArtifacts = async () => {
       try {
         const { data: { user } } = await supabase.auth.getUser();
-        if (!user) return;
+        if (!user) {
+          // Fallback to local memory for guests
+          const local = localStorage.getItem('kreo_local_history');
+          if (local) setHistoryItems(JSON.parse(local));
+          return;
+        }
         
+        // Use explicit columns to avoid 400 errors from computed or restricted columns
         const { data, error } = await supabase
           .from('artifacts')
-          .select('*')
+          .select('id, prompt, code, created_at, user_id, share_token')
           .eq('user_id', user.id)
           .order('created_at', { ascending: false });
           
         if (error) {
-          console.error("Neural history sync failed:", error);
+          console.error("Neural sync throttled:", error.message);
           return;
         }
-        if (data) setHistoryItems(data);
+        
+        if (data) {
+          setHistoryItems(prev => {
+            const merged = [...data, ...prev];
+            // Unique by ID to avoid duplicates between local and cloud
+            return Array.from(new Map(merged.map(item => [item.id, item])).values());
+          });
+        }
       } catch (err) {
         // Silent fail for non-critical history fetch
       }
@@ -647,6 +660,37 @@ const HomeScreen = ({
     setChatHistory([{ role: "user", content: item.prompt }, { role: "assistant", content: item.code, display: "Manifest restored from history." }]);
     setHistoryOpen(false);
     navigate(`/?id=${item.id}`, { replace: true });
+  };
+
+  const handleDeleteHistoryItem = async (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      // 1. Remove from Local Memory
+      const localHistoryStr = localStorage.getItem('kreo_local_history');
+      if (localHistoryStr) {
+        const localHistoryTree = JSON.parse(localHistoryStr);
+        const updated = localHistoryTree.filter((item: any) => item.id !== id);
+        localStorage.setItem('kreo_local_history', JSON.stringify(updated));
+      }
+      
+      // 2. Remove from Neural Cloud (if logged in)
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        await supabase.from('artifacts').delete().eq('id', id);
+      }
+      
+      // 3. Update UI State
+      setHistoryItems(prev => prev.filter(item => item.id !== id));
+      
+      if (currentArtifactId === id) {
+        setArtifact(null);
+        setCurrentArtifactId(null);
+        setChatHistory([]);
+        window.history.replaceState(null, '', '/');
+      }
+    } catch (err) {
+      console.error("Neural deletion failed.");
+    }
   };
 
   const handleManifestClick = (title: string) => {
@@ -921,6 +965,12 @@ const HomeScreen = ({
                   <button onClick={() => handleHistoryItemClick(item)} className="w-full text-left p-4 pr-12 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all text-sm truncate font-light">
                     {item.prompt}
                   </button>
+                  <button 
+                    onClick={(e) => handleDeleteHistoryItem(item.id, e)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-white/10 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all rounded-lg hover:bg-red-400/10"
+                  >
+                    <Trash2 size={14} />
+                  </button>
                 </div>
               ))}
             </div>
@@ -1038,26 +1088,17 @@ const HomeScreen = ({
                    <KreoLogo className="scale-[2.5] text-white relative z-10" />
                 </div>
 
-                <div className="flex flex-col items-center gap-6 mt-10">
-                  <motion.button
-                    whileHover={{ scale: 1.05, boxShadow: "0 20px 60px rgba(255,255,255,0.3)" }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => setShowKreonModal(true)}
-                    className="inline-flex items-center gap-3 px-10 py-5 bg-white text-[#0020C2] text-[11px] font-black uppercase tracking-[0.5em] rounded-full hover:scale-105 active:scale-95 transition-all shadow-2xl relative z-20"
-                  >
-                    <UserPlus size={16} /> Identity Portal
-                  </motion.button>
-
-                  <div className="flex flex-col items-center gap-3">
+                <div className="flex flex-col items-center gap-6 mt-16">
+                  <div className="flex flex-col items-center gap-6">
                      <p className="text-[14px] font-serif italic text-white/60 tracking-widest animate-pulse">
                        {isIncomingPortal ? "Restoring Neural Manifest..." : loadingMessage}
                      </p>
-                     <div className="w-64 h-[1px] bg-white/10 relative overflow-hidden rounded-full">
+                     <div className="w-80 h-2 bg-white/10 relative overflow-hidden rounded-full shadow-[0_0_20px_rgba(255,255,255,0.1)]">
                         <motion.div 
                           initial={{ x: "-100%" }}
                           animate={{ x: "100%" }}
                           transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
-                          className="absolute inset-0 bg-white"
+                          className="absolute inset-0 bg-white shadow-[0_0_15px_rgba(255,255,255,0.8)]"
                         />
                      </div>
                   </div>
@@ -1352,9 +1393,11 @@ const HomeScreen = ({
                     onChange={(e) => setCaptureUrl(e.target.value)}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' && captureUrl) {
-                        setQuery(prev => prev ? `${prev} Mimic style of ${captureUrl}` : `Mimic style of ${captureUrl}`);
+                        const fullQuery = query ? `${query} Mimic style of ${captureUrl}` : `Mimic style of ${captureUrl}`;
+                        setQuery(fullQuery);
                         setShowWebCaptureModal(false);
                         setCaptureUrl("");
+                        handleSubmit(fullQuery);
                       }
                     }}
                   />
@@ -1364,9 +1407,11 @@ const HomeScreen = ({
               <button 
                 onClick={() => {
                   if (captureUrl) {
-                    setQuery(prev => prev ? `${prev} Mimic style of ${captureUrl}` : `Mimic style of ${captureUrl}`);
+                    const fullQuery = query ? `${query} Mimic style of ${captureUrl}` : `Mimic style of ${captureUrl}`;
+                    setQuery(fullQuery);
                     setShowWebCaptureModal(false);
                     setCaptureUrl("");
+                    handleSubmit(fullQuery);
                   }
                 }}
                 disabled={!captureUrl}
