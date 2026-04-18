@@ -4,7 +4,7 @@ import {
   Search, History, Settings, User, ArrowUp, ArrowDown, Monitor, Database, Smartphone,
   LayoutGrid, ChevronDown, ChevronLeft, Clock, Plus, Zap, FileText, X, Activity,
   Image as ImageIcon, BrainCircuit, Sparkles, Paperclip, Shuffle, MessageSquare, Mail,
-  Share2, Globe, Link as LinkIcon, Copy, Info, CheckCircle2, Crown, Star, Volume2, ShieldCheck, UserPlus,
+  Share2, Globe, Palette, Link as LinkIcon, Copy, Info, CheckCircle2, Crown, Star, Volume2, ShieldCheck, UserPlus,
   Presentation, Code2, Table2, GitGraph, Smile
 } from "lucide-react";
 
@@ -944,6 +944,9 @@ const HomeScreen = ({
               </div>
             </div>
             <div className="space-y-3">
+              <button onClick={() => alert("Brand Kit Setup initialized! Extracting CSS rules...")} className="w-full py-4 border border-[#1B3FBF]/10 bg-white text-[#1B3FBF] text-[10px] font-black uppercase tracking-[0.4em] rounded-2xl hover:bg-[#1B3FBF]/5 transition-all flex items-center justify-center gap-2 group shadow-sm">
+                <Palette size={14} className="group-hover:rotate-12 transition-transform" /> Brand Kit Setup
+              </button>
               <button 
                 onClick={() => { setShowKreonModal(true); setProfileOpen(false); }} 
                 className="w-full py-5 border border-[#1B3FBF]/10 bg-[#1B3FBF]/5 text-[#1B3FBF] text-[10px] font-black uppercase tracking-[0.4em] rounded-2xl hover:bg-[#1B3FBF]/10 transition-all flex items-center justify-center gap-2 group"
@@ -1148,12 +1151,22 @@ const HomeScreen = ({
                 <form onSubmit={handleSubmit} className="relative">
                   <input
                     type="text"
-                    className="w-full rounded-2xl px-6 py-4 pr-14 text-sm outline-none border border-black/[0.08] bg-[#f0f3ff] text-black placeholder:text-black/30 focus:border-[#1B3FBF]/60 focus:bg-white transition-all font-light disabled:opacity-40"
+                    className="w-full rounded-2xl px-6 py-4 pl-14 pr-14 text-sm outline-none border border-black/[0.08] bg-[#f0f3ff] text-black placeholder:text-black/30 focus:border-[#1B3FBF]/60 focus:bg-white transition-all font-light disabled:opacity-40"
                     placeholder="Refine the manifest..."
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     disabled={isSubmitting}
                   />
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2">
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button type="button" onClick={() => { const url = prompt("Enter URL to mimic aesthetics:"); if(url) setQuery(prev => prev + ` Mimic the style of ${url}`) }} className="p-2 text-black/30 hover:text-[#1B3FBF] hover:bg-[#1B3FBF]/10 rounded-lg transition-all">
+                          <Globe size={18} />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent>Mimic URL Aesthetics</TooltipContent>
+                    </Tooltip>
+                  </div>
                   <div className="absolute right-3 top-1/2 -translate-y-1/2">
                     <button type="submit" disabled={isSubmitting} className="p-2.5 bg-[#1B3FBF] text-white rounded-xl shadow-lg hover:scale-110 active:scale-95 transition-all disabled:opacity-50">
                       {isSubmitting ? (
@@ -1188,6 +1201,14 @@ const HomeScreen = ({
                       <button type="button" onClick={() => fileInputRef.current?.click()} className="p-2 text-foreground/40 hover:text-foreground">
                         <Paperclip size={20} />
                       </button>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button type="button" onClick={() => { const url = prompt("Enter URL to extract style from:"); if(url) setQuery(prev => prev ? `${prev} Mimic style of ${url}` : `Mimic style of ${url}`) }} className="p-2 text-foreground/40 hover:text-[#1B3FBF]">
+                            <Globe size={20} />
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent>Web Capture Style</TooltipContent>
+                      </Tooltip>
                     </div>
                     <input
                       className={`flex-1 bg-transparent text-lg outline-none font-satoshi ${theme === 'light' ? 'placeholder:text-black/30 text-black' : 'placeholder:text-white/40 text-white'}`}

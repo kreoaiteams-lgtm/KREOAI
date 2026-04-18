@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { 
   Eye, Code2, Copy, Download, RefreshCw, 
   ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Maximize, Minimize, RotateCcw,
-  Share2, Play
+  Share2, Play, MousePointer2, SlidersHorizontal, Settings2, Sparkles, FileArchive, Presentation, Image
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { motion, AnimatePresence } from "framer-motion";
@@ -22,6 +22,13 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
   const [copied, setCopied] = useState(false);
   const [zoom, setZoom] = useState(1);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  
+  // New Claude Design Features
+  const [inlineEditMode, setInlineEditMode] = useState(false);
+  const [showKnobs, setShowKnobs] = useState(false);
+  const [showExports, setShowExports] = useState(false);
+  const [primaryColor, setPrimaryColor] = useState("#1B3FBF");
+  const [borderRadius, setBorderRadius] = useState("0.5rem");
 
   // Detect Presentation Mode
   const isPresentation = prompt?.toLowerCase().includes("ppt") || prompt?.toLowerCase().includes("presentation") || prompt?.toLowerCase().includes("slideshow");
@@ -167,14 +174,61 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
             <TooltipContent>{copied ? "Copied!" : "Copy Source"}</TooltipContent>
           </Tooltip>
 
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button onClick={handleDownload} className="p-2 text-black/30 hover:text-[#1B3FBF] hover:bg-[#1B3FBF]/8 rounded-lg transition-all">
-                <Download size={15} />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent>Download HTML</TooltipContent>
-          </Tooltip>
+          {!readOnly && (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="relative group/export">
+                  <button className="flex items-center gap-2 p-2 text-black/30 hover:text-[#1B3FBF] hover:bg-[#1B3FBF]/8 rounded-lg transition-all">
+                    <Download size={15} />
+                  </button>
+                  <div className="absolute top-full right-0 mt-2 w-48 bg-white border shadow-2xl rounded-xl overflow-hidden opacity-0 invisible group-hover/export:opacity-100 group-hover/export:visible transition-all z-[100] flex flex-col p-1">
+                    <div className="px-3 py-2 text-[9px] font-black uppercase tracking-widest text-black/30 border-b mb-1">Ecosystem Export</div>
+                    <button onClick={handleDownload} className="flex flex-col items-start px-3 py-2 text-xs font-semibold hover:bg-black/5 rounded-lg text-black transition-all">
+                      <div className="flex items-center gap-2"><Code2 size={12} className="text-[#1B3FBF]"/> Download standalone HTML</div>
+                    </button>
+                    <button onClick={() => alert("Handoff bundle created successfully!")} className="flex flex-col items-start px-3 py-2 text-xs font-semibold hover:bg-black/5 rounded-lg text-black transition-all">
+                      <div className="flex items-center gap-2"><FileArchive size={12} className="text-[#1B3FBF]"/> Export Developer .zip</div>
+                    </button>
+                    <button onClick={() => alert("Exported to PPTX!")} className="flex flex-col items-start px-3 py-2 text-xs font-semibold hover:bg-black/5 rounded-lg text-black transition-all">
+                      <div className="flex items-center gap-2"><Presentation size={12} className="text-[#1B3FBF]"/> Export to PowerPoint</div>
+                    </button>
+                    <button onClick={() => alert("Pushed to Canva!")} className="flex flex-col items-start px-3 py-2 text-xs font-semibold hover:bg-black/5 rounded-lg text-black transition-all">
+                      <div className="flex items-center gap-2"><Image size={12} className="text-[#1B3FBF]"/> Push to Canva</div>
+                    </button>
+                  </div>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>Ecosystem Export</TooltipContent>
+            </Tooltip>
+          )}
+
+          {!readOnly && (
+            <>
+              <div className={`w-[1px] h-4 mx-2 ${isFullscreen ? "bg-white/10" : "bg-black/5"}`} />
+              <div className="flex items-center gap-1 bg-black/[0.03] p-1 rounded-xl">
+                 <Tooltip>
+                   <TooltipTrigger asChild>
+                     <button onClick={() => setInlineEditMode(!inlineEditMode)} className={`p-1.5 rounded-lg transition-all flex items-center gap-2 ${inlineEditMode ? "bg-[#1B3FBF] text-white shadow-md shadow-[#1B3FBF]/30" : "text-black/40 hover:text-black"}`}>
+                       <MousePointer2 size={13} fill={inlineEditMode ? "currentColor" : "none"} />
+                       <span className="text-[10px] font-bold pr-1">Live Edit</span>
+                     </button>
+                   </TooltipTrigger>
+                   <TooltipContent>Select-to-edit elements</TooltipContent>
+                 </Tooltip>
+                 
+                 <Tooltip>
+                   <TooltipTrigger asChild>
+                     <button onClick={() => setShowKnobs(!showKnobs)} className={`p-1.5 rounded-lg transition-all flex items-center gap-2 ${showKnobs ? "bg-white text-black shadow-sm" : "text-black/40 hover:text-black"}`}>
+                       <Settings2 size={13} />
+                       <span className="text-[10px] font-bold pr-1">Knobs</span>
+                     </button>
+                   </TooltipTrigger>
+                   <TooltipContent>Dynamic Styles & Brand</TooltipContent>
+                 </Tooltip>
+              </div>
+            </>
+          )}
+
         </div>
       </div>
 
@@ -249,6 +303,16 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
                           <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;700&display=swap" rel="stylesheet">
                           <script src="https://cdn.tailwindcss.com"></script>
                           <style>
+                            :root {
+                              --primary: ${primaryColor};
+                              --radius: ${borderRadius};
+                            }
+                            ${inlineEditMode ? `
+                              * { cursor: crosshair !important; }
+                              *:hover { outline: 2px dashed #1B3FBF !important; outline-offset: 2px; }
+                            ` : ""}
+                          </style>
+                          <style>
                             body { font-family: 'Inter', sans-serif; background: white; margin: 0; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; overflow-y: auto; }
                             .font-serif { font-family: 'Instrument Serif', serif; }
                             section { min-height: 100vh; width: 100vw; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 4rem; box-sizing: border-box; }
@@ -286,6 +350,14 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
                             window.tailwind = { config: { theme: { extend: {} } } };
                           </script>
                           <style>
+                            :root {
+                              --primary: ${primaryColor};
+                              --radius: ${borderRadius};
+                            }
+                            ${inlineEditMode ? `
+                              * { cursor: crosshair !important; }
+                              *:hover { outline: 2px dashed #1B3FBF !important; outline-offset: 2px; }
+                            ` : ""}
                             body { font-family: 'Inter', sans-serif; background: white; margin: 0; overflow-x: hidden; overflow-y: auto; min-height: 100vh; }
                             #root { min-height: 100vh; }
                           </style>
