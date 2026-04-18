@@ -102,6 +102,14 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
         <BrainCircuit size={800} className="absolute -bottom-1/4 -left-1/4 text-[#1B3FBF] -rotate-12" />
       </div>
 
+      <button 
+        onClick={onClose}
+        className="fixed top-12 right-12 z-[4000] group flex items-center gap-3 bg-black/5 hover:bg-black/10 px-6 py-3 rounded-full transition-all"
+      >
+        <div className="text-[10px] font-black uppercase tracking-[0.2em] text-black/40 group-hover:text-black">Dismiss</div>
+        <div className="w-1.5 h-1.5 rounded-full bg-black/20 group-hover:bg-[#1B3FBF] transition-colors" />
+      </button>
+
       <main className="flex-1 flex flex-col relative z-10">
         <AnimatePresence mode="wait">
           {phase === 'pref' && (

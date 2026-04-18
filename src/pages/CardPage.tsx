@@ -55,15 +55,6 @@ const CardPage = ({ onboarding = false }: { onboarding?: boolean }) => {
 
   return (
     <div className="min-h-screen bg-white relative">
-      {!onboarding && (
-        <button 
-          onClick={() => navigate("/")}
-          className="fixed top-12 right-12 z-[4000] group flex items-center gap-3 bg-black/5 hover:bg-black/10 px-6 py-3 rounded-full transition-all"
-        >
-          <div className="text-[10px] font-black uppercase tracking-[0.2em] text-black/40 group-hover:text-black">Dismiss</div>
-          <div className="w-1.5 h-1.5 rounded-full bg-black/20 group-hover:bg-[#1B3FBF] transition-colors" />
-        </button>
-      )}
       <IdentityScreen 
         userEmail={userEmail}
         userName={userName}
