@@ -39,8 +39,6 @@ interface HomeScreenProps {
 
 // PLACEHOLDERS moved inside HomeScreen to access 't' from LanguageContext
 const NEURAL_PROMPTS = [
-
-const NEURAL_PROMPTS = [
   "Create a high-quality PPT presentation for a VC pitch — cinematic slides, beautiful typography, and clear diagrams.",
   "Create a professional Excel-style financial report for a SaaS company with live charts, MRR tables, and clean budgeting tools.",
   "Powerful PDF analysis: create an interactive document viewer that identifies structures and extracts data.",
