@@ -1196,8 +1196,18 @@ const HomeScreen = ({
             </button>
 
             <div className="relative z-10 flex flex-col items-center justify-center min-h-screen pt-20">
-              {/* Programmatic Neural Scatter for Loading - No Images */}
-              <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
+              <div className="absolute inset-0 overflow-hidden pointer-events-none flex items-center justify-center">
+                 {/* Mid-Background Grey "KREO" Watermark */}
+                 <motion.span 
+                   initial={{ opacity: 0, scale: 0.9 }}
+                   animate={{ opacity: 1, scale: 1 }}
+                   transition={{ duration: 2 }}
+                   className="text-[25vw] font-black text-black/[0.03] select-none uppercase tracking-tighter"
+                   style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }}
+                 >
+                   KREO
+                 </motion.span>
+
                  {/* Reusing Neural Doodle concept but with direct mapping to avoid complex state here */}
                  {[...Array(60)].map((_, i) => {
                    const top = `${Math.random() * 100}%`;
