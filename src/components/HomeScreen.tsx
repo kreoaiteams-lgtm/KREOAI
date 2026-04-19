@@ -1140,31 +1140,9 @@ const HomeScreen = ({
       <main className={`flex flex-col relative z-20 overflow-x-hidden ${artifact && isSplitView ? "h-screen overflow-hidden" : ""}`}>
         {(isSubmitting && !artifact) || isIncomingPortal ? (
            <div className="fixed inset-0 z-[1000] flex flex-col items-center justify-center bg-white overflow-hidden">
-              {/* Cinematic Full-Screen Background — White Version */}
-              <div className="absolute inset-0 bg-[#F8F9FF] pointer-events-none overflow-hidden">
-                <Dither className="opacity-[0.03] mix-blend-multiply" />
-                <div className="absolute inset-0 opacity-40 mix-blend-screen scale-150 rotate-12">
-                   <img src="/cloud_left.png" className="absolute top-0 left-0 w-full h-full object-cover animate-pulse" style={{ animationDuration: '8s' }} alt="" />
-                   <img src="/cloud_right.png" className="absolute bottom-0 right-0 w-full h-full object-cover animate-pulse" style={{ animationDuration: '10s' }} alt="" />
-                </div>
-                {/* Wavy Neural Lines */}
-                <div className="absolute inset-0 z-0">
-                  <svg className="w-full h-full opacity-[0.08]" viewBox="0 0 1440 800" fill="none">
-                    <motion.path 
-                      initial={{ d: "M0 400 Q 360 300 720 400 T 1440 400" }}
-                      animate={{ d: ["M0 400 Q 360 300 720 400 T 1440 400", "M0 400 Q 360 500 720 400 T 1440 400", "M0 400 Q 360 300 720 400 T 1440 400"] }}
-                      transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-                      stroke="#1B3FBF" strokeWidth="2"
-                    />
-                    <motion.path 
-                      initial={{ d: "M0 450 Q 360 350 720 450 T 1440 450" }}
-                      animate={{ d: ["M0 450 Q 360 350 720 450 T 1440 450", "M0 450 Q 360 550 720 450 T 1440 450", "M0 450 Q 360 350 720 450 T 1440 450"] }}
-                      transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                      stroke="#1B3FBF" strokeWidth="1" opacity="0.5"
-                    />
-                  </svg>
-                </div>
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/50 to-white" />
+              {/* Solid White Background Edition */}
+              <div className="absolute inset-0 bg-white pointer-events-none overflow-hidden">
+                {/* No background artifacts for solid white mode */}
               </div>
 
               {/* Dismiss Button */}
@@ -1176,8 +1154,8 @@ const HomeScreen = ({
               </button>
 
               <div className="relative z-10 flex flex-col items-center gap-10">
-                <div className="relative drop-shadow-[0_0_50px_rgba(27,63,191,0.05)]">
-                   <div className="absolute inset-0 bg-[#1B3FBF]/5 rounded-full blur-3xl animate-pulse scale-150" />
+                <div className="relative">
+                   <div className="absolute inset-0 bg-black/5 rounded-full blur-2xl animate-pulse scale-125" />
                    
                    {/* Artistic Doodles around Logo */}
                    <div className="absolute inset-0 -m-20 pointer-events-none scale-125">
@@ -1200,17 +1178,17 @@ const HomeScreen = ({
                          <motion.circle 
                             initial={{ scale: 0 }} animate={{ scale: 1 }}
                             transition={{ type: "spring", delay: 1.2 }}
-                            cx="100" cy="10" r="2" fill="#1B3FBF" 
+                            cx="100" cy="10" r="2" fill="black" 
                           />
                       </svg>
                    </div>
                    
-                   <KreoLogo className="scale-[2.5] text-[#1B3FBF] relative z-10" />
+                   <KreoLogo className="scale-[2.5] text-black relative z-10" />
                 </div>
 
                 <div className="flex flex-col items-center gap-6 mt-16">
                   <div className="flex flex-col items-center gap-6">
-                     <p className="text-[14px] font-serif italic text-black/30 tracking-widest animate-pulse">
+                     <p className="text-[14px] font-serif italic text-black/20 tracking-widest animate-pulse">
                        {isIncomingPortal ? t.loading_restoring : loadingMessage}
                      </p>
                      {/* Squiggly Google-style loader */}
@@ -1228,13 +1206,12 @@ const HomeScreen = ({
                              0%   { stroke-dashoffset: 320; }
                              100% { stroke-dashoffset: -320; }
                            }
-                           .squiggle-track { stroke: rgba(27,63,191,0.08); }
+                           .squiggle-track { stroke: rgba(0,0,0,0.05); }
                            .squiggle-line {
-                             stroke: #1B3FBF;
+                             stroke: black;
                              stroke-dasharray: 180 320;
                              stroke-dashoffset: 0;
                              animation: squiggle 1.8s ease-in-out infinite, dash-move 1.8s linear infinite;
-                             filter: drop-shadow(0 0 8px rgba(27,63,191,0.2));
                            }
                          `}</style>
                        </defs>
