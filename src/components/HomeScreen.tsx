@@ -1252,10 +1252,7 @@ const HomeScreen = ({
                     className="text-[12px] font-serif italic text-black/30 tracking-[0.4em] uppercase"
                   >
                     {isIncomingPortal ? t.loading_restoring : loadingMessage}
-                      d="M0 12 C20 4, 40 20, 60 12 C80 4, 100 20, 120 12 C140 4, 160 20, 180 12 C200 4, 220 20, 240 12 C260 4, 280 20, 300 12 C310 7, 315 10, 320 12"
-                      strokeWidth="2.5" strokeLinecap="round" fill="none"
-                    />
-                  </svg>
+                  </motion.p>
                 </div>
               </div>
             </div>
