@@ -571,18 +571,29 @@ const HomeScreen = ({
       try {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) {
-          // Fallback to local memory for guests
           const local = localStorage.getItem('kreo_local_history');
           if (local) setHistoryItems(JSON.parse(local));
           return;
         }
 
-        // Use explicit columns to avoid 400 errors from computed or restricted columns
-        const { data, error } = await supabase
+        // Primary fetch — with share_token (requires DB migration to have been run)
+        let { data, error } = await supabase
           .from('artifacts')
           .select('id, prompt, code, created_at, user_id, share_token')
           .eq('user_id', user.id)
           .order('created_at', { ascending: false });
+
+        // Fallback: if 400 (column doesn't exist yet), retry without share_token
+        if (error && (error.code === 'PGRST116' || error.message?.includes('share_token') || error.message?.includes('400') || (error as any).status === 400)) {
+          console.warn("[KREO] share_token column missing — run ensure_schema.sql in Supabase. Falling back to core columns.");
+          const fallback = await supabase
+            .from('artifacts')
+            .select('id, prompt, code, created_at, user_id')
+            .eq('user_id', user.id)
+            .order('created_at', { ascending: false });
+          data = fallback.data;
+          error = fallback.error;
+        }
 
         if (error) {
           console.error("Neural sync throttled:", error.message);
@@ -591,8 +602,7 @@ const HomeScreen = ({
 
         if (data) {
           setHistoryItems(prev => {
-            const merged = [...data, ...prev];
-            // Unique by ID to avoid duplicates between local and cloud
+            const merged = [...data!, ...prev];
             return Array.from(new Map(merged.map(item => [item.id, item])).values());
           });
         }
@@ -888,17 +898,29 @@ const HomeScreen = ({
         let insertError = null;
 
         if (artifact && currentArtifactId && !currentArtifactId.startsWith('opt-')) {
-          // UPDATE EXISTING
+          // UPDATE EXISTING — try with share_token, fall back to id
           const { data, error } = await supabase
             .from("artifacts")
-            .update({ code: code, prompt: finalQuery }) // We update terminal prompt
+            .update({ code: code, prompt: finalQuery })
             .eq("share_token", currentArtifactId)
             .select('id, prompt, code, created_at, user_id, share_token')
-            .single();
+            .maybeSingle();
           newArtifact = data;
           insertError = error;
+
+          // If update failed (share_token column missing), try by id
+          if (insertError) {
+            const fallback = await supabase
+              .from("artifacts")
+              .update({ code: code, prompt: finalQuery })
+              .eq("id", currentArtifactId)
+              .select('id, prompt, code, created_at, user_id')
+              .maybeSingle();
+            newArtifact = fallback.data;
+            insertError = fallback.error;
+          }
         } else {
-          // INSERT NEW
+          // INSERT NEW — try with share_token + is_public, fall back to basics
           const { data, error } = await supabase
             .from("artifacts")
             .insert({
@@ -909,9 +931,25 @@ const HomeScreen = ({
               share_token: shareToken
             })
             .select('id, prompt, code, created_at, user_id, share_token')
-            .single();
+            .maybeSingle();
           newArtifact = data;
           insertError = error;
+
+          // Fallback: insert without share_token/is_public if columns don't exist yet
+          if (insertError) {
+            console.warn("[KREO] Falling back to basic insert — run ensure_schema.sql in Supabase to fix.");
+            const fallback = await supabase
+              .from("artifacts")
+              .insert({
+                prompt: finalQuery,
+                code: code,
+                user_id: user ? user.id : null,
+              })
+              .select('id, prompt, code, created_at, user_id')
+              .maybeSingle();
+            newArtifact = fallback.data;
+            insertError = fallback.error;
+          }
         }
 
         if (!insertError && newArtifact) {
