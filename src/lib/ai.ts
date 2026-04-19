@@ -222,8 +222,21 @@ export const generateArtifact = async (prompt: string, chatHistory: {role: strin
             if (bridgeRes.ok) {
                 const bridgeData = await bridgeRes.json();
                 const continuation = bridgeData.choices[0].message.content;
-                content += continuation;
-                console.log("Neural Bridge Successful. Manifest Extended.");
+                
+                // STITCH LOGIC: Remove potential overlap stutter
+                // We look for the last 100 chars of the original and see if they appear in the start of continuation
+                let overlap = 0;
+                const checkLen = Math.min(content.length, 100);
+                const suffix = content.slice(-checkLen);
+                for (let i = checkLen; i > 0; i--) {
+                    if (continuation.startsWith(suffix.slice(-i))) {
+                        overlap = i;
+                        break;
+                    }
+                }
+                
+                content += continuation.slice(overlap);
+                console.log("Neural Bridge Successful. Manifest Extended. Overlap removed:", overlap);
             }
         } catch (e) {
             console.error("Neural Bridge Failed:", e);

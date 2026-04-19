@@ -1,7 +1,7 @@
 const KreoLogo = ({ className = "", isPro = false }: { className?: string, isPro?: boolean }) => (
   <div className={`flex items-center gap-2 ${className}`}>
     <span
-      className="text-3xl tracking-tight leading-none text-foreground"
+      className="text-3xl tracking-tight leading-none"
       style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }}
     >
       KREO

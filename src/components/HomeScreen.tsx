@@ -172,8 +172,8 @@ const PossibilitiesPile: React.FC = () => {
   const [visibleCount, setVisibleCount] = useState(0);
   const positions = useMemo(() => {
     return EXAMPLES.map((_, i) => {
-      const xPos = (Math.random() * 80 - 40); 
-      const yPos = (Math.random() * 65 - 20); 
+      const xPos = (Math.random() * 80 - 40);
+      const yPos = (Math.random() * 65 - 20);
 
       return {
         x: xPos,
@@ -464,17 +464,17 @@ const HomeScreen = ({
 
   useEffect(() => {
     if (uploadedFile) {
-        localStorage.setItem('kreo_last_upload', JSON.stringify(uploadedFile));
+      localStorage.setItem('kreo_last_upload', JSON.stringify(uploadedFile));
     } else {
-        localStorage.removeItem('kreo_last_upload');
+      localStorage.removeItem('kreo_last_upload');
     }
   }, [uploadedFile]);
 
   useEffect(() => {
     if (currentArtifactId) {
-        localStorage.setItem('kreo_last_id', currentArtifactId);
+      localStorage.setItem('kreo_last_id', currentArtifactId);
     } else {
-        localStorage.removeItem('kreo_last_id');
+      localStorage.removeItem('kreo_last_id');
     }
   }, [currentArtifactId]);
 
@@ -576,19 +576,19 @@ const HomeScreen = ({
           if (local) setHistoryItems(JSON.parse(local));
           return;
         }
-        
+
         // Use explicit columns to avoid 400 errors from computed or restricted columns
         const { data, error } = await supabase
           .from('artifacts')
           .select('id, prompt, code, created_at, user_id, share_token')
           .eq('user_id', user.id)
           .order('created_at', { ascending: false });
-          
+
         if (error) {
           console.error("Neural sync throttled:", error.message);
           return;
         }
-        
+
         if (data) {
           setHistoryItems(prev => {
             const merged = [...data, ...prev];
@@ -704,16 +704,16 @@ const HomeScreen = ({
         const updated = localHistoryTree.filter((item: any) => item.id !== id);
         localStorage.setItem('kreo_local_history', JSON.stringify(updated));
       }
-      
+
       // 2. Remove from Neural Cloud (if logged in)
       const { data: { session } } = await supabase.auth.getSession();
       if (session?.user) {
         await supabase.from('artifacts').delete().eq('id', id);
       }
-      
+
       // 3. Update UI State
       setHistoryItems(prev => prev.filter(item => item.id !== id));
-      
+
       if (currentArtifactId === id) {
         setArtifact(null);
         setCurrentArtifactId(null);
@@ -785,7 +785,7 @@ const HomeScreen = ({
 
       let targetId = currentArtifactId;
       let optimisticId = "";
-      
+
       if (!artifact) {
         // NEW MANIFESTATION
         optimisticId = 'opt-' + Date.now();
@@ -793,7 +793,7 @@ const HomeScreen = ({
         setHistoryItems(prev => [{
           id: optimisticId,
           prompt: finalQuery,
-          code: "<!-- Manifesting... -->",
+          code: "MANIFEST_EN_ROUTE",
           created_at: new Date().toISOString()
         }, ...prev]);
         setCurrentArtifactId(optimisticId);
@@ -879,7 +879,7 @@ const HomeScreen = ({
           code: code,
           created_at: new Date().toISOString()
         };
-        const updatedLocal = artifact 
+        const updatedLocal = artifact
           ? localHistory.map((item: any) => item.share_token === shareToken ? localEntry : item)
           : [localEntry, ...localHistory].slice(0, 20);
         localStorage.setItem('kreo_local_history', JSON.stringify(updatedLocal));
@@ -926,7 +926,7 @@ const HomeScreen = ({
         } else if (!user) {
           setHistoryItems(updatedLocal);
         }
-        
+
         // Show upgrade popup after first manifestation
         if (manifestCount === 1) {
           setTimeout(() => setShowUpgradePop(true), 2000);
@@ -1011,11 +1011,10 @@ const HomeScreen = ({
                         <button
                           key={l.code}
                           onClick={() => { setLang(l.code); setLangMenuOpen(false); }}
-                          className={`w-full flex items-center justify-between px-4 py-3 rounded-2xl text-left transition-all ${
-                            lang === l.code
+                          className={`w-full flex items-center justify-between px-4 py-3 rounded-2xl text-left transition-all ${lang === l.code
                               ? 'bg-[#1B3FBF] text-white'
                               : 'hover:bg-black/5 text-black'
-                          }`}
+                            }`}
                         >
                           <span className="text-sm font-medium">{l.nativeLabel}</span>
                           {lang === l.code && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
@@ -1030,9 +1029,8 @@ const HomeScreen = ({
 
             <button
               onClick={() => navigate('/pricing')}
-              className={`flex items-center gap-2 px-6 py-2 rounded-full border transition-all ml-2 text-[10px] font-black uppercase tracking-widest ${
-                theme === 'light' ? 'bg-[#0020C2] text-white border-[#0020C2]' : 'bg-yellow-400 text-black border-yellow-400 shadow-[0_0_20px_rgba(250,204,21,0.3)]'
-              } hover:scale-105 active:scale-95`}
+              className={`flex items-center gap-2 px-6 py-2 rounded-full border transition-all ml-2 text-[10px] font-black uppercase tracking-widest ${theme === 'light' ? 'bg-[#0020C2] text-white border-[#0020C2]' : 'bg-yellow-400 text-black border-yellow-400 shadow-[0_0_20px_rgba(250,204,21,0.3)]'
+                } hover:scale-105 active:scale-95`}
             >
               <Crown size={12} /> {t.nav_pricing}
             </button>
@@ -1067,7 +1065,7 @@ const HomeScreen = ({
                   <button onClick={() => handleHistoryItemClick(item)} className="w-full text-left p-4 pr-12 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all text-sm truncate font-light">
                     {item.prompt}
                   </button>
-                  <button 
+                  <button
                     onClick={(e) => handleDeleteHistoryItem(item.id, e)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-white/10 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all rounded-lg hover:bg-red-400/10"
                   >
@@ -1088,7 +1086,7 @@ const HomeScreen = ({
             <div className="space-y-6">
               <div className="flex bg-black/5 p-1.5 rounded-2xl">
                 {(["light", "dark", "ultra"] as const).map((m) => (
-                   <button key={m} onClick={() => setTheme(m)} className={`flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${theme === m ? "bg-[#1B3FBF] text-white shadow-lg" : "text-black/40 hover:text-black"}`}>{m}</button>
+                  <button key={m} onClick={() => setTheme(m)} className={`flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${theme === m ? "bg-[#1B3FBF] text-white shadow-lg" : "text-black/40 hover:text-black"}`}>{m}</button>
                 ))}
               </div>
               <div className="flex items-center justify-between p-4 rounded-2xl bg-[#0020C2]/5 border border-[#0020C2]/10">
@@ -1119,15 +1117,15 @@ const HomeScreen = ({
               <button onClick={() => alert("Brand Kit Setup initialized! Extracting CSS rules...")} className="w-full py-4 border border-[#1B3FBF]/10 bg-white text-[#1B3FBF] text-[10px] font-black uppercase tracking-[0.4em] rounded-2xl hover:bg-[#1B3FBF]/5 transition-all flex items-center justify-center gap-2 group shadow-sm">
                 <Palette size={14} className="group-hover:rotate-12 transition-transform" /> Brand Kit Setup
               </button>
-              <button 
-                onClick={() => { setShowKreonModal(true); setProfileOpen(false); }} 
+              <button
+                onClick={() => { setShowKreonModal(true); setProfileOpen(false); }}
                 className="w-full py-5 border border-[#1B3FBF]/10 bg-[#1B3FBF]/5 text-[#1B3FBF] text-[10px] font-black uppercase tracking-[0.4em] rounded-2xl hover:bg-[#1B3FBF]/10 transition-all flex items-center justify-center gap-2 group"
               >
                 <ShieldCheck size={14} className="group-hover:scale-110 transition-transform" /> View KREON ID
               </button>
               <button onClick={handleLogout} className="w-full py-5 bg-red-500/5 text-red-500 text-[10px] font-black uppercase tracking-[0.4em] rounded-2xl hover:bg-red-500/10 transition-all font-black">Sign Out Portal</button>
             </div>
-            <button 
+            <button
               onClick={() => setProfileOpen(false)}
               className="w-full text-center mt-8 text-[9px] font-black uppercase tracking-widest text-black/20 hover:text-black transition-colors"
             >
@@ -1139,62 +1137,62 @@ const HomeScreen = ({
 
       <main className={`flex flex-col relative z-20 overflow-x-hidden ${artifact && isSplitView ? "h-screen overflow-hidden" : ""}`}>
         {(isSubmitting && !artifact) || isIncomingPortal ? (
-           <div className="fixed inset-0 z-[1000] flex flex-col items-center justify-center bg-white overflow-hidden">
-              {/* Solid White Background Edition */}
-              <div className="absolute inset-0 bg-white pointer-events-none overflow-hidden">
-                {/* No background artifacts for solid white mode */}
-              </div>
+          <div className="fixed inset-0 z-[1000] flex flex-col items-center justify-center bg-white overflow-hidden">
+            {/* Solid White Background Edition */}
+            <div className="absolute inset-0 bg-white pointer-events-none overflow-hidden">
+              {/* No background artifacts for solid white mode */}
+            </div>
 
-              {/* Dismiss Button */}
-              <button 
-                onClick={() => { setIsSubmitting(false); setIsIncomingPortal(false); }}
-                className="absolute top-10 right-10 z-[100] w-12 h-12 rounded-full bg-black/5 backdrop-blur-md border border-black/10 flex items-center justify-center text-black/20 hover:text-black hover:bg-black/10 transition-all shadow-xl group"
-              >
-                <X size={20} className="group-hover:rotate-90 transition-transform" />
-              </button>
+            {/* Dismiss Button */}
+            <button
+              onClick={() => { setIsSubmitting(false); setIsIncomingPortal(false); }}
+              className="absolute top-10 right-10 z-[100] w-12 h-12 rounded-full bg-black/5 backdrop-blur-md border border-black/10 flex items-center justify-center text-black/20 hover:text-black hover:bg-black/10 transition-all shadow-xl group"
+            >
+              <X size={20} className="group-hover:rotate-90 transition-transform" />
+            </button>
 
-              <div className="relative z-10 flex flex-col items-center gap-10">
-                <div className="relative">
-                   <div className="absolute inset-0 bg-black/5 rounded-full blur-2xl animate-pulse scale-125" />
-                   
-                   {/* Artistic Doodles around Logo */}
-                   <div className="absolute inset-0 -m-20 pointer-events-none scale-125">
-                      <svg className="w-full h-full opacity-60" viewBox="0 0 200 200" fill="none">
-                         {/* Circle Doodle */}
-                         <motion.path 
-                           initial={{ pathLength: 0, opacity: 0 }}
-                           animate={{ pathLength: 1, opacity: 1 }}
-                           transition={{ duration: 2, delay: 0.5 }}
-                           d="M100,20 C140,20 180,60 180,100 C180,140 140,180 100,180 C60,180 20,140 20,100 C20,60 60,20 100,20" 
-                           stroke="white" strokeWidth="0.5" strokeDasharray="4 4"
-                         />
-                         {/* Abstract Sketch Lines */}
-                         <motion.path 
-                           initial={{ pathLength: 0 }} animate={{ pathLength: 1 }}
-                           transition={{ duration: 1.5, delay: 1 }}
-                           d="M20,20 L50,50 M180,180 L150,150 M180,20 L150,50 M20,180 L50,150" 
-                           stroke="#1B3FBF" strokeWidth="0.5" opacity="0.3"
-                         />
-                         <motion.circle 
-                            initial={{ scale: 0 }} animate={{ scale: 1 }}
-                            transition={{ type: "spring", delay: 1.2 }}
-                            cx="100" cy="10" r="2" fill="black" 
-                          />
-                      </svg>
-                   </div>
-                   
-                   <KreoLogo className="scale-[2.5] text-black relative z-10" />
+            <div className="relative z-10 flex flex-col items-center gap-10">
+              <div className="relative">
+                <div className="absolute inset-0 bg-black/5 rounded-full blur-2xl animate-pulse scale-125" />
+
+                {/* Artistic Doodles around Logo */}
+                <div className="absolute inset-0 -m-20 pointer-events-none scale-125">
+                  <svg className="w-full h-full opacity-60" viewBox="0 0 200 200" fill="none">
+                    {/* Circle Doodle */}
+                    <motion.path
+                      initial={{ pathLength: 0, opacity: 0 }}
+                      animate={{ pathLength: 1, opacity: 1 }}
+                      transition={{ duration: 2, delay: 0.5 }}
+                      d="M100,20 C140,20 180,60 180,100 C180,140 140,180 100,180 C60,180 20,140 20,100 C20,60 60,20 100,20"
+                      stroke="black" strokeWidth="0.5" strokeDasharray="4 4"
+                    />
+                    {/* Abstract Sketch Lines */}
+                    <motion.path
+                      initial={{ pathLength: 0 }} animate={{ pathLength: 1 }}
+                      transition={{ duration: 1.5, delay: 1 }}
+                      d="M20,20 L50,50 M180,180 L150,150 M180,20 L150,50 M20,180 L50,150"
+                      stroke="#1B3FBF" strokeWidth="0.5" opacity="0.3"
+                    />
+                    <motion.circle
+                      initial={{ scale: 0 }} animate={{ scale: 1 }}
+                      transition={{ type: "spring", delay: 1.2 }}
+                      cx="100" cy="10" r="2" fill="black"
+                    />
+                  </svg>
                 </div>
 
-                <div className="flex flex-col items-center gap-6 mt-16">
-                  <div className="flex flex-col items-center gap-6">
-                     <p className="text-[14px] font-serif italic text-black/20 tracking-widest animate-pulse">
-                       {isIncomingPortal ? t.loading_restoring : loadingMessage}
-                     </p>
-                     {/* Squiggly Google-style loader */}
-                     <svg width="320" height="24" viewBox="0 0 320 24" fill="none" className="overflow-visible">
-                       <defs>
-                         <style>{`
+                <KreoLogo className="scale-[2.5] text-black relative z-10" />
+              </div>
+
+              <div className="flex flex-col items-center gap-6 mt-16">
+                <div className="flex flex-col items-center gap-6">
+                  <p className="text-[14px] font-serif italic text-black/20 tracking-widest animate-pulse">
+                    {isIncomingPortal ? t.loading_restoring : loadingMessage}
+                  </p>
+                  {/* Squiggly Google-style loader */}
+                  <svg width="320" height="24" viewBox="0 0 320 24" fill="none" className="overflow-visible">
+                    <defs>
+                      <style>{`
                            @keyframes squiggle {
                              0%   { d: path("M0 12 C20 4, 40 20, 60 12 C80 4, 100 20, 120 12 C140 4, 160 20, 180 12 C200 4, 220 20, 240 12 C260 4, 280 20, 300 12 C310 7, 315 10, 320 12"); }
                              25%  { d: path("M0 12 C20 20, 40 4, 60 12 C80 20, 100 4, 120 12 C140 20, 160 4, 180 12 C200 20, 220 4, 240 12 C260 20, 280 4, 300 12 C310 17, 315 14, 320 12"); }
@@ -1214,35 +1212,35 @@ const HomeScreen = ({
                              animation: squiggle 1.8s ease-in-out infinite, dash-move 1.8s linear infinite;
                            }
                          `}</style>
-                       </defs>
-                       {/* Track */}
-                       <path
-                         className="squiggle-track"
-                         d="M0 12 C20 4, 40 20, 60 12 C80 4, 100 20, 120 12 C140 4, 160 20, 180 12 C200 4, 220 20, 240 12 C260 4, 280 20, 300 12 C310 7, 315 10, 320 12"
-                         strokeWidth="2.5" strokeLinecap="round" fill="none"
-                       />
-                       {/* Animated squiggly bar */}
-                       <path
-                         className="squiggle-line"
-                         d="M0 12 C20 4, 40 20, 60 12 C80 4, 100 20, 120 12 C140 4, 160 20, 180 12 C200 4, 220 20, 240 12 C260 4, 280 20, 300 12 C310 7, 315 10, 320 12"
-                         strokeWidth="2.5" strokeLinecap="round" fill="none"
-                       />
-                     </svg>
-                  </div>
+                    </defs>
+                    {/* Track */}
+                    <path
+                      className="squiggle-track"
+                      d="M0 12 C20 4, 40 20, 60 12 C80 4, 100 20, 120 12 C140 4, 160 20, 180 12 C200 4, 220 20, 240 12 C260 4, 280 20, 300 12 C310 7, 315 10, 320 12"
+                      strokeWidth="2.5" strokeLinecap="round" fill="none"
+                    />
+                    {/* Animated squiggly bar */}
+                    <path
+                      className="squiggle-line"
+                      d="M0 12 C20 4, 40 20, 60 12 C80 4, 100 20, 120 12 C140 4, 160 20, 180 12 C200 4, 220 20, 240 12 C260 4, 280 20, 300 12 C310 7, 315 10, 320 12"
+                      strokeWidth="2.5" strokeLinecap="round" fill="none"
+                    />
+                  </svg>
                 </div>
               </div>
             </div>
-          ): artifact ? (
+          </div>
+        ) : artifact ? (
           <div className={`flex w-full h-screen animate-in fade-in slide-in-from-bottom-4 duration-700 ${isSplitView ? "flex-row overflow-hidden" : "flex-col items-center p-8 overflow-auto"}`}>
             <div className={`${isSplitView ? "w-[420px] shrink-0" : "w-full max-w-2xl mb-6"} flex flex-col ${isSplitView ? "h-full" : "min-h-[50vh]"} overflow-hidden bg-[#f5f7ff] border-r border-black/[0.06]`}>
               <div className="shrink-0 flex justify-between items-center px-6 py-4 border-b border-black/[0.06] bg-white/90 backdrop-blur-xl">
                 <button
-                  onClick={() => { 
+                  onClick={() => {
                     // Auto-save is implicit as manifest updates state on generation
-                    setArtifact(null); 
-                    setChatHistory([]); 
-                    setCurrentArtifactId(null); 
-                    window.history.replaceState(null, '', '/'); 
+                    setArtifact(null);
+                    setChatHistory([]);
+                    setCurrentArtifactId(null);
+                    window.history.replaceState(null, '', '/');
                   }}
                   className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.35em] text-black/30 hover:text-[#1B3FBF] transition-all group"
                 >
@@ -1265,7 +1263,7 @@ const HomeScreen = ({
                       <div className="flex justify-between items-start gap-4">
                         <div className="flex-1">{msg.display || msg.content}</div>
                         {msg.role === 'assistant' && (
-                          <button 
+                          <button
                             onClick={() => narrateText(msg.content)}
                             className="p-1 rounded-md hover:bg-black/5 text-black/20 hover:text-[#1B3FBF] transition-all shrink-0"
                             title="Narrate Manifestation"
@@ -1372,7 +1370,7 @@ const HomeScreen = ({
                 <PossibilitiesPile />
                 <InteractiveVisualLoop theme={theme} />
                 <div className="flex justify-center pt-16">
-                    <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="px-12 py-6 rounded-full bg-black text-white text-[11px] font-black uppercase tracking-[0.4em] shadow-xl hover:scale-105 transition-all">{t.cta_start}</button>
+                  <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="px-12 py-6 rounded-full bg-black text-white text-[11px] font-black uppercase tracking-[0.4em] shadow-xl hover:scale-105 transition-all">{t.cta_start}</button>
                 </div>
               </div>
             </section>
@@ -1385,7 +1383,7 @@ const HomeScreen = ({
       <AnimatePresence>
         {showUpgradePop && (
           <div className="fixed inset-0 z-[1000] flex items-center justify-center p-6 bg-black/40 backdrop-blur-xl">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -1394,7 +1392,7 @@ const HomeScreen = ({
               <div className="absolute top-0 right-0 w-32 h-32 bg-yellow-400/10 blur-[50px] rounded-full" />
               <div className="relative z-10 space-y-6">
                 <div className="w-20 h-20 bg-yellow-400 rounded-3xl mx-auto flex items-center justify-center text-black shadow-lg shadow-yellow-400/20 rotate-12">
-                   <Crown size={40} />
+                  <Crown size={40} />
                 </div>
                 <div className="space-y-3">
                   <h2 className="text-3xl font-serif italic text-black leading-tight">Manifestation Successful</h2>
@@ -1403,18 +1401,18 @@ const HomeScreen = ({
                   </p>
                 </div>
                 <div className="space-y-4 pt-4">
-                   <button 
-                     onClick={() => navigate('/pricing')}
-                     className="w-full py-5 bg-[#0020C2] text-white text-[10px] font-black uppercase tracking-[0.4em] rounded-full shadow-2xl hover:scale-105 active:scale-95 transition-all"
-                   >
-                     Upgrade to Ultra — $1
-                   </button>
-                   <button 
-                     onClick={() => setShowUpgradePop(false)}
-                     className="text-[10px] font-black uppercase tracking-widest text-black/20 hover:text-black transition-colors"
-                   >
-                     Maybe Later
-                   </button>
+                  <button
+                    onClick={() => navigate('/pricing')}
+                    className="w-full py-5 bg-[#0020C2] text-white text-[10px] font-black uppercase tracking-[0.4em] rounded-full shadow-2xl hover:scale-105 active:scale-95 transition-all"
+                  >
+                    Upgrade to Ultra — $1
+                  </button>
+                  <button
+                    onClick={() => setShowUpgradePop(false)}
+                    className="text-[10px] font-black uppercase tracking-widest text-black/20 hover:text-black transition-colors"
+                  >
+                    Maybe Later
+                  </button>
                 </div>
               </div>
             </motion.div>
@@ -1424,13 +1422,13 @@ const HomeScreen = ({
 
       {shareDialogOpen && (
         <div className="fixed inset-0 z-[2000] flex items-center justify-center p-6 bg-black/60 backdrop-blur-xl animate-in fade-in duration-300">
-          <motion.div 
+          <motion.div
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             className="bg-white w-full max-w-lg rounded-[3rem] p-10 space-y-10 shadow-2xl relative overflow-hidden"
           >
             <div className="absolute top-0 right-0 w-40 h-40 bg-[#0020C2]/5 blur-[60px] rounded-full" />
-            
+
             <div className="flex justify-between items-center pb-6 border-b border-black/5 relative z-10">
               <div className="space-y-1">
                 <h3 className="text-2xl font-serif italic tracking-tight text-black">Share Manifestation</h3>
@@ -1445,20 +1443,20 @@ const HomeScreen = ({
               <p className="text-sm font-light text-black/50 italic font-serif leading-relaxed text-left">
                 Anyone with this link can view your high-fidelity manifestation in real-time.
               </p>
-              
+
               <div className="flex items-center gap-3 p-4 bg-[#1B3FBF]/5 border border-[#1B3FBF]/10 rounded-[2rem] group hover:border-[#1B3FBF]/30 transition-all">
                 <LinkIcon className="text-[#1B3FBF] shrink-0" size={18} />
-                <input 
-                  readOnly 
+                <input
+                  readOnly
                   onClick={(e) => (e.target as HTMLInputElement).select()}
-                  value={`${window.location.origin}/share/${currentArtifactId || 'unbound'}`} 
-                  className="flex-1 bg-transparent px-2 text-xs font-mono text-[#1B3FBF] outline-none truncate" 
+                  value={`${window.location.origin}/share/${currentArtifactId || 'unbound'}`}
+                  className="flex-1 bg-transparent px-2 text-xs font-mono text-[#1B3FBF] outline-none truncate"
                 />
-                <button 
-                  onClick={() => { 
-                    navigator.clipboard.writeText(`${window.location.origin}/share/${currentArtifactId}`); 
-                    toast({ title: "Link Manifested", description: "URL copied to your neural buffer." }); 
-                  }} 
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(`${window.location.origin}/share/${currentArtifactId}`);
+                    toast({ title: "Link Manifested", description: "URL copied to your neural buffer." });
+                  }}
                   className="px-6 py-3 bg-[#1B3FBF] text-white rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg shadow-[#1B3FBF]/20 hover:scale-105 active:scale-95 transition-all"
                 >
                   Copy Link
@@ -1467,12 +1465,12 @@ const HomeScreen = ({
             </div>
 
             <div className="pt-4 flex justify-center relative z-10">
-               <button 
-                 onClick={() => setShareDialogOpen(false)}
-                 className="text-[10px] font-black uppercase tracking-widest text-black/20 hover:text-black transition-colors"
-               >
-                 Close Manifest
-               </button>
+              <button
+                onClick={() => setShareDialogOpen(false)}
+                className="text-[10px] font-black uppercase tracking-widest text-black/20 hover:text-black transition-colors"
+              >
+                Close Manifest
+              </button>
             </div>
           </motion.div>
         </div>
@@ -1480,8 +1478,8 @@ const HomeScreen = ({
       {/* KREON Identity Screen */}
       <AnimatePresence>
         {showKreonModal && (
-          <IdentityScreen 
-            userEmail={userEmail} 
+          <IdentityScreen
+            userEmail={userEmail}
             initialBio={residentBio}
             onClose={() => setShowKreonModal(false)}
             onBioGenerated={(bio) => {
@@ -1493,14 +1491,14 @@ const HomeScreen = ({
       </AnimatePresence>
       {showWebCaptureModal && (
         <div className="fixed inset-0 z-[3000] flex items-center justify-center p-6 bg-[#0020C2]/10 backdrop-blur-2xl animate-in fade-in duration-500">
-          <motion.div 
+          <motion.div
             initial={{ scale: 0.9, opacity: 0, y: 30 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             className="bg-white w-full max-w-xl rounded-[4rem] p-12 space-y-10 shadow-[0_40px_100px_rgba(0,0,0,0.1)] relative overflow-hidden text-center"
           >
             <div className="absolute top-0 right-0 w-64 h-64 bg-[#1B3FBF]/5 blur-[80px] rounded-full -translate-y-1/2 translate-x-1/2" />
             <div className="absolute bottom-0 left-0 w-48 h-48 bg-[#1B3FBF]/5 blur-[60px] rounded-full translate-y-1/2 -translate-x-1/2" />
-            
+
             <div className="flex flex-col items-center gap-4 relative z-10">
               <div className="w-16 h-16 bg-[#1B3FBF]/5 rounded-3xl flex items-center justify-center text-[#1B3FBF] mb-2">
                 <Globe size={32} />
@@ -1517,7 +1515,7 @@ const HomeScreen = ({
             <div className="space-y-8 relative z-10 w-full max-w-md mx-auto">
               <div className="space-y-3">
                 <div className="relative">
-                  <input 
+                  <input
                     autoFocus
                     type="url"
                     placeholder={t.webcapture_placeholder}
@@ -1537,7 +1535,7 @@ const HomeScreen = ({
                 </div>
               </div>
 
-              <button 
+              <button
                 onClick={() => {
                   if (captureUrl) {
                     const fullQuery = query ? `${query} Mimic style of ${captureUrl}` : `Mimic style of ${captureUrl}`;

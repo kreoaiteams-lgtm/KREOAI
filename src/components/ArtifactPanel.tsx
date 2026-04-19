@@ -349,6 +349,31 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
                           .replace(/```/g, "")
                           .trim();
 
+                        // Detection: Handle manifesting placeholder
+                        if (code.includes('MANIFEST_EN_ROUTE')) {
+                           return `
+                           <html>
+                             <head>
+                                <script src="https://cdn.tailwindcss.com"></script>
+                                <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+                                <style>
+                                  @keyframes pulse-bg { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+                                  .neural-pulse { animation: pulse-bg 2s infinite ease-in-out; }
+                                </style>
+                             </head>
+                             <body style="margin:0; font-family: 'Inter', sans-serif; background: #ffffff; display: flex; align-items:center; justify-content:center; height:100vh; overflow:hidden;">
+                               <div class="text-center space-y-8 neural-pulse">
+                                  <div class="text-[10px] font-black uppercase tracking-[0.8em] text-black/10">Neural Orchestration</div>
+                                  <div class="flex justify-center gap-3">
+                                     <div class="w-1 h-1 rounded-full bg-black/20 animate-bounce" style="animation-delay:0s"></div>
+                                     <div class="w-1 h-1 rounded-full bg-black/20 animate-bounce" style="animation-delay:0.1s"></div>
+                                     <div class="w-1 h-1 rounded-full bg-black/20 animate-bounce" style="animation-delay:0.2s"></div>
+                                  </div>
+                               </div>
+                             </body>
+                           </html>`;
+                        }
+
                         // Detection: If code doesn't look like React/HTML code (e.g. it's a clarification prompt), render as a UI card
                         const isProbableText = !cleanCode.includes('import ') && !cleanCode.includes('export default') && !cleanCode.includes('function') && !cleanCode.includes('const') && !cleanCode.includes('<');
                         if (isProbableText) {
