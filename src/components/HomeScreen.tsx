@@ -1204,7 +1204,7 @@ const HomeScreen = ({
                              0%   { stroke-dashoffset: 320; }
                              100% { stroke-dashoffset: -320; }
                            }
-                           .squiggle-track { stroke: rgba(0,0,0,0.05); }
+                           .squiggle-track { stroke: rgba(0,0,0,0.15); }
                            .squiggle-line {
                              stroke: black;
                              stroke-dasharray: 180 320;
