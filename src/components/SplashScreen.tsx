@@ -1,96 +1,72 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Presentation, Code2, Smile, Activity, BrainCircuit, Sparkles, LayoutGrid, Zap } from "lucide-react";
-
-const TAN = "'TAN-NIMBUS', sans-serif";
-
-const LETTERS = ['K', 'R', 'E', 'O'];
 
 const SplashScreen = ({ onComplete }: { onComplete: () => void }) => {
-  const [phase, setPhase] = useState<"type" | "hold" | "exit">("type");
+  const [phase, setPhase] = useState<"enter" | "exit">("enter");
 
   useEffect(() => {
-    const t1 = setTimeout(() => setPhase("hold"), 1400);
-    const t2 = setTimeout(() => setPhase("exit"), 2800);
-    const t3 = setTimeout(onComplete, 3500);
-    return () => [t1, t2, t3].forEach(clearTimeout);
+    const t1 = setTimeout(() => setPhase("exit"), 4000);
+    const t2 = setTimeout(onComplete, 4800);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
   }, [onComplete]);
 
   return (
     <AnimatePresence>
-      {phase !== "exit" && (
+      {phase === "enter" && (
         <motion.div
           key="splash"
-          exit={{ opacity: 0, scale: 0.96 }}
-          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="fixed inset-0 z-[1000] flex flex-col items-center justify-center bg-white overflow-hidden"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0, scale: 1.1, filter: "blur(10px)" }}
+          transition={{ duration: 0.8, ease: "easeInOut" }}
+          className="fixed inset-0 z-[2000] flex items-center justify-center bg-[#fdfcf8] selection:bg-none"
         >
-          {/* Enhanced background graphics (Neural Blueprint Style) */}
-          <div className="absolute inset-0 pointer-events-none opacity-[0.08] overflow-hidden">
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="absolute inset-0">
-               {/* Extremely Dense Scatter */}
-               <motion.div animate={{ y: [0, -40, 0], rotate: 10 }} transition={{ repeat: Infinity, duration: 8 }} className="absolute top-[8%] left-[12%] text-[#1B3FBF]"><Presentation size={90} /></motion.div>
-               <motion.div animate={{ y: [0, 40, 0], rotate: -10 }} transition={{ repeat: Infinity, duration: 9 }} className="absolute bottom-[10%] right-[12%] text-[#1B3FBF]"><Code2 size={80} /></motion.div>
-               <motion.div animate={{ scale: [1, 1.3, 1] }} transition={{ repeat: Infinity, duration: 6 }} className="absolute top-[25%] right-[15%] text-[#1B3FBF]"><BrainCircuit size={64} /></motion.div>
-               <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 30, ease: 'linear' }} className="absolute top-1/2 left-[8%] -translate-y-1/2 text-[#1B3FBF]"><LayoutGrid size={56} /></motion.div>
-               <motion.div animate={{ x: [-20, 20, -20] }} transition={{ repeat: Infinity, duration: 10 }} className="absolute bottom-[20%] left-[18%] text-[#1B3FBF]"><Activity size={48} /></motion.div>
-               <motion.div animate={{ scale: [1, 0.8, 1], opacity: [0.5, 1, 0.5] }} transition={{ repeat: Infinity, duration: 4 }} className="absolute top-[15%] right-[25%] text-[#1B3FBF]"><Sparkles size={40} /></motion.div>
-               <motion.div animate={{ rotate: -360 }} transition={{ repeat: Infinity, duration: 15, ease: 'linear' }} className="absolute bottom-[25%] right-[22%] text-[#1B3FBF]"><Zap size={52} /></motion.div>
-               <motion.div animate={{ y: [0, 15, 0] }} transition={{ repeat: Infinity, duration: 3 }} className="absolute top-[40%] left-[25%] text-[#1B3FBF]"><Smile size={36} /></motion.div>
+           {/* Background Texture Overlay */}
+           <div className="absolute inset-0 opacity-[0.03] pointer-events-none grayscale" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/notebook.png')" }} />
 
-               {/* New Additional Scatter */}
-               <div className="absolute top-[5%] right-[40%] text-[#1B3FBF]"><LayoutGrid size={40} /></div>
-               <div className="absolute top-[35%] right-[45%] text-[#1B3FBF]"><Zap size={30} /></div>
-               <div className="absolute bottom-[35%] left-[45%] text-[#1B3FBF]"><Code2 size={45} /></div>
-               <div className="absolute top-[55%] right-[12%] text-[#1B3FBF] opacity-40"><Presentation size={120} /></div>
-               <div className="absolute bottom-[5%] left-[30%] text-[#1B3FBF]"><Activity size={70} /></div>
-               <div className="absolute top-[20%] left-[40%] text-[#1B3FBF]"><BrainCircuit size={30} /></div>
-               <div className="absolute bottom-[40%] right-[40%] text-[#1B3FBF]"><Sparkles size={60} /></div>
-               <div className="absolute top-[65%] left-[15%] text-[#1B3FBF]"><LayoutGrid size={80} /></div>
-               <div className="absolute bottom-[15%] right-[45%] text-[#1B3FBF]"><Smile size={50} /></div>
-               <div className="absolute top-[45%] left-[5%] text-[#1B3FBF]"><Zap size={40} /></div>
-               <div className="absolute top-[10%] left-1/2 -translate-x-1/2 text-[#1B3FBF]"><BrainCircuit size={100} /></div>
-               <div className="absolute bottom-[10%] left-1/2 -translate-x-1/2 text-[#1B3FBF]"><LayoutGrid size={90} /></div>
-               <div className="absolute top-1/4 left-1/4 text-[#1B3FBF] opacity-50"><Code2 size={150} /></div>
-               <div className="absolute bottom-1/4 right-1/4 text-[#1B3FBF] opacity-50"><Presentation size={150} /></div>
-            </motion.div>
+           {/* The Dense Blueprint Illustration */}
+           <motion.div 
+             initial={{ scale: 0.85, opacity: 0, rotate: -2 }}
+             animate={{ scale: 1, opacity: 1, rotate: 0 }}
+             transition={{ duration: 2.5, ease: [0.16, 1, 0.3, 1] }}
+             className="relative w-full h-full flex items-center justify-center p-8 md:p-24 overflow-hidden"
+           >
+              <div className="relative w-full max-w-5xl aspect-square md:aspect-video flex items-center justify-center">
+                <img 
+                  src="/blueprint_splash.png" 
+                  alt="KREO Neural Blueprint"
+                  className="w-full h-full object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.1)]"
+                />
+              </div>
+              
+              {/* Orchestration Overlay */}
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: [0, 0.1, 0] }}
+                transition={{ repeat: Infinity, duration: 4 }}
+                className="absolute inset-0 bg-[#1B3FBF] pointer-events-none mix-blend-overlay"
+              />
+           </motion.div>
 
-            {/* Geometric Sprinkles */}
-            <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="20%" cy="30%" r="2" fill="#1B3FBF" className="opacity-20" />
-              <circle cx="80%" cy="70%" r="2" fill="#1B3FBF" className="opacity-20" />
-              <circle cx="50%" cy="15%" r="3" fill="#1B3FBF" className="opacity-20" />
-              <circle cx="10%" cy="60%" r="3" fill="#1B3FBF" className="opacity-20" />
-              <circle cx="90%" cy="20%" r="2" fill="#1B3FBF" className="opacity-20" />
-              <line x1="10%" y1="10%" x2="15%" y2="15%" stroke="#1B3FBF" strokeWidth="0.5" className="opacity-20" />
-              <line x1="90%" y1="90%" x2="85%" y2="85%" stroke="#1B3FBF" strokeWidth="0.5" className="opacity-20" />
-              <circle cx="50%" cy="50%" r="150" fill="none" stroke="#1B3FBF" strokeWidth="0.5" strokeDasharray="10 20" className="opacity-10" />
-              <circle cx="50%" cy="50%" r="250" fill="none" stroke="#1B3FBF" strokeWidth="0.5" strokeDasharray="10 20" className="opacity-10" />
-              <circle cx="50%" cy="50%" r="400" fill="none" stroke="#1B3FBF" strokeWidth="0.5" strokeDasharray="5 15" className="opacity-5" />
-              <circle cx="50%" cy="50%" r="600" fill="none" stroke="#1B3FBF" strokeWidth="0.5" strokeDasharray="5 15" className="opacity-5" />
-            </svg>
-          </div>
+           {/* Loading Progress Line at Bottom */}
+           <div className="absolute bottom-10 left-1/2 -translate-x-1/2 w-64 h-[1px] bg-black/5 overflow-hidden">
+             <motion.div 
+               initial={{ width: 0 }}
+               animate={{ width: "100%" }}
+               transition={{ duration: 4, ease: "easeInOut" }}
+               className="h-full bg-[#1B3FBF]"
+             />
+           </div>
 
-          {/* KREO letters — one by one (Minimal) */}
-          <div className="flex items-end gap-1 md:gap-3 relative z-10">
-            {LETTERS.map((letter, i) => (
-              <motion.span
-                key={letter}
-                initial={{ opacity: 0, scale: 0.2, rotate: -20, y: 20 }}
-                animate={{ opacity: 1, scale: 1, rotate: 0, y: 0 }}
-                transition={{
-                  delay: i * 0.12,
-                  type: "spring",
-                  stiffness: 450,
-                  damping: 15,
-                }}
-                className="text-[10vw] font-bold text-[#1B3FBF] leading-none tracking-tighter select-none"
-                style={{ fontFamily: TAN, display: 'inline-block' }}
-              >
-                {letter}
-              </motion.span>
-            ))}
-          </div>
+           {/* Cinematic Tagline */}
+           <motion.p 
+             initial={{ opacity: 0, y: 10 }}
+             animate={{ opacity: 1, y: 0 }}
+             transition={{ delay: 2 }}
+             className="absolute bottom-16 left-1/2 -translate-x-1/2 text-[10px] font-black uppercase tracking-[1em] text-black/20"
+           >
+             Neural Orchestration
+           </motion.p>
         </motion.div>
       )}
     </AnimatePresence>
@@ -98,3 +74,4 @@ const SplashScreen = ({ onComplete }: { onComplete: () => void }) => {
 };
 
 export default SplashScreen;
+

@@ -1197,33 +1197,17 @@ const HomeScreen = ({
 
             <div className="relative z-10 flex flex-col items-center gap-4 -mt-32">
               <div className="relative">
-                <div className="absolute inset-0 bg-black/5 rounded-full blur-2xl animate-pulse scale-125" />
-
-                {/* Artistic Doodles around Logo */}
-                <div className="absolute inset-0 -m-20 pointer-events-none scale-125">
-                  <svg className="w-full h-full opacity-60" viewBox="0 0 200 200" fill="none">
-                    {/* Circle Doodle */}
-                    <motion.path
-                      initial={{ pathLength: 0, opacity: 0 }}
-                      animate={{ pathLength: 1, opacity: 1 }}
-                      transition={{ duration: 2, delay: 0.5 }}
-                      d="M100,20 C140,20 180,60 180,100 C180,140 140,180 100,180 C60,180 20,140 20,100 C20,60 60,20 100,20"
-                      stroke="black" strokeWidth="0.5" strokeDasharray="4 4"
-                    />
-                    {/* Abstract Sketch Lines */}
-                    <motion.path
-                      initial={{ pathLength: 0 }} animate={{ pathLength: 1 }}
-                      transition={{ duration: 1.5, delay: 1 }}
-                      d="M20,20 L50,50 M180,180 L150,150 M180,20 L150,50 M20,180 L50,150"
-                      stroke="#1B3FBF" strokeWidth="0.5" opacity="0.3"
-                    />
-                    <motion.circle
-                      initial={{ scale: 0 }} animate={{ scale: 1 }}
-                      transition={{ type: "spring", delay: 1.2 }}
-                      cx="100" cy="10" r="2" fill="black"
-                    />
-                  </svg>
+                {/* Neural Blueprint Background Sprinkle */}
+                <div className="absolute inset-0 -m-64 pointer-events-none scale-125 opacity-10">
+                   <motion.img 
+                     animate={{ rotate: 1 }}
+                     transition={{ repeat: Infinity, duration: 20, ease: "linear" }}
+                     src="/blueprint_splash.png" 
+                     className="w-full h-full object-contain grayscale" 
+                   />
                 </div>
+
+                <div className="absolute inset-0 bg-black/5 rounded-full blur-2xl animate-pulse scale-125" />
 
                 <KreoLogo className="scale-[2.5] text-black relative z-10" />
               </div>
