@@ -19,14 +19,12 @@ const DOODLE_ICONS = [
   Workflow, Boxes, Pencil, Eraser, Heart, Glasses
 ];
 
-const NeuralDoodle = ({ index }: { index: number }) => {
-  const Icon = useMemo(() => DOODLE_ICONS[Math.floor(Math.random() * DOODLE_ICONS.length)], []);
+const NeuralDoodle = ({ top, left, index, icon }: { top: string, left: string, index: number, icon: any }) => {
+  const Icon = icon;
   const pos = useMemo(() => ({
-    top: `${Math.random() * 110 - 5}%`, // Overflow slightly
-    left: `${Math.random() * 110 - 5}%`,
     rotate: Math.random() * 360,
-    scale: 0.3 + Math.random() * 1.4,
-    opacity: 0.05 + Math.random() * 0.25,
+    scale: 0.25 + Math.random() * 1.3,
+    opacity: 0.04 + Math.random() * 0.22,
     delay: Math.random() * 2
   }), []);
 
@@ -46,9 +44,9 @@ const NeuralDoodle = ({ index }: { index: number }) => {
         repeatDelay: Math.random() * 4
       }}
       className="absolute text-[#1B3FBF] pointer-events-none"
-      style={{ top: pos.top, left: pos.left }}
+      style={{ top, left }}
     >
-      <Icon size={12 + Math.random() * 45} strokeWidth={0.8 + Math.random()} />
+      <Icon size={10 + Math.random() * 40} strokeWidth={0.7 + Math.random()} />
     </motion.div>
   );
 };
@@ -56,12 +54,32 @@ const NeuralDoodle = ({ index }: { index: number }) => {
 const SplashScreen = ({ onComplete }: { onComplete: () => void }) => {
   const [phase, setPhase] = useState<"type" | "hold" | "exit">("type");
   
-  // High-density scatter - 250 doodles to "fill" the screen
-  const doodles = useMemo(() => Array.from({ length: 250 }), []);
+  // High-fidelity strictly-constrained jittered grid to ensure zero overlap
+  const doodles = useMemo(() => {
+    const items = [];
+    const rows = 14;
+    const cols = 12;
+    
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        // Strict grid placement with constrained jitter (max 25% of cell size)
+        // This guarantees no icons will collide as long as jitter is less than half cell size - icon radius
+        const top = (r / rows) * 100 + (Math.random() * 4 - 2);
+        const left = (c / cols) * 100 + (Math.random() * 5 - 2.5);
+        const icon = DOODLE_ICONS[Math.floor(Math.random() * DOODLE_ICONS.length)];
+        
+        // Skip ~15% of cells for organic sketchbook feel
+        if (Math.random() > 0.15) {
+          items.push({ top: `${top}%`, left: `${left}%`, icon });
+        }
+      }
+    }
+    return items;
+  }, []);
 
   useEffect(() => {
     const t1 = setTimeout(() => setPhase("hold"), 1500);
-    const t2 = setTimeout(() => setPhase("exit"), 4000); // Longer hold to appreciate density
+    const t2 = setTimeout(() => setPhase("exit"), 4000);
     const t3 = setTimeout(onComplete, 4800);
     return () => [t1, t2, t3].forEach(clearTimeout);
   }, [onComplete]);
@@ -78,10 +96,10 @@ const SplashScreen = ({ onComplete }: { onComplete: () => void }) => {
           {/* Paper Texture Overlay */}
           <div className="absolute inset-0 opacity-[0.06] pointer-events-none grayscale" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/notebook.png')" }} />
 
-          {/* Programmatic Neural Scatter - Ultra Dense Doodle Field */}
+          {/* Ultra Dense Doodle Field - Jittered Grid Edition */}
           <div className="absolute inset-0 overflow-hidden">
-             {doodles.map((_, i) => (
-               <NeuralDoodle key={i} index={i} />
+             {doodles.map((item, i) => (
+               <NeuralDoodle key={i} index={i} top={item.top} left={item.left} icon={item.icon} />
              ))}
              
              {/* Dynamic Blueprint Grid & Sketch Lines */}
@@ -93,8 +111,8 @@ const SplashScreen = ({ onComplete }: { onComplete: () => void }) => {
                   d="M0,0 L100,100 M100,0 L0,100 M50,0 V100 M0,50 H100" 
                   stroke="#1B3FBF" strokeWidth="0.05" 
                 />
-                {[...Array(10)].map((_, i) => (
-                  <circle key={i} cx={Math.random() * 100} cy={Math.random() * 100} r={Math.random() * 10} fill="none" stroke="#1B3FBF" strokeWidth="0.02" strokeDasharray="1 1" />
+                {[...Array(12)].map((_, i) => (
+                  <circle key={i} cx={Math.random() * 100} cy={Math.random() * 100} r={Math.random() * 15} fill="none" stroke="#1B3FBF" strokeWidth="0.02" strokeDasharray="1 1" />
                 ))}
              </svg>
           </div>

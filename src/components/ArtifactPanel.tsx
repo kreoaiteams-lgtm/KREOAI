@@ -393,13 +393,21 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
                         }
 
                         const cleanCodeForBabel = cleanCode
-                          .replace(/import\s+['"].*?['"];?/g, "") // Strip raw side-effect imports like import './styles.css'
-                          .replace(/import\s+ React.*?from\s+['"]react['"];?\n?/g, "")
+                          .replace(/import\s+['"].*?['"];?/g, "")
+                          .replace(/import\s+React.*?from\s+['"]react['"];?\n?/g, "")
                           .replace(/import\s+.*?\s+from\s+['"]react['"];?\n?/g, "")
                           .replace(/import\s+.*?\s+from\s+['"]lucide-react['"];?\n?/g, "")
                           .replace(/import\s+.*?\s+from\s+['"]recharts['"];?\n?/g, "")
-                          .replace(/import\s+.*?\s+from\s+['"].*?['"];?\n?/g, "") // Generic strip for any other imports
-                          .replace(/export\s+default\s+/g, "window.__Component = ");
+                          .replace(/import\s+.*?\s+from\s+['"].*?['"];?\n?/g, "")
+                          .replace(/export\s+default\s+/g, "window.__Component = ")
+                          // Enhanced Sanitizer: Remove unclosed tags or trailing junk that breaks Babel
+                          .replace(/[<][a-zA-Z][^>]*$/g, "")
+                          .replace(/<\/[a-zA-Z][^>]*$/g, "")
+                          .replace(/className=['"][^'"]*$/g, "")
+                          // Fix: remove any lines that look like raw HTML bleed (e.g. a JSX line truncated without closing >)
+                          .replace(/^\s*<[a-zA-Z][^>]*$(?!\n\s*[/>])/gm, "")
+                          .replace(/^\s*[a-z]+=["'][^"']*["']\s*$/gm, "")
+                          .trim();
                         
                         return `
                         <html>

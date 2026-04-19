@@ -170,6 +170,7 @@ const EXAMPLES = [
 const PossibilitiesPile: React.FC = () => {
   const { t } = useLang();
   const [visibleCount, setVisibleCount] = useState(0);
+  
   const positions = useMemo(() => {
     return EXAMPLES.map((_, i) => {
       const xPos = (Math.random() * 80 - 40);
@@ -546,14 +547,14 @@ const HomeScreen = ({
         }
       };
       fetchFromUrl();
-    } else if (!urlId && artifact && !isSubmitting && !window.location.pathname.startsWith('/share/')) {
-      // Only reset if we navigated to root with NO share path and NO ID
+    } else if (!urlId && artifact && !isSubmitting && !currentArtifactId && !window.location.pathname.startsWith('/share/')) {
+      // Only reset if we navigated to root AND have no artifact ID (i.e. user actively went back)
       setArtifact(null);
       setCurrentArtifactId(null);
       setChatHistory([]);
       setIsArtifactActive(false);
     }
-  }, [searchParams, location.pathname, isIncomingPortal, isSubmitting]);
+  }, [searchParams, location.pathname, isIncomingPortal, isSubmitting, currentArtifactId]);
 
   useEffect(() => {
     if (currentArtifactId && !currentArtifactId.startsWith('opt-')) {
@@ -968,8 +969,8 @@ const HomeScreen = ({
             return [newArtifact, ...prev.filter(i => i.id !== optimisticId)];
           });
           setCurrentArtifactId(targetId);
-          // Force URL sync immediately to prevent Cleanup useEffect from resetting state
-          window.history.replaceState(null, '', `/share/${targetId}`);
+          // Force URL sync immediately using React Router's navigate to prevent Cleanup useEffect from resetting state
+          navigate(`/share/${targetId}`, { replace: true });
         } else if (!user) {
           setHistoryItems(updatedLocal);
         }
@@ -1185,11 +1186,6 @@ const HomeScreen = ({
       <main className={`flex flex-col relative z-20 overflow-x-hidden ${artifact && isSplitView ? "h-screen overflow-hidden" : ""}`}>
         {(isSubmitting && !artifact) || isIncomingPortal ? (
           <div className="fixed inset-0 z-[1000] flex flex-col items-center justify-center bg-white overflow-hidden">
-            {/* Solid White Background Edition */}
-            <div className="absolute inset-0 bg-white pointer-events-none overflow-hidden">
-              {/* No background artifacts for solid white mode */}
-            </div>
-
             {/* Dismiss Button */}
             <button
               onClick={() => { setIsSubmitting(false); setIsIncomingPortal(false); }}
@@ -1198,77 +1194,22 @@ const HomeScreen = ({
               <X size={20} className="group-hover:rotate-90 transition-transform" />
             </button>
 
-            <div className="relative z-10 flex flex-col items-center justify-center min-h-screen pt-20">
-              <div className="absolute inset-0 overflow-hidden pointer-events-none flex items-center justify-center">
-                 {/* Mid-Background Grey "KREO" Watermark */}
-                 <motion.span 
-                   initial={{ opacity: 0, scale: 0.9 }}
-                   animate={{ opacity: 1, scale: 1 }}
-                   transition={{ duration: 2.5 }}
-                   className="text-[40vw] font-black text-black/[0.03] select-none uppercase tracking-tighter leading-none"
-                   style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }}
-                 >
-                   KREO
-                 </motion.span>
-
-                 {/* Reusing Neural Doodle concept but with direct mapping to avoid complex state here */}
-                 {[...Array(60)].map((_, i) => {
-                   const top = `${Math.random() * 100}%`;
-                   const left = `${Math.random() * 100}%`;
-                   const rotate = Math.random() * 360;
-                   const scale = 0.5 + Math.random() * 1.2;
-                   
-                   return (
-                     <motion.div
-                       key={i}
-                       className="absolute text-black/20"
-                       style={{ top, left, rotate }}
-                       initial={{ opacity: 0, scale: 0 }}
-                       animate={{ opacity: 1, scale }}
-                       transition={{ delay: Math.random() * 1 }}
-                     >
-                       <Zap size={15 + Math.random() * 30} strokeWidth={0.5} />
-                     </motion.div>
-                   );
-                 })}
-              </div>
-
-              <div className="relative z-10 flex flex-col items-center gap-12">
-                {/* 1. THE WEBM ON TOP */}
-                <motion.div 
-                  initial={{ opacity: 0, scale: 0.8, y: 20 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
-                  className="relative w-80 h-80 sm:w-96 sm:h-96 flex items-center justify-center mix-blend-multiply"
-                >
-                  <video 
-                    src="/Wonder Things.webm" 
-                    autoPlay 
-                    loop 
-                    muted 
-                    playsInline
-                    className="w-full h-full object-contain"
-                  />
-                </motion.div>
-
-                {/* 2. THE KREO TEXT BELOW */}
-                <div className="flex flex-col items-center gap-8">
-                  <div className="relative">
-                    <div className="absolute inset-0 bg-black/5 rounded-full blur-3xl animate-pulse scale-150" />
-                    <KreoLogo className="scale-[3.5] text-black relative z-10" />
-                  </div>
-                  
-                  <motion.p 
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.5 }}
-                    className="text-[12px] font-serif italic text-black/30 tracking-[0.4em] uppercase"
-                  >
-                    {isIncomingPortal ? t.loading_restoring : loadingMessage}
-                  </motion.p>
-                </div>
-              </div>
-            </div>
+            {/* Only the webm — dead centre */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.85 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+              className="flex flex-col items-center"
+            >
+              <video
+                src="/Wonder Things.webm"
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-72 h-72 sm:w-96 sm:h-96 object-contain mix-blend-multiply"
+              />
+            </motion.div>
           </div>
         ) : artifact ? (
           <div className={`flex w-full h-screen animate-in fade-in slide-in-from-bottom-4 duration-700 ${isSplitView ? "flex-row overflow-hidden" : "flex-col items-center p-8 overflow-auto"}`}>
