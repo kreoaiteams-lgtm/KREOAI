@@ -825,7 +825,11 @@ const HomeScreen = ({
       const isStoryboardRequest = /(storyboard|story board|script|dialogue|scene)/i.test(finalQuery);
       const hasThemeSpecified = /(dark|black|neon|vibrant|colorful|night)/i.test(finalQuery);
 
-      let backgroundEnhancedQuery = `Manifest a ${adj} visual experience for ${finalQuery.trim()} ${phrase}. DO NOT create a blueprint or documentation layout; build a LIVE, interactive, and high-fidelity product interface.`;
+      let backgroundEnhancedQuery = `Manifest a ${adj} visual experience for ${finalQuery.trim()} ${phrase}. 
+        CRITICAL: YOU MUST GENERATE THE LIVE, FUNCTIONAL CODE FOR THE APP UI ITSELF. 
+        DO NOT generate a 'blueprint', 'documentation', 'overview', or 'code snippet' UI. 
+        DO NOT include labels like "ARCHITECTURE BLUEPRINT" or "JSX SNIPPET" in the preview. 
+        THE USER SHOULD SEE THE FINAL PRODUCT, NOT A PRESENTATION OF THE CODE.`;
 
       // Default to Light Editorial if no theme is specified
       if (!hasThemeSpecified) {
@@ -849,19 +853,21 @@ const HomeScreen = ({
           3. Include "Visual Direction" notes in a small, italic, professional font.
           4. Use subtle dividers or architectural spacing between scenes.
           5. Ensure distinct dialogue labels for every line of speech.
+          6. DO NOT wrap this in a code-viewer UI. Render the script directly as a document.
         `;
-      } else if (formsReactRequest || isInteractiveApp) {
+      } else if (formsReactRequest || isInteractiveApp || true) { // Default to React-ready logic for better UX
         backgroundEnhancedQuery += `
-          CRITICAL ARCHITECTURE: You may use REACT for this manifestation.
+          CRITICAL ARCHITECTURE: PRODUCING A LIVE REACT MANIFESTATION.
           1. This MUST be a SINGLE-FILE REACT COMPONENT.
-          2. Use React hooks (useState, useEffect, etc.) via the 'React' global if needed.
+          2. Use React hooks (useState, useEffect, etc.) via the 'React' global.
           3. Use ONLY Lucide-React icons (access via standard component names).
           4. Use ONLY Tailwind CSS for all styling and animations.
-          5. Export ONE single default functional component.
-          6. RETURN THE PURE RAW CODE ONLY. 
+          5. Export ONE single default functional component: export default function Manifestation() { ... }
+          6. RETURN THE PURE RAW JSX/TSX CODE ONLY. 
           7. DO NOT use markdown code blocks (no triple backticks).
           8. DO NOT include any explanations, preambles, or post-scripts.
-          9. Focus on a high-fidelity, functional application interface.
+          9. DO NOT generate a "Blueprint" or "Codebox". Generate the APP UI directly.
+          10. Ensure the component is full-screen and interactive if requested.
         `;
       }
 
