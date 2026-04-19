@@ -1290,7 +1290,17 @@ const HomeScreen = ({
               </div>
             </div>
             <div className="flex-1 h-full overflow-hidden">
-              <ArtifactPanel code={artifact} prompt={query} isSplitView={isSplitView} onShare={() => setShareDialogOpen(true)} />
+              <ArtifactPanel 
+                code={artifact} 
+                prompt={query} 
+                isSplitView={isSplitView} 
+                onShare={() => setShareDialogOpen(true)} 
+                onRefinement={(refinement) => {
+                  setQuery(refinement);
+                  // Optionally trigger submit automatically if you want ultra-fast iteration
+                  // setTimeout(() => handleSubmit(refinement), 100);
+                }}
+              />
             </div>
           </div>
         ) : (

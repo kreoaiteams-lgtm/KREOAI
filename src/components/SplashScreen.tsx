@@ -24,7 +24,7 @@ const NeuralDoodle = ({ top, left, index, icon }: { top: string, left: string, i
   const pos = useMemo(() => ({
     rotate: Math.random() * 360,
     scale: 0.25 + Math.random() * 1.3,
-    opacity: 0.04 + Math.random() * 0.22,
+    opacity: 0.3 + Math.random() * 0.4, // Much darker and more visible
     delay: Math.random() * 2
   }), []);
 
@@ -43,7 +43,7 @@ const NeuralDoodle = ({ top, left, index, icon }: { top: string, left: string, i
         repeatType: "reverse",
         repeatDelay: Math.random() * 4
       }}
-      className="absolute text-[#1B3FBF] pointer-events-none"
+      className="absolute text-black/60 pointer-events-none" // Darker brand-aligned color
       style={{ top, left }}
     >
       <Icon size={10 + Math.random() * 40} strokeWidth={0.7 + Math.random()} />
@@ -117,8 +117,8 @@ const SplashScreen = ({ onComplete }: { onComplete: () => void }) => {
              </svg>
           </div>
 
-          {/* KREO branding - TAN-NIMBUS font */}
-          <div className="flex items-center gap-1 md:gap-4 relative z-10 translate-y-[-20%]">
+          {/* KREO branding - TAN-NIMBUS font - PERFECTLY CENTERED */}
+          <div className="flex items-center gap-1 md:gap-4 relative z-10 transition-all duration-1000">
              <div className="absolute inset-0 bg-white/40 blur-3xl rounded-full scale-150" />
             {LETTERS.map((letter, i) => (
                <motion.span

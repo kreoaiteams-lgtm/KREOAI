@@ -13,6 +13,7 @@ interface ArtifactPanelProps {
   prompt?: string;
   isSplitView?: boolean;
   onShare?: () => void;
+  onRefinement?: (refinement: string) => void;
   readOnly?: boolean;
 }
 
@@ -20,10 +21,13 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
   const [activeTab, setActiveTab] = useState<"preview" | "code">("preview");
   const [currentSlide, setCurrentSlide] = useState(0);
   const [iframeId, setIframeId] = useState(0);
-  const [copied, setCopied] = useState(false);
   const { t } = useLang();
   const [zoom, setZoom] = useState(1);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  
+  // Refinement Portal State
+  const [refinementInput, setRefinementInput] = useState("");
+  const [selectedElementContext, setSelectedElementContext] = useState<{ tag: string; text: string; x: number; y: number } | null>(null);
   
   // New Claude Design Features
   const [inlineEditMode, setInlineEditMode] = useState(false);
@@ -69,6 +73,30 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
     a.download = "manifestation.html";
     a.click();
     URL.revokeObjectURL(url);
+  };
+
+  // Live Edit Listener: Captures clicks from within the manifested neural environment
+  useEffect(() => {
+    const handleMessage = (e: MessageEvent) => {
+      if (e.data?.type === 'ELEMENT_CLICKED' && inlineEditMode) {
+        setSelectedElementContext({
+          tag: e.data.tag,
+          text: e.data.text,
+          x: e.data.x,
+          y: e.data.y
+        });
+      }
+    };
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [inlineEditMode]);
+
+  const submitRefinement = () => {
+    if (!refinementInput.trim() || !onRefinement || !selectedElementContext) return;
+    const fullRefinement = `In the ${selectedElementContext.tag} element containing "${selectedElementContext.text}", please: ${refinementInput}`;
+    onRefinement(fullRefinement);
+    setRefinementInput("");
+    setSelectedElementContext(null);
   };
 
   const handleZoomIn = () => setZoom(prev => Math.min(prev + 0.25, 3));
@@ -169,14 +197,7 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
 
 
 
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button onClick={handleCopy} className={`p-2 rounded-lg transition-all ${copied ? 'text-[#1B3FBF] bg-[#1B3FBF]/10' : 'text-black/30 hover:text-[#1B3FBF] hover:bg-[#1B3FBF]/8'}`}>
-                <Copy size={15} />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent>{copied ? "Copied!" : "Copy Source"}</TooltipContent>
-          </Tooltip>
+          {/* Removed Copy button per user request */}
 
           {!readOnly && (
             <Tooltip>
@@ -289,8 +310,46 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
               transformOrigin: 'center center'
             }}
           >
-            <div className={`h-full w-full animate-in fade-in duration-700 bg-white overflow-hidden ${isFullscreen ? "rounded-none" : ""}`}>
-              <AnimatePresence mode="wait">
+              <div className={`h-full w-full animate-in fade-in duration-700 bg-white overflow-hidden ${isFullscreen ? "rounded-none" : ""}`}>
+                {/* Floating Refinement Input (Claude Style) */}
+                <AnimatePresence>
+                  {inlineEditMode && selectedElementContext && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      className="fixed z-[3000] p-6 bg-black text-white rounded-[2rem] shadow-2xl space-y-4 w-[320px]"
+                      style={{ 
+                        left: Math.min(selectedElementContext.x + 20, window.innerWidth - 340), 
+                        top: Math.min(selectedElementContext.y + 20, window.innerHeight - 200) 
+                      }}
+                    >
+                      <div className="flex items-center justify-between text-[9px] font-black uppercase tracking-widest text-white/30 px-1">
+                        <span>Neural Refinement</span>
+                        <button onClick={() => setSelectedElementContext(null)}>✕</button>
+                      </div>
+                      <div className="text-[10px] bg-white/10 px-3 py-1.5 rounded-lg text-white/60 truncate font-mono">
+                         Selected: {selectedElementContext.tag} • "{selectedElementContext.text}"
+                      </div>
+                      <textarea
+                        autoFocus
+                        value={refinementInput}
+                        onChange={(e) => setRefinementInput(e.target.value)}
+                        onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submitRefinement(); } }}
+                        placeholder="Describe changes..."
+                        className="w-full h-24 bg-white/5 border border-white/10 rounded-xl p-3 text-sm focus:outline-none focus:border-[#1B3FBF]/50 placeholder:text-white/20 resize-none"
+                      />
+                      <button 
+                        onClick={submitRefinement}
+                        className="w-full py-3 bg-[#1B3FBF] text-white rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg shadow-[#1B3FBF]/20 hover:scale-105 active:scale-95 transition-all"
+                      >
+                         Manifest Refinement
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                <AnimatePresence mode="wait">
                 <motion.div
                   key={currentSlide}
                   initial={{ opacity: 0, x: 20 }}
@@ -455,9 +514,38 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
                               #root { min-height: 100vh; }
                             </style>
                           </head>
-                          <body class="${renderTheme === 'dark' ? 'dark' : renderTheme === 'ultra' ? 'ultra' : ''}">
-                            <div id="root"></div>
-                            <script type="text/babel" data-type="module">
+                      <body class="${renderTheme === 'dark' ? 'dark' : renderTheme === 'ultra' ? 'ultra' : ''}">
+                        <div id="root"></div>
+                        <script>
+                          // Neural Interceptor: Enables high-fidelity selection for Live Edit
+                          ${inlineEditMode ? `
+                            document.addEventListener('mouseover', (e) => {
+                              e.stopPropagation();
+                              const el = e.target;
+                              if (el.id === 'root') return;
+                              el.style.outline = '2px solid #1B3FBF';
+                              el.style.outlineOffset = '2px';
+                              el.style.transition = 'all 0.1s ease';
+                            });
+                            document.addEventListener('mouseout', (e) => {
+                              e.target.style.outline = '';
+                            });
+                            document.addEventListener('click', (e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              const el = e.target;
+                              if (el.id === 'root') return;
+                              window.parent.postMessage({
+                                type: 'ELEMENT_CLICKED',
+                                tag: el.tagName.toLowerCase(),
+                                text: el.innerText?.slice(0, 50),
+                                x: e.clientX,
+                                y: e.clientY
+                              }, '*');
+                            });
+                          ` : ""}
+                        </script>
+                        <script type="text/babel" data-type="module">
                               import { createElement, useState, useEffect, useRef, useCallback, useMemo, useReducer, useContext } from 'https://esm.sh/react@18';
                               import { createRoot } from 'https://esm.sh/react-dom@18/client';
                               
