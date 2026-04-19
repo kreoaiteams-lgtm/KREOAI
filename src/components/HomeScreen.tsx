@@ -168,6 +168,7 @@ const EXAMPLES = [
 ];
 
 const PossibilitiesPile: React.FC = () => {
+  const { t } = useLang();
   const [visibleCount, setVisibleCount] = useState(0);
   const positions = useMemo(() => {
     return EXAMPLES.map((_, i) => {
@@ -227,6 +228,7 @@ const PossibilitiesPile: React.FC = () => {
 };
 
 const InteractiveVisualLoop = ({ theme }: { theme: string }) => {
+  const { t } = useLang();
   const [subPhase, setSubPhase] = useState(13);
 
   useEffect(() => {
@@ -251,9 +253,9 @@ const InteractiveVisualLoop = ({ theme }: { theme: string }) => {
       <AnimatePresence mode="wait">
         {subPhase === 13 && (
           <motion.div key="s13" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="text-center space-y-6">
-            <p className="text-[#1B3FBF] text-[10px] font-black tracking-[0.5em] uppercase mb-4">Phase 01 / Manifestation</p>
+            <p className="text-[#1B3FBF] text-[10px] font-black tracking-[0.5em] uppercase mb-4">{t.interactive_phase_01_label}</p>
             <h1 className="text-3xl md:text-6xl font-serif italic text-black tracking-tighter leading-tight max-w-4xl px-6">
-              An instant visualizer for your current imaginations.
+              {t.interactive_phase_01_title}
             </h1>
             <div className="flex justify-center gap-2 pt-4">
               {[...Array(3)].map((_, i) => <motion.div key={i} animate={{ scale: [1, 1.5, 1], opacity: [0.3, 0.6, 0.3] }} transition={{ repeat: Infinity, duration: 2, delay: i * 0.4 }} className="w-1.5 h-1.5 rounded-full bg-[#1B3FBF]" />)}
@@ -263,38 +265,37 @@ const InteractiveVisualLoop = ({ theme }: { theme: string }) => {
 
         {subPhase === 14 && (
           <motion.div key="s14" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="text-center space-y-6">
-            <p className="text-[#1B3FBF] text-[10px] font-black tracking-[0.5em] uppercase mb-4">Phase 02 / The Need</p>
+            <p className="text-[#1B3FBF] text-[10px] font-black tracking-[0.5em] uppercase mb-4">{t.interactive_phase_02_label}</p>
             <h1 className="text-3xl md:text-6xl font-serif italic text-black tracking-tighter leading-tight max-w-4xl px-6">
-              Sometimes you need apps, <br />
-              <span className="text-[#1B3FBF] not-italic font-normal">but can't wait for someone to build it or a tool.</span>
+              {t.interactive_phase_02_title}
             </h1>
           </motion.div>
         )}
 
         {subPhase === 15 && (
           <motion.div key="s15" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="text-center space-y-6">
-            <p className="text-[#1B3FBF] text-[10px] font-black tracking-[0.5em] uppercase mb-4">Phase 03 / The Power</p>
+            <p className="text-[#1B3FBF] text-[10px] font-black tracking-[0.5em] uppercase mb-4">{t.interactive_phase_03_label}</p>
             <h1 className="text-3xl md:text-6xl font-serif italic text-black tracking-tighter leading-tight max-w-4xl px-6">
-              Studies show visuals have a great impact on many.
+              {t.interactive_phase_03_title}
             </h1>
           </motion.div>
         )}
 
         {subPhase === 16 && (
           <motion.div key="s16" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="text-center space-y-6">
-            <p className="text-[#1B3FBF] text-[10px] font-black tracking-[0.5em] uppercase mb-4">Phase 04 / For Students</p>
+            <p className="text-[#1B3FBF] text-[10px] font-black tracking-[0.5em] uppercase mb-4">{t.interactive_phase_04_label}</p>
             <h1 className="text-3xl md:text-6xl font-serif italic text-black tracking-tighter leading-tight max-w-4xl px-6">
-              You don't always understand text or explanations...
+              {t.interactive_phase_04_title}
             </h1>
-            <h2 className="text-[#1B3FBF] text-4xl md:text-6xl font-normal px-6">but visuals help.</h2>
+            <h2 className="text-[#1B3FBF] text-4xl md:text-6xl font-normal px-6">{t.interactive_phase_04_sub}</h2>
           </motion.div>
         )}
 
         {subPhase === 17 && (
           <motion.div key="s17" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="text-center space-y-6">
-            <p className="text-[#1B3FBF] text-[10px] font-black tracking-[0.5em] uppercase mb-4">Phase 05 / Conviction</p>
+            <p className="text-[#1B3FBF] text-[10px] font-black tracking-[0.5em] uppercase mb-4">{t.interactive_phase_05_label}</p>
             <h1 className="text-3xl md:text-6xl font-serif italic text-black tracking-tighter leading-tight max-w-4xl px-6">
-              "I just wanna convince people to join me."
+              {t.interactive_phase_05_title}
             </h1>
           </motion.div>
         )}
@@ -1361,15 +1362,15 @@ const HomeScreen = ({
             <section id="manifesto-section" className="w-full relative bg-white py-24 flex flex-col items-center z-30">
               <div className="w-full max-w-7xl px-6 space-y-24">
                 <div className="text-center space-y-4">
-                  <span className="text-[10px] font-black tracking-[0.6em] uppercase text-[#1B3FBF]">The Situation</span>
-                  <h2 className="text-4xl md:text-6xl font-serif italic tracking-tighter text-black leading-tight">We all face situations...</h2>
+                  <span className="text-[10px] font-black tracking-[0.6em] uppercase text-[#1B3FBF]">{t.manifesto_situation}</span>
+                  <h2 className="text-4xl md:text-6xl font-serif italic tracking-tighter text-black leading-tight">{t.manifesto_situations_title}</h2>
                 </div>
                 <ScenariosGrid />
                 <TypingKreo />
                 <PossibilitiesPile />
                 <InteractiveVisualLoop theme={theme} />
                 <div className="flex justify-center pt-16">
-                    <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="px-12 py-6 rounded-full bg-black text-white text-[11px] font-black uppercase tracking-[0.4em] shadow-xl hover:scale-105 transition-all">Start Creating</button>
+                    <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="px-12 py-6 rounded-full bg-black text-white text-[11px] font-black uppercase tracking-[0.4em] shadow-xl hover:scale-105 transition-all">{t.cta_start}</button>
                 </div>
               </div>
             </section>

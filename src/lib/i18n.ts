@@ -92,6 +92,24 @@ export interface Translations {
   
   // Footer
   footer_tagline: string;
+
+  // New Sections
+  manifesto_situation: string;
+  manifesto_situations_title: string;
+  interactive_phase_01_label: string;
+  interactive_phase_01_title: string;
+  interactive_phase_02_label: string;
+  interactive_phase_02_title: string;
+  interactive_phase_03_label: string;
+  interactive_phase_03_title: string;
+  interactive_phase_04_label: string;
+  interactive_phase_04_title: string;
+  interactive_phase_04_sub: string;
+  interactive_phase_05_label: string;
+  interactive_phase_05_title: string;
+  interactive_phase_06_label: string;
+  interactive_phase_06_title: string;
+  cta_start: string;
 }
 
 export const LANGUAGES: { code: LangCode; label: string; nativeLabel: string; dir?: 'rtl' }[] = [
@@ -169,6 +187,22 @@ export const TRANSLATIONS: Record<LangCode, Translations> = {
     auth_continue: 'Continue',
     auth_guest: 'Continue as guest',
     footer_tagline: 'Neural Design Engine',
+    manifesto_situation: 'The Situation',
+    manifesto_situations_title: 'We all face situations...',
+    interactive_phase_01_label: 'Phase 01 / Manifestation',
+    interactive_phase_01_title: 'An instant visualizer for your current imaginations.',
+    interactive_phase_02_label: 'Phase 02 / The Need',
+    interactive_phase_02_title: 'Sometimes you need apps, but can\'t wait for someone to build it or a tool.',
+    interactive_phase_03_label: 'Phase 03 / The Power',
+    interactive_phase_03_title: 'Studies show visuals have a great impact on many.',
+    interactive_phase_04_label: 'Phase 04 / For Students',
+    interactive_phase_04_title: 'You don\'t always understand text or explanations...',
+    interactive_phase_04_sub: 'but visuals help.',
+    interactive_phase_05_label: 'Phase 05 / Conviction',
+    interactive_phase_05_title: '"I just wanna convince people to join me."',
+    interactive_phase_06_label: 'Phase 06 / The Answer',
+    interactive_phase_06_title: 'KREO is the answer.',
+    cta_start: 'Start Creating',
   },
 
   // ── HINDI ─────────────────────────────────────────────────────────────────────
@@ -236,6 +270,22 @@ export const TRANSLATIONS: Record<LangCode, Translations> = {
     auth_continue: 'जारी रखें',
     auth_guest: 'अतिथि के रूप में जारी रखें',
     footer_tagline: 'न्यूरल डिज़ाइन इंजन',
+    manifesto_situation: 'स्थिति',
+    manifesto_situations_title: 'हम सभी स्थितियों का सामना करते हैं...',
+    interactive_phase_01_label: 'चरण 01 / प्रकटीकरण',
+    interactive_phase_01_title: 'आपकी वर्तमान कल्पनाओं के लिए एक त्वरित विज़ुअलाइज़र।',
+    interactive_phase_02_label: 'चरण 02 / आवश्यकता',
+    interactive_phase_02_title: 'कभी-कभी आपको ऐप्स की आवश्यकता होती है, लेकिन किसी के द्वारा इसे बनाने या किसी टूल का इंतज़ार नहीं कर सकते।',
+    interactive_phase_03_label: 'चरण 03 / शक्ति',
+    interactive_phase_03_title: 'अध्ययन बताते हैं कि विज़ुअल्स का कई लोगों पर बहुत प्रभाव पड़ता है।',
+    interactive_phase_04_label: 'चरण 04 / छात्रों के लिए',
+    interactive_phase_04_title: 'आप हमेशा टेक्स्ट या स्पष्टीकरण नहीं समझते...',
+    interactive_phase_04_sub: 'लेकिन विज़ुअल्स मदद करते हैं।',
+    interactive_phase_05_label: 'चरण 05 / विश्वास',
+    interactive_phase_05_title: '"मैं बस लोगों को अपने साथ जुड़ने के लिए राजी करना चाहता हूँ।"',
+    interactive_phase_06_label: 'चरण 06 / उत्तर',
+    interactive_phase_06_title: 'KREO ही उत्तर है।',
+    cta_start: 'निर्माण शुरू करें',
   },
 
   // ── SPANISH ───────────────────────────────────────────────────────────────────
