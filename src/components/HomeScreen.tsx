@@ -783,8 +783,11 @@ const HomeScreen = ({
     try {
       const newUserMsg = { role: "user" as const, content: finalQuery };
 
+      let targetId = currentArtifactId;
       let optimisticId = "";
+      
       if (!artifact) {
+        // NEW MANIFESTATION
         optimisticId = 'opt-' + Date.now();
         setChatHistory([newUserMsg]);
         setHistoryItems(prev => [{
@@ -795,6 +798,7 @@ const HomeScreen = ({
         }, ...prev]);
         setCurrentArtifactId(optimisticId);
       } else {
+        // REFINEMENT
         setChatHistory(prev => [...prev, newUserMsg]);
       }
       setManifestCount(prev => prev + 1);
@@ -864,40 +868,63 @@ const HomeScreen = ({
         }]);
 
         const { data: { user } } = await supabase.auth.getUser();
-        const shareToken = crypto.randomUUID();
+        const shareToken = currentArtifactId && !currentArtifactId.startsWith('opt-') ? currentArtifactId : crypto.randomUUID();
 
-        // Mirror to Local Neural Buffer (Guest Persistence)
+        // Mirror to Local Neural Buffer
         const localHistory = JSON.parse(localStorage.getItem('kreo_local_history') || '[]');
         const localEntry = {
           id: shareToken,
           share_token: shareToken,
-          prompt: finalQuery,
+          prompt: artifact ? (historyItems.find(i => i.share_token === shareToken)?.prompt || finalQuery) : finalQuery,
           code: code,
           created_at: new Date().toISOString()
         };
-        const updatedLocal = [localEntry, ...localHistory].slice(0, 20);
+        const updatedLocal = artifact 
+          ? localHistory.map((item: any) => item.share_token === shareToken ? localEntry : item)
+          : [localEntry, ...localHistory].slice(0, 20);
         localStorage.setItem('kreo_local_history', JSON.stringify(updatedLocal));
 
-        const { data: newArtifact, error: insertError } = await supabase
-          .from("artifacts")
-          .insert({
-            prompt: finalQuery,
-            code: code,
-            user_id: user ? user.id : null,
-            is_public: true,
-            share_token: shareToken
-          })
-          .select()
-          .single();
+        let newArtifact = null;
+        let insertError = null;
+
+        if (artifact && currentArtifactId && !currentArtifactId.startsWith('opt-')) {
+          // UPDATE EXISTING
+          const { data, error } = await supabase
+            .from("artifacts")
+            .update({ code: code, prompt: finalQuery }) // We update terminal prompt
+            .eq("share_token", currentArtifactId)
+            .select()
+            .single();
+          newArtifact = data;
+          insertError = error;
+        } else {
+          // INSERT NEW
+          const { data, error } = await supabase
+            .from("artifacts")
+            .insert({
+              prompt: finalQuery,
+              code: code,
+              user_id: user ? user.id : null,
+              is_public: true,
+              share_token: shareToken
+            })
+            .select()
+            .single();
+          newArtifact = data;
+          insertError = error;
+        }
 
         if (!insertError && newArtifact) {
-          setHistoryItems(prev => [newArtifact, ...prev.filter(i => i.id !== optimisticId)]);
+          setHistoryItems(prev => {
+            const exists = prev.find(i => i.id === (newArtifact?.id || newArtifact?.share_token));
+            if (exists) {
+              return prev.map(i => i.id === exists.id ? newArtifact : i);
+            }
+            return [newArtifact, ...prev.filter(i => i.id !== optimisticId)];
+          });
           setCurrentArtifactId(newArtifact.share_token || newArtifact.id);
-        } else {
-          // If cloud sync fails (guest or network), fallback to local buffer for visibility
-          if (!user) {
-            setHistoryItems(updatedLocal);
-          }
+        } else if (!user) {
+          setHistoryItems(updatedLocal);
         }
         
         // Show upgrade popup after first manifestation
@@ -1113,44 +1140,44 @@ const HomeScreen = ({
       <main className={`flex flex-col relative z-20 overflow-x-hidden ${artifact && isSplitView ? "h-screen overflow-hidden" : ""}`}>
         {(isSubmitting && !artifact) || isIncomingPortal ? (
            <div className="fixed inset-0 z-[1000] flex flex-col items-center justify-center bg-white overflow-hidden">
-              {/* Cinematic Full-Screen Background */}
-              <div className="absolute inset-0 bg-[#0020C2] pointer-events-none overflow-hidden">
-                <Dither className="opacity-20 mix-blend-overlay" />
+              {/* Cinematic Full-Screen Background — White Version */}
+              <div className="absolute inset-0 bg-[#F8F9FF] pointer-events-none overflow-hidden">
+                <Dither className="opacity-[0.03] mix-blend-multiply" />
                 <div className="absolute inset-0 opacity-40 mix-blend-screen scale-150 rotate-12">
                    <img src="/cloud_left.png" className="absolute top-0 left-0 w-full h-full object-cover animate-pulse" style={{ animationDuration: '8s' }} alt="" />
                    <img src="/cloud_right.png" className="absolute bottom-0 right-0 w-full h-full object-cover animate-pulse" style={{ animationDuration: '10s' }} alt="" />
                 </div>
                 {/* Wavy Neural Lines */}
                 <div className="absolute inset-0 z-0">
-                  <svg className="w-full h-full opacity-20" viewBox="0 0 1440 800" fill="none">
+                  <svg className="w-full h-full opacity-[0.08]" viewBox="0 0 1440 800" fill="none">
                     <motion.path 
                       initial={{ d: "M0 400 Q 360 300 720 400 T 1440 400" }}
                       animate={{ d: ["M0 400 Q 360 300 720 400 T 1440 400", "M0 400 Q 360 500 720 400 T 1440 400", "M0 400 Q 360 300 720 400 T 1440 400"] }}
                       transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-                      stroke="white" strokeWidth="2"
+                      stroke="#1B3FBF" strokeWidth="2"
                     />
                     <motion.path 
                       initial={{ d: "M0 450 Q 360 350 720 450 T 1440 450" }}
                       animate={{ d: ["M0 450 Q 360 350 720 450 T 1440 450", "M0 450 Q 360 550 720 450 T 1440 450", "M0 450 Q 360 350 720 450 T 1440 450"] }}
                       transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                      stroke="white" strokeWidth="1" opacity="0.5"
+                      stroke="#1B3FBF" strokeWidth="1" opacity="0.5"
                     />
                   </svg>
                 </div>
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0020C2]/50 to-[#0020C2]" />
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/50 to-white" />
               </div>
 
               {/* Dismiss Button */}
               <button 
                 onClick={() => { setIsSubmitting(false); setIsIncomingPortal(false); }}
-                className="absolute top-10 right-10 z-[100] w-12 h-12 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/20 transition-all shadow-xl group"
+                className="absolute top-10 right-10 z-[100] w-12 h-12 rounded-full bg-black/5 backdrop-blur-md border border-black/10 flex items-center justify-center text-black/20 hover:text-black hover:bg-black/10 transition-all shadow-xl group"
               >
                 <X size={20} className="group-hover:rotate-90 transition-transform" />
               </button>
 
               <div className="relative z-10 flex flex-col items-center gap-10">
-                <div className="relative drop-shadow-[0_0_50px_rgba(255,255,255,0.3)]">
-                   <div className="absolute inset-0 bg-white/20 rounded-full blur-3xl animate-pulse scale-150" />
+                <div className="relative drop-shadow-[0_0_50px_rgba(27,63,191,0.05)]">
+                   <div className="absolute inset-0 bg-[#1B3FBF]/5 rounded-full blur-3xl animate-pulse scale-150" />
                    
                    {/* Artistic Doodles around Logo */}
                    <div className="absolute inset-0 -m-20 pointer-events-none scale-125">
@@ -1168,22 +1195,22 @@ const HomeScreen = ({
                            initial={{ pathLength: 0 }} animate={{ pathLength: 1 }}
                            transition={{ duration: 1.5, delay: 1 }}
                            d="M20,20 L50,50 M180,180 L150,150 M180,20 L150,50 M20,180 L50,150" 
-                           stroke="white" strokeWidth="0.5" opacity="0.3"
+                           stroke="#1B3FBF" strokeWidth="0.5" opacity="0.3"
                          />
                          <motion.circle 
-                           initial={{ scale: 0 }} animate={{ scale: 1 }}
-                           transition={{ type: "spring", delay: 1.2 }}
-                           cx="100" cy="10" r="2" fill="white" 
-                         />
+                            initial={{ scale: 0 }} animate={{ scale: 1 }}
+                            transition={{ type: "spring", delay: 1.2 }}
+                            cx="100" cy="10" r="2" fill="#1B3FBF" 
+                          />
                       </svg>
                    </div>
                    
-                   <KreoLogo className="scale-[2.5] text-white relative z-10" />
+                   <KreoLogo className="scale-[2.5] text-[#1B3FBF] relative z-10" />
                 </div>
 
                 <div className="flex flex-col items-center gap-6 mt-16">
                   <div className="flex flex-col items-center gap-6">
-                     <p className="text-[14px] font-serif italic text-white/60 tracking-widest animate-pulse">
+                     <p className="text-[14px] font-serif italic text-black/30 tracking-widest animate-pulse">
                        {isIncomingPortal ? t.loading_restoring : loadingMessage}
                      </p>
                      {/* Squiggly Google-style loader */}
@@ -1197,24 +1224,17 @@ const HomeScreen = ({
                              75%  { d: path("M0 12 C20 20, 40 4, 60 12 C80 20, 100 4, 120 12 C140 20, 160 4, 180 12 C200 20, 220 4, 240 12 C260 20, 280 4, 300 12 C310 17, 315 14, 320 12"); }
                              100% { d: path("M0 12 C20 4, 40 20, 60 12 C80 4, 100 20, 120 12 C140 4, 160 20, 180 12 C200 4, 220 20, 240 12 C260 4, 280 20, 300 12 C310 7, 315 10, 320 12"); }
                            }
-                           @keyframes squiggle-glow {
-                             0%   { d: path("M0 12 C20 4, 40 20, 60 12 C80 4, 100 20, 120 12 C140 4, 160 20, 180 12 C200 4, 220 20, 240 12 C260 4, 280 20, 300 12 C310 7, 315 10, 320 12"); }
-                             25%  { d: path("M0 12 C20 20, 40 4, 60 12 C80 20, 100 4, 120 12 C140 20, 160 4, 180 12 C200 20, 220 4, 240 12 C260 20, 280 4, 300 12 C310 17, 315 14, 320 12"); }
-                             50%  { d: path("M0 12 C20 4, 40 20, 60 12 C80 4, 100 20, 120 12 C140 4, 160 20, 180 12 C200 4, 220 20, 240 12 C260 4, 280 20, 300 12 C310 7, 315 10, 320 12"); }
-                             75%  { d: path("M0 12 C20 20, 40 4, 60 12 C80 20, 100 4, 120 12 C140 20, 160 4, 180 12 C200 20, 220 4, 240 12 C260 20, 280 4, 300 12 C310 17, 315 14, 320 12"); }
-                             100% { d: path("M0 12 C20 4, 40 20, 60 12 C80 4, 100 20, 120 12 C140 4, 160 20, 180 12 C200 4, 220 20, 240 12 C260 4, 280 20, 300 12 C310 7, 315 10, 320 12"); }
-                           }
-                           .squiggle-track { stroke: rgba(255,255,255,0.12); }
-                           .squiggle-line {
-                             stroke: white;
-                             stroke-dasharray: 180 320;
-                             stroke-dashoffset: 0;
-                             animation: squiggle 1.8s ease-in-out infinite, dash-move 1.8s linear infinite;
-                             filter: drop-shadow(0 0 8px rgba(255,255,255,0.9));
-                           }
                            @keyframes dash-move {
                              0%   { stroke-dashoffset: 320; }
                              100% { stroke-dashoffset: -320; }
+                           }
+                           .squiggle-track { stroke: rgba(27,63,191,0.08); }
+                           .squiggle-line {
+                             stroke: #1B3FBF;
+                             stroke-dasharray: 180 320;
+                             stroke-dashoffset: 0;
+                             animation: squiggle 1.8s ease-in-out infinite, dash-move 1.8s linear infinite;
+                             filter: drop-shadow(0 0 8px rgba(27,63,191,0.2));
                            }
                          `}</style>
                        </defs>
@@ -1240,7 +1260,13 @@ const HomeScreen = ({
             <div className={`${isSplitView ? "w-[420px] shrink-0" : "w-full max-w-2xl mb-6"} flex flex-col ${isSplitView ? "h-full" : "min-h-[50vh]"} overflow-hidden bg-[#f5f7ff] border-r border-black/[0.06]`}>
               <div className="shrink-0 flex justify-between items-center px-6 py-4 border-b border-black/[0.06] bg-white/90 backdrop-blur-xl">
                 <button
-                  onClick={() => { setArtifact(null); setChatHistory([]); setCurrentArtifactId(null); window.history.replaceState(null, '', '/'); }}
+                  onClick={() => { 
+                    // Auto-save is implicit as manifest updates state on generation
+                    setArtifact(null); 
+                    setChatHistory([]); 
+                    setCurrentArtifactId(null); 
+                    window.history.replaceState(null, '', '/'); 
+                  }}
                   className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.35em] text-black/30 hover:text-[#1B3FBF] transition-all group"
                 >
                   <ChevronLeft size={13} className="group-hover:-translate-x-1 transition-transform" /> {t.back}
