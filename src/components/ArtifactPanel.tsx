@@ -301,8 +301,6 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
                 >
                   <iframe
                     key={`${iframeId}-${currentSlide}`}
-                    <iframe
-                      key={`${iframeId}-${currentSlide}`}
                       srcDoc={isPresentation ? `
                         <html>
                           <head>
