@@ -3,7 +3,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   Presentation, Code2, Smile, Activity, BrainCircuit, Sparkles, 
   LayoutGrid, Zap, Rocket, Lightbulb, Monitor, Laptop, 
-  FileText, MessageSquare, Star, Globe, Cpu, MousePointer2
+  FileText, MessageSquare, Star, Globe, Cpu, MousePointer2,
+  Database, Fingerprint, Layers, Shield, Command, Terminal,
+  Workflow, Boxes, Pencil, Eraser, Heart, Glasses
 } from "lucide-react";
 
 const TAN = "'TAN-NIMBUS', sans-serif";
@@ -12,17 +14,20 @@ const LETTERS = ['K', 'R', 'E', 'O'];
 const DOODLE_ICONS = [
   Presentation, Code2, Smile, Activity, BrainCircuit, Sparkles, 
   LayoutGrid, Zap, Rocket, Lightbulb, Monitor, Laptop, 
-  FileText, MessageSquare, Star, Globe, Cpu, MousePointer2
+  FileText, MessageSquare, Star, Globe, Cpu, MousePointer2,
+  Database, Fingerprint, Layers, Shield, Command, Terminal,
+  Workflow, Boxes, Pencil, Eraser, Heart, Glasses
 ];
 
 const NeuralDoodle = ({ index }: { index: number }) => {
   const Icon = useMemo(() => DOODLE_ICONS[Math.floor(Math.random() * DOODLE_ICONS.length)], []);
   const pos = useMemo(() => ({
-    top: `${Math.random() * 100}%`,
-    left: `${Math.random() * 100}%`,
+    top: `${Math.random() * 110 - 5}%`, // Overflow slightly
+    left: `${Math.random() * 110 - 5}%`,
     rotate: Math.random() * 360,
-    scale: 0.5 + Math.random() * 1.5,
-    opacity: 0.1 + Math.random() * 0.3
+    scale: 0.3 + Math.random() * 1.4,
+    opacity: 0.05 + Math.random() * 0.25,
+    delay: Math.random() * 2
   }), []);
 
   return (
@@ -31,19 +36,19 @@ const NeuralDoodle = ({ index }: { index: number }) => {
       animate={{ 
         opacity: pos.opacity, 
         scale: pos.scale,
-        rotate: pos.rotate + (index % 2 === 0 ? 10 : -10)
+        rotate: pos.rotate + (index % 2 === 0 ? 15 : -15)
       }}
       transition={{ 
-        delay: Math.random() * 1.5, 
-        duration: 1,
+        delay: pos.delay, 
+        duration: 1.5,
         repeat: Infinity,
         repeatType: "reverse",
-        repeatDelay: Math.random() * 5
+        repeatDelay: Math.random() * 4
       }}
       className="absolute text-[#1B3FBF] pointer-events-none"
       style={{ top: pos.top, left: pos.left }}
     >
-      <Icon size={20 + Math.random() * 40} strokeWidth={1} />
+      <Icon size={12 + Math.random() * 45} strokeWidth={0.8 + Math.random()} />
     </motion.div>
   );
 };
@@ -51,13 +56,13 @@ const NeuralDoodle = ({ index }: { index: number }) => {
 const SplashScreen = ({ onComplete }: { onComplete: () => void }) => {
   const [phase, setPhase] = useState<"type" | "hold" | "exit">("type");
   
-  // Generate 80 randomized doodle elements for that "dense" look
-  const doodles = useMemo(() => Array.from({ length: 80 }), []);
+  // High-density scatter - 250 doodles to "fill" the screen
+  const doodles = useMemo(() => Array.from({ length: 250 }), []);
 
   useEffect(() => {
     const t1 = setTimeout(() => setPhase("hold"), 1500);
-    const t2 = setTimeout(() => setPhase("exit"), 3200);
-    const t3 = setTimeout(onComplete, 4000);
+    const t2 = setTimeout(() => setPhase("exit"), 4000); // Longer hold to appreciate density
+    const t3 = setTimeout(onComplete, 4800);
     return () => [t1, t2, t3].forEach(clearTimeout);
   }, [onComplete]);
 
@@ -66,47 +71,49 @@ const SplashScreen = ({ onComplete }: { onComplete: () => void }) => {
       {phase !== "exit" && (
         <motion.div
           key="splash"
-          exit={{ opacity: 0, scale: 1.1, filter: "blur(10px)" }}
-          transition={{ duration: 0.8 }}
+          exit={{ opacity: 0, scale: 1.15, filter: "blur(15px)" }}
+          transition={{ duration: 1, ease: "easeInOut" }}
           className="fixed inset-0 z-[3000] flex flex-col items-center justify-center bg-white overflow-hidden"
         >
           {/* Paper Texture Overlay */}
-          <div className="absolute inset-0 opacity-[0.05] pointer-events-none grayscale" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/notebook.png')" }} />
+          <div className="absolute inset-0 opacity-[0.06] pointer-events-none grayscale" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/notebook.png')" }} />
 
-          {/* Programmatic Neural Scatter - Dense Doodle Field */}
+          {/* Programmatic Neural Scatter - Ultra Dense Doodle Field */}
           <div className="absolute inset-0 overflow-hidden">
              {doodles.map((_, i) => (
                <NeuralDoodle key={i} index={i} />
              ))}
              
-             {/* Abstract Sketch Lines (Code-based) */}
-             <svg className="absolute inset-0 w-full h-full opacity-[0.07]" viewBox="0 0 100 100" preserveAspectRatio="none">
+             {/* Dynamic Blueprint Grid & Sketch Lines */}
+             <svg className="absolute inset-0 w-full h-full opacity-[0.08]" viewBox="0 0 100 100" preserveAspectRatio="none">
                 <motion.path 
                   initial={{ pathLength: 0 }} 
                   animate={{ pathLength: 1 }} 
-                  transition={{ duration: 2 }}
-                  d="M10,10 L90,90 M90,10 L10,90" 
-                  stroke="#1B3FBF" strokeWidth="0.1" 
+                  transition={{ duration: 3 }}
+                  d="M0,0 L100,100 M100,0 L0,100 M50,0 V100 M0,50 H100" 
+                  stroke="#1B3FBF" strokeWidth="0.05" 
                 />
-                <circle cx="50" cy="50" r="30" fill="none" stroke="#1B3FBF" strokeWidth="0.05" strokeDasharray="1 2" />
-                <circle cx="50" cy="50" r="45" fill="none" stroke="#1B3FBF" strokeWidth="0.05" strokeDasharray="2 4" />
+                {[...Array(10)].map((_, i) => (
+                  <circle key={i} cx={Math.random() * 100} cy={Math.random() * 100} r={Math.random() * 10} fill="none" stroke="#1B3FBF" strokeWidth="0.02" strokeDasharray="1 1" />
+                ))}
              </svg>
           </div>
 
           {/* KREO branding - TAN-NIMBUS font */}
-          <div className="flex items-center gap-1 md:gap-4 relative z-10">
+          <div className="flex items-center gap-1 md:gap-4 relative z-10 translate-y-[-20%]">
+             <div className="absolute inset-0 bg-white/40 blur-3xl rounded-full scale-150" />
             {LETTERS.map((letter, i) => (
                <motion.span
                  key={i}
-                 initial={{ y: 40, opacity: 0, rotate: -20, scale: 0.5 }}
+                 initial={{ y: 60, opacity: 0, rotate: -25, scale: 0.3 }}
                  animate={{ y: 0, opacity: 1, rotate: 0, scale: 1 }}
                  transition={{ 
-                   delay: i * 0.1, 
+                   delay: i * 0.12, 
                    type: "spring", 
-                   stiffness: 300, 
-                   damping: 12 
+                   stiffness: 400, 
+                   damping: 15 
                  }}
-                 className="text-[14vw] font-bold text-black leading-none tracking-tighter cursor-default"
+                 className="text-[16vw] font-bold text-black leading-none tracking-tighter cursor-default relative z-20"
                  style={{ fontFamily: TAN }}
                >
                  {letter}
@@ -115,23 +122,28 @@ const SplashScreen = ({ onComplete }: { onComplete: () => void }) => {
           </div>
 
           {/* Progress Indicator */}
-          <div className="absolute bottom-20 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4">
-            <div className="w-48 h-[1px] bg-black/5 overflow-hidden">
+          <div className="absolute bottom-20 left-1/2 -translate-x-1/2 flex flex-col items-center gap-6">
+            <div className="w-64 h-[1px] bg-black/5 overflow-hidden">
                <motion.div 
                  initial={{ width: 0 }}
                  animate={{ width: "100%" }}
-                 transition={{ duration: 3, ease: "linear" }}
+                 transition={{ duration: 3.5, ease: "easeInOut" }}
                  className="h-full bg-[#1B3FBF]"
                />
             </div>
-            <motion.p 
+            <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 1 }}
-              className="text-[9px] font-black uppercase tracking-[0.8em] text-black/20"
+              className="flex flex-col items-center"
             >
-              Establishing Neural Link
-            </motion.p>
+              <p className="text-[10px] font-black uppercase tracking-[1em] text-black/30 translate-x-[0.5em]">
+                Neural Orchestration
+              </p>
+              <p className="text-[8px] font-serif italic text-black/10 tracking-widest mt-2">
+                Assembling manifestations...
+              </p>
+            </motion.div>
           </div>
         </motion.div>
       )}
@@ -140,4 +152,5 @@ const SplashScreen = ({ onComplete }: { onComplete: () => void }) => {
 };
 
 export default SplashScreen;
+
 

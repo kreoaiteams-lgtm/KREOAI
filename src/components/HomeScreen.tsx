@@ -1204,8 +1204,8 @@ const HomeScreen = ({
                  <motion.span 
                    initial={{ opacity: 0, scale: 0.9 }}
                    animate={{ opacity: 1, scale: 1 }}
-                   transition={{ duration: 2 }}
-                   className="text-[25vw] font-black text-black/[0.03] select-none uppercase tracking-tighter"
+                   transition={{ duration: 2.5 }}
+                   className="text-[40vw] font-black text-black/[0.03] select-none uppercase tracking-tighter leading-none"
                    style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }}
                  >
                    KREO
