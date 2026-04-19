@@ -1195,78 +1195,63 @@ const HomeScreen = ({
               <X size={20} className="group-hover:rotate-90 transition-transform" />
             </button>
 
-            <div className="relative z-10 flex flex-col items-center gap-4 -mt-32">
-              <div className="relative">
-                {/* Neural Blueprint Background Sprinkle */}
-                <div className="absolute inset-0 -m-64 pointer-events-none scale-125 opacity-10">
-                   <motion.img 
-                     animate={{ rotate: 1 }}
-                     transition={{ repeat: Infinity, duration: 20, ease: "linear" }}
-                     src="/blueprint_splash.png" 
-                     className="w-full h-full object-contain grayscale" 
-                   />
-                </div>
-
-                <div className="absolute inset-0 bg-black/5 rounded-full blur-2xl animate-pulse scale-125" />
-
-                <KreoLogo className="scale-[2.5] text-black relative z-10" />
+            <div className="relative z-10 flex flex-col items-center justify-center min-h-screen pt-20">
+              {/* Programmatic Neural Scatter for Loading - No Images */}
+              <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
+                 {/* Reusing Neural Doodle concept but with direct mapping to avoid complex state here */}
+                 {[...Array(60)].map((_, i) => {
+                   const top = `${Math.random() * 100}%`;
+                   const left = `${Math.random() * 100}%`;
+                   const rotate = Math.random() * 360;
+                   const scale = 0.5 + Math.random() * 1.2;
+                   
+                   return (
+                     <motion.div
+                       key={i}
+                       className="absolute text-black/20"
+                       style={{ top, left, rotate }}
+                       initial={{ opacity: 0, scale: 0 }}
+                       animate={{ opacity: 1, scale }}
+                       transition={{ delay: Math.random() * 1 }}
+                     >
+                       <Zap size={15 + Math.random() * 30} strokeWidth={0.5} />
+                     </motion.div>
+                   );
+                 })}
               </div>
 
-              {/* Wonder Things Manifestation */}
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 1.5, delay: 0.5 }}
-                className="relative w-72 h-72 flex items-center justify-center mix-blend-multiply pointer-events-none"
-              >
-                <video 
-                  src="/Wonder Things.webm" 
-                  autoPlay 
-                  loop 
-                  muted 
-                  playsInline
-                  className="w-full h-full object-contain"
-                />
-              </motion.div>
+              <div className="relative z-10 flex flex-col items-center gap-12">
+                {/* 1. THE WEBM ON TOP */}
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+                  className="relative w-80 h-80 sm:w-96 sm:h-96 flex items-center justify-center mix-blend-multiply"
+                >
+                  <video 
+                    src="/Wonder Things.webm" 
+                    autoPlay 
+                    loop 
+                    muted 
+                    playsInline
+                    className="w-full h-full object-contain"
+                  />
+                </motion.div>
 
-              <div className="flex flex-col items-center gap-6">
-                <div className="flex flex-col items-center gap-6">
-                  <p className="text-[14px] font-serif italic text-black/20 tracking-widest animate-pulse">
+                {/* 2. THE KREO TEXT BELOW */}
+                <div className="flex flex-col items-center gap-8">
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-black/5 rounded-full blur-3xl animate-pulse scale-150" />
+                    <KreoLogo className="scale-[3.5] text-black relative z-10" />
+                  </div>
+                  
+                  <motion.p 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.5 }}
+                    className="text-[12px] font-serif italic text-black/30 tracking-[0.4em] uppercase"
+                  >
                     {isIncomingPortal ? t.loading_restoring : loadingMessage}
-                  </p>
-                  {/* Squiggly Google-style loader */}
-                  <svg width="320" height="24" viewBox="0 0 320 24" fill="none" className="overflow-visible">
-                    <defs>
-                      <style>{`
-                           @keyframes squiggle {
-                             0%   { d: path("M0 12 C20 4, 40 20, 60 12 C80 4, 100 20, 120 12 C140 4, 160 20, 180 12 C200 4, 220 20, 240 12 C260 4, 280 20, 300 12 C310 7, 315 10, 320 12"); }
-                             25%  { d: path("M0 12 C20 20, 40 4, 60 12 C80 20, 100 4, 120 12 C140 20, 160 4, 180 12 C200 20, 220 4, 240 12 C260 20, 280 4, 300 12 C310 17, 315 14, 320 12"); }
-                             50%  { d: path("M0 12 C20 4, 40 20, 60 12 C80 4, 100 20, 120 12 C140 4, 160 20, 180 12 C200 4, 220 20, 240 12 C260 4, 280 20, 300 12 C310 7, 315 10, 320 12"); }
-                             75%  { d: path("M0 12 C20 20, 40 4, 60 12 C80 20, 100 4, 120 12 C140 20, 160 4, 180 12 C200 20, 220 4, 240 12 C260 20, 280 4, 300 12 C310 17, 315 14, 320 12"); }
-                             100% { d: path("M0 12 C20 4, 40 20, 60 12 C80 4, 100 20, 120 12 C140 4, 160 20, 180 12 C200 4, 220 20, 240 12 C260 4, 280 20, 300 12 C310 7, 315 10, 320 12"); }
-                           }
-                           @keyframes dash-move {
-                             0%   { stroke-dashoffset: 320; }
-                             100% { stroke-dashoffset: -320; }
-                           }
-                           .squiggle-track { stroke: rgba(0,0,0,0.15); }
-                           .squiggle-line {
-                             stroke: black;
-                             stroke-dasharray: 180 320;
-                             stroke-dashoffset: 0;
-                             animation: squiggle 1.8s ease-in-out infinite, dash-move 1.8s linear infinite;
-                           }
-                         `}</style>
-                    </defs>
-                    {/* Track */}
-                    <path
-                      className="squiggle-track"
-                      d="M0 12 C20 4, 40 20, 60 12 C80 4, 100 20, 120 12 C140 4, 160 20, 180 12 C200 4, 220 20, 240 12 C260 4, 280 20, 300 12 C310 7, 315 10, 320 12"
-                      strokeWidth="2.5" strokeLinecap="round" fill="none"
-                    />
-                    {/* Animated squiggly bar */}
-                    <path
-                      className="squiggle-line"
                       d="M0 12 C20 4, 40 20, 60 12 C80 4, 100 20, 120 12 C140 4, 160 20, 180 12 C200 4, 220 20, 240 12 C260 4, 280 20, 300 12 C310 7, 315 10, 320 12"
                       strokeWidth="2.5" strokeLinecap="round" fill="none"
                     />
