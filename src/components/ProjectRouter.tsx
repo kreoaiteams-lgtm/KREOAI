@@ -16,7 +16,7 @@ export default function ProjectRouter() {
             
             try {
                 // Determine if ID is a valid UUID to avoid Supabase 400 error
-                const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+                const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
                 const isUuid = uuidRegex.test(id);
 
                 let query = supabase.from('artifacts').select('user_id');
@@ -26,7 +26,7 @@ export default function ProjectRouter() {
                     query = query.eq('share_token', id);
                 }
 
-                const { data, error } = await query.single();
+                const { data, error } = await query.maybeSingle();
 
                 if (!user) {
                     setIsOwner(false);

@@ -511,7 +511,7 @@ const HomeScreen = ({
             } else {
               query = query.eq("share_token", urlId);
             }
-            const result = await query.single();
+            const result = await query.maybeSingle();
             data = result.data;
             error = result.error;
           }
@@ -893,7 +893,7 @@ const HomeScreen = ({
             .from("artifacts")
             .update({ code: code, prompt: finalQuery }) // We update terminal prompt
             .eq("share_token", currentArtifactId)
-            .select()
+            .select('id, prompt, code, created_at, user_id, share_token')
             .single();
           newArtifact = data;
           insertError = error;
@@ -908,7 +908,7 @@ const HomeScreen = ({
               is_public: true,
               share_token: shareToken
             })
-            .select()
+            .select('id, prompt, code, created_at, user_id, share_token')
             .single();
           newArtifact = data;
           insertError = error;

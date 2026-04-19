@@ -45,7 +45,7 @@ const ShareView: React.FC = () => {
                     query = query.eq('share_token', id);
                 }
 
-                const { data, error: fetchError } = await query.single();
+                const { data, error: fetchError } = await query.maybeSingle();
 
                 if (fetchError || !data) {
                     console.error("Fetch manifest error:", fetchError);

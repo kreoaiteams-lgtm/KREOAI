@@ -82,7 +82,7 @@ const CardPage = ({ onboarding = false }: { onboarding?: boolean }) => {
                 bio,
                 interest
               })
-              .select()
+              .select('id, user_id, bio, interest, card_number, full_name, created_at')
               .single();
               
             if (updatedProfile) {
