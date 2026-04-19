@@ -28,6 +28,8 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
   // New Claude Design Features
   const [inlineEditMode, setInlineEditMode] = useState(false);
   const [showKnobs, setShowKnobs] = useState(false);
+  const [renderTheme, setRenderTheme] = useState<'light' | 'dark' | 'ultra'>('light');
+  const [splitArchitecture, setSplitArchitecture] = useState(true);
   const [showExports, setShowExports] = useState(false);
   const [primaryColor, setPrimaryColor] = useState("#1B3FBF");
   const [borderRadius, setBorderRadius] = useState("0.5rem");
@@ -299,151 +301,221 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
                 >
                   <iframe
                     key={`${iframeId}-${currentSlide}`}
-                    srcDoc={isPresentation ? `
-                      <html>
-                        <head>
-                          <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;700&display=swap" rel="stylesheet">
-                          <script src="https://cdn.tailwindcss.com"></script>
-                          <style>
-                            :root {
-                              --primary: ${primaryColor};
-                              --radius: ${borderRadius};
-                            }
-                            ${inlineEditMode ? `
-                              * { cursor: crosshair !important; }
-                              *:hover { outline: 2px dashed #1B3FBF !important; outline-offset: 2px; }
-                            ` : ""}
-                          </style>
-                          <style>
-                            body { font-family: 'Inter', sans-serif; background: white; margin: 0; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; overflow-y: auto; }
-                            .font-serif { font-family: 'Instrument Serif', serif; }
-                            section { min-height: 100vh; width: 100vw; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 4rem; box-sizing: border-box; }
-                          </style>
-                        </head>
-                        <body>
-                          ${slides[currentSlide]}
-                        </body>
-                      </html>
-                    ` : (
-                      !code.trim().toLowerCase().startsWith("<!doctype") &&
-                      !code.trim().toLowerCase().startsWith("<html")
-                    ) ? (() => {
-                      const cleanCode = code
-                        .replace(/```(jsx|tsx|javascript|js|html|react-native|react)?/g, "")
-                        .replace(/```/g, "")
-                        .trim();
+                    <iframe
+                      key={`${iframeId}-${currentSlide}`}
+                      srcDoc={isPresentation ? `
+                        <html>
+                          <head>
+                            <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+                            <script src="https://cdn.tailwindcss.com"></script>
+                            <style>
+                              :root {
+                                --primary: ${primaryColor};
+                                --radius: ${borderRadius};
+                                --background: 0 0% 100%;
+                                --foreground: 0 0% 0%;
+                              }
+                              .dark {
+                                --background: 227 80% 8%;
+                                --foreground: 0 0% 100%;
+                                background-color: hsl(var(--background));
+                                color: hsl(var(--foreground));
+                              }
+                              .ultra {
+                                --background: 227 75% 43%;
+                                --foreground: 0 0% 100%;
+                                background-color: hsl(var(--background));
+                                color: hsl(var(--foreground));
+                              }
+                              ${inlineEditMode ? `
+                                * { cursor: crosshair !important; }
+                                *:hover { outline: 2px dashed #1B3FBF !important; outline-offset: 2px; }
+                              ` : ""}
+                            </style>
+                            <style>
+                              body { font-family: 'Inter', sans-serif; background: white; margin: 0; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; overflow-y: auto; }
+                              .font-serif { font-family: 'Instrument Serif', serif; }
+                              section { min-height: 100vh; width: 100vw; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 4rem; box-sizing: border-box; }
+                            </style>
+                          </head>
+                          <body className="${renderTheme === 'dark' ? 'dark' : renderTheme === 'ultra' ? 'ultra' : ''}">
+                            ${slides[currentSlide]}
+                          </body>
+                        </html>
+                      ` : (
+                        !code.trim().toLowerCase().startsWith("<!doctype") &&
+                        !code.trim().toLowerCase().startsWith("<html")
+                      ) ? (() => {
+                        const cleanCode = code
+                          .replace(/```(jsx|tsx|javascript|js|html|react-native|react)?/g, "")
+                          .replace(/```/g, "")
+                          .trim();
 
-                      // Detection: If code doesn't look like React/HTML code (e.g. it's a clarification prompt), render as a UI card
-                      const isProbableText = !cleanCode.includes('import ') && !cleanCode.includes('export default') && !cleanCode.includes('function') && !cleanCode.includes('const') && !cleanCode.includes('<');
-                      if (isProbableText) {
+                        // Detection: If code doesn't look like React/HTML code (e.g. it's a clarification prompt), render as a UI card
+                        const isProbableText = !cleanCode.includes('import ') && !cleanCode.includes('export default') && !cleanCode.includes('function') && !cleanCode.includes('const') && !cleanCode.includes('<');
+                        if (isProbableText) {
+                          return `
+                          <html>
+                            <head>
+                               <script src="https://cdn.tailwindcss.com"></script>
+                               <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+                            </head>
+                            <body style="margin:0; font-family: 'Inter', sans-serif; background: #f8f9fa; display: flex; align-items:center; justify-content:center; height:100vh; overflow:hidden;">
+                              <div class="max-w-xl p-16 bg-white rounded-[3rem] shadow-2xl border border-black/[0.03] text-center animate-in zoom-in-95 duration-700">
+                                 <div class="text-[9px] font-black uppercase tracking-[0.4em] text-[#1B3FBF] mb-12">Neural Clarification</div>
+                                 <h3 class="text-2xl text-black font-light leading-relaxed tracking-tight">${cleanCode.replace(/\n/g, '<br/>')}</h3>
+                              </div>
+                            </body>
+                          </html>`;
+                        }
+
+                        const cleanCodeForBabel = cleanCode
+                          .replace(/import\s+['"].*?['"];?/g, "") // Strip raw side-effect imports like import './styles.css'
+                          .replace(/import\s+ React.*?from\s+['"]react['"];?\n?/g, "")
+                          .replace(/import\s+.*?\s+from\s+['"]react['"];?\n?/g, "")
+                          .replace(/import\s+.*?\s+from\s+['"]lucide-react['"];?\n?/g, "")
+                          .replace(/import\s+.*?\s+from\s+['"]recharts['"];?\n?/g, "")
+                          .replace(/import\s+.*?\s+from\s+['"].*?['"];?\n?/g, "") // Generic strip for any other imports
+                          .replace(/export\s+default\s+/g, "window.__Component = ");
+                        
                         return `
                         <html>
                           <head>
-                             <script src="https://cdn.tailwindcss.com"></script>
-                             <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
-                          </head>
-                          <body style="margin:0; font-family: 'Inter', sans-serif; background: #f8f9fa; display: flex; align-items:center; justify-content:center; height:100vh; overflow:hidden;">
-                            <div class="max-w-xl p-16 bg-white rounded-[3rem] shadow-2xl border border-black/[0.03] text-center animate-in zoom-in-95 duration-700">
-                               <div class="text-[9px] font-black uppercase tracking-[0.4em] text-[#1B3FBF] mb-12">Neural Clarification</div>
-                               <h3 class="text-2xl text-black font-light leading-relaxed tracking-tight">${cleanCode.replace(/\n/g, '<br/>')}</h3>
-                            </div>
-                          </body>
-                        </html>`;
-                      }
-
-                      const cleanCodeForBabel = cleanCode
-                        .replace(/import\s+['"].*?['"];?/g, "") // Strip raw side-effect imports like import './styles.css'
-                        .replace(/import\s+ React.*?from\s+['"]react['"];?\n?/g, "")
-                        .replace(/import\s+.*?\s+from\s+['"]react['"];?\n?/g, "")
-                        .replace(/import\s+.*?\s+from\s+['"]lucide-react['"];?\n?/g, "")
-                        .replace(/import\s+.*?\s+from\s+['"]recharts['"];?\n?/g, "")
-                        .replace(/import\s+.*?\s+from\s+['"].*?['"];?\n?/g, "") // Generic strip for any other imports
-                        .replace(/export\s+default\s+/g, "window.__Component = ");
-                      
-                      return `
-                      <html>
-                        <head>
-                          <script>
-                            // Standard KREO Manifest Header: Silence CDN & Setup Neural Roots
-                            window.tailwind = { 
-                              config: { 
-                                theme: { 
-                                  extend: { 
-                                    colors: { primary: '${primaryColor}' },
-                                    borderRadius: { xl: '${borderRadius}' }
+                            <script>
+                              // Standard KREO Manifest Header: Silence CDN & Setup Neural Roots
+                              window.tailwind = { 
+                                config: { 
+                                  theme: { 
+                                    extend: { 
+                                      colors: { primary: '${primaryColor}' },
+                                      borderRadius: { xl: '${borderRadius}' }
+                                    } 
                                   } 
                                 } 
-                              } 
-                            };
-                            window.onerror = (message, source, lineno, colno, error) => {
-                              const root = document.getElementById('root');
-                              if (root) {
-                                root.innerHTML =
-                                  '<div style="padding: 4rem; background: #000; color: #fff; font-family: sans-serif; border: 1px solid rgba(255,255,255,0.1); border-radius: 3rem; margin: 3rem; text-align: center; box-shadow: 0 40px 80px rgba(0,0,0,0.5);">' +
-                                    '<div style="font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5em; color: #ff3e3e; margin-bottom: 2rem;">Neural Manifest Collision</div>' +
-                                    '<h3 style="font-size: 1.8rem; font-weight: 300; line-height: 1.4; margin-bottom: 2rem; color: #eee;">' + message + '</h3>' +
-                                    '<div style="display: inline-block; padding: 1rem 2rem; background: #111; border-radius: 1rem; font-family: monospace; font-size: 0.7rem; color: #555;">' +
-                                      'TRACER: Line ' + lineno + ' / Col ' + colno +
-                                    '</div>' +
-                                  '</div>';
+                              };
+                            </script>
+                            <script src="https://cdn.tailwindcss.com"></script>
+                            <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+                            <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+                            <style>
+                              :root {
+                                --primary: ${primaryColor};
+                                --radius: ${borderRadius};
+                                --background: 0 0% 100%;
+                                --foreground: 0 0% 0%;
                               }
-                              return true;
-                            };
-                          </script>
-                          <script src="https://cdn.tailwindcss.com"></script>
-                          <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
-                          <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-                          <style>
-                            :root {
-                              --primary: ${primaryColor};
-                              --radius: ${borderRadius};
-                            }
-                            ${inlineEditMode ? `
-                              * { cursor: crosshair !important; }
-                              *:hover { outline: 2px dashed #1B3FBF !important; outline-offset: 2px; }
-                            ` : ""}
-                            body { font-family: 'Inter', sans-serif; background: white; margin: 0; overflow-x: hidden; overflow-y: auto; min-height: 100vh; }
-                            #root { min-height: 100vh; }
-                          </style>
-                        </head>
-                        <body>
-                          <div id="root"></div>
-                          <script type="text/babel" data-type="module">
-                            import { createElement, useState, useEffect, useRef, useCallback, useMemo, useReducer, useContext } from 'https://esm.sh/react@18';
-                            import { createRoot } from 'https://esm.sh/react-dom@18/client';
-                            
-                            const React = { createElement, useState, useEffect, useRef, useCallback, useMemo, useReducer, useContext };
-                            window.React = React;
-                            
-                            window.onerror = (message, source, lineno, colno, error) => {
-                              document.getElementById('root').innerHTML =
-                                '<div style="padding: 3rem; background: #000; color: #ff3e3e; font-family: sans-serif; border: 1px solid #1a1a1a; border-radius: 2rem; margin: 2rem;">' +
-                                  '<h3 style="font-size: 1.5rem; font-weight: 300; margin-bottom: 1rem;">Neural Manifest Collision</h3>' +
-                                  '<p style="opacity: 0.6; font-size: 0.9rem; line-height: 1.6;">' + message + '</p>' +
-                                  '<p style="opacity: 0.3; font-size: 0.7rem; margin-top: 1rem;">Line: ' + lineno + ' / Col: ' + colno + '</p>' +
-                                '</div>';
-                              return true;
-                            };
-
-                            try {
-                              ${cleanCodeForBabel}
+                              .dark {
+                                --background: 227 80% 8%;
+                                --foreground: 0 0% 100%;
+                                background-color: hsl(var(--background));
+                                color: hsl(var(--foreground));
+                              }
+                              .ultra {
+                                --background: 227 75% 43%;
+                                --foreground: 0 0% 100%;
+                                background-color: hsl(var(--background));
+                                color: hsl(var(--foreground));
+                              }
+                              ${inlineEditMode ? `
+                                * { cursor: crosshair !important; }
+                                *:hover { outline: 2px dashed #1B3FBF !important; outline-offset: 2px; }
+                              ` : ""}
+                              body { font-family: 'Inter', sans-serif; background: white; margin: 0; overflow-x: hidden; overflow-y: auto; min-height: 100vh; }
+                              #root { min-height: 100vh; }
+                            </style>
+                          </head>
+                          <body class="${renderTheme === 'dark' ? 'dark' : renderTheme === 'ultra' ? 'ultra' : ''}">
+                            <div id="root"></div>
+                            <script type="text/babel" data-type="module">
+                              import { createElement, useState, useEffect, useRef, useCallback, useMemo, useReducer, useContext } from 'https://esm.sh/react@18';
+                              import { createRoot } from 'https://esm.sh/react-dom@18/client';
                               
-                              const App = window.__Component;
-                              if (App) {
-                                createRoot(document.getElementById('root')).render(createElement(App));
-                              } else {
-                                document.getElementById('root').innerHTML = '<div style="padding:2rem;color:red">Could not find exported component. Ensure you use "export default function ComponentName()".</div>';
+                              const React = { createElement, useState, useEffect, useRef, useCallback, useMemo, useReducer, useContext };
+                              window.React = React;
+                              
+                              window.onerror = (message, source, lineno, colno, error) => {
+                                document.getElementById('root').innerHTML =
+                                  '<div style="padding: 3rem; background: #000; color: #ff3e3e; font-family: sans-serif; border: 1px solid #1a1a1a; border-radius: 2rem; margin: 2rem;">' +
+                                    '<h3 style="font-size: 1.5rem; font-weight: 300; margin-bottom: 1rem;">Neural Manifest Collision</h3>' +
+                                    '<p style="opacity: 0.6; font-size: 0.9rem; line-height: 1.6;">' + message + '</p>' +
+                                    '<p style="opacity: 0.3; font-size: 0.7rem; margin-top: 1rem;">Line: ' + lineno + ' / Col: ' + colno + '</p>' +
+                                  '</div>';
+                                return true;
+                              };
+
+                              try {
+                                ${cleanCodeForBabel}
+                                
+                                const App = window.__Component;
+                                if (App) {
+                                  createRoot(document.getElementById('root')).render(createElement(App));
+                                } else {
+                                  document.getElementById('root').innerHTML = '<div style="padding:2rem;color:red">Could not find exported component. Ensure you use "export default function ComponentName()".</div>';
+                                }
+                              } catch (err) {
+                                 window.onerror(err.message, null, null, null, err);
                               }
-                            } catch (err) {
-                               window.onerror(err.message, null, null, null, err);
-                            }
-                          </script>
-                        </body>
-                      </html>
-                    `; })() : code}
-                    title="Manifestation Player"
-                    className="h-full w-full border-none"
-                  />
+                            </script>
+                          </body>
+                        </html>
+                      `; })() : code}
+                      title="Manifestation Player"
+                      className="h-full w-full border-none"
+                    />
+
+                    {/* Knobs Floating Panel */}
+                    <AnimatePresence>
+                      {showKnobs && (
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                          animate={{ opacity: 1, scale: 1, y: 0 }}
+                          exit={{ opacity: 0, scale: 0.9, y: 10 }}
+                          className="absolute bottom-24 right-12 z-[1000] w-[340px] bg-white rounded-[2.5rem] shadow-[0_40px_100px_rgba(0,0,0,0.1)] border border-black/[0.03] p-8 space-y-8 animate-in zoom-in-95 duration-500"
+                        >
+                          {/* Theme Selector */}
+                          <div className="space-y-4">
+                            <div className="flex items-center justify-between px-1">
+                               <span className="text-[10px] font-black uppercase tracking-widest text-black/20">Manifest Style</span>
+                            </div>
+                            <div className="flex items-center bg-black/[0.03] p-1 rounded-2xl h-14">
+                               {['light', 'dark', 'ultra'].map((t) => (
+                                 <button
+                                   key={t}
+                                   onClick={() => setRenderTheme(t as any)}
+                                   className={`flex-1 h-full rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${
+                                      renderTheme === t 
+                                        ? 'bg-[#1B3FBF] text-white shadow-lg shadow-[#1B3FBF]/20' 
+                                        : 'text-black/30 hover:text-black hover:bg-black/5'
+                                   }`}
+                                 >
+                                   {t}
+                                 </button>
+                               ))}
+                            </div>
+                          </div>
+
+                          {/* Split Architecture Toggle */}
+                          <div className="flex items-center justify-between px-1 py-2">
+                             <div className="space-y-1">
+                               <span className="text-sm font-bold text-black tracking-tight flex items-center gap-2">
+                                  Split Architecture
+                                  <div className="w-1 h-1 rounded-full bg-[#1B3FBF] animate-pulse" />
+                               </span>
+                               <p className="text-[10px] text-black/30 font-medium">Parallel neural execution</p>
+                             </div>
+                             <button 
+                                onClick={() => setSplitArchitecture(!splitArchitecture)}
+                                className={`w-12 h-6 rounded-full transition-all flex items-center px-1 ${splitArchitecture ? 'bg-[#1B3FBF]' : 'bg-black/10'}`}
+                             >
+                                <motion.div 
+                                   animate={{ x: splitArchitecture ? 24 : 0 }}
+                                   className="w-4 h-4 rounded-full bg-white shadow-sm" 
+                                />
+                             </button>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                 </motion.div>
               </AnimatePresence>
             </div>
