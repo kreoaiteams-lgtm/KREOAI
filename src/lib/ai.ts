@@ -174,7 +174,7 @@ export const generateArtifact = async (prompt: string, chatHistory: {role: strin
       body: JSON.stringify({
         model: "sarvam-105b",
         messages: messages,
-        max_tokens: 8192,
+        max_tokens: 4096,
         temperature: 0.7,
       }),
     });
@@ -186,7 +186,49 @@ export const generateArtifact = async (prompt: string, chatHistory: {role: strin
     }
 
     const data = await response.json();
-    const content = data.choices[0].message.content;
+    let content = data.choices[0].message.content;
+
+    // --- NEURAL BRIDGE CONTINUATION LOGIC ---
+    // If output feels truncated (no closing tags and roughly at limit), bridge to the second key
+    const isTruncated = (content.trim().length > 3500) && 
+                       !(content.toLowerCase().includes('</html>') || content.trim().endsWith('}') || content.trim().endsWith('```'));
+
+    if (isTruncated) {
+        console.log("Neural Manifest Truncated. Triggering Bridge Continuation...");
+        const SECOND_KEY = "sk_7y0ofcio_tgRuQhhq8JyWkyXasSI7XJIR";
+        
+        const bridgeMessages = [
+            ...messages,
+            { role: "assistant", content: content },
+            { role: "user", content: "Continue from the exact character where you left off. Do NOT repeat code. Start immediately with the next character. Complete the manifest." }
+        ];
+
+        try {
+            const bridgeRes = await fetch(SARVAM_ENDPOINT, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${SECOND_KEY}`,
+                },
+                body: JSON.stringify({
+                    model: "sarvam-105b",
+                    messages: bridgeMessages,
+                    max_tokens: 4096,
+                    temperature: 0.5,
+                }),
+            });
+
+            if (bridgeRes.ok) {
+                const bridgeData = await bridgeRes.json();
+                const continuation = bridgeData.choices[0].message.content;
+                content += continuation;
+                console.log("Neural Bridge Successful. Manifest Extended.");
+            }
+        } catch (e) {
+            console.error("Neural Bridge Failed:", e);
+        }
+    }
+    // ----------------------------------------
 
     // Fast-fail artifact extraction
     const match = content.match(/```(?:html|tsx|jsx|mermaid|python|javascript|ts|js)?\s*([\s\S]*?)```/gi);

@@ -3,6 +3,7 @@ import KreoLogo from "./KreoLogo";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { useLang } from "@/context/LanguageContext";
 
 const AuthScreen = () => {
   const navigate = useNavigate();
@@ -11,6 +12,7 @@ const AuthScreen = () => {
   const [fullName, setFullName] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const { t } = useLang();
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -65,7 +67,7 @@ const AuthScreen = () => {
       <div className="w-full max-w-sm">
         <div className="flex flex-col items-center mb-12">
           <h1 className="text-6xl text-foreground tracking-tighter" style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }}>KREO</h1>
-          <p className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground/30 mt-2">Why think when you can visualise</p>
+          <p className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground/30 mt-2">{t.hero_sub}</p>
         </div>
 
         <div className="glass-panel rounded-2xl p-8 border-foreground/10 shadow-2xl">
@@ -95,7 +97,7 @@ const AuthScreen = () => {
             <div>
               <input
                 type="password"
-                placeholder="Password"
+                placeholder={t.auth_password}
                 disabled={loading}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -108,7 +110,7 @@ const AuthScreen = () => {
               disabled={loading}
               className="w-full rounded-lg bg-primary py-3 text-sm font-medium text-primary-foreground transition-all duration-200 hover:opacity-90 disabled:opacity-50 shadow-lg shadow-primary/20"
             >
-              {loading ? "Please wait..." : isSignUp ? "Create Account" : "Sign In"}
+              {loading ? "..." : isSignUp ? t.auth_signup : t.auth_signin}
             </button>
           </form>
 
@@ -123,12 +125,12 @@ const AuthScreen = () => {
           </button>
 
           <p className="mt-6 text-center text-xs text-foreground/50">
-            {isSignUp ? "Already have an account?" : "Don't have an account?"}{" "}
+            {isSignUp ? t.auth_already_have : t.auth_dont_have}{" "}
             <button
               onClick={() => setIsSignUp(!isSignUp)}
               className="text-foreground/80 underline underline-offset-2 transition-colors duration-200 hover:text-foreground"
             >
-              {isSignUp ? "Sign in" : "Sign up"}
+              {isSignUp ? t.auth_signin : t.auth_signup}
             </button>
           </p>
         </div>

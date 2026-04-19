@@ -22,22 +22,19 @@ interface IdentityScreenProps {
 
 type KreonInterest = 'design' | 'tech' | 'architecture' | 'product' | 'art' | 'sports' | 'music' | 'news';
 
-const INTERESTS: { id: KreonInterest, label: string, icon: any }[] = [
-  { id: 'tech', label: 'Engineering', icon: Cpu },
-  { id: 'design', label: 'Design', icon: Palette },
-  { id: 'architecture', label: 'Architecture', icon: Building2 },
-  { id: 'product', label: 'Strategy', icon: Briefcase },
-  { id: 'art', label: 'Culture', icon: Paintbrush },
-  { id: 'sports', label: 'Sports', icon: Trophy },
-  { id: 'music', label: 'Music', icon: Music },
-  { id: 'news', label: 'Insights', icon: Newspaper },
+// INTERESTS moved inside IdentityScreen or updated to use labels from 't'
+const INTERESTS_META = [
+  { id: 'tech', icon: Cpu, labelKey: 'interest_tech' },
+  { id: 'design', icon: Palette, labelKey: 'interest_design' },
+  { id: 'architecture', icon: Building2, labelKey: 'interest_architecture' },
+  { id: 'product', icon: Briefcase, labelKey: 'interest_product' },
+  { id: 'art', icon: Paintbrush, labelKey: 'interest_art' },
+  { id: 'sports', icon: Trophy, labelKey: 'interest_sports' },
+  { id: 'music', icon: Music, labelKey: 'interest_music' },
+  { id: 'news', icon: Newspaper, labelKey: 'interest_news' },
 ];
 
-const QUESTIONS = [
-  "How would you describe your creative style?",
-  "What is your favorite tool or craft?",
-  "Where do you find your best ideas?"
-];
+// QUESTIONS moved inside to use t.interview_q1 etc.
 
 const IdentityScreen: React.FC<IdentityScreenProps> = ({ 
   userEmail, 
@@ -58,6 +55,18 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
   const [isGenerating, setIsGenerating] = useState(false);
   const [residentBio, setResidentBio] = useState(initialBio || "");
   const [cardNumber, setCardNumber] = useState(initialCardNumber);
+  const { t } = useLang();
+
+  const INTERESTS = INTERESTS_META.map(m => ({
+    ...m,
+    label: (t as any)[m.labelKey] || m.labelKey
+  }));
+
+  const QUESTIONS = [
+    t.interview_q1,
+    t.interview_q2,
+    t.interview_q3
+  ];
 
   useEffect(() => {
     if (onPhaseChange) onPhaseChange(phase);
@@ -106,7 +115,7 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
         onClick={onClose}
         className="fixed top-12 right-12 z-[4000] group flex items-center gap-3 bg-black/5 hover:bg-black/10 px-6 py-3 rounded-full transition-all"
       >
-        <div className="text-[10px] font-black uppercase tracking-[0.2em] text-black/40 group-hover:text-black">Dismiss</div>
+        <div className="text-[10px] font-black uppercase tracking-[0.2em] text-black/40 group-hover:text-black">{t.dismiss}</div>
         <div className="w-1.5 h-1.5 rounded-full bg-black/20 group-hover:bg-[#1B3FBF] transition-colors" />
       </button>
 
@@ -128,7 +137,7 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
                     <span className="text-[9px] font-black uppercase tracking-[0.4em] text-[#1B3FBF]/60">Step 01 / Basics</span>
                   </div>
                   <h1 className="text-3xl md:text-5xl font-serif italic text-black tracking-tight leading-tight">
-                    What are you into?
+                    {t.pref_title}
                   </h1>
                 </div>
 
@@ -167,7 +176,7 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
                     onClick={() => setPhase('interview')}
                     className="group px-10 py-5 bg-[#1B3FBF] text-white text-[10px] font-black uppercase tracking-[0.4em] rounded-full hover:scale-105 active:scale-95 transition-all shadow-xl shadow-[#1B3FBF]/20 flex items-center gap-4 w-fit"
                   >
-                    Next <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                    {t.auth_continue} <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
                   </button>
                 </div>
               </div>
@@ -226,32 +235,32 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
                     </div>
 
                     <div className="space-y-8">
-                       <h2 className="text-3xl md:text-5xl font-serif italic text-black leading-tight tracking-tighter h-32">
-                         {isGenerating ? "Just a moment..." : QUESTIONS[interviewPhase]}
-                       </h2>
-                       
-                       {isGenerating ? (
-                         <div className="flex items-center gap-4 text-[#1B3FBF]">
-                            <div className="w-5 h-5 border-2 border-[#1B3FBF]/20 border-t-[#1B3FBF] rounded-full animate-spin" />
-                            <span className="text-[10px] font-black uppercase tracking-widest animate-pulse">Setting things up...</span>
-                         </div>
-                       ) : (
-                         <form onSubmit={handleAnswerSubmit} className="space-y-6">
-                            <input 
-                              autoFocus 
-                              value={query}
-                              onChange={(e) => setQuery(e.target.value)}
-                              placeholder="Tell us here..."
-                              className="w-full bg-transparent border-b-2 border-black/5 py-4 text-xl outline-none focus:border-[#1B3FBF] transition-all placeholder:text-black/10 font-serif italic"
-                            />
-                            <button 
-                              type="submit"
-                              className="px-10 py-5 bg-[#1B3FBF] text-white text-[10px] font-black uppercase tracking-[0.4em] rounded-full hover:scale-105 active:scale-95 transition-all shadow-xl shadow-[#1B3FBF]/20 flex items-center gap-4"
-                            >
-                              Next <ChevronRight size={14} />
-                            </button>
-                         </form>
-                       )}
+                        <h2 className="text-3xl md:text-5xl font-serif italic text-black leading-tight tracking-tighter h-32">
+                          {isGenerating ? t.loading_calibrating : QUESTIONS[interviewPhase]}
+                        </h2>
+                        
+                        {isGenerating ? (
+                          <div className="flex items-center gap-4 text-[#1B3FBF]">
+                             <div className="w-5 h-5 border-2 border-[#1B3FBF]/20 border-t-[#1B3FBF] rounded-full animate-spin" />
+                             <span className="text-[10px] font-black uppercase tracking-widest animate-pulse">{t.loading_calibrating}</span>
+                          </div>
+                        ) : (
+                          <form onSubmit={handleAnswerSubmit} className="space-y-6">
+                             <input 
+                               autoFocus 
+                               value={query}
+                               onChange={(e) => setQuery(e.target.value)}
+                               placeholder={t.webcapture_placeholder}
+                               className="w-full bg-transparent border-b-2 border-black/5 py-4 text-xl outline-none focus:border-[#1B3FBF] transition-all placeholder:text-black/10 font-serif italic"
+                             />
+                             <button 
+                               type="submit"
+                               className="px-10 py-5 bg-[#1B3FBF] text-white text-[10px] font-black uppercase tracking-[0.4em] rounded-full hover:scale-105 active:scale-95 transition-all shadow-xl shadow-[#1B3FBF]/20 flex items-center gap-4"
+                             >
+                               {t.auth_continue} <ChevronRight size={14} />
+                             </button>
+                          </form>
+                        )}
                     </div>
                  </div>
                  
@@ -282,11 +291,11 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
                   <div>
                     <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[#1B3FBF]/40 block mb-3">HI THERE</span>
                      <h3 className="text-4xl md:text-5xl font-serif italic text-[#1B3FBF] leading-tight tracking-tight">
-                        Welcome to <br/>
+                        {t.reveal_welcome} <br/>
                         <span style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }} className="not-italic text-5xl md:text-6xl tracking-tight">KREO</span>.
                      </h3>
                     <p className="text-sm text-black/40 leading-relaxed mt-5 font-medium max-w-[280px]">
-                      Your account is ready. You are now part of our growing community.
+                      {t.reveal_sub}
                     </p>
                     
                     <div className="mt-8 pt-8 border-t border-black/5 flex items-center gap-6">
@@ -320,7 +329,7 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
       <div className="absolute inset-0 pointer-events-none -z-10">
         <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-[#1B3FBF]/5 blur-[120px] rounded-full" />
         <div className="absolute bottom-0 left-0 w-1/3 h-1/3 bg-yellow-400/5 blur-[100px] rounded-full" />
-        <div className="absolute inset-0 opacity-[0.03] grayscale pointer-events-none" style={{ backgroundImage: 'url("https://grainy-gradients.vercel.app/noise.svg")' }} />
+        <div className="absolute inset-0 opacity-[0.03] grayscale pointer-events-none" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }} />
       </div>
     </div>
   );

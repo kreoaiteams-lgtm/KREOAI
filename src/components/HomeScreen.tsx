@@ -23,6 +23,8 @@ import Dither from "./Dither";
 import { useToast } from "@/hooks/use-toast";
 import { AnimatePresence, motion } from "framer-motion";
 import Footer from "./Footer";
+import { useLang } from "@/context/LanguageContext";
+import { LANGUAGES } from "@/lib/i18n";
 
 interface HomeScreenProps {
   onCloudBurst: () => void;
@@ -35,14 +37,8 @@ interface HomeScreenProps {
   urlId?: string;
 }
 
-const PLACEHOLDER_TEXTS = [
-  "Create a project dashboard…",
-  "Design a high-end landing page…",
-  "Build a neumorphic widget…",
-  "Generate a stylish login card…",
-  "Make a minimal portfolio site…",
-  "Make an About Us page for Dhruv Gautam…",
-];
+// PLACEHOLDERS moved inside HomeScreen to access 't' from LanguageContext
+const NEURAL_PROMPTS = [
 
 const NEURAL_PROMPTS = [
   "Create a high-quality PPT presentation for a VC pitch — cinematic slides, beautiful typography, and clear diagrams.",
@@ -69,36 +65,53 @@ const SCENARIOS = [
   { t: "Client pitch at noon.", s: "Wow them before you start." }
 ];
 
-const ScenariosGrid = () => (
-  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    {SCENARIOS.map((card, i) => (
-      <div key={i} className="p-10 rounded-[2.5rem] border border-black/10 bg-white hover:bg-white hover:shadow-2xl hover:shadow-black/5 transition-all group">
-        <div className="space-y-4 text-left">
-          <div className="w-10 h-10 rounded-full bg-[#1B3FBF]/10 flex items-center justify-center text-[#1B3FBF] font-serif italic text-xl group-hover:scale-110 transition-transform">?</div>
-          <h4 className="text-2xl font-serif italic text-black leading-tight">{card.t}</h4>
-          <p className="text-sm text-black/40 font-light italic font-serif leading-relaxed">{card.s}</p>
-        </div>
-      </div>
-    ))}
-  </div>
-);
+const ScenariosGrid = () => {
+  const { t } = useLang();
+  const scenarios = [
+    { t: t.scenario_1_t, s: t.scenario_1_s },
+    { t: t.scenario_2_t, s: t.scenario_2_s },
+    { t: t.scenario_3_t, s: t.scenario_3_s },
+    { t: t.scenario_4_t, s: t.scenario_4_s },
+    { t: t.scenario_5_t, s: t.scenario_5_s },
+    { t: t.scenario_6_t, s: t.scenario_6_s }
+  ];
 
-const SynthesisEngine = () => (
-  <div className="grid grid-cols-1 md:grid-cols-3 gap-12 pt-10">
-    {[
-      { step: "01", title: "Your Idea", desc: "Describe your goal in plain language or upload a source file." },
-      { step: "02", title: "Visual Design", desc: "Our engine handles the visual structure and professional design details." },
-      { step: "03", title: "Final Build", desc: "A functional, beautiful outcome is generated in seconds." }
-    ].map((item, i) => (
-      <div key={i} className="space-y-6 text-center group">
-        <div className="text-6xl font-serif italic text-black/5 group-hover:text-[#1B3FBF]/10 transition-colors duration-700">{item.step}</div>
-        <h4 className="text-xl font-bold uppercase tracking-widest text-black">{item.title}</h4>
-        <div className="h-[1px] w-12 mx-auto bg-[#1B3FBF]/20" />
-        <p className="text-sm text-black/40 font-serif italic leading-relaxed">{item.desc}</p>
-      </div>
-    ))}
-  </div>
-);
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {scenarios.map((card, i) => (
+        <div key={i} className="p-10 rounded-[2.5rem] border border-black/10 bg-white hover:bg-white hover:shadow-2xl hover:shadow-black/5 transition-all group">
+          <div className="space-y-4 text-left">
+            <div className="w-10 h-10 rounded-full bg-[#1B3FBF]/10 flex items-center justify-center text-[#1B3FBF] font-serif italic text-xl group-hover:scale-110 transition-transform">?</div>
+            <h4 className="text-2xl font-serif italic text-black leading-tight">{card.t}</h4>
+            <p className="text-sm text-black/40 font-light italic font-serif leading-relaxed">{card.s}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const SynthesisEngine = () => {
+  const { t } = useLang();
+  const steps = [
+    { step: "01", title: t.step_01_title, desc: t.step_01_desc },
+    { step: "02", title: t.step_02_title, desc: t.step_02_desc },
+    { step: "03", title: t.step_03_title, desc: t.step_03_desc }
+  ];
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-12 pt-10">
+      {steps.map((item, i) => (
+        <div key={i} className="space-y-6 text-center group">
+          <div className="text-6xl font-serif italic text-black/5 group-hover:text-[#1B3FBF]/10 transition-colors duration-700">{item.step}</div>
+          <h4 className="text-xl font-bold uppercase tracking-widest text-black">{item.title}</h4>
+          <div className="h-[1px] w-12 mx-auto bg-[#1B3FBF]/20" />
+          <p className="text-sm text-black/40 font-serif italic leading-relaxed">{item.desc}</p>
+        </div>
+      ))}
+    </div>
+  );
+};
 
 const TypingKreo = () => {
   const [text, setText] = useState("");
@@ -114,6 +127,8 @@ const TypingKreo = () => {
     return () => clearInterval(t);
   }, []);
 
+  const { t } = useLang();
+
   return (
     <div className="flex flex-col items-center justify-center py-20 w-full animate-in fade-in zoom-in-95 duration-1000">
       <div className="text-center w-full">
@@ -121,7 +136,7 @@ const TypingKreo = () => {
           {text}
           <motion.span animate={{ opacity: [1, 0, 1] }} transition={{ repeat: Infinity, duration: 0.8 }} className="ml-2 inline-block w-[4px] h-[0.9em] bg-[#1B3FBF] align-middle" />
         </h1>
-        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.5 }} className="text-[#1B3FBF] text-[10px] font-black uppercase tracking-[1em] opacity-20 mt-8">Building your vision</motion.p>
+        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.5 }} className="text-[#1B3FBF] text-[10px] font-black uppercase tracking-[1em] opacity-20 mt-8">{t.footer_tagline}</motion.p>
       </div>
     </div>
   );
@@ -187,7 +202,7 @@ const PossibilitiesPile: React.FC = () => {
         className="absolute top-16 left-0 right-0 z-[200] text-center px-6 pointer-events-none"
       >
         <h2 className="text-4xl md:text-6xl font-serif italic text-[#1B3FBF] tracking-tighter leading-tight drop-shadow-sm">
-          What you can do <br /> with KREO
+          {t.possibilities_title}
         </h2>
       </motion.div>
 
@@ -470,6 +485,8 @@ const HomeScreen = ({
   const [charIndex, setCharIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
   const [clarificationRequest, setClarificationRequest] = useState<{ question: string, options: string[] } | null>(null);
+  const [langMenuOpen, setLangMenuOpen] = useState(false);
+  const { t, lang, setLang, languages } = useLang();
 
   const [searchParams] = useSearchParams();
   const location = useLocation();
@@ -612,6 +629,15 @@ const HomeScreen = ({
     }
   }, []);
 
+  const PLACEHOLDER_TEXTS = useMemo(() => [
+    t.hero_placeholder_1,
+    t.hero_placeholder_2,
+    t.hero_placeholder_3,
+    t.hero_placeholder_4,
+    t.hero_placeholder_5,
+    t.hero_placeholder_6,
+  ], [t]);
+
   useEffect(() => {
     const currentText = PLACEHOLDER_TEXTS[placeholderIndex];
     let timeout: ReturnType<typeof setTimeout>;
@@ -632,12 +658,12 @@ const HomeScreen = ({
       setPlaceholderIndex((prev) => (prev + 1) % PLACEHOLDER_TEXTS.length);
     }
     return () => clearTimeout(timeout);
-  }, [charIndex, isDeleting, placeholderIndex]);
+  }, [charIndex, isDeleting, placeholderIndex, PLACEHOLDER_TEXTS]);
 
   useEffect(() => {
     if (isSubmitting) {
       const messages = [
-        "Calibrating Architectural Weight...",
+        t.loading_calibrating,
         "Gathering Atmospheric Context...",
         "Orchestrating Visual Flow...",
         "Resolving Design Manifest...",
@@ -650,7 +676,7 @@ const HomeScreen = ({
       }, 1500);
       return () => clearInterval(interval);
     }
-  }, [isSubmitting]);
+  }, [isSubmitting, t]);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -918,7 +944,7 @@ const HomeScreen = ({
                   <Clock size={20} />
                 </button>
               </TooltipTrigger>
-              <TooltipContent>History</TooltipContent>
+              <TooltipContent>{t.history}</TooltipContent>
             </Tooltip>
 
             <Tooltip>
@@ -933,13 +959,56 @@ const HomeScreen = ({
               <TooltipContent>About Us</TooltipContent>
             </Tooltip>
 
+            {/* Language Switcher */}
+            <div className="relative">
+              <button
+                onClick={() => setLangMenuOpen(v => !v)}
+                className="rounded-full p-2 text-foreground/80 hover:text-foreground hover:bg-foreground/5 transition-all flex items-center gap-1"
+                title={t.lang_label}
+              >
+                <Globe size={18} />
+                <span className="text-[9px] font-black uppercase tracking-widest hidden md:block">
+                  {languages.find(l => l.code === lang)?.nativeLabel}
+                </span>
+              </button>
+              <AnimatePresence>
+                {langMenuOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -8, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -8, scale: 0.95 }}
+                    transition={{ duration: 0.15 }}
+                    className="absolute right-0 top-12 z-[200] bg-white border border-black/5 rounded-3xl shadow-2xl shadow-black/10 overflow-hidden min-w-[180px]"
+                  >
+                    <div className="p-2">
+                      {languages.map(l => (
+                        <button
+                          key={l.code}
+                          onClick={() => { setLang(l.code); setLangMenuOpen(false); }}
+                          className={`w-full flex items-center justify-between px-4 py-3 rounded-2xl text-left transition-all ${
+                            lang === l.code
+                              ? 'bg-[#1B3FBF] text-white'
+                              : 'hover:bg-black/5 text-black'
+                          }`}
+                        >
+                          <span className="text-sm font-medium">{l.nativeLabel}</span>
+                          {lang === l.code && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                        </button>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              {langMenuOpen && <div className="fixed inset-0 z-[199]" onClick={() => setLangMenuOpen(false)} />}
+            </div>
+
             <button
               onClick={() => navigate('/pricing')}
               className={`flex items-center gap-2 px-6 py-2 rounded-full border transition-all ml-2 text-[10px] font-black uppercase tracking-widest ${
                 theme === 'light' ? 'bg-[#0020C2] text-white border-[#0020C2]' : 'bg-yellow-400 text-black border-yellow-400 shadow-[0_0_20px_rgba(250,204,21,0.3)]'
               } hover:scale-105 active:scale-95`}
             >
-              <Crown size={12} /> Pricing
+              <Crown size={12} /> {t.nav_pricing}
             </button>
 
             <Tooltip>
@@ -948,7 +1017,7 @@ const HomeScreen = ({
                   <Settings size={20} />
                 </button>
               </TooltipTrigger>
-              <TooltipContent>Settings</TooltipContent>
+              <TooltipContent>{t.settings}</TooltipContent>
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -965,7 +1034,7 @@ const HomeScreen = ({
       {historyOpen && (
         <div className="fixed right-0 top-20 z-50 h-[calc(100vh-100px)] w-80 glass-panel border-l border-white/10 animate-in slide-in-from-right duration-300 shadow-2xl overflow-y-auto custom-scrollbar">
           <div className="p-6">
-            <h3 className="text-xs font-bold uppercase tracking-widest text-white/40 mb-6">Manifest History</h3>
+            <h3 className="text-xs font-bold uppercase tracking-widest text-white/40 mb-6">{t.history_title}</h3>
             <div className="space-y-4">
               {historyItems.map((item, i) => (
                 <div key={i} className="group relative">
@@ -1116,7 +1185,7 @@ const HomeScreen = ({
                 <div className="flex flex-col items-center gap-6 mt-16">
                   <div className="flex flex-col items-center gap-6">
                      <p className="text-[14px] font-serif italic text-white/60 tracking-widest animate-pulse">
-                       {isIncomingPortal ? "Restoring Neural Manifest..." : loadingMessage}
+                       {isIncomingPortal ? t.loading_restoring : loadingMessage}
                      </p>
                      {/* Squiggly Google-style loader */}
                      <svg width="320" height="24" viewBox="0 0 320 24" fill="none" className="overflow-visible">
@@ -1175,13 +1244,13 @@ const HomeScreen = ({
                   onClick={() => { setArtifact(null); setChatHistory([]); setCurrentArtifactId(null); window.history.replaceState(null, '', '/'); }}
                   className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.35em] text-black/30 hover:text-[#1B3FBF] transition-all group"
                 >
-                  <ChevronLeft size={13} className="group-hover:-translate-x-1 transition-transform" /> Back
+                  <ChevronLeft size={13} className="group-hover:-translate-x-1 transition-transform" /> {t.back}
                 </button>
                 <button
                   onClick={() => setShareDialogOpen(true)}
                   className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#1B3FBF]/20 bg-[#1B3FBF]/5 text-[#1B3FBF] text-[9px] font-black uppercase tracking-widest hover:bg-[#1B3FBF]/10 transition-all shadow-sm"
                 >
-                  <Share2 size={12} /> Share
+                  <Share2 size={12} /> {t.share}
                 </button>
               </div>
               <div className="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-5">
@@ -1250,9 +1319,10 @@ const HomeScreen = ({
 
               <div className="text-center space-y-8 pt-12 md:pt-16 relative z-20">
                 <h1 className="text-7xl md:text-8xl font-light tracking-tighter leading-tight animate-in fade-in slide-in-from-top-12 duration-1000">
-                  Build your <br />
-                  <span className="text-yellow-accent italic font-serif px-2">imagination</span>
+                  {t.hero_tagline.split(' ').slice(0, 2).join(' ')} <br />
+                  <span className="text-yellow-accent italic font-serif px-2">{t.hero_tagline.split(' ').slice(2).join(' ')}</span>
                 </h1>
+                <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-[#1B3FBF] text-[10px] font-black uppercase tracking-[1em] opacity-40 mt-6">{t.hero_sub}</motion.p>
               </div>
               <div className="w-full max-w-2xl">
                 <form onSubmit={handleSubmit}>
@@ -1435,8 +1505,8 @@ const HomeScreen = ({
                 <Globe size={32} />
               </div>
               <div className="space-y-1">
-                <h3 className="text-5xl font-serif italic tracking-tighter text-black" style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }}>Web Capture</h3>
-                <p className="text-[11px] font-serif italic text-[#1B3FBF] uppercase tracking-widest opacity-60">Copy any website design</p>
+                <h3 className="text-5xl font-serif italic tracking-tighter text-black" style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }}>{t.webcapture_title}</h3>
+                <p className="text-[11px] font-serif italic text-[#1B3FBF] uppercase tracking-widest opacity-60">{t.webcapture_sub}</p>
               </div>
               <button onClick={() => setShowWebCaptureModal(false)} className="absolute top-0 right-0 p-4 text-black/20 hover:text-black transition-colors">
                 <X size={24} />
@@ -1449,7 +1519,7 @@ const HomeScreen = ({
                   <input 
                     autoFocus
                     type="url"
-                    placeholder="https://example.com"
+                    placeholder={t.webcapture_placeholder}
                     className="w-full bg-[#f8faff] border-2 border-transparent rounded-[2rem] px-8 py-6 text-lg outline-none focus:border-[#1B3FBF]/20 focus:bg-white transition-all font-light text-center placeholder:text-black/10 shadow-inner text-black"
                     value={captureUrl}
                     onChange={(e) => setCaptureUrl(e.target.value)}
@@ -1479,7 +1549,7 @@ const HomeScreen = ({
                 disabled={!captureUrl}
                 className="w-full py-6 bg-[#1B3FBF] text-white text-[11px] font-black uppercase tracking-[0.6em] rounded-full shadow-2xl shadow-[#1B3FBF]/30 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50"
               >
-                Capture Design
+                {t.webcapture_cta}
               </button>
             </div>
           </motion.div>

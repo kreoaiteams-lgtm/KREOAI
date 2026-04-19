@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLang } from "@/context/LanguageContext";
 
 interface ArtifactPanelProps {
   code: string;
@@ -20,6 +21,7 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
   const [currentSlide, setCurrentSlide] = useState(0);
   const [iframeId, setIframeId] = useState(0);
   const [copied, setCopied] = useState(false);
+  const { t } = useLang();
   const [zoom, setZoom] = useState(1);
   const [isFullscreen, setIsFullscreen] = useState(false);
   
@@ -86,7 +88,7 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
                     : isFullscreen ? "text-white/40 hover:text-white" : "text-black/40 hover:text-black/70"
                 }`}
               >
-                <Eye size={13} /> Preview
+                <Eye size={13} /> {t.artifact_preview}
               </button>
               {!readOnly && (
                 <button
@@ -97,7 +99,7 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
                       : isFullscreen ? "text-white/40 hover:text-white" : "text-black/40 hover:text-black/70"
                   }`}
                 >
-                  <Code2 size={13} /> Code
+                  <Code2 size={13} /> {t.artifact_code}
                 </button>
               )}
             </div>

@@ -24,6 +24,7 @@ import Pricing from "./pages/PricingPage";
 import NeuralMouse from "@/components/NeuralMouse";
 
 import { Analytics } from "@vercel/analytics/react";
+import { LanguageProvider } from "@/context/LanguageContext";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +35,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <LanguageProvider>
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/login" element={<AuthScreen />} />
@@ -54,6 +56,7 @@ const App = () => (
           <Route path="/card" element={<CardPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
+        </LanguageProvider>
       </BrowserRouter>
       <Analytics />
     </TooltipProvider>

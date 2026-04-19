@@ -36,7 +36,7 @@ const ShareView: React.FC = () => {
                 const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
                 const isUuid = uuidRegex.test(id);
 
-                let query = supabase.from('artifacts').select('*');
+                let query = supabase.from('artifacts').select('id, prompt, code, created_at, user_id, share_token');
                 
                 if (isUuid) {
                     query = query.or(`id.eq.${id},share_token.eq.${id}`);

@@ -32,7 +32,7 @@ const CardPage = ({ onboarding = false }: { onboarding?: boolean }) => {
         // Fetch Profile from DB
         const { data: profile, error } = await supabase
           .from('profiles')
-          .select('*')
+          .select('id, user_id, bio, interest, card_number, full_name, created_at')
           .eq('user_id', activeSession.user.id)
           .single();
 
