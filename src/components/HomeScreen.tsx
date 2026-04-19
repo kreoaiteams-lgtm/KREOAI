@@ -959,6 +959,7 @@ const HomeScreen = ({
         }
 
         if (!insertError && newArtifact) {
+          const targetId = newArtifact.share_token || newArtifact.id;
           setHistoryItems(prev => {
             const exists = prev.find(i => i.id === (newArtifact?.id || newArtifact?.share_token));
             if (exists) {
@@ -966,7 +967,9 @@ const HomeScreen = ({
             }
             return [newArtifact, ...prev.filter(i => i.id !== optimisticId)];
           });
-          setCurrentArtifactId(newArtifact.share_token || newArtifact.id);
+          setCurrentArtifactId(targetId);
+          // Force URL sync immediately to prevent Cleanup useEffect from resetting state
+          window.history.replaceState(null, '', `/share/${targetId}`);
         } else if (!user) {
           setHistoryItems(updatedLocal);
         }
