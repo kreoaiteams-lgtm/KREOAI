@@ -1189,7 +1189,7 @@ const HomeScreen = ({
               <X size={20} className="group-hover:rotate-90 transition-transform" />
             </button>
 
-            <div className="relative z-10 flex flex-col items-center gap-10">
+            <div className="relative z-10 flex flex-col items-center gap-4 -mt-32">
               <div className="relative">
                 <div className="absolute inset-0 bg-black/5 rounded-full blur-2xl animate-pulse scale-125" />
 
@@ -1222,7 +1222,24 @@ const HomeScreen = ({
                 <KreoLogo className="scale-[2.5] text-black relative z-10" />
               </div>
 
-              <div className="flex flex-col items-center gap-6 mt-16">
+              {/* Wonder Things Manifestation */}
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 1.5, delay: 0.5 }}
+                className="relative w-72 h-72 flex items-center justify-center mix-blend-multiply pointer-events-none"
+              >
+                <video 
+                  src="/Wonder Things.webm" 
+                  autoPlay 
+                  loop 
+                  muted 
+                  playsInline
+                  className="w-full h-full object-contain"
+                />
+              </motion.div>
+
+              <div className="flex flex-col items-center gap-6">
                 <div className="flex flex-col items-center gap-6">
                   <p className="text-[14px] font-serif italic text-black/20 tracking-widest animate-pulse">
                     {isIncomingPortal ? t.loading_restoring : loadingMessage}
