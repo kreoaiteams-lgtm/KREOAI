@@ -1321,7 +1321,6 @@ const HomeScreen = ({
                   {t.hero_tagline.split(' ').slice(0, 2).join(' ')} <br />
                   <span className="text-yellow-accent italic font-serif px-2">{t.hero_tagline.split(' ').slice(2).join(' ')}</span>
                 </h1>
-                <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-[#1B3FBF] text-[10px] font-black uppercase tracking-[1em] opacity-40 mt-6">{t.hero_sub}</motion.p>
               </div>
               <div className="w-full max-w-2xl">
                 <form onSubmit={handleSubmit}>
