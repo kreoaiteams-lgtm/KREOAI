@@ -18,10 +18,11 @@ interface ArtifactPanelProps {
   readOnly?: boolean;
 }
 
-const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: ArtifactPanelProps) => {
+const ArtifactPanel = ({ code, prompt, isSplitView, onShare, onRefinement, readOnly }: ArtifactPanelProps) => {
   const [activeTab, setActiveTab] = useState<"preview" | "code">("preview");
   const [currentSlide, setCurrentSlide] = useState(0);
   const [iframeId, setIframeId] = useState(0);
+  const [copied, setCopied] = useState(false);
   const { t } = useLang();
   const [zoom, setZoom] = useState(1);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -30,12 +31,11 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
   const [refinementInput, setRefinementInput] = useState("");
   const [selectedElementContext, setSelectedElementContext] = useState<{ tag: string; text: string; x: number; y: number } | null>(null);
   
-  // New Claude Design Features
+  // Design Features
   const [inlineEditMode, setInlineEditMode] = useState(false);
   const [showKnobs, setShowKnobs] = useState(false);
   const [renderTheme, setRenderTheme] = useState<'light' | 'dark' | 'ultra'>('light');
   const [splitArchitecture, setSplitArchitecture] = useState(true);
-  const [showExports, setShowExports] = useState(false);
   const [primaryColor, setPrimaryColor] = useState("#1B3FBF");
   const [borderRadius, setBorderRadius] = useState("0.5rem");
   const [deviceMode, setDeviceMode] = useState<"desktop" | "phone">("desktop");
@@ -43,13 +43,12 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
   // Detect Presentation Mode
   const isPresentation = prompt?.toLowerCase().includes("ppt") || prompt?.toLowerCase().includes("presentation") || prompt?.toLowerCase().includes("slideshow");
 
-  // High-fidelity slide parser — looks for <section> blocks (Standard manifest format)
+  // Slide parser
   const slides = isPresentation ? (code.match(/<section[^>]*>([\s\S]*?)<\/section>/g) || [code]) : [code];
 
   const handleNext = () => setCurrentSlide(prev => Math.min(prev + 1, slides.length - 1));
   const handlePrev = () => setCurrentSlide(prev => Math.max(prev - 1, 0));
 
-  // Keyboard Orchestration
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
         if (!isPresentation) return;
@@ -61,12 +60,6 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isPresentation, isFullscreen, slides.length]);
 
-  const handleCopy = async () => {
-    await navigator.clipboard.writeText(code);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
-  };
-
   const handleDownload = () => {
     const blob = new Blob([code], { type: "text/html" });
     const url = URL.createObjectURL(blob);
@@ -77,7 +70,6 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
     URL.revokeObjectURL(url);
   };
 
-  // Live Edit Listener: Captures clicks from within the manifested neural environment
   useEffect(() => {
     const handleMessage = (e: MessageEvent) => {
       if (e.data?.type === 'ELEMENT_CLICKED' && inlineEditMode) {
@@ -101,349 +93,13 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
     setSelectedElementContext(null);
   };
 
-  const handleZoomIn = () => setZoom(prev => Math.min(prev + 0.25, 3));
-  const handleZoomOut = () => setZoom(prev => Math.max(prev - 0.25, 0.5));
-  const handleZoomReset = () => setZoom(1);
-
-  return (
-    <div className={`flex flex-col h-full w-full bg-white shadow-xl animate-in fade-in zoom-in-95 duration-500 overflow-hidden ${isFullscreen ? "fixed inset-0 z-[2000] rounded-none bg-black" : isPresentation ? "rounded-none" : isSplitView ? "" : "rounded-[2.5rem]"}`}>
-      {/* Premium Header Toolbar */}
-      <div className={`flex items-center justify-between px-6 py-4 border-b border-black/[0.06] backdrop-blur-xl transition-all duration-500 ${isFullscreen ? "bg-black/90 text-white border-white/10" : "bg-white/95 text-black"}`}>
-        <div className="flex items-center gap-4">
-          {!isPresentation && (
-            <div className={`flex p-1 rounded-xl border gap-0.5 ${isFullscreen ? "bg-white/5 border-white/10" : "bg-black/[0.04] border-black/[0.07]"}`}>
-              <button
-                onClick={() => setActiveTab("preview")}
-                className={`flex items-center gap-2 px-5 py-2 rounded-lg text-xs font-semibold tracking-wide transition-all duration-200 ${
-                  activeTab === "preview"
-                    ? "bg-[#1B3FBF] text-white shadow-lg shadow-[#1B3FBF]/25"
-                    : isFullscreen ? "text-white/40 hover:text-white" : "text-black/40 hover:text-black/70"
-                }`}
-              >
-                <Eye size={13} /> {t.artifact_preview}
-              </button>
-              {!readOnly && (
-                <button
-                  onClick={() => setActiveTab("code")}
-                  className={`flex items-center gap-2 px-5 py-2 rounded-lg text-xs font-semibold tracking-wide transition-all duration-200 ${
-                    activeTab === "code"
-                      ? "bg-[#1B3FBF] text-white shadow-lg shadow-[#1B3FBF]/25"
-                      : isFullscreen ? "text-white/40 hover:text-white" : "text-black/40 hover:text-black/70"
-                  }`}
-                >
-                  <Code2 size={13} /> {t.artifact_code}
-                </button>
-              )}
-            </div>
-          )}
-          {isPresentation && (
-            <div className="flex items-center gap-4">
-               <div className={`px-3 py-1 text-[9px] font-bold uppercase tracking-widest rounded-lg border flex items-center gap-2 ${isFullscreen ? "bg-white/10 text-white border-white/20" : "bg-[#1B3FBF]/10 text-[#1B3FBF] border-[#1B3FBF]/20"}`}>
-                  <Play size={10} fill="currentColor" /> Slideshow
-               </div>
-               <span className={`text-[10px] font-mono tracking-tighter ${isFullscreen ? "text-white/40" : "text-black/30"}`}>Manifest {currentSlide + 1} of {slides.length}</span>
-            </div>
-          )}
-        </div>
-
-        <div className="flex items-center gap-1">
-          {isPresentation && (
-            <div className={`flex items-center rounded-xl border p-1 px-2 mr-3 ${isFullscreen ? "bg-white/5 border-white/10" : "bg-black/[0.02] border-black/5"}`}>
-              <button onClick={handlePrev} disabled={currentSlide === 0} className={`p-1 px-3 text-[9px] font-bold transition-all uppercase tracking-widest disabled:opacity-10 ${isFullscreen ? "text-white/40 hover:text-white" : "text-black/30 hover:text-[#1B3FBF]"}`}>←</button>
-              <div className={`w-[1px] h-3 mx-1 ${isFullscreen ? "bg-white/10" : "bg-black/5"}`} />
-              <button onClick={handleNext} disabled={currentSlide === slides.length - 1} className={`p-1 px-3 text-[9px] font-bold transition-all uppercase tracking-widest disabled:opacity-10 ${isFullscreen ? "text-white/40 hover:text-white" : "text-black/30 hover:text-[#1B3FBF]"}`}>→</button>
-            </div>
-          )}
-
-          <div className={`w-[1px] h-4 mx-2 ${isFullscreen ? "bg-white/10" : "bg-black/5"}`} />
-
-          <div className={`flex items-center gap-0.5 p-1 rounded-xl mr-2 ${isFullscreen ? "bg-white/5" : "bg-black/[0.03]"}`}>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button 
-                  onClick={() => setDeviceMode("desktop")} 
-                  className={`p-1.5 rounded-lg transition-all ${deviceMode === 'desktop' ? "bg-white text-black shadow-sm" : isFullscreen ? "text-white/40 hover:text-white" : "text-black/40 hover:text-[#1B3FBF]"}`}
-                >
-                  <Monitor size={14} />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>Desktop View</TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button 
-                  onClick={() => setDeviceMode("phone")} 
-                  className={`p-1.5 rounded-lg transition-all ${deviceMode === 'phone' ? "bg-white text-black shadow-sm" : isFullscreen ? "text-white/40 hover:text-white" : "text-black/40 hover:text-[#1B3FBF]"}`}
-                >
-                  <Smartphone size={14} />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>Phone View</TooltipContent>
-            </Tooltip>
-          </div>
-
-          <div className={`w-[1px] h-4 mx-2 ${isFullscreen ? "bg-white/10" : "bg-black/5"}`} />
-
-          <div className={`flex items-center gap-0.5 p-1 rounded-xl mr-2 ${isFullscreen ? "bg-white/5" : "bg-black/[0.03]"}`}>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button onClick={handleZoomOut} className={`p-1.5 rounded-lg transition-all disabled:opacity-20 ${isFullscreen ? "text-white/40 hover:text-white" : "text-black/40 hover:text-[#1B3FBF]"}`} disabled={zoom <= 0.5}>
-                  <ZoomOut size={14} />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>Zoom Out</TooltipContent>
-            </Tooltip>
-            <span className={`text-[9px] font-bold min-w-[32px] text-center ${isFullscreen ? "text-white/40" : "text-black/30"}`}>{Math.round(zoom * 100)}%</span>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button onClick={handleZoomIn} className={`p-1.5 rounded-lg transition-all disabled:opacity-20 ${isFullscreen ? "text-white/40 hover:text-white" : "text-black/40 hover:text-[#1B3FBF]"}`} disabled={zoom >= 3}>
-                  <ZoomIn size={14} />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>Zoom In</TooltipContent>
-            </Tooltip>
-          </div>
-
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button onClick={() => setIsFullscreen(!isFullscreen)} className={`p-2 rounded-lg transition-all ${isFullscreen ? "text-[#1B3FBF] bg-[#1B3FBF]/10" : "text-black/30 hover:text-[#1B3FBF] hover:bg-[#1B3FBF]/8"}`}>
-                {isFullscreen ? <Minimize size={15} /> : <Maximize size={15} />}
-              </button>
-            </TooltipTrigger>
-            <TooltipContent>{isFullscreen ? "Exit Slideshow" : "Start Slideshow"}</TooltipContent>
-          </Tooltip>
-
-          {!readOnly && (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button onClick={() => setIframeId(prev => prev + 1)} className="p-2 text-black/30 hover:text-[#1B3FBF] hover:bg-[#1B3FBF]/8 rounded-lg transition-all">
-                  <RefreshCw size={15} />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>Refresh</TooltipContent>
-            </Tooltip>
-          )}
-
-
-
-          {/* Removed Copy button per user request */}
-
-          {!readOnly && (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div className="relative group/export">
-                  <button className="flex items-center gap-2 p-2 text-black/30 hover:text-[#1B3FBF] hover:bg-[#1B3FBF]/8 rounded-lg transition-all">
-                    <Download size={15} />
-                  </button>
-                  <div className="absolute top-full right-0 mt-2 w-48 bg-white border shadow-2xl rounded-xl overflow-hidden opacity-0 invisible group-hover/export:opacity-100 group-hover/export:visible transition-all z-[100] flex flex-col p-1">
-                    <div className="px-3 py-2 text-[9px] font-black uppercase tracking-widest text-black/30 border-b mb-1">Ecosystem Export</div>
-                    <button onClick={handleDownload} className="flex flex-col items-start px-3 py-2 text-xs font-semibold hover:bg-black/5 rounded-lg text-black transition-all">
-                      <div className="flex items-center gap-2"><Code2 size={12} className="text-[#1B3FBF]"/> Download standalone HTML</div>
-                    </button>
-                    <button onClick={() => alert("Handoff bundle created successfully!")} className="flex flex-col items-start px-3 py-2 text-xs font-semibold hover:bg-black/5 rounded-lg text-black transition-all">
-                      <div className="flex items-center gap-2"><FileArchive size={12} className="text-[#1B3FBF]"/> Export Developer .zip</div>
-                    </button>
-                    <button onClick={() => alert("Exported to PPTX!")} className="flex flex-col items-start px-3 py-2 text-xs font-semibold hover:bg-black/5 rounded-lg text-black transition-all">
-                      <div className="flex items-center gap-2"><Presentation size={12} className="text-[#1B3FBF]"/> Export to PowerPoint</div>
-                    </button>
-                    <button onClick={() => alert("Pushed to Canva!")} className="flex flex-col items-start px-3 py-2 text-xs font-semibold hover:bg-black/5 rounded-lg text-black transition-all">
-                      <div className="flex items-center gap-2"><Image size={12} className="text-[#1B3FBF]"/> Push to Canva</div>
-                    </button>
-                  </div>
-                </div>
-              </TooltipTrigger>
-              <TooltipContent>Ecosystem Export</TooltipContent>
-            </Tooltip>
-          )}
-
-          {!readOnly && (
-            <>
-              <div className={`w-[1px] h-4 mx-2 ${isFullscreen ? "bg-white/10" : "bg-black/5"}`} />
-              <div className="flex items-center gap-1 bg-black/[0.03] p-1 rounded-xl">
-                 <Tooltip>
-                   <TooltipTrigger asChild>
-                     <button onClick={() => setInlineEditMode(!inlineEditMode)} className={`p-1.5 rounded-lg transition-all flex items-center gap-2 ${inlineEditMode ? "bg-[#1B3FBF] text-white shadow-md shadow-[#1B3FBF]/30" : "text-black/40 hover:text-black"}`}>
-                       <MousePointer2 size={13} fill={inlineEditMode ? "currentColor" : "none"} />
-                       <span className="text-[10px] font-bold pr-1">Live Edit</span>
-                     </button>
-                   </TooltipTrigger>
-                   <TooltipContent>Select-to-edit elements</TooltipContent>
-                 </Tooltip>
-                 
-                 <Tooltip>
-                   <TooltipTrigger asChild>
-                     <button onClick={() => setShowKnobs(!showKnobs)} className={`p-1.5 rounded-lg transition-all flex items-center gap-2 ${showKnobs ? "bg-white text-black shadow-sm" : "text-black/40 hover:text-black"}`}>
-                       <Settings2 size={13} />
-                       <span className="text-[10px] font-bold pr-1">Knobs</span>
-                     </button>
-                   </TooltipTrigger>
-                   <TooltipContent>Dynamic Styles & Brand</TooltipContent>
-                 </Tooltip>
-              </div>
-            </>
-          )}
-
-        </div>
-      </div>
-
-      <div className={`flex-1 overflow-hidden relative flex ${isFullscreen ? "bg-[#0a0a0a]" : "bg-[#f7f8fc]"}`}>
-        
-        {/* Slides Sidebar */}
-        {isPresentation && !isFullscreen && activeTab === "preview" && slides.length > 0 && (
-          <div className="w-48 lg:w-64 border-r border-black/[0.06] bg-[#f8f9fa] flex flex-col overflow-y-auto p-4 gap-4 custom-scrollbar shrink-0">
-            {slides.map((slideCode, idx) => (
-              <button 
-                key={idx}
-                onClick={() => setCurrentSlide(idx)}
-                className={`relative flex flex-col items-center gap-2 group text-left w-full`}
-              >
-                <div className="flex w-full justify-between items-center px-1">
-                   <span className={`text-[10px] font-black uppercase tracking-widest ${currentSlide === idx ? "text-[#1B3FBF]" : "text-black/30 group-hover:text-black/60"}`}>Slide {idx + 1}</span>
-                </div>
-                <div className={`w-full aspect-[16/9] rounded-xl overflow-hidden border-2 transition-all duration-300 relative bg-white shadow-sm flex items-center justify-center ${currentSlide === idx ? "border-[#1B3FBF] shadow-md shadow-[#1B3FBF]/20 scale-[1.02]" : "border-black/[0.05] group-hover:border-black/20"}`}>
-                   {/* Mini-iframe for Thumbnail */}
-                   <div className="absolute inset-0 pointer-events-none opacity-50 blur-[1px] group-hover:blur-none group-hover:opacity-100 transition-all">
-                      <iframe
-                        srcDoc={`
-                          <html>
-                            <head>
-                              <script src="https://cdn.tailwindcss.com"></script>
-                              <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;700&display=swap" rel="stylesheet">
-                              <style>
-                                body { font-family: 'Inter', sans-serif; background: white; margin: 0; transform: scale(0.2); transform-origin: top left; width: 500vw; height: 500vh; overflow:hidden;}
-                                .font-serif { font-family: 'Instrument Serif', serif; }
-                              </style>
-                            </head>
-                            <body>
-                              ${slideCode}
-                            </body>
-                          </html>
-                        `}
-                        className="w-full h-full border-none"
-                      />
-                   </div>
-                   {currentSlide === idx && <div className="absolute inset-0 ring-4 ring-[#1B3FBF]/10 rounded-xl" />}
-                </div>
-              </button>
-            ))}
-          </div>
-        )}
-
-        {/* Main Content Area */}
-        <div className={`flex-1 relative flex items-center justify-center overflow-hidden w-full h-full transition-colors duration-700 ${deviceMode === 'phone' ? 'bg-[#f4f5f9]' : 'bg-white'}`}>
-          
-          {/* Neural Workspace Backdrop - Only visible in Phone Mode */}
-          {deviceMode === 'phone' && !isFullscreen && (
-            <div className="absolute inset-0 pointer-events-none overflow-hidden">
-               {/* Aesthetic Mesh Grid */}
-               <div className="absolute inset-0 opacity-[0.03] scale-150 rotate-12" style={{ backgroundImage: "linear-gradient(#0020C2 1px, transparent 1px), linear-gradient(90deg, #0020C2 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
-               
-               {/* Floating Metadata Labels */}
-               <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.5 }} className="absolute bottom-12 left-12 flex flex-col gap-1">
-                  <span className="text-[10px] font-black tracking-[0.2em] uppercase text-black/20">Manifestation Environment</span>
-                  <span className="text-[9px] font-mono text-black/10">KREO_MOBILE_ENGINE_V4.2</span>
-               </motion.div>
-               
-               <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.7 }} className="absolute top-12 right-12 flex flex-col items-end gap-1">
-                  <span className="text-[10px] font-black tracking-[0.2em] uppercase text-black/20">Viewport Synchronization</span>
-                  <span className="text-[9px] font-mono text-black/10">375px × 812px • High Performance</span>
-               </motion.div>
-
-               {/* Atmospheric Glows */}
-               <div className="absolute top-1/4 -left-20 w-96 h-96 bg-[#1B3FBF]/5 blur-[120px] rounded-full" />
-               <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-[#1B3FBF]/5 blur-[120px] rounded-full" />
-            </div>
-          )}
-
-          {(activeTab === "preview" || isPresentation) ? (
-            <motion.div 
-              layout
-              className={`relative transition-all duration-700 ease-[0.16, 1, 0.3, 1] bg-white overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,0.12)] mx-auto ${
-                isFullscreen ? "w-full h-full rounded-none" : 
-                deviceMode === 'phone' ? "w-[375px] h-[760px] rounded-[3.5rem] border-[12px] border-black ring-4 ring-black/5 scale-[0.75] md:scale-[0.85] lg:scale-100 max-h-[calc(100vh-180px)]" : 
-                "w-full h-full rounded-none"
-              }`}
-              style={{ 
-                transformOrigin: 'center center'
-              }}
-            >
-              {/* Phone Hardware Details (Dynamic Island & Status Bar) */}
-              {deviceMode === 'phone' && !isFullscreen && (
-                <div className="absolute top-0 inset-x-0 h-10 z-[2000] flex items-center justify-between px-10 pointer-events-none">
-                   {/* Left: Time */}
-                   <span className="text-[11px] font-bold text-black mt-1">9:41</span>
-                   
-                   {/* Center: Dynamic Island */}
-                   <div className="absolute top-3 left-1/2 -translate-x-1/2 w-28 h-7 bg-black rounded-full" />
-                   
-                   {/* Right: Status Icons */}
-                   <div className="flex items-center gap-1.5 mt-1">
-                      <div className="w-4 h-2.5 rounded-[2px] border border-black/30 relative">
-                         <div className="absolute left-[1px] top-[1px] bottom-[1px] w-2.5 bg-black rounded-[0.5px]" />
-                      </div>
-                      <div className="flex gap-0.5">
-                         {[1, 2, 3, 4].map(i => <div key={i} className={`w-[2.5px] h-${i === 4 ? 2.5 : i === 3 ? 2 : 1.5} bg-black rounded-full ${i === 4 ? 'opacity-30' : ''}`} />)}
-                      </div>
-                   </div>
-                </div>
-              )}
-
-              <div className={`h-full w-full animate-in fade-in duration-700 bg-white overflow-hidden ${isFullscreen ? "rounded-none" : ""}`}>
-                {/* Floating Refinement Input (Claude Style) */}
-                <AnimatePresence>
-                  {inlineEditMode && selectedElementContext && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
-                      className="fixed z-[3000] p-6 bg-black text-white rounded-[2rem] shadow-2xl space-y-4 w-[320px]"
-                      style={{ 
-                        left: Math.min(selectedElementContext.x + 20, window.innerWidth - 340), 
-                        top: Math.min(selectedElementContext.y + 20, window.innerHeight - 200) 
-                      }}
-                    >
-                      <div className="flex items-center justify-between text-[9px] font-black uppercase tracking-widest text-white/30 px-1">
-                        <span>Neural Refinement</span>
-                        <button onClick={() => setSelectedElementContext(null)}>✕</button>
-                      </div>
-                      <div className="text-[10px] bg-white/10 px-3 py-1.5 rounded-lg text-white/60 truncate font-mono">
-                         Selected: {selectedElementContext.tag} • "{selectedElementContext.text}"
-                      </div>
-                      <textarea
-                        autoFocus
-                        value={refinementInput}
-                        onChange={(e) => setRefinementInput(e.target.value)}
-                        onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submitRefinement(); } }}
-                        placeholder="Describe changes..."
-                        className="w-full h-24 bg-white/5 border border-white/10 rounded-xl p-3 text-sm focus:outline-none focus:border-[#1B3FBF]/50 placeholder:text-white/20 resize-none"
-                      />
-                      <button 
-                        onClick={submitRefinement}
-                        className="w-full py-3 bg-[#1B3FBF] text-white rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg shadow-[#1B3FBF]/20 hover:scale-105 active:scale-95 transition-all"
-                      >
-                         Manifest Refinement
-                      </button>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-
-                <AnimatePresence mode="wait">
-                <motion.div
-                  key={currentSlide}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  transition={{ duration: 0.4, ease: "easeOut" }}
-                  className="h-full w-full"
-       // Robust Manifestation Engine: Orchestrates the sandbox environment for artifacts
+  // Robust Manifestation Engine
   const getManifestationSrcDoc = () => {
-    // 1. Content Pre-Processing: Strip potential markdown boundaries
     const strippedCode = code
        .replace(/```(jsx|tsx|javascript|js|html|react-native|react)?/g, "")
        .replace(/```/g, "")
        .trim();
 
-    // 2. Presentation Orchestration
     if (isPresentation) {
       return `
         <html>
@@ -485,70 +141,24 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
       `;
     }
 
-    // 3. Mode Selection: Detect if content is raw HTML or React/JSX
     const isRawHtml = strippedCode.toLowerCase().startsWith("<!doctype") || strippedCode.toLowerCase().startsWith("<html");
-    
-    if (isRawHtml) {
-      return strippedCode;
-    }
+    if (isRawHtml) return strippedCode;
 
-    // 4. React Manifestation Branch
-    // Handle loading placeholders
     if (code.includes('MANIFEST_EN_ROUTE')) {
-       return `
-       <html>
-         <head>
-            <script src="https://cdn.tailwindcss.com"></script>
-            <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
-            <style>
-              @keyframes pulse-bg { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
-              .neural-pulse { animation: pulse-bg 2s infinite ease-in-out; }
-            </style>
-         </head>
-         <body style="margin:0; font-family: 'Inter', sans-serif; background: #ffffff; display: flex; align-items:center; justify-content:center; height:100vh; overflow:hidden;">
-           <div class="text-center space-y-8 neural-pulse">
-              <div class="text-[10px] font-black uppercase tracking-[0.8em] text-black/10">Neural Orchestration</div>
-              <div class="flex justify-center gap-3">
-                 <div class="w-1.5 h-1.5 rounded-full bg-black/20 animate-bounce" style="animation-delay:0s"></div>
-                 <div class="w-1.5 h-1.5 rounded-full bg-black/20 animate-bounce" style="animation-delay:0.1s"></div>
-                 <div class="w-1.5 h-1.5 rounded-full bg-black/20 animate-bounce" style="animation-delay:0.2s"></div>
-              </div>
-           </div>
-         </body>
-       </html>`;
+       return `<html><head><script src="https://cdn.tailwindcss.com"></script><style>@keyframes pulse-bg { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } } .pulse { animation: pulse-bg 2s infinite; }</style></head><body style="margin:0; background: #fff; display: flex; align-items:center; justify-content:center; height:100vh;"><div class="pulse text-black/20 font-black uppercase tracking-[0.5em]">Neural Orchestration</div></body></html>`;
     }
 
-    // Handle pure text/clarification
     const isProbableText = !strippedCode.includes('import ') && !strippedCode.includes('export default') && !strippedCode.includes('function') && !strippedCode.includes('const') && !strippedCode.includes('<');
     if (isProbableText) {
-      return `
-      <html>
-        <head>
-           <script src="https://cdn.tailwindcss.com"></script>
-           <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
-        </head>
-        <body style="margin:0; font-family: 'Inter', sans-serif; background: #f8f9fa; display: flex; align-items:center; justify-content:center; height:100vh; overflow:hidden;">
-          <div class="max-w-xl p-16 bg-white rounded-[3rem] shadow-2xl border border-black/[0.03] text-center animate-in zoom-in-95 duration-700">
-             <div class="text-[9px] font-black uppercase tracking-[0.4em] text-[#1B3FBF] mb-12">Neural Clarification</div>
-             <h3 class="text-2xl text-black font-light leading-relaxed tracking-tight">${strippedCode.replace(/\n/g, '<br/>')}</h3>
-          </div>
-        </body>
-      </html>`;
+      return `<html><head><script src="https://cdn.tailwindcss.com"></script></head><body style="margin:0; background: #f8f9fa; display: flex; align-items:center; justify-content:center; height:100vh;"><div class="max-w-xl p-16 bg-white rounded-[3rem] shadow-2xl text-center"><div class="text-[9px] font-black uppercase tracking-[0.4em] text-[#1B3FBF] mb-8">Neural Clarification</div><h3 class="text-xl font-light">${strippedCode.replace(/\n/g, '<br/>')}</h3></div></body></html>`;
     }
 
-    // Prepare React code for Babel
     let cleanCodeForBabel = strippedCode
       .replace(/import\s+['"].*?['"];?/g, "")
-      .replace(/import\s+React.*?from\s+['"]react['"];?\n?/g, "")
-      .replace(/import\s+.*?\s+from\s+['"]react['"];?\n?/g, "")
-      .replace(/import\s+.*?\s+from\s+['"]lucide-react['"];?\n?/g, "")
-      .replace(/import\s+.*?\s+from\s+['"]recharts['"];?\n?/g, "")
-      .replace(/import\s+.*?\s+from\s+['"]framer-motion['"];?\n?/g, "")
-      .replace(/import\s+.*?\s+from\s+['"].*?['"];?\n?/g, "")
+      .replace(/import\s+.*?from\s+['"].*?['"];?\n?/g, "")
       .replace(/export\s+default\s+/g, "window.__Component = ")
       .trim();
 
-    // TAG BALANCER: Fix truncated JSX
     try {
       const tags = (cleanCodeForBabel.match(/<([a-zA-Z1-6]+)(?:\s+[^>]*)?>/g) || []).map(t => t.match(/<([a-zA-Z1-6]+)/)![1]);
       const closingTags = (cleanCodeForBabel.match(/<\/([a-zA-Z1-6]+)>/g) || []).map(t => t.match(/<\/([a-zA-Z1-6]+)/)![1]);
@@ -561,46 +171,15 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
     return `
       <html>
         <head>
-          <script>
-            window.tailwind = { 
-              config: { 
-                theme: { 
-                  extend: { 
-                    colors: { primary: '${primaryColor}' },
-                    borderRadius: { xl: '${borderRadius}' }
-                  } 
-                } 
-              } 
-            };
-          </script>
+          <script>window.tailwind = { config: { theme: { extend: { colors: { primary: '${primaryColor}' }, borderRadius: { xl: '${borderRadius}' } } } } };</script>
           <script src="https://cdn.tailwindcss.com"></script>
-          <link href="https://api.fontshare.com/v2/css?f[]=satoshi@700,500,400&display=swap" rel="stylesheet">
-          <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
           <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+          <link href="https://api.fontshare.com/v2/css?f[]=satoshi@700,500,400&display=swap" rel="stylesheet">
           <style>
-            :root {
-              --primary: ${primaryColor};
-              --radius: ${borderRadius};
-              --background: 0 0% 100%;
-              --foreground: 0 0% 0%;
-            }
-            .dark {
-              --background: 227 80% 8%;
-              --foreground: 0 0% 100%;
-              background-color: hsl(var(--background));
-              color: hsl(var(--foreground));
-            }
-            .ultra {
-              --background: 227 75% 43%;
-              --foreground: 0 0% 100%;
-              background-color: hsl(var(--background));
-              color: hsl(var(--foreground));
-            }
-            ${inlineEditMode ? `
-              * { cursor: crosshair !important; }
-              *:hover { outline: 2px dashed #1B3FBF !important; outline-offset: 2px; }
-            ` : ""}
-            body { font-family: 'Satoshi', sans-serif; background: white; margin: 0; overflow-x: hidden; overflow-y: auto; min-height: 100vh; }
+            :root { --primary: ${primaryColor}; --radius: ${borderRadius}; }
+            .dark { background-color: #050a1f; color: white; }
+            .ultra { background-color: #1a42f0; color: white; }
+            body { font-family: 'Satoshi', sans-serif; margin: 0; min-height: 100vh; }
             #root { min-height: 100vh; }
           </style>
         </head>
@@ -613,470 +192,129 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
             import * as FramerMotion from 'https://esm.sh/framer-motion@12.38.0';
             import * as Recharts from 'https://esm.sh/recharts@2.15.4';
 
-            // Manifest Environment Registry
             window.React = { createElement, useState, useEffect, useRef, useCallback, useMemo, useReducer, useContext };
             window.Lucide = LucideIcons;
-            window.FramerMotion = FramerMotion;
             window.motion = FramerMotion.motion;
             window.AnimatePresence = FramerMotion.AnimatePresence;
             window.Recharts = Recharts;
 
-            // Globalize Icons for AI simplicity
             Object.entries(LucideIcons).forEach(([name, comp]) => {
-              if (typeof comp === 'function' || (typeof comp === 'object' && comp !== null)) {
-                window[name] = comp;
-              }
+              if (typeof comp === 'function' || (typeof comp === 'object' && comp !== null)) window[name] = comp;
             });
 
-            window.onerror = (message, source, lineno, colno, error) => {
-              document.getElementById('root').innerHTML =
-                '<div style="padding: 3rem; background: #000; color: #ff3e3e; font-family: sans-serif; border: 1px solid #1a1a1a; border-radius: 2rem; margin: 2rem;">' +
-                  '<h3 style="font-size: 1.5rem; font-weight: 300; margin-bottom: 1rem;">Neural Manifest Collision</h3>' +
-                  '<p style="opacity: 0.6; font-size: 0.9rem; line-height: 1.6;">' + message + '</p>' +
-                  '<p style="opacity: 0.3; font-size: 0.7rem; margin-top: 1rem;">Line: ' + lineno + ' / Col: ' + colno + '</p>' +
-                '</div>';
+            window.onerror = (message) => {
+              document.getElementById('root').innerHTML = '<div style="padding:2rem;color:red;font-family:sans-serif"><h3>Collision</h3><p>' + message + '</p></div>';
               return true;
             };
 
             try {
               ${cleanCodeForBabel}
-              
               const App = window.__Component;
-              if (App) {
-                createRoot(document.getElementById('root')).render(createElement(App));
-              } else {
-                document.getElementById('root').innerHTML = '<div style="padding:2rem;color:red">Could not find exported component. Ensure you use "export default function ComponentName()".</div>';
-              }
-            } catch (err) {
-               window.onerror(err.message, null, null, null, err);
-            }
+              if (App) createRoot(document.getElementById('root')).render(createElement(App));
+            } catch (err) { window.onerror(err.message); }
           </script>
         </body>
       </html>
     `;
   };
 
+  const handleZoomIn = () => setZoom(prev => Math.min(prev + 0.25, 3));
+  const handleZoomOut = () => setZoom(prev => Math.max(prev - 0.25, 0.5));
+
   return (
     <div className={`flex flex-col h-full w-full bg-white shadow-xl animate-in fade-in zoom-in-95 duration-500 overflow-hidden ${isFullscreen ? "fixed inset-0 z-[2000] rounded-none bg-black" : isPresentation ? "rounded-none" : isSplitView ? "" : "rounded-[2.5rem]"}`}>
-      {/* Premium Header Toolbar */}
       <div className={`flex items-center justify-between px-6 py-4 border-b border-black/[0.06] backdrop-blur-xl transition-all duration-500 ${isFullscreen ? "bg-black/90 text-white border-white/10" : "bg-white/95 text-black"}`}>
         <div className="flex items-center gap-4">
           {!isPresentation && (
             <div className={`flex p-1 rounded-xl border gap-0.5 ${isFullscreen ? "bg-white/5 border-white/10" : "bg-black/[0.04] border-black/[0.07]"}`}>
-              <button
-                onClick={() => setActiveTab("preview")}
-                className={`flex items-center gap-2 px-5 py-2 rounded-lg text-xs font-semibold tracking-wide transition-all duration-200 ${
-                  activeTab === "preview"
-                    ? "bg-[#1B3FBF] text-white shadow-lg shadow-[#1B3FBF]/25"
-                    : isFullscreen ? "text-white/40 hover:text-white" : "text-black/40 hover:text-black/70"
-                }`}
-              >
-                <Eye size={13} /> {t.artifact_preview}
-              </button>
-              {!readOnly && (
-                <button
-                  onClick={() => setActiveTab("code")}
-                  className={`flex items-center gap-2 px-5 py-2 rounded-lg text-xs font-semibold tracking-wide transition-all duration-200 ${
-                    activeTab === "code"
-                      ? "bg-[#1B3FBF] text-white shadow-lg shadow-[#1B3FBF]/25"
-                      : isFullscreen ? "text-white/40 hover:text-white" : "text-black/40 hover:text-black/70"
-                  }`}
-                >
-                  <Code2 size={13} /> {t.artifact_code}
-                </button>
-              )}
-            </div>
-          )}
-          {isPresentation && (
-            <div className="flex items-center gap-4">
-               <div className={`px-3 py-1 text-[9px] font-bold uppercase tracking-widest rounded-lg border flex items-center gap-2 ${isFullscreen ? "bg-white/10 text-white border-white/20" : "bg-[#1B3FBF]/10 text-[#1B3FBF] border-[#1B3FBF]/20"}`}>
-                  <Play size={10} fill="currentColor" /> Slideshow
-               </div>
-               <span className={`text-[10px] font-mono tracking-tighter ${isFullscreen ? "text-white/40" : "text-black/30"}`}>Manifest {currentSlide + 1} of {slides.length}</span>
+              <button onClick={() => setActiveTab("preview")} className={`flex items-center gap-2 px-5 py-2 rounded-lg text-xs font-semibold ${activeTab === "preview" ? "bg-[#1B3FBF] text-white" : "text-black/40"}`}><Eye size={13} /> {t.artifact_preview}</button>
+              {!readOnly && <button onClick={() => setActiveTab("code")} className={`flex items-center gap-2 px-5 py-2 rounded-lg text-xs font-semibold ${activeTab === "code" ? "bg-[#1B3FBF] text-white" : "text-black/40"}`}><Code2 size={13} /> {t.artifact_code}</button>}
             </div>
           )}
         </div>
-
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-2">
           {isPresentation && (
-            <div className={`flex items-center rounded-xl border p-1 px-2 mr-3 ${isFullscreen ? "bg-white/5 border-white/10" : "bg-black/[0.02] border-black/5"}`}>
-              <button onClick={handlePrev} disabled={currentSlide === 0} className={`p-1 px-3 text-[9px] font-bold transition-all uppercase tracking-widest disabled:opacity-10 ${isFullscreen ? "text-white/40 hover:text-white" : "text-black/30 hover:text-[#1B3FBF]"}`}>←</button>
-              <div className={`w-[1px] h-3 mx-1 ${isFullscreen ? "bg-white/10" : "bg-black/5"}`} />
-              <button onClick={handleNext} disabled={currentSlide === slides.length - 1} className={`p-1 px-3 text-[9px] font-bold transition-all uppercase tracking-widest disabled:opacity-10 ${isFullscreen ? "text-white/40 hover:text-white" : "text-black/30 hover:text-[#1B3FBF]"}`}>→</button>
+            <div className="flex items-center rounded-xl border p-1 px-2 mr-3 bg-black/[0.02]">
+              <button onClick={handlePrev} disabled={currentSlide === 0} className="p-1 px-3 text-[9px] font-bold">←</button>
+              <button onClick={handleNext} disabled={currentSlide === slides.length - 1} className="p-1 px-3 text-[9px] font-bold">→</button>
             </div>
           )}
-
-          <div className={`w-[1px] h-4 mx-2 ${isFullscreen ? "bg-white/10" : "bg-black/5"}`} />
-
-          <div className={`flex items-center gap-0.5 p-1 rounded-xl mr-2 ${isFullscreen ? "bg-white/5" : "bg-black/[0.03]"}`}>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button 
-                  onClick={() => setDeviceMode("desktop")} 
-                  className={`p-1.5 rounded-lg transition-all ${deviceMode === 'desktop' ? "bg-white text-black shadow-sm" : isFullscreen ? "text-white/40 hover:text-white" : "text-black/40 hover:text-[#1B3FBF]"}`}
-                >
-                  <Monitor size={14} />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>Desktop View</TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button 
-                  onClick={() => setDeviceMode("phone")} 
-                  className={`p-1.5 rounded-lg transition-all ${deviceMode === 'phone' ? "bg-white text-black shadow-sm" : isFullscreen ? "text-white/40 hover:text-white" : "text-black/40 hover:text-[#1B3FBF]"}`}
-                >
-                  <Smartphone size={14} />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>Phone View</TooltipContent>
-            </Tooltip>
+          <div className="flex items-center gap-0.5 p-1 rounded-xl bg-black/[0.03]">
+             <button onClick={() => setDeviceMode("desktop")} className={`p-1.5 rounded-lg ${deviceMode === 'desktop' ? "bg-white text-black shadow-sm" : "text-black/40"}`}><Monitor size={14} /></button>
+             <button onClick={() => setDeviceMode("phone")} className={`p-1.5 rounded-lg ${deviceMode === 'phone' ? "bg-white text-black shadow-sm" : "text-black/40"}`}><Smartphone size={14} /></button>
           </div>
-
-          <div className={`w-[1px] h-4 mx-2 ${isFullscreen ? "bg-white/10" : "bg-black/5"}`} />
-
-          <div className={`flex items-center gap-0.5 p-1 rounded-xl mr-2 ${isFullscreen ? "bg-white/5" : "bg-black/[0.03]"}`}>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button onClick={handleZoomOut} className={`p-1.5 rounded-lg transition-all disabled:opacity-20 ${isFullscreen ? "text-white/40 hover:text-white" : "text-black/40 hover:text-[#1B3FBF]"}`} disabled={zoom <= 0.5}>
-                  <ZoomOut size={14} />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>Zoom Out</TooltipContent>
-            </Tooltip>
-            <span className={`text-[9px] font-bold min-w-[32px] text-center ${isFullscreen ? "text-white/40" : "text-black/30"}`}>{Math.round(zoom * 100)}%</span>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button onClick={handleZoomIn} className={`p-1.5 rounded-lg transition-all disabled:opacity-20 ${isFullscreen ? "text-white/40 hover:text-white" : "text-black/40 hover:text-[#1B3FBF]"}`} disabled={zoom >= 3}>
-                  <ZoomIn size={14} />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>Zoom In</TooltipContent>
-            </Tooltip>
-          </div>
-
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button onClick={() => setIsFullscreen(!isFullscreen)} className={`p-2 rounded-lg transition-all ${isFullscreen ? "text-[#1B3FBF] bg-[#1B3FBF]/10" : "text-black/30 hover:text-[#1B3FBF] hover:bg-[#1B3FBF]/8"}`}>
-                {isFullscreen ? <Minimize size={15} /> : <Maximize size={15} />}
-              </button>
-            </TooltipTrigger>
-            <TooltipContent>{isFullscreen ? "Exit Slideshow" : "Start Slideshow"}</TooltipContent>
-          </Tooltip>
-
+          <button onClick={() => setIsFullscreen(!isFullscreen)} className="p-2 text-black/30 hover:text-[#1B3FBF]">{isFullscreen ? <Minimize size={15} /> : <Maximize size={15} />}</button>
+          {!readOnly && <button onClick={() => setIframeId(i => i + 1)} className="p-2 text-black/30"><RefreshCw size={15} /></button>}
+          {!readOnly && <button onClick={handleDownload} className="p-2 text-black/30"><Download size={15} /></button>}
           {!readOnly && (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button onClick={() => setIframeId(prev => prev + 1)} className="p-2 text-black/30 hover:text-[#1B3FBF] hover:bg-[#1B3FBF]/8 rounded-lg transition-all">
-                  <RefreshCw size={15} />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>Refresh</TooltipContent>
-            </Tooltip>
+            <div className="flex items-center gap-1 bg-black/[0.03] p-1 rounded-xl">
+               <button onClick={() => setInlineEditMode(!inlineEditMode)} className={`p-1.5 rounded-lg transition-all flex items-center gap-2 ${inlineEditMode ? "bg-[#1B3FBF] text-white" : "text-black/40"}`}>
+                 <MousePointer2 size={13} fill={inlineEditMode ? "currentColor" : "none"} />
+                 <span className="text-[10px] font-bold">Live Edit</span>
+               </button>
+               <button onClick={() => setShowKnobs(!showKnobs)} className={`p-1.5 rounded-lg transition-all flex items-center gap-2 ${showKnobs ? "bg-white text-black shadow-sm" : "text-black/40"}`}>
+                 <Settings2 size={13} />
+                 <span className="text-[10px] font-bold">Knobs</span>
+               </button>
+            </div>
           )}
-
-
-
-          {/* Removed Copy button per user request */}
-
-          {!readOnly && (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div className="relative group/export">
-                  <button className="flex items-center gap-2 p-2 text-black/30 hover:text-[#1B3FBF] hover:bg-[#1B3FBF]/8 rounded-lg transition-all">
-                    <Download size={15} />
-                  </button>
-                  <div className="absolute top-full right-0 mt-2 w-48 bg-white border shadow-2xl rounded-xl overflow-hidden opacity-0 invisible group-hover/export:opacity-100 group-hover/export:visible transition-all z-[100] flex flex-col p-1">
-                    <div className="px-3 py-2 text-[9px] font-black uppercase tracking-widest text-black/30 border-b mb-1">Ecosystem Export</div>
-                    <button onClick={handleDownload} className="flex flex-col items-start px-3 py-2 text-xs font-semibold hover:bg-black/5 rounded-lg text-black transition-all">
-                      <div className="flex items-center gap-2"><Code2 size={12} className="text-[#1B3FBF]"/> Download standalone HTML</div>
-                    </button>
-                    <button onClick={() => alert("Handoff bundle created successfully!")} className="flex flex-col items-start px-3 py-2 text-xs font-semibold hover:bg-black/5 rounded-lg text-black transition-all">
-                      <div className="flex items-center gap-2"><FileArchive size={12} className="text-[#1B3FBF]"/> Export Developer .zip</div>
-                    </button>
-                    <button onClick={() => alert("Exported to PPTX!")} className="flex flex-col items-start px-3 py-2 text-xs font-semibold hover:bg-black/5 rounded-lg text-black transition-all">
-                      <div className="flex items-center gap-2"><Presentation size={12} className="text-[#1B3FBF]"/> Export to PowerPoint</div>
-                    </button>
-                    <button onClick={() => alert("Pushed to Canva!")} className="flex flex-col items-start px-3 py-2 text-xs font-semibold hover:bg-black/5 rounded-lg text-black transition-all">
-                      <div className="flex items-center gap-2"><Image size={12} className="text-[#1B3FBF]"/> Push to Canva</div>
-                    </button>
-                  </div>
-                </div>
-              </TooltipTrigger>
-              <TooltipContent>Ecosystem Export</TooltipContent>
-            </Tooltip>
-          )}
-
-          {!readOnly && (
-            <>
-              <div className={`w-[1px] h-4 mx-2 ${isFullscreen ? "bg-white/10" : "bg-black/5"}`} />
-              <div className="flex items-center gap-1 bg-black/[0.03] p-1 rounded-xl">
-                 <Tooltip>
-                   <TooltipTrigger asChild>
-                     <button onClick={() => setInlineEditMode(!inlineEditMode)} className={`p-1.5 rounded-lg transition-all flex items-center gap-2 ${inlineEditMode ? "bg-[#1B3FBF] text-white shadow-md shadow-[#1B3FBF]/30" : "text-black/40 hover:text-black"}`}>
-                       <MousePointer2 size={13} fill={inlineEditMode ? "currentColor" : "none"} />
-                       <span className="text-[10px] font-bold pr-1">Live Edit</span>
-                     </button>
-                   </TooltipTrigger>
-                   <TooltipContent>Select-to-edit elements</TooltipContent>
-                 </Tooltip>
-                 
-                 <Tooltip>
-                   <TooltipTrigger asChild>
-                     <button onClick={() => setShowKnobs(!showKnobs)} className={`p-1.5 rounded-lg transition-all flex items-center gap-2 ${showKnobs ? "bg-white text-black shadow-sm" : "text-black/40 hover:text-black"}`}>
-                       <Settings2 size={13} />
-                       <span className="text-[10px] font-bold pr-1">Knobs</span>
-                     </button>
-                   </TooltipTrigger>
-                   <TooltipContent>Dynamic Styles & Brand</TooltipContent>
-                 </Tooltip>
-              </div>
-            </>
-          )}
-
         </div>
       </div>
 
-      <div className={`flex-1 overflow-hidden relative flex ${isFullscreen ? "bg-[#0a0a0a]" : "bg-[#f7f8fc]"}`}>
-        
-        {/* Slides Sidebar */}
-        {isPresentation && !isFullscreen && activeTab === "preview" && slides.length > 0 && (
-          <div className="w-48 lg:w-64 border-r border-black/[0.06] bg-[#f8f9fa] flex flex-col overflow-y-auto p-4 gap-4 custom-scrollbar shrink-0">
-            {slides.map((slideCode, idx) => (
-              <button 
-                key={idx}
-                onClick={() => setCurrentSlide(idx)}
-                className={`relative flex flex-col items-center gap-2 group text-left w-full`}
-              >
-                <div className="flex w-full justify-between items-center px-1">
-                   <span className={`text-[10px] font-black uppercase tracking-widest ${currentSlide === idx ? "text-[#1B3FBF]" : "text-black/30 group-hover:text-black/60"}`}>Slide {idx + 1}</span>
-                </div>
-                <div className={`w-full aspect-[16/9] rounded-xl overflow-hidden border-2 transition-all duration-300 relative bg-white shadow-sm flex items-center justify-center ${currentSlide === idx ? "border-[#1B3FBF] shadow-md shadow-[#1B3FBF]/20 scale-[1.02]" : "border-black/[0.05] group-hover:border-black/20"}`}>
-                   {/* Mini-iframe for Thumbnail */}
-                   <div className="absolute inset-0 pointer-events-none opacity-50 blur-[1px] group-hover:blur-none group-hover:opacity-100 transition-all">
-                      <iframe
-                        srcDoc={`
-                          <html>
-                            <head>
-                              <script src="https://cdn.tailwindcss.com"></script>
-                              <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;700&display=swap" rel="stylesheet">
-                              <style>
-                                body { font-family: 'Inter', sans-serif; background: white; margin: 0; transform: scale(0.2); transform-origin: top left; width: 500vw; height: 500vh; overflow:hidden;}
-                                .font-serif { font-family: 'Instrument Serif', serif; }
-                              </style>
-                            </head>
-                            <body>
-                              ${slideCode}
-                            </body>
-                          </html>
-                        `}
-                        className="w-full h-full border-none"
-                      />
-                   </div>
-                   {currentSlide === idx && <div className="absolute inset-0 ring-4 ring-[#1B3FBF]/10 rounded-xl" />}
-                </div>
+      <div className="flex-1 overflow-hidden relative flex bg-[#f7f8fc]">
+        {isPresentation && !isFullscreen && activeTab === "preview" && (
+          <div className="w-48 border-r bg-[#f8f9fa] flex flex-col p-4 gap-4 overflow-y-auto">
+            {slides.map((_, idx) => (
+              <button key={idx} onClick={() => setCurrentSlide(idx)} className={`w-full aspect-[16/9] rounded-xl border-2 transition-all ${currentSlide === idx ? "border-[#1B3FBF] scale-105" : "border-black/5"}`}>
+                 <div className="text-[9px] font-bold text-center">Slide {idx + 1}</div>
               </button>
             ))}
           </div>
         )}
-
-        {/* Main Content Area */}
-        <div className={`flex-1 relative flex items-center justify-center overflow-hidden w-full h-full transition-colors duration-700 ${deviceMode === 'phone' ? 'bg-[#f4f5f9]' : 'bg-white'}`}>
-          
-          {/* Neural Workspace Backdrop - Only visible in Phone Mode */}
-          {deviceMode === 'phone' && !isFullscreen && (
-            <div className="absolute inset-0 pointer-events-none overflow-hidden">
-               {/* Aesthetic Mesh Grid */}
-               <div className="absolute inset-0 opacity-[0.03] scale-150 rotate-12" style={{ backgroundImage: "linear-gradient(#0020C2 1px, transparent 1px), linear-gradient(90deg, #0020C2 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
-               
-               {/* Floating Metadata Labels */}
-               <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.5 }} className="absolute bottom-12 left-12 flex flex-col gap-1">
-                  <span className="text-[10px] font-black tracking-[0.2em] uppercase text-black/20">Manifestation Environment</span>
-                  <span className="text-[9px] font-mono text-black/10">KREO_MOBILE_ENGINE_V4.2</span>
-               </motion.div>
-               
-               <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.7 }} className="absolute top-12 right-12 flex flex-col items-end gap-1">
-                  <span className="text-[10px] font-black tracking-[0.2em] uppercase text-black/20">Viewport Synchronization</span>
-                  <span className="text-[9px] font-mono text-black/10">375px × 812px • High Performance</span>
-               </motion.div>
-
-               {/* Atmospheric Glows */}
-               <div className="absolute top-1/4 -left-20 w-96 h-96 bg-[#1B3FBF]/5 blur-[120px] rounded-full" />
-               <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-[#1B3FBF]/5 blur-[120px] rounded-full" />
-            </div>
-          )}
-
+        <div className="flex-1 relative flex items-center justify-center overflow-hidden">
           {(activeTab === "preview" || isPresentation) ? (
             <motion.div 
               layout
-              className={`relative transition-all duration-700 ease-[0.16, 1, 0.3, 1] bg-white overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,0.12)] mx-auto ${
-                isFullscreen ? "w-full h-full rounded-none" : 
-                deviceMode === 'phone' ? "w-[375px] h-[760px] rounded-[3.5rem] border-[12px] border-black ring-4 ring-black/5 scale-[0.75] md:scale-[0.85] lg:scale-100 max-h-[calc(100vh-180px)]" : 
-                "w-full h-full rounded-none"
-              }`}
-              style={{ 
-                transformOrigin: 'center center'
-              }}
+              className={`relative bg-white overflow-hidden shadow-2xl transition-all duration-700 ${isFullscreen ? "w-full h-full" : deviceMode === 'phone' ? "w-[375px] h-[760px] rounded-[3.5rem] border-[12px] border-black scale-90" : "w-full h-full"}`}
             >
-              {/* Phone Hardware Details (Dynamic Island & Status Bar) */}
-              {deviceMode === 'phone' && !isFullscreen && (
-                <div className="absolute top-0 inset-x-0 h-10 z-[2000] flex items-center justify-between px-10 pointer-events-none">
-                   {/* Left: Time */}
-                   <span className="text-[11px] font-bold text-black mt-1">9:41</span>
-                   
-                   {/* Center: Dynamic Island */}
-                   <div className="absolute top-3 left-1/2 -translate-x-1/2 w-28 h-7 bg-black rounded-full" />
-                   
-                   {/* Right: Status Icons */}
-                   <div className="flex items-center gap-1.5 mt-1">
-                      <div className="w-4 h-2.5 rounded-[2px] border border-black/30 relative">
-                         <div className="absolute left-[1px] top-[1px] bottom-[1px] w-2.5 bg-black rounded-[0.5px]" />
-                      </div>
-                      <div className="flex gap-0.5">
-                         {[1, 2, 3, 4].map(i => <div key={i} className={`w-[2.5px] h-${i === 4 ? 2.5 : i === 3 ? 2 : 1.5} bg-black rounded-full ${i === 4 ? 'opacity-30' : ''}`} />)}
-                      </div>
-                   </div>
-                </div>
-              )}
-
-              <div className={`h-full w-full animate-in fade-in duration-700 bg-white overflow-hidden ${isFullscreen ? "rounded-none" : ""}`}>
-                {/* Floating Refinement Input (Claude Style) */}
+              <div className="h-full w-full animate-in fade-in duration-700 bg-white overflow-hidden">
                 <AnimatePresence>
                   {inlineEditMode && selectedElementContext && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
-                      className="fixed z-[3000] p-6 bg-black text-white rounded-[2rem] shadow-2xl space-y-4 w-[320px]"
-                      style={{ 
-                        left: Math.min(selectedElementContext.x + 20, window.innerWidth - 340), 
-                        top: Math.min(selectedElementContext.y + 20, window.innerHeight - 200) 
-                      }}
-                    >
-                      <div className="flex items-center justify-between text-[9px] font-black uppercase tracking-widest text-white/30 px-1">
-                        <span>Neural Refinement</span>
-                        <button onClick={() => setSelectedElementContext(null)}>✕</button>
-                      </div>
-                      <div className="text-[10px] bg-white/10 px-3 py-1.5 rounded-lg text-white/60 truncate font-mono">
-                         Selected: {selectedElementContext.tag} • "{selectedElementContext.text}"
-                      </div>
-                      <textarea
-                        autoFocus
-                        value={refinementInput}
-                        onChange={(e) => setRefinementInput(e.target.value)}
-                        onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submitRefinement(); } }}
-                        placeholder="Describe changes..."
-                        className="w-full h-24 bg-white/5 border border-white/10 rounded-xl p-3 text-sm focus:outline-none focus:border-[#1B3FBF]/50 placeholder:text-white/20 resize-none"
-                      />
-                      <button 
-                        onClick={submitRefinement}
-                        className="w-full py-3 bg-[#1B3FBF] text-white rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg shadow-[#1B3FBF]/20 hover:scale-105 active:scale-95 transition-all"
-                      >
-                         Manifest Refinement
-                      </button>
+                    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="fixed z-[3000] p-6 bg-black text-white rounded-[2rem] shadow-2xl space-y-4 w-[320px]" style={{ left: 20, bottom: 20 }}>
+                      <div className="flex items-center justify-between text-[9px] font-black uppercase tracking-widest text-white/30"><span>Neural Refinement</span><button onClick={() => setSelectedElementContext(null)}>✕</button></div>
+                      <textarea autoFocus value={refinementInput} onChange={(e) => setRefinementInput(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submitRefinement(); } }} placeholder="Describe changes..." className="w-full h-24 bg-white/5 border border-white/10 rounded-xl p-3 text-sm focus:outline-none placeholder:text-white/20 resize-none" />
+                      <button onClick={submitRefinement} className="w-full py-3 bg-[#1B3FBF] text-white rounded-full text-[10px] font-black uppercase tracking-widest">Manifest Refinement</button>
                     </motion.div>
                   )}
                 </AnimatePresence>
-
                 <AnimatePresence mode="wait">
-                <motion.div
-                  key={currentSlide}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  transition={{ duration: 0.4, ease: "easeOut" }}
-                  className="h-full w-full"
-                >
-                  <iframe
-                    key={`${iframeId}-${currentSlide}`}
-                    srcDoc={getManifestationSrcDoc()}
-                    title="Manifestation Player"
-                    className="h-full w-full border-none"
-                  />
-
-                    {/* Knobs Floating Panel */}
-                    <AnimatePresence>
-                      {showKnobs && (
-                        <motion.div
-                          initial={{ opacity: 0, scale: 0.9, y: 10 }}
-                          animate={{ opacity: 1, scale: 1, y: 0 }}
-                          exit={{ opacity: 0, scale: 0.9, y: 10 }}
-                          className="absolute bottom-24 right-12 z-[1000] w-[340px] bg-white rounded-[2.5rem] shadow-[0_40px_100px_rgba(0,0,0,0.1)] border border-black/[0.03] p-8 space-y-8 animate-in zoom-in-95 duration-500"
-                        >
-                          {/* Theme Selector */}
-                          <div className="space-y-4">
-                            <div className="flex items-center justify-between px-1">
-                               <span className="text-[10px] font-black uppercase tracking-widest text-black/20">Manifest Style</span>
-                            </div>
-                            <div className="flex items-center bg-black/[0.03] p-1 rounded-2xl h-14">
-                               {['light', 'dark', 'ultra'].map((t) => (
-                                 <button
-                                   key={t}
-                                   onClick={() => setRenderTheme(t as any)}
-                                   className={`flex-1 h-full rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${
-                                      renderTheme === t 
-                                        ? 'bg-[#1B3FBF] text-white shadow-lg shadow-[#1B3FBF]/20' 
-                                        : 'text-black/30 hover:text-black hover:bg-black/5'
-                                   }`}
-                                 >
-                                   {t}
-                                 </button>
-                               ))}
-                            </div>
+                  <motion.div key={currentSlide} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="h-full w-full">
+                    <iframe key={`${iframeId}-${currentSlide}`} srcDoc={getManifestationSrcDoc()} title="Manifestation Player" className="h-full w-full border-none" />
+                    {showKnobs && (
+                      <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="absolute bottom-12 right-12 z-[1000] w-[340px] bg-white rounded-[2.5rem] shadow-2xl p-8 space-y-8">
+                        <div className="space-y-4">
+                          <span className="text-[10px] font-black uppercase tracking-widest text-black/20">Manifest Style</span>
+                          <div className="flex items-center bg-black/[0.03] p-1 rounded-2xl h-14">
+                             {['light', 'dark', 'ultra'].map((t) => (
+                               <button key={t} onClick={() => setRenderTheme(t as any)} className={`flex-1 h-full rounded-xl text-[9px] font-black uppercase transition-all ${renderTheme === t ? 'bg-[#1B3FBF] text-white' : 'text-black/30'}`}>{t}</button>
+                             ))}
                           </div>
-
-                          {/* Split Architecture Toggle */}
-                          <div className="flex items-center justify-between px-1 py-2">
-                             <div className="space-y-1">
-                               <span className="text-sm font-bold text-black tracking-tight flex items-center gap-2">
-                                  Split Architecture
-                                  <div className="w-1 h-1 rounded-full bg-[#1B3FBF] animate-pulse" />
-                               </span>
-                               <p className="text-[10px] text-black/30 font-medium">Parallel neural execution</p>
-                             </div>
-                             <button 
-                                onClick={() => setSplitArchitecture(!splitArchitecture)}
-                                className={`w-12 h-6 rounded-full transition-all flex items-center px-1 ${splitArchitecture ? 'bg-[#1B3FBF]' : 'bg-black/10'}`}
-                             >
-                                <motion.div 
-                                   animate={{ x: splitArchitecture ? 24 : 0 }}
-                                   className="w-4 h-4 rounded-full bg-white shadow-sm" 
-                                />
-                             </button>
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                </motion.div>
-              </AnimatePresence>
+                        </div>
+                        <div className="flex items-center justify-between">
+                           <div className="space-y-1"><span className="text-sm font-bold">Split Architecture</span><p className="text-[10px] text-black/30">Parallel neural execution</p></div>
+                           <button onClick={() => setSplitArchitecture(!splitArchitecture)} className={`w-12 h-6 rounded-full transition-all flex items-center px-1 ${splitArchitecture ? 'bg-[#1B3FBF]' : 'bg-black/10'}`}><div className={`w-4 h-4 rounded-full bg-white shadow-sm transform transition-all ${splitArchitecture ? 'translate-x-6' : ''}`} /></button>
+                        </div>
+                      </motion.div>
+                    )}
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+            </motion.div>
+          ) : (
+            <div className="h-full w-full overflow-auto bg-white">
+              <pre className="p-8 font-mono text-xs leading-relaxed text-[#2D4FA8] whitespace-pre-wrap">{code.replace(/```(jsx|tsx|javascript|js|html|react|css)?/g, "").replace(/```/g, "").trim()}</pre>
             </div>
-
-            {/* Slideshow Controls Overlay */}
-            {isPresentation && (
-                <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex items-center gap-4 animate-in slide-in-from-bottom-8 duration-1000">
-                    <div className={`p-2 rounded-full border shadow-2xl flex items-center gap-2 px-6 ${isFullscreen ? "bg-[#1B3FBF]/20 border-white/20 backdrop-blur-3xl text-white" : "bg-white border-black/5 text-[#1B3FBF]"}`}>
-                         <button onClick={handlePrev} disabled={currentSlide === 0} className="p-2 hover:scale-125 transition-transform disabled:opacity-20"><ChevronLeft size={16} /></button>
-                         <div className="h-6 w-[1px] bg-white/10 mx-2" />
-                         <span className="text-[10px] font-black tracking-widest uppercase">{currentSlide + 1} / {slides.length}</span>
-                         <div className="h-6 w-[1px] bg-white/10 mx-2" />
-                         <button onClick={handleNext} disabled={currentSlide === slides.length - 1} className="p-2 hover:scale-125 transition-transform disabled:opacity-20"><ChevronRight size={16} /></button>
-                    </div>
-                </div>
-            )}
-          </motion.div>
-        ) : (
-          <div className="h-full w-full overflow-auto bg-white">
-            <div className="flex items-center gap-2 px-6 py-3 border-b border-black/[0.06] bg-[#f4f5f9]">
-              <div className="w-2.5 h-2.5 rounded-full bg-red-400" />
-              <div className="w-2.5 h-2.5 rounded-full bg-yellow-400" />
-              <div className="w-2.5 h-2.5 rounded-full bg-green-400" />
-              <span className="ml-2 text-[10px] font-mono text-black/30 tracking-widest">manifestation.jsx</span>
-            </div>
-            <pre className="p-8 font-mono text-xs leading-relaxed text-[#2D4FA8] whitespace-pre-wrap overflow-x-auto">
-              {code.replace(/```(jsx|tsx|javascript|js|html|react|css)?/g, "").replace(/```/g, "").trim()}
-            </pre>
-          </div>
-        )}
+          )}
         </div>
       </div>
     </div>
