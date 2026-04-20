@@ -37,6 +37,7 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
   const [showExports, setShowExports] = useState(false);
   const [primaryColor, setPrimaryColor] = useState("#1B3FBF");
   const [borderRadius, setBorderRadius] = useState("0.5rem");
+  const [deviceMode, setDeviceMode] = useState<"desktop" | "phone">("desktop");
 
   // Detect Presentation Mode
   const isPresentation = prompt?.toLowerCase().includes("ppt") || prompt?.toLowerCase().includes("presentation") || prompt?.toLowerCase().includes("slideshow");
@@ -152,6 +153,33 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
               <button onClick={handleNext} disabled={currentSlide === slides.length - 1} className={`p-1 px-3 text-[9px] font-bold transition-all uppercase tracking-widest disabled:opacity-10 ${isFullscreen ? "text-white/40 hover:text-white" : "text-black/30 hover:text-[#1B3FBF]"}`}>→</button>
             </div>
           )}
+
+          <div className={`w-[1px] h-4 mx-2 ${isFullscreen ? "bg-white/10" : "bg-black/5"}`} />
+
+          <div className={`flex items-center gap-0.5 p-1 rounded-xl mr-2 ${isFullscreen ? "bg-white/5" : "bg-black/[0.03]"}`}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button 
+                  onClick={() => setDeviceMode("desktop")} 
+                  className={`p-1.5 rounded-lg transition-all ${deviceMode === 'desktop' ? "bg-white text-black shadow-sm" : isFullscreen ? "text-white/40 hover:text-white" : "text-black/40 hover:text-[#1B3FBF]"}`}
+                >
+                  <Monitor size={14} />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>Desktop View</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button 
+                  onClick={() => setDeviceMode("phone")} 
+                  className={`p-1.5 rounded-lg transition-all ${deviceMode === 'phone' ? "bg-white text-black shadow-sm" : isFullscreen ? "text-white/40 hover:text-white" : "text-black/40 hover:text-[#1B3FBF]"}`}
+                >
+                  <Smartphone size={14} />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>Phone View</TooltipContent>
+            </Tooltip>
+          </div>
 
           <div className={`w-[1px] h-4 mx-2 ${isFullscreen ? "bg-white/10" : "bg-black/5"}`} />
 
@@ -304,12 +332,15 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
         <div className="flex-1 relative flex items-center justify-center overflow-hidden w-full h-full">
         {(activeTab === "preview" || isPresentation) ? (
           <div 
-            className="w-full h-full transition-all duration-300 flex items-center justify-center overflow-hidden relative"
-            style={{ 
-              transform: `scale(${zoom})`,
-              transformOrigin: 'center center'
-            }}
-          >
+          className={`relative transition-all duration-700 ease-[0.16, 1, 0.3, 1] bg-white overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,0.08)] mx-auto ${
+            isFullscreen ? "w-full h-full rounded-none" : 
+            deviceMode === 'phone' ? "w-[375px] h-[720px] rounded-[3.5rem] border-[12px] border-black/90 ring-4 ring-black/5 scale-[0.85] sm:scale-100" : 
+            "w-full h-full rounded-none"
+          }`}
+          style={{ 
+            transformOrigin: 'center center'
+          }}
+        >
               <div className={`h-full w-full animate-in fade-in duration-700 bg-white overflow-hidden ${isFullscreen ? "rounded-none" : ""}`}>
                 {/* Floating Refinement Input (Claude Style) */}
                 <AnimatePresence>
@@ -485,7 +516,8 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
                               };
                             </script>
                             <script src="https://cdn.tailwindcss.com"></script>
-                            <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+                            <link href="https://api.fontshare.com/v2/css?f[]=satoshi@700,500,400&display=swap" rel="stylesheet">
+                            <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
                             <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
                             <style>
                               :root {
@@ -510,7 +542,7 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
                                 * { cursor: crosshair !important; }
                                 *:hover { outline: 2px dashed #1B3FBF !important; outline-offset: 2px; }
                               ` : ""}
-                              body { font-family: 'Inter', sans-serif; background: white; margin: 0; overflow-x: hidden; overflow-y: auto; min-height: 100vh; }
+                              body { font-family: 'Satoshi', sans-serif; background: white; margin: 0; overflow-x: hidden; overflow-y: auto; min-height: 100vh; }
                               #root { min-height: 100vh; }
                             </style>
                           </head>
