@@ -110,7 +110,7 @@ When existing code or a Mermaid flowchart is provided in the conversation histor
 3. If asked to make a change in a flowchart, DO NOT change the entire flowchart layout or core logic—just edit or append the specific nodes requested.
 4. Keep the original aesthetic, design system, and architecture intact, making only the localized modifications requested.
 5. **DIVERGENCE PERMITTED**: If the user's edit request completely changes the intent (e.g. "now make this a game instead of a chart"), you ARE allowed to pivot the design language while maintaining the high-fidelity Satoshi/Instrument identity.
-\`;
+`;
 
 const SARVAM_API_KEY = import.meta.env.VITE_SARVAM_API_KEY || "sk_5oxchpsn_jrBGzGJ0eu64wBHBdxXBb4Qk";
 const SARVAM_ENDPOINT = "https://api.sarvam.ai/v1/chat/completions";
