@@ -360,7 +360,7 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
               layout
               className={`relative transition-all duration-700 ease-[0.16, 1, 0.3, 1] bg-white overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,0.12)] mx-auto ${
                 isFullscreen ? "w-full h-full rounded-none" : 
-                deviceMode === 'phone' ? "w-[375px] h-[760px] rounded-[3.5rem] border-[12px] border-black ring-4 ring-black/5 scale-[0.8] sm:scale-95 lg:scale-100 mb-8" : 
+                deviceMode === 'phone' ? "w-[375px] h-[760px] rounded-[3.5rem] border-[12px] border-black ring-4 ring-black/5 scale-[0.75] md:scale-[0.85] lg:scale-100 max-h-[calc(100vh-180px)]" : 
                 "w-full h-full rounded-none"
               }`}
               style={{ 
@@ -529,22 +529,42 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
                           </html>`;
                         }
 
-                        const cleanCodeForBabel = cleanCode
-                          .replace(/import\s+['"].*?['"];?/g, "")
-                          .replace(/import\s+React.*?from\s+['"]react['"];?\n?/g, "")
-                          .replace(/import\s+.*?\s+from\s+['"]react['"];?\n?/g, "")
-                          .replace(/import\s+.*?\s+from\s+['"]lucide-react['"];?\n?/g, "")
-                          .replace(/import\s+.*?\s+from\s+['"]recharts['"];?\n?/g, "")
-                          .replace(/import\s+.*?\s+from\s+['"].*?['"];?\n?/g, "")
-                          .replace(/export\s+default\s+/g, "window.__Component = ")
-                          // Enhanced Sanitizer: Remove unclosed tags or trailing junk that breaks Babel
-                          .replace(/[<][a-zA-Z][^>]*$/g, "")
-                          .replace(/<\/[a-zA-Z][^>]*$/g, "")
-                          .replace(/className=['"][^'"]*$/g, "")
-                          // Fix: remove any lines that look like raw HTML bleed (e.g. a JSX line truncated without closing >)
-                          .replace(/^\s*<[a-zA-Z][^>]*$(?!\n\s*[/>])/gm, "")
-                          .replace(/^\s*[a-z]+=["'][^"']*["']\s*$/gm, "")
-                          .trim();
+                        const cleanCodeForBabel = (() => {
+                          let c = cleanCode
+                            .replace(/import\s+['"].*?['"];?/g, "")
+                            .replace(/import\s+React.*?from\s+['"]react['"];?\n?/g, "")
+                            .replace(/import\s+.*?\s+from\s+['"]react['"];?\n?/g, "")
+                            .replace(/import\s+.*?\s+from\s+['"]lucide-react['"];?\n?/g, "")
+                            .replace(/import\s+.*?\s+from\s+['"]recharts['"];?\n?/g, "")
+                            .replace(/import\s+.*?\s+from\s+['"].*?['"];?\n?/g, "")
+                            .replace(/export\s+default\s+/g, "window.__Component = ")
+                            .replace(/[<][a-zA-Z][^>]*$/g, "")
+                            .replace(/<\/[a-zA-Z][^>]*$/g, "")
+                            .trim();
+
+                          // TAG BALANCER: Attempt to close unclosed tags if truncated
+                          // This prevents "Expected closing tag" errors when AI stops mid-JSX
+                          try {
+                            const tags = (c.match(/<([a-zA-Z1-6]+)(?:\s+[^>]*)?>/g) || []).map(t => t.match(/<([a-zA-Z1-6]+)/)![1]);
+                            const closingTags = (c.match(/<\/([a-zA-Z1-6]+)>/g) || []).map(t => t.match(/<\/([a-zA-Z1-6]+)/)![1]);
+                            
+                            const stack: string[] = [];
+                            tags.forEach(t => {
+                              if (!['img', 'br', 'hr', 'input', 'meta', 'link'].includes(t.toLowerCase())) {
+                                stack.push(t);
+                              }
+                            });
+                            closingTags.forEach(t => {
+                              const idx = stack.lastIndexOf(t);
+                              if (idx !== -1) stack.splice(idx, 1);
+                            });
+                            
+                            // Append closing tags in reverse order
+                            return c + stack.reverse().map(t => `</${t}>`).join('');
+                          } catch (e) {
+                            return c; // Fallback to original if balancing fails
+                          }
+                        })();
                         
                         return `
                         <html>

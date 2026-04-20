@@ -225,10 +225,9 @@ export const generateArtifact = async (prompt: string, chatHistory: {role: strin
                 const bridgeData = await bridgeRes.json();
                 const continuation = bridgeData.choices[0].message.content;
                 
-                // STITCH LOGIC: Remove potential overlap stutter
-                // We look for the last 100 chars of the original and see if they appear in the start of continuation
+                // STITCH LOGIC: More conservative stitching to avoid dropping characters
                 let overlap = 0;
-                const checkLen = Math.min(content.length, 100);
+                const checkLen = Math.min(content.length, 50); // Shorter check window for safety
                 const suffix = content.slice(-checkLen);
                 for (let i = checkLen; i > 0; i--) {
                     if (continuation.startsWith(suffix.slice(-i))) {
@@ -238,7 +237,7 @@ export const generateArtifact = async (prompt: string, chatHistory: {role: strin
                 }
                 
                 content += continuation.slice(overlap);
-                console.log("Neural Bridge Successful. Manifest Extended. Overlap removed:", overlap);
+                console.log("Neural Bridge Successful. Manifest Extended.");
             }
         } catch (e) {
             console.error("Neural Bridge Failed:", e);

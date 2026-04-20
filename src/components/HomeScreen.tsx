@@ -584,24 +584,22 @@ const HomeScreen = ({
           return;
         }
 
-        // Primary fetch — with share_token (requires DB migration to have been run)
-        let { data, error } = await supabase
-          .from('artifacts')
-          .select('id, prompt, code, created_at, user_id, share_token')
+        // Silent Schema Check: Avoid redundant 400 logs by checking once per session
+        const schemaVerified = sessionStorage.getItem('kreo_schema_verified') === 'true';
+        let useShareToken = schemaVerified;
+
+        if (!schemaVerified) {
+          const { error: testError } = await supabase.from('artifacts').select('share_token').limit(1).maybeSingle();
+          if (!testError) {
+             sessionStorage.setItem('kreo_schema_verified', 'true');
+             useShareToken = true;
+          }
+        }
+
+        let query = supabase.from('artifacts').select(useShareToken ? 'id, prompt, code, created_at, user_id, share_token' : 'id, prompt, code, created_at, user_id');
+        let { data, error } = await query
           .eq('user_id', user.id)
           .order('created_at', { ascending: false });
-
-        // Fallback: if 400 (column doesn't exist yet), retry without share_token
-        if (error && (error.code === 'PGRST116' || error.message?.includes('share_token') || error.message?.includes('400') || (error as any).status === 400)) {
-          console.warn("[KREO] share_token column missing — run ensure_schema.sql in Supabase. Falling back to core columns.");
-          const fallback = await supabase
-            .from('artifacts')
-            .select('id, prompt, code, created_at, user_id')
-            .eq('user_id', user.id)
-            .order('created_at', { ascending: false });
-          data = fallback.data;
-          error = fallback.error;
-        }
 
         if (error) {
           console.error("Neural sync throttled:", error.message);
