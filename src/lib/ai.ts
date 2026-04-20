@@ -31,7 +31,7 @@ No explanations before the code. Just build it.
 ## OUTPUT FORMAT RULES
 Always output a single complete, self-contained file with inline CSS and JS.
 - **PREFER HTML**: Use HTML/CSS/JS for EVERYTHING unless the UI is so stateful that vanilla JS is impractical.
-- **REACT JSX**: If using React/JSX (for complex stateful UIs like dashboards, apps with many interactive states), output ONLY the raw JSX component starting with `const Manifestation = () => {` or `export default function Manifestation() {`. NO imports. NO `ReactDOM.render()`. The manifestation player will execute it via Babel automatically.
+- **REACT JSX**: If using React/JSX (for complex stateful UIs like dashboards, apps with many interactive states), output ONLY the raw JSX component starting with \`const Manifestation = () => {\` or \`export default function Manifestation() {\`. NO imports. NO \`ReactDOM.render()\`. The manifestation player will execute it via Babel automatically.
 - For HTML output: include a complete `<!DOCTYPE html>` file with all styles and scripts inline.
 - For React JSX: export a single default function component called `Manifestation` with no required props; use hooks inline.
 
