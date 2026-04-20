@@ -1207,7 +1207,7 @@ const HomeScreen = ({
               transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
               className="flex flex-col items-center"
             >
-              <video
+               <video
                 src="/Wonder Things.webm"
                 autoPlay
                 loop
@@ -1215,6 +1215,18 @@ const HomeScreen = ({
                 playsInline
                 className="w-72 h-72 sm:w-96 sm:h-96 object-contain mix-blend-multiply"
               />
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }} 
+                animate={{ opacity: 1, y: 0 }} 
+                className="text-center space-y-4"
+              >
+                <div className="text-[10px] font-black uppercase tracking-[0.8em] text-[#1B3FBF] animate-pulse">
+                  Neural Manifestation in Progress
+                </div>
+                <div className="text-[13px] font-serif italic text-black/40">
+                  Orchestrating architectural hierarchy and visual systems...
+                </div>
+              </motion.div>
             </motion.div>
           </div>
         ) : artifact ? (
