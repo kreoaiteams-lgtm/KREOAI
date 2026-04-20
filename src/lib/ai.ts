@@ -29,13 +29,13 @@ NEURAL CLARIFICATION PROTOCOL:
 No explanations before the code. Just build it.
 
 ## OUTPUT FORMAT RULES
-Always output a single complete, self-contained HTML file with inline CSS and JS.
-- Use HTML/CSS/JS for EVERYTHING — landing pages, dashboards, apps, animations, forms, tools
-- Only use React JSX if the user explicitly says "react" or the UI is so stateful that vanilla JS is impractical
-- For HTML output: include a complete <!DOCTYPE html> file with all styles and scripts inline
-- For React JSX: export a single default function component with no required props; use hooks inline
+Always output a single complete, self-contained file with inline CSS and JS.
+- **PREFER HTML**: Use HTML/CSS/JS for EVERYTHING unless the UI is so stateful that vanilla JS is impractical.
+- **REACT JSX**: If using React/JSX (for complex stateful UIs like dashboards, apps with many interactive states), output ONLY the raw JSX component starting with `const Manifestation = () => {` or `export default function Manifestation() {`. NO imports. NO `ReactDOM.render()`. The manifestation player will execute it via Babel automatically.
+- For HTML output: include a complete `<!DOCTYPE html>` file with all styles and scripts inline.
+- For React JSX: export a single default function component called `Manifestation` with no required props; use hooks inline.
 
-Always output ONLY the code. No preamble, no explanation. Start directly with <!DOCTYPE html> or the function.
+Always output ONLY the code. No preamble, no explanation, no ```jsx label caveats. Start directly with `<!DOCTYPE html>` or the function.
 
 If the user asks for a Pricing Page, build a PRICING PAGE (with tiers, toggles, and plans), NOT a landing page for an imaginary tool that looks like KREO.
 - NEVER include placeholder labels like "Bridge Visibility", "Dialogue / Session", "Back / Dialogue", or KREO's own share dialogue components. The result must be a clean, standalone product.
@@ -53,13 +53,19 @@ If the user asks for a Pricing Page, build a PRICING PAGE (with tiers, toggles, 
 - The UI must be distinctive. If requested for a SaaS dashboard, use a modern dashboard layout (sidebar, topbar, grid of data), not a hero-centric landing page.
 
 ## SITUATION MODE (ARCHITECTURE & SYSTEM DESIGN)
-If the user's prompt is EXCLUSIVELY architectural (e.g., "how to integrate OpenAI", "design a backend schema", "project folder structure"):
+If and ONLY IF the user's prompt is PURELY architectural (e.g., "how to integrate OpenAI", "design a backend schema", "project folder structure") with NO visual or UI component:
 1. FIRST, generate a Mermaid.js flowchart inside a \`\`\`mermaid\`\`\` block to visualize the exact logic.
-   - **IMPORTANT**: Keep the flowchart SIMPLE, HIGH-LEVEL, and legible. Focus on the core logic and architectural flow. DO NOT make it overly complex or dense with too many nodes.
-   - **SYNTAX RULE**: Always enclose node labels in double quotes (example: A["User Login"]) to avoid syntax errors from special characters like parentheses, slashes, or math symbols.
+   - **IMPORTANT**: Keep the flowchart SIMPLE, HIGH-LEVEL, and legible. Focus on the core logic and architectural flow. DO NOT make it overly complex.
+   - **SYNTAX RULE**: Always enclose node labels in double quotes to avoid syntax errors.
 2. THEN, provide the actual Python or React code snippet required to execute it.
-3. **CRITICAL**: If the user says "Mimic style of X", "Make it look like Y", or "Design a Z", this is NOT architectural. This is a UI request. Build the full-screen interactive UI immediately.
-4. **META-UI PROHIBITION**: NEVER generate a UI that *contains* or *displays* the code you are writing. For example, do NOT create a "Blueprint" page with a "JSX Snippet" box. The manifestation must BE the product, not a presentation OF the product.
+3. **CRITICAL**: If the user says "Mimic style of X", "Make it look like Y", or "Design a Z", or uses words like "app", "ui", "dashboard", "screen", "page", "website", "tool" — this is a UI request. Build the full interactive UI immediately.
+4. **META-UI PROHIBITION — ZERO TOLERANCE**: NEVER, under ANY circumstances, generate a UI that contains or DISPLAYS your own code. This means:
+   - NO "Architecture Blueprint" wrappers
+   - NO "JSX Snippet" boxes or code viewer cards
+   - NO pages that show code in a pretty box/panel as their main content
+   - The user wants to SEE the working product, not look at the code that would build it.
+   - If asked to build a fitness app, show a WORKING fitness app UI. If asked for a finance dashboard, show a WORKING finance dashboard.
+   - VIOLATION OF THIS RULE IS A CRITICAL FAILURE.
 
 ## CODE QUALITY RULES
 ### Never do these:
@@ -246,24 +252,30 @@ export const generateArtifact = async (prompt: string, chatHistory: {role: strin
     // ----------------------------------------
 
     // Fast-fail artifact extraction
-    const match = content.match(/```(?:html|tsx|jsx|mermaid|python|javascript|ts|js)?\s*([\s\S]*?)```/gi);
+    const match = content.match(/```(?:html|tsx|jsx|mermaid|python|javascript|ts|js|react)?\s*([\s\S]*?)```/gi);
     if (match) {
-        // If it returns a primary HTML document natively, extract it directly.
-        if (match[0].toLowerCase().includes('<html')) {
-             return match[0].replace(/^```.*?[\r\n]|```$/g, '').trim();
+        // If it's a UI-ready block (HTML or React/JSX), extract and return RAW code
+        // This allows ArtifactPanel to render it via Babel/Iframe
+        const firstBlock = match[0];
+        const typeMatch = firstBlock.match(/^```(\w+)?/);
+        const type = typeMatch && typeMatch[1] ? typeMatch[1].toLowerCase() : '';
+        const rawCode = firstBlock.replace(/^```.*?[\r\n]|```$/g, '').trim();
+
+        if (type === 'html' || type === 'tsx' || type === 'jsx' || type === 'react' || rawCode.includes('<html') || (rawCode.includes('export default') && rawCode.includes('return'))) {
+            return rawCode;
         }
 
-        // SITUATION MODE (App Architecture / Backend Snippets)
+        // SITUATION MODE (App Architecture / Backend Snippets / Mermaid)
         const blocks = match.map((b: string) => {
-             const typeMatch = b.match(/^```(\w+)?/);
-             const type = typeMatch && typeMatch[1] ? typeMatch[1].toLowerCase() : 'text';
+             const tMatch = b.match(/^```(\w+)?/);
+             const t = tMatch && tMatch[1] ? tMatch[1].toLowerCase() : 'text';
              const code = b.replace(/^```.*?[\r\n]|```$/g, '').trim();
              
-             if (type === 'mermaid') {
+             if (t === 'mermaid') {
                   const safeCode = code.replace(/</g, "&lt;").replace(/>/g, "&gt;");
                   return `<pre class="mermaid">\n${safeCode}\n</pre>`;
              } else {
-                  return `<div class="code-header">${type.toUpperCase()} SNIPPET</div><pre><code class="language-${type}">${code.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</code></pre>`;
+                  return `<div class="code-header">${t.toUpperCase()} SNIPPET</div><pre><code class="language-${t}">${code.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</code></pre>`;
              }
         }).join('\n\n');
 
