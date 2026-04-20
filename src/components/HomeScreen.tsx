@@ -506,15 +506,22 @@ const HomeScreen = ({
           let error = null;
 
           if (!isLocal) {
-            let query = supabase.from("artifacts").select("id, prompt, code, created_at, user_id, share_token");
-            if (isUuid) {
-              query = query.or(`share_token.eq.${urlId},id.eq.${urlId}`);
+            // Primary fetch — with share_token
+            let { data: primaryData, error: primaryError } = await (isUuid 
+              ? supabase.from("artifacts").select("id, prompt, code, created_at, user_id, share_token").or(`share_token.eq.${urlId},id.eq.${urlId}`).maybeSingle()
+              : supabase.from("artifacts").select("id, prompt, code, created_at, user_id, share_token").eq("share_token", urlId).maybeSingle());
+            
+            // Fallback: if 400 (column missing), retry with basic selection
+            if (primaryError && (primaryError.message?.includes('share_token') || primaryError.message?.includes('400') || (primaryError as any).status === 400)) {
+               const { data: fallbackData, error: fallbackError } = await (isUuid
+                ? supabase.from("artifacts").select("id, prompt, code, created_at, user_id").eq("id", urlId).maybeSingle()
+                : { data: null, error: new Error("Legacy tokens not supported in fallback mode") });
+               data = fallbackData;
+               error = fallbackError;
             } else {
-              query = query.eq("share_token", urlId);
+               data = primaryData;
+               error = primaryError;
             }
-            const result = await query.maybeSingle();
-            data = result.data;
-            error = result.error;
           }
 
           if (!error && data) {

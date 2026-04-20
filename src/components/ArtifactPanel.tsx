@@ -2,7 +2,8 @@ import { useState, useRef, useEffect } from "react";
 import { 
   Eye, Code2, Copy, Download, RefreshCw, 
   ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Maximize, Minimize, RotateCcw,
-  Share2, Play, MousePointer2, SlidersHorizontal, Settings2, Sparkles, FileArchive, Presentation, Image
+  Share2, Play, MousePointer2, SlidersHorizontal, Settings2, Sparkles, FileArchive, Presentation, Image,
+  Monitor, Smartphone
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { motion, AnimatePresence } from "framer-motion";
@@ -329,18 +330,64 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
         )}
 
         {/* Main Content Area */}
-        <div className="flex-1 relative flex items-center justify-center overflow-hidden w-full h-full">
-        {(activeTab === "preview" || isPresentation) ? (
-          <div 
-          className={`relative transition-all duration-700 ease-[0.16, 1, 0.3, 1] bg-white overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,0.08)] mx-auto ${
-            isFullscreen ? "w-full h-full rounded-none" : 
-            deviceMode === 'phone' ? "w-[375px] h-[720px] rounded-[3.5rem] border-[12px] border-black/90 ring-4 ring-black/5 scale-[0.85] sm:scale-100" : 
-            "w-full h-full rounded-none"
-          }`}
-          style={{ 
-            transformOrigin: 'center center'
-          }}
-        >
+        <div className={`flex-1 relative flex items-center justify-center overflow-hidden w-full h-full transition-colors duration-700 ${deviceMode === 'phone' ? 'bg-[#f4f5f9]' : 'bg-white'}`}>
+          
+          {/* Neural Workspace Backdrop - Only visible in Phone Mode */}
+          {deviceMode === 'phone' && !isFullscreen && (
+            <div className="absolute inset-0 pointer-events-none overflow-hidden">
+               {/* Aesthetic Mesh Grid */}
+               <div className="absolute inset-0 opacity-[0.03] scale-150 rotate-12" style={{ backgroundImage: "linear-gradient(#0020C2 1px, transparent 1px), linear-gradient(90deg, #0020C2 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
+               
+               {/* Floating Metadata Labels */}
+               <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.5 }} className="absolute bottom-12 left-12 flex flex-col gap-1">
+                  <span className="text-[10px] font-black tracking-[0.2em] uppercase text-black/20">Manifestation Environment</span>
+                  <span className="text-[9px] font-mono text-black/10">KREO_MOBILE_ENGINE_V4.2</span>
+               </motion.div>
+               
+               <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.7 }} className="absolute top-12 right-12 flex flex-col items-end gap-1">
+                  <span className="text-[10px] font-black tracking-[0.2em] uppercase text-black/20">Viewport Synchronization</span>
+                  <span className="text-[9px] font-mono text-black/10">375px × 812px • High Performance</span>
+               </motion.div>
+
+               {/* Atmospheric Glows */}
+               <div className="absolute top-1/4 -left-20 w-96 h-96 bg-[#1B3FBF]/5 blur-[120px] rounded-full" />
+               <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-[#1B3FBF]/5 blur-[120px] rounded-full" />
+            </div>
+          )}
+
+          {(activeTab === "preview" || isPresentation) ? (
+            <motion.div 
+              layout
+              className={`relative transition-all duration-700 ease-[0.16, 1, 0.3, 1] bg-white overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,0.12)] mx-auto ${
+                isFullscreen ? "w-full h-full rounded-none" : 
+                deviceMode === 'phone' ? "w-[375px] h-[760px] rounded-[3.5rem] border-[12px] border-black ring-4 ring-black/5 scale-[0.8] sm:scale-95 lg:scale-100 mb-8" : 
+                "w-full h-full rounded-none"
+              }`}
+              style={{ 
+                transformOrigin: 'center center'
+              }}
+            >
+              {/* Phone Hardware Details (Dynamic Island & Status Bar) */}
+              {deviceMode === 'phone' && !isFullscreen && (
+                <div className="absolute top-0 inset-x-0 h-10 z-[2000] flex items-center justify-between px-10 pointer-events-none">
+                   {/* Left: Time */}
+                   <span className="text-[11px] font-bold text-black mt-1">9:41</span>
+                   
+                   {/* Center: Dynamic Island */}
+                   <div className="absolute top-3 left-1/2 -translate-x-1/2 w-28 h-7 bg-black rounded-full" />
+                   
+                   {/* Right: Status Icons */}
+                   <div className="flex items-center gap-1.5 mt-1">
+                      <div className="w-4 h-2.5 rounded-[2px] border border-black/30 relative">
+                         <div className="absolute left-[1px] top-[1px] bottom-[1px] w-2.5 bg-black rounded-[0.5px]" />
+                      </div>
+                      <div className="flex gap-0.5">
+                         {[1, 2, 3, 4].map(i => <div key={i} className={`w-[2.5px] h-${i === 4 ? 2.5 : i === 3 ? 2 : 1.5} bg-black rounded-full ${i === 4 ? 'opacity-30' : ''}`} />)}
+                      </div>
+                   </div>
+                </div>
+              )}
+
               <div className={`h-full w-full animate-in fade-in duration-700 bg-white overflow-hidden ${isFullscreen ? "rounded-none" : ""}`}>
                 {/* Floating Refinement Input (Claude Style) */}
                 <AnimatePresence>
