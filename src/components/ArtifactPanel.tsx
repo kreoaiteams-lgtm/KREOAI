@@ -730,7 +730,7 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, readOnly }: Artifac
                     </div>
                 </div>
             )}
-          </div>
+          </motion.div>
         ) : (
           <div className="h-full w-full overflow-auto bg-white">
             <div className="flex items-center gap-2 px-6 py-3 border-b border-black/[0.06] bg-[#f4f5f9]">
