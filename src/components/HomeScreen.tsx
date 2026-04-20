@@ -1135,16 +1135,16 @@ const HomeScreen = ({
       {settingsOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-md" onClick={() => setSettingsOpen(false)} />
-          <div className="relative w-full max-w-sm p-10 rounded-[3rem] bg-white border border-black/5 animate-in zoom-in-95 duration-300 shadow-2xl font-satoshi">
-            <h2 className="text-2xl font-medium tracking-tight mb-8">Atmosphere Control</h2>
+          <div className="relative w-full max-w-sm p-10 rounded-[3rem] bg-white border border-black/5 animate-in zoom-in-95 duration-300 shadow-2xl font-satoshi text-black">
+            <h2 className="text-2xl font-medium tracking-tight mb-8 text-black">Atmosphere Control</h2>
             <div className="space-y-6">
               <div className="flex bg-black/5 p-1.5 rounded-2xl">
                 {(["light", "dark", "ultra"] as const).map((m) => (
-                  <button key={m} onClick={() => setTheme(m)} className={`flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${theme === m ? "bg-[#1B3FBF] text-white shadow-lg" : "text-black/40 hover:text-black"}`}>{m}</button>
+                  <button key={m} onClick={() => setTheme(m)} className={`flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${theme === m ? "bg-[#1B3FBF] text-white shadow-lg" : "text-black/50 hover:text-black"}`}>{m}</button>
                 ))}
               </div>
               <div className="flex items-center justify-between p-4 rounded-2xl bg-[#0020C2]/5 border border-[#0020C2]/10">
-                <div className="text-sm font-medium">Split Architecture</div>
+                <div className="text-sm font-medium text-black">Split Architecture</div>
                 <button onClick={() => setIsSplitView(!isSplitView)} className={`w-12 h-6 rounded-full transition-all relative ${isSplitView ? 'bg-[#0020C2]' : 'bg-foreground/10'}`}>
                   <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${isSplitView ? 'left-7' : 'left-1'}`} />
                 </button>
@@ -1164,7 +1164,7 @@ const HomeScreen = ({
               </div>
               <div className="text-center space-y-1">
                 <div className="text-2xl font-medium tracking-tight text-black">{userEmail.split('@')[0]}</div>
-                <div className="text-[10px] font-black uppercase tracking-[0.3em] text-black/30">{userEmail}</div>
+                <div className="text-[10px] font-black uppercase tracking-[0.3em] text-black/50">{userEmail}</div>
               </div>
             </div>
             <div className="space-y-3">
