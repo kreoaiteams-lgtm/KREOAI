@@ -950,7 +950,7 @@ const HomeScreen = ({
 
           // Fallback: insert without share_token/is_public if columns don't exist yet
           if (insertError) {
-            console.warn("[KREO] Falling back to basic insert — run ensure_schema.sql in Supabase to fix.");
+            console.debug("[KREO] Falling back to basic insert — run ensure_schema.sql in Supabase to enable sharing features.");
             const fallback = await supabase
               .from("artifacts")
               .insert({

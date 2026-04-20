@@ -431,13 +431,11 @@ export const narrateText = async (text: string) => {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            text: text,
-            target_language_code: "en-IN", // Professional Indian-English for KREO
-            speaker: "shubh",
-            model: "bulbul:v3",
-            pace: 1.05,
+            inputs: [{ text: text }],
+            target_language_code: "en-IN",
+            speaker: "meera",
+            model: "bulbul:v2",
             speech_sample_rate: 22050,
-            output_audio_codec: "mp3",
             enable_preprocessing: true
         })
     });

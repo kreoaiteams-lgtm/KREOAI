@@ -173,45 +173,63 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, onRefinement, readO
         <head>
           <script>window.tailwind = { config: { theme: { extend: { colors: { primary: '${primaryColor}' }, borderRadius: { xl: '${borderRadius}' } } } } };</script>
           <script src="https://cdn.tailwindcss.com"></script>
+          <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+          <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+          <script src="https://unpkg.com/lucide-react/dist/umd/lucide-react.js"></script>
+          <script src="https://unpkg.com/recharts@2.15.3/umd/Recharts.js"></script>
           <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
           <link href="https://api.fontshare.com/v2/css?f[]=satoshi@700,500,400&display=swap" rel="stylesheet">
           <style>
             :root { --primary: ${primaryColor}; --radius: ${borderRadius}; }
             .dark { background-color: #050a1f; color: white; }
             .ultra { background-color: #1a42f0; color: white; }
-            body { font-family: 'Satoshi', sans-serif; margin: 0; min-height: 100vh; }
+            body { font-family: 'Satoshi', sans-serif; margin: 0; min-height: 100vh; overflow-y: auto; }
             #root { min-height: 100vh; }
           </style>
         </head>
         <body class="${renderTheme === 'dark' ? 'dark' : renderTheme === 'ultra' ? 'ultra' : ''}">
           <div id="root"></div>
-          <script type="text/babel" data-type="module">
-            import { createElement, useState, useEffect, useRef, useCallback, useMemo, useReducer, useContext } from 'https://esm.sh/react@18';
-            import { createRoot } from 'https://esm.sh/react-dom@18/client';
-            import * as LucideIcons from 'https://esm.sh/lucide-react@0.462.0';
-            import * as FramerMotion from 'https://esm.sh/framer-motion@12.38.0';
-            import * as Recharts from 'https://esm.sh/recharts@2.15.4';
+          <script>
+            // Expose React hooks and UMD globals to window for AI-generated code
+            const { useState, useEffect, useRef, useCallback, useMemo, useReducer, useContext, createElement, createContext, forwardRef, Fragment } = React;
+            Object.assign(window, { useState, useEffect, useRef, useCallback, useMemo, useReducer, useContext, createElement, createContext, forwardRef, Fragment });
 
-            window.React = { createElement, useState, useEffect, useRef, useCallback, useMemo, useReducer, useContext };
-            window.Lucide = LucideIcons;
-            window.motion = FramerMotion.motion;
-            window.AnimatePresence = FramerMotion.AnimatePresence;
-            window.Recharts = Recharts;
+            // Expose Lucide icons individually
+            if (window.LucideReact) {
+              Object.entries(window.LucideReact).forEach(([k, v]) => { if (typeof v === 'function') window[k] = v; });
+            }
 
-            Object.entries(LucideIcons).forEach(([name, comp]) => {
-              if (typeof comp === 'function' || (typeof comp === 'object' && comp !== null)) window[name] = comp;
+            // Expose Recharts components
+            if (window.Recharts) {
+              Object.assign(window, window.Recharts);
+            }
+
+            // motion shim (framer-motion not available as UMD, provide basic passthrough)
+            window.motion = new Proxy({}, {
+              get: (_, tag) => React.forwardRef((props, ref) => React.createElement(tag, { ...props, ref }))
             });
+            window.AnimatePresence = ({ children }) => children;
 
-            window.onerror = (message) => {
-              document.getElementById('root').innerHTML = '<div style="padding:2rem;color:red;font-family:sans-serif"><h3>Collision</h3><p>' + message + '</p></div>';
+            window.onerror = (message, _src, lineno) => {
+              document.getElementById('root').innerHTML =
+                '<div style="padding:2rem 2.5rem;color:#c00;font-family:sans-serif;background:#fff0f0;border-left:4px solid #c00;margin:2rem;border-radius:1rem">' +
+                '<b>Neural Manifest Collision</b><br/><code style="font-size:0.85rem">' + message + '</code>' +
+                (lineno ? '<br/><small>Line: ' + lineno + '</small>' : '') + '</div>';
               return true;
             };
-
+          </script>
+          <script type="text/babel" data-presets="react">
             try {
               ${cleanCodeForBabel}
               const App = window.__Component;
-              if (App) createRoot(document.getElementById('root')).render(createElement(App));
-            } catch (err) { window.onerror(err.message); }
+              if (App) {
+                ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(App));
+              } else {
+                document.getElementById('root').innerHTML = '<div style="padding:2rem;color:orange;font-family:sans-serif">No default export found. Use <code>export default function YourComponent()</code>.</div>';
+              }
+            } catch (err) {
+              window.onerror(err.message, null, null);
+            }
           </script>
         </body>
       </html>
