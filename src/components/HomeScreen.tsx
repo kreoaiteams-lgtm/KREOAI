@@ -1223,10 +1223,10 @@ const HomeScreen = ({
                 className="text-center"
               >
                 <div 
-                  className="text-4xl font-serif italic tracking-tighter text-[#1B3FBF] animate-pulse"
+                  className="text-4xl font-serif tracking-tighter text-[#1B3FBF] animate-pulse"
                   style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }}
                 >
-                  Loading...
+                  Coming right up...
                 </div>
               </motion.div>
             </motion.div>
