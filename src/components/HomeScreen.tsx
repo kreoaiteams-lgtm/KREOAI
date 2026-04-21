@@ -584,15 +584,17 @@ const HomeScreen = ({
           return;
         }
 
-        // Silent Schema Check: Avoid redundant 400 logs by checking once per session
-        const schemaVerified = sessionStorage.getItem('kreo_schema_verified') === 'true';
+        // Persistent Schema Check: Avoid redundant 400 logs by checking once per user/device
+        const schemaVerified = localStorage.getItem('kreo_schema_v2') === 'true';
         let useShareToken = schemaVerified;
 
         if (!schemaVerified) {
-          const { error: testError } = await supabase.from('artifacts').select('share_token').limit(1).maybeSingle();
+          const { error: testError } = await supabase.from('artifacts').select('share_token').limit(1);
           if (!testError) {
-             sessionStorage.setItem('kreo_schema_verified', 'true');
+             localStorage.setItem('kreo_schema_v2', 'true');
              useShareToken = true;
+          } else {
+             localStorage.setItem('kreo_schema_v2', 'false');
           }
         }
 
@@ -1218,13 +1220,13 @@ const HomeScreen = ({
               <motion.div 
                 initial={{ opacity: 0, y: 10 }} 
                 animate={{ opacity: 1, y: 0 }} 
-                className="text-center space-y-4"
+                className="text-center"
               >
-                <div className="text-[10px] font-black uppercase tracking-[0.8em] text-[#1B3FBF] animate-pulse">
-                  Neural Manifestation in Progress
-                </div>
-                <div className="text-[13px] font-serif italic text-black/40">
-                  Orchestrating architectural hierarchy and visual systems...
+                <div 
+                  className="text-4xl font-serif italic tracking-tighter text-[#1B3FBF] animate-pulse"
+                  style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }}
+                >
+                  Loading...
                 </div>
               </motion.div>
             </motion.div>

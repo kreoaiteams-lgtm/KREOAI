@@ -209,7 +209,7 @@ export const generateArtifact = async (prompt: string, chatHistory: {role: strin
                        !(content.toLowerCase().includes('</html>') || content.trim().endsWith('}') || content.trim().endsWith('```'));
 
     if (isTruncated) {
-        console.log("Neural Manifest Truncated. Triggering Bridge Continuation...");
+        console.debug("Neural Manifest Truncated. Triggering Bridge Continuation...");
         const SECOND_KEY = "sk_7y0ofcio_tgRuQhhq8JyWkyXasSI7XJIR";
         
         const bridgeMessages = [
@@ -249,7 +249,7 @@ export const generateArtifact = async (prompt: string, chatHistory: {role: strin
                 }
                 
                 content += continuation.slice(overlap);
-                console.log("Neural Bridge Successful. Manifest Extended.");
+                console.debug("Neural Bridge Successful. Manifest Extended.");
             }
         } catch (e) {
             console.error("Neural Bridge Failed:", e);

@@ -154,9 +154,10 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, onRefinement, readO
     }
 
     let cleanCodeForBabel = strippedCode
-      .replace(/import\s+['"].*?['"];?/g, "")
-      .replace(/import\s+.*?from\s+['"].*?['"];?\n?/g, "")
+      .replace(/import\s+[\s\S]*?from\s+['"].*?['"];?/g, "") // Full from imports
+      .replace(/import\s+(['"].*?['"]|{.*?});?/g, "")      // Side effect or deconstructed imports
       .replace(/export\s+default\s+/g, "window.__Component = ")
+      .replace(/export\s+(const|var|let|function|class)/g, "$1") // Strip named exports but keep the content
       .trim();
 
     try {
