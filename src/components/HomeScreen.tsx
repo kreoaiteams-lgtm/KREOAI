@@ -1223,8 +1223,8 @@ const HomeScreen = ({
                 className="text-center"
               >
                 <div 
-                  className="text-4xl font-serif tracking-tighter text-[#1B3FBF] animate-pulse"
-                  style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }}
+                  className="text-2xl font-black uppercase tracking-[0.4em] text-[#1B3FBF] animate-pulse"
+                  style={{ fontFamily: "'Satoshi', sans-serif" }}
                 >
                   Coming right up...
                 </div>
