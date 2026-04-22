@@ -863,7 +863,7 @@ const HomeScreen = ({
           5. Ensure distinct dialogue labels for every line of speech.
           6. DO NOT wrap this in a code-viewer UI. Render the script directly as a document.
         `;
-      } else if (formsReactRequest || isInteractiveApp || true) { // Default to React-ready logic for better UX
+      } else if (formsReactRequest || isInteractiveApp) { // Default to React-ready logic for better UX
         backgroundEnhancedQuery += `
           CRITICAL ARCHITECTURE: PRODUCING A LIVE REACT MANIFESTATION.
           1. This MUST be a SINGLE-FILE REACT COMPONENT.
@@ -977,10 +977,16 @@ const HomeScreen = ({
             return [newArtifact, ...prev.filter(i => i.id !== optimisticId)];
           });
           setCurrentArtifactId(targetId);
-          // Force URL sync immediately using React Router's navigate to prevent Cleanup useEffect from resetting state
           navigate(`/share/${targetId}`, { replace: true });
-        } else if (!user) {
-          setHistoryItems(updatedLocal);
+        } else {
+          // If Supabase failed, maintain local state but keep currentArtifactId as optimistic for local session
+          if (!user) {
+            setHistoryItems(updatedLocal);
+          }
+          if (optimisticId) {
+            setCurrentArtifactId(optimisticId);
+          }
+          console.warn("[KREO] Database sync failed. Experience remains local. Shared links will not work until database schema/access is resolved.");
         }
 
         // Show upgrade popup after first manifestation
@@ -1455,22 +1461,46 @@ const HomeScreen = ({
                 Anyone with this link can view your high-fidelity manifestation in real-time.
               </p>
 
-              <div className="flex items-center gap-3 p-4 bg-[#1B3FBF]/5 border border-[#1B3FBF]/10 rounded-[2rem] group hover:border-[#1B3FBF]/30 transition-all">
-                <LinkIcon className="text-[#1B3FBF] shrink-0" size={18} />
-                <input
-                  readOnly
-                  onClick={(e) => (e.target as HTMLInputElement).select()}
-                  value={`${window.location.origin}/share/${currentArtifactId || 'unbound'}`}
-                  className="flex-1 bg-transparent px-2 text-xs font-mono text-[#1B3FBF] outline-none truncate"
-                />
+              <div className={`flex items-center gap-3 p-4 border rounded-[2rem] transition-all ${
+                currentArtifactId?.startsWith('opt-') 
+                  ? 'bg-amber-50/50 border-amber-200/50' 
+                  : 'bg-[#1B3FBF]/5 border-[#1B3FBF]/10'
+              }`}>
+                {currentArtifactId?.startsWith('opt-') ? (
+                  <RefreshCw className="text-amber-500 animate-spin shrink-0" size={18} />
+                ) : (
+                  <LinkIcon className="text-[#1B3FBF] shrink-0" size={18} />
+                )}
+                
+                <div className="flex-1 min-w-0">
+                  <input
+                    readOnly
+                    onClick={(e) => !currentArtifactId?.startsWith('opt-') && (e.target as HTMLInputElement).select()}
+                    value={currentArtifactId?.startsWith('opt-') 
+                      ? "Syncing to Cloud Neural Buffer..." 
+                      : `${window.location.origin}/share/${currentArtifactId || 'unbound'}`}
+                    className={`w-full bg-transparent text-xs outline-none truncate ${
+                      currentArtifactId?.startsWith('opt-') ? 'text-amber-600 font-medium' : 'font-mono text-[#1B3FBF]'
+                    }`}
+                  />
+                  {currentArtifactId?.startsWith('opt-') && (
+                    <p className="text-[8px] text-amber-500 mt-1 uppercase font-black tracking-widest">Available locally only during sync</p>
+                  )}
+                </div>
+
                 <button
+                  disabled={currentArtifactId?.startsWith('opt-')}
                   onClick={() => {
                     navigator.clipboard.writeText(`${window.location.origin}/share/${currentArtifactId}`);
                     toast({ title: "Link Manifested", description: "URL copied to your neural buffer." });
                   }}
-                  className="px-6 py-3 bg-[#1B3FBF] text-white rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg shadow-[#1B3FBF]/20 hover:scale-105 active:scale-95 transition-all"
+                  className={`px-6 py-3 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg transition-all ${
+                    currentArtifactId?.startsWith('opt-')
+                      ? 'bg-black/5 text-black/20 shadow-none cursor-not-allowed'
+                      : 'bg-[#1B3FBF] text-white shadow-[#1B3FBF]/20 hover:scale-105 active:scale-95'
+                  }`}
                 >
-                  Copy Link
+                  {currentArtifactId?.startsWith('opt-') ? "Wait..." : "Copy Link"}
                 </button>
               </div>
             </div>
