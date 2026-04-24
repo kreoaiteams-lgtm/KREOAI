@@ -32,34 +32,18 @@ const ShareView: React.FC = () => {
             setLoading(true);
             
             try {
-                // Determine if ID is a valid UUID to avoid Supabase 400 error
                 const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
                 const isUuid = uuidRegex.test(id);
 
-                let query = supabase.from('artifacts').select('id, prompt, code, created_at, user_id');
+                let query = supabase.from('artifacts').select('id, prompt, code, created_at, user_id, share_token');
                 
                 if (isUuid) {
-                    query = query.or(`id.eq.${id}`);
+                    query = query.or(`id.eq.${id},share_token.eq.${id}`);
                 } else {
-                    query = query.eq('id', id);
+                    query = query.eq('share_token', id);
                 }
 
                 let { data, error: fetchError } = await query.maybeSingle();
-
-                // Advanced Recovery: Try share_token column if basic ID search fails
-                if (fetchError || !data) {
-                    const fallbackQuery = supabase.from('artifacts').select('id, prompt, code, created_at, user_id, share_token');
-                    if (isUuid) {
-                        fallbackQuery.or(`share_token.eq.${id}`);
-                    } else {
-                        fallbackQuery.eq('share_token', id);
-                    }
-                    const fallback = await fallbackQuery.maybeSingle();
-                    if (fallback.data) {
-                        data = fallback.data;
-                        fetchError = null;
-                    }
-                }
 
                 if (fetchError || !data) {
                     console.error("Fetch manifest error:", fetchError);

@@ -20,7 +20,10 @@ export const useArtifactTools = (iframeRef: RefObject<HTMLIFrameElement>) => {
       'primary-color': `--primary: ${value} !important;`,
       'border-radius': `--radius: ${value} !important;`,
       'font-size': `body { font-size: ${value} !important; }`,
-      'spacing': `:root { --spacing-scale: ${value} !important; }`
+      'spacing': `:root { --spacing-scale: ${value} !important; }`,
+      'theme': value === 'dark' 
+        ? `body { background: #0a0a0a !important; color: white !important; } .bg-white { background: #1a1a1a !important; } .text-black { color: white !important; }` 
+        : `body { background: white !important; color: black !important; }`
     };
 
     if (templates[variable]) {
