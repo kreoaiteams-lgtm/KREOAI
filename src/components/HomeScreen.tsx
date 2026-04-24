@@ -953,6 +953,7 @@ const HomeScreen = ({
           const { data, error } = await supabase
             .from("artifacts")
             .insert({
+              id: shareToken,
               prompt: finalQuery,
               code: code,
               user_id: user ? user.id : null,
@@ -970,6 +971,7 @@ const HomeScreen = ({
             const fallback = await supabase
               .from("artifacts")
               .insert({
+                id: shareToken,
                 prompt: finalQuery,
                 code: code,
                 user_id: user ? user.id : null,

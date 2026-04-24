@@ -35,15 +35,26 @@ const ShareView: React.FC = () => {
                 const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
                 const isUuid = uuidRegex.test(id);
 
-                let query = supabase.from('artifacts').select('id, prompt, code, created_at, user_id, share_token');
+                // Select only baseline columns if we suspect schema issues
+                let query = supabase.from('artifacts').select('id, prompt, code, created_at, user_id');
                 
                 if (isUuid) {
-                    query = query.or(`id.eq.${id},share_token.eq.${id}`);
+                    query = query.or(`id.eq.${id}`);
                 } else {
-                    query = query.eq('share_token', id);
+                    // This path handles non-UUID share tokens if they exist
+                    query = query.eq('id', id); 
                 }
 
                 let { data, error: fetchError } = await query.maybeSingle();
+
+                // Advanced Recovery: try share_token if it might exist
+                if (fetchError || !data) {
+                    const fallback = await supabase.from('artifacts').select('*').eq('share_token', id).maybeSingle();
+                    if (fallback.data) {
+                        data = fallback.data;
+                        fetchError = null;
+                    }
+                }
 
                 if (fetchError || !data) {
                     console.error("Fetch manifest error:", fetchError);
