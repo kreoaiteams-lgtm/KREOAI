@@ -5,7 +5,7 @@ import {
   LayoutGrid, ChevronDown, ChevronLeft, Clock, Plus, Zap, FileText, X, Activity,
   Image as ImageIcon, BrainCircuit, Sparkles, Paperclip, Shuffle, MessageSquare, Mail,
   Share2, Globe, Palette, Link as LinkIcon, Copy, Info, CheckCircle2, Crown, Star, Volume2, ShieldCheck, UserPlus,
-  Presentation, Code2, Table2, GitGraph, Smile, Trash2
+  Presentation, Code2, Table2, GitGraph, Smile, Trash2, RefreshCw
 } from "lucide-react";
 
 import { narrateText, generateBio } from "@/lib/ai";

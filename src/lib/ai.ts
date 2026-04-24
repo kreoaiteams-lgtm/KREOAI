@@ -234,21 +234,23 @@ export const generateArtifact = async (prompt: string, chatHistory: {role: strin
 
             if (bridgeRes.ok) {
                 const bridgeData = await bridgeRes.json();
-                const continuation = bridgeData.choices[0].message.content;
+                const continuation = bridgeData?.choices?.[0]?.message?.content;
                 
-                // STITCH LOGIC: More conservative stitching to avoid dropping characters
-                let overlap = 0;
-                const checkLen = Math.min(content.length, 50); // Shorter check window for safety
-                const suffix = content.slice(-checkLen);
-                for (let i = checkLen; i > 0; i--) {
-                    if (continuation.startsWith(suffix.slice(-i))) {
-                        overlap = i;
-                        break;
+                if (continuation) {
+                    // STITCH LOGIC: More conservative stitching to avoid dropping characters
+                    let overlap = 0;
+                    const checkLen = Math.min(content.length, 50); // Shorter check window for safety
+                    const suffix = content.slice(-checkLen);
+                    for (let i = checkLen; i > 0; i--) {
+                        if (continuation.startsWith(suffix.slice(-i))) {
+                            overlap = i;
+                            break;
+                        }
                     }
+                    
+                    content += continuation.slice(overlap);
+                    console.debug("Neural Bridge Successful. Manifest Extended.");
                 }
-                
-                content += continuation.slice(overlap);
-                console.debug("Neural Bridge Successful. Manifest Extended.");
             }
         } catch (e) {
             console.error("Neural Bridge Failed:", e);
