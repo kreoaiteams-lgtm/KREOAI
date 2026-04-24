@@ -329,9 +329,10 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, onRefinement, readO
           <div className="relative">
             <button 
               onMouseEnter={() => setShowExportHub(true)} 
-              className="p-2 text-black/30 hover:text-[#1B3FBF]"
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg transition-all ${showExportHub ? 'bg-black text-white' : 'text-black/30 hover:text-[#1B3FBF] hover:bg-black/5'}`}
             >
-              <Download size={15} />
+              <Download size={14} />
+              <span className="text-[10px] font-black uppercase tracking-widest hidden sm:inline">Export</span>
             </button>
             <AnimatePresence>
               {showExportHub && (
@@ -342,6 +343,14 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, onRefinement, readO
                   onMouseLeave={() => setShowExportHub(false)}
                   className="absolute right-0 top-10 z-[3000] w-48 bg-white rounded-[2rem] shadow-2xl border border-black/5 p-2 overflow-hidden"
                 >
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button onClick={() => exportUtils.exportToCanva(getManifestationSrcDoc())} className="w-full flex items-center gap-3 px-4 py-3 bg-[#1B3FBF]/5 hover:bg-[#1B3FBF] rounded-2xl text-[10px] font-black uppercase tracking-widest text-[#1B3FBF] hover:text-white transition-all border border-[#1B3FBF]/10 mb-1">
+                        <Image size={14} /> Manifest to Canva
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="left" className="text-[9px] uppercase font-bold tracking-widest">Copies HTML + Opens Canva</TooltipContent>
+                  </Tooltip>
                   <button onClick={() => exportUtils.exportAsHTML(getManifestationSrcDoc())} className="w-full flex items-center gap-3 px-4 py-3 hover:bg-black/5 rounded-2xl text-[10px] font-black uppercase tracking-widest text-black/60 hover:text-[#1B3FBF] transition-all">
                     <Code2 size={14} /> Manifest Source (.html)
                   </button>
@@ -351,14 +360,6 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, onRefinement, readO
                   <button onClick={() => exportUtils.exportAsPPTX("manifestation-iframe")} className="w-full flex items-center gap-3 px-4 py-3 hover:bg-black/5 rounded-2xl text-[10px] font-black uppercase tracking-widest text-black/60 hover:text-[#1B3FBF] transition-all">
                     <Presentation size={14} /> Cinematic PPTX
                   </button>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <button onClick={() => exportUtils.exportToCanva(getManifestationSrcDoc())} className="w-full flex items-center gap-3 px-4 py-3 hover:bg-black/5 rounded-2xl text-[10px] font-black uppercase tracking-widest text-black/60 hover:text-[#1B3FBF] transition-all">
-                        <Image size={14} /> Manifest to Canva
-                      </button>
-                    </TooltipTrigger>
-                    <TooltipContent side="left" className="text-[9px] uppercase font-bold tracking-widest">Copy your HTML and paste into Canva's code embed</TooltipContent>
-                  </Tooltip>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -427,9 +428,9 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, onRefinement, readO
                            <ZoomOut size={14} className="text-white/40 group-hover:text-[#1B3FBF]" />
                            <span className="text-[8px] font-black uppercase tracking-widest text-white/20 group-hover:text-[#1B3FBF]/60">Size-</span>
                          </button>
-                         <button onClick={() => handleDirectMutation("Make text bold")} className="p-3 bg-white/5 hover:bg-[#1B3FBF]/20 rounded-2xl flex flex-col items-center gap-2 transition-all border border-white/5 hover:border-[#1B3FBF]/30 group">
-                           <Sparkles size={14} className="text-white/40 group-hover:text-[#1B3FBF]" />
-                           <span className="text-[8px] font-black uppercase tracking-widest text-white/20 group-hover:text-[#1B3FBF]/60">Bold</span>
+                         <button onClick={() => exportUtils.exportToCanva(getManifestationSrcDoc())} className="p-3 bg-gradient-to-br from-[#1B3FBF] to-[#0020C2] hover:scale-105 active:scale-95 rounded-2xl flex flex-col items-center gap-2 transition-all border border-white/10 group shadow-lg shadow-[#1B3FBF]/20">
+                           <Image size={14} className="text-white/80" />
+                           <span className="text-[8px] font-black uppercase tracking-widest text-white/60">Canva</span>
                          </button>
                       </div>
 
