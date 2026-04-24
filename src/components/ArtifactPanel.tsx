@@ -4,7 +4,7 @@ import {
   Eye, Code2, Copy, Download, RefreshCw, 
   ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Maximize, Minimize, RotateCcw,
   Share2, Play, MousePointer2, SlidersHorizontal, Settings2, Sparkles, FileArchive, Presentation, Image,
-  Monitor, Smartphone, Volume2
+  Monitor, Smartphone, Volume2, Trash2, X
 } from "lucide-react";
 import { generateArtifact } from "@/lib/ai";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
@@ -103,6 +103,13 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, onRefinement, readO
     }
   }, [inlineEditMode, setupLiveEdit, iframeId]); // Refresh on iframe reload
 
+  const handleDirectMutation = async (instruction: string) => {
+    if (!selectedElementContext || !onRefinement) return;
+    const fullInstruction = `In the ${selectedElementContext.tag} element, please: ${instruction}. Return the entire updated manifestation code.`;
+    onRefinement(fullInstruction);
+    setSelectedElementContext(null);
+  };
+
   const submitRefinement = async () => {
     if (!refinementInput.trim() || !selectedElementContext) return;
     
@@ -124,6 +131,11 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, onRefinement, readO
           // Hot-swapping the node
           const cleanHtml = response.replace(/```(?:html|tsx|jsx|javascript|js)?/gi, '').trim();
           element.outerHTML = cleanHtml;
+          
+          // CRITICAL: We also trigger a global refinement to keep the code in sync
+          if (onRefinement) {
+             onRefinement(`In the ${selectedElementContext.tag} element, apply: ${originalText}. Keep the rest identical.`);
+          }
           
           setRefinementInput("");
           setSelectedElementContext(null);
@@ -314,7 +326,6 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, onRefinement, readO
              <button onClick={() => setDeviceMode("phone")} className={`p-1.5 rounded-lg ${deviceMode === 'phone' ? "bg-white text-black shadow-sm" : "text-black/40"}`}><Smartphone size={14} /></button>
           </div>
           <button onClick={() => setIsFullscreen(!isFullscreen)} className="p-2 text-black/30 hover:text-[#1B3FBF]">{isFullscreen ? <Minimize size={15} /> : <Maximize size={15} />}</button>
-          <button onClick={() => setIframeId(i => i + 1)} className="p-2 text-black/30 hover:text-[#1B3FBF]"><RefreshCw size={15} /></button>
           <div className="relative">
             <button 
               onMouseEnter={() => setShowExportHub(true)} 
@@ -332,17 +343,22 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, onRefinement, readO
                   className="absolute right-0 top-10 z-[3000] w-48 bg-white rounded-[2rem] shadow-2xl border border-black/5 p-2 overflow-hidden"
                 >
                   <button onClick={() => exportUtils.exportAsHTML(getManifestationSrcDoc())} className="w-full flex items-center gap-3 px-4 py-3 hover:bg-black/5 rounded-2xl text-[10px] font-black uppercase tracking-widest text-black/60 hover:text-[#1B3FBF] transition-all">
-                    <Code2 size={14} /> HTML Source
+                    <Code2 size={14} /> Manifest Source (.html)
                   </button>
                   <button onClick={() => exportUtils.exportAsZip(getManifestationSrcDoc())} className="w-full flex items-center gap-3 px-4 py-3 hover:bg-black/5 rounded-2xl text-[10px] font-black uppercase tracking-widest text-black/60 hover:text-[#1B3FBF] transition-all">
-                    <FileArchive size={14} /> Dev ZIP Hub
+                    <FileArchive size={14} /> Dev Package (.zip)
                   </button>
                   <button onClick={() => exportUtils.exportAsPPTX("manifestation-iframe")} className="w-full flex items-center gap-3 px-4 py-3 hover:bg-black/5 rounded-2xl text-[10px] font-black uppercase tracking-widest text-black/60 hover:text-[#1B3FBF] transition-all">
-                    <Presentation size={14} /> PPTX Slide
+                    <Presentation size={14} /> Cinematic PPTX
                   </button>
-                  <button onClick={() => exportUtils.exportToCanva()} className="w-full flex items-center gap-3 px-4 py-3 hover:bg-black/5 rounded-2xl text-[10px] font-black uppercase tracking-widest text-black/60 hover:text-[#1B3FBF] transition-all">
-                    <Image size={14} /> Canva Logic
-                  </button>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button onClick={() => exportUtils.exportToCanva(getManifestationSrcDoc())} className="w-full flex items-center gap-3 px-4 py-3 hover:bg-black/5 rounded-2xl text-[10px] font-black uppercase tracking-widest text-black/60 hover:text-[#1B3FBF] transition-all">
+                        <Image size={14} /> Manifest to Canva
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="left" className="text-[9px] uppercase font-bold tracking-widest">Copy your HTML and paste into Canva's code embed</TooltipContent>
+                  </Tooltip>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -372,19 +388,67 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, onRefinement, readO
             ))}
           </div>
         )}
-        <div className="flex-1 relative flex items-center justify-center overflow-hidden">
+        <div className={`flex-1 relative flex items-center justify-center overflow-auto custom-scrollbar ${deviceMode === 'phone' ? 'py-12 bg-black/[0.02]' : ''}`}>
           {(activeTab === "preview" || isPresentation) ? (
             <motion.div 
               layout
-              className={`relative bg-white overflow-hidden shadow-2xl transition-all duration-700 ${isFullscreen ? "w-full h-full" : deviceMode === 'phone' ? "w-[375px] h-[760px] rounded-[3.5rem] border-[12px] border-black scale-90" : "w-full h-full"}`}
+              className={`relative bg-white shadow-2xl transition-all duration-700 ${isFullscreen ? "w-full h-full" : deviceMode === 'phone' ? "w-[375px] h-[760px] rounded-[3.5rem] border-[12px] border-black scale-[0.8] sm:scale-90 origin-center shrink-0" : "w-full h-full overflow-hidden"}`}
             >
               <div className="h-full w-full animate-in fade-in duration-700 bg-white overflow-hidden">
                 <AnimatePresence>
                   {inlineEditMode && selectedElementContext && (
-                    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="fixed z-[3000] p-6 bg-black text-white rounded-[2rem] shadow-2xl space-y-4 w-[320px]" style={{ left: 20, bottom: 20 }}>
-                      <div className="flex items-center justify-between text-[9px] font-black uppercase tracking-widest text-white/30"><span>Neural Refinement</span><button onClick={() => setSelectedElementContext(null)}>✕</button></div>
-                      <textarea autoFocus value={refinementInput} onChange={(e) => setRefinementInput(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submitRefinement(); } }} placeholder="Describe changes..." className="w-full h-24 bg-white/5 border border-white/10 rounded-xl p-3 text-sm focus:outline-none placeholder:text-white/20 resize-none" />
-                      <button onClick={submitRefinement} className="w-full py-3 bg-[#1B3FBF] text-white rounded-full text-[10px] font-black uppercase tracking-widest">Manifest Refinement</button>
+                    <motion.div 
+                      initial={{ opacity: 0, scale: 0.9, x: "-50%", y: "-50%" }} 
+                      animate={{ opacity: 1, scale: 1, x: "-50%", y: "-50%" }} 
+                      exit={{ opacity: 0, scale: 0.9, x: "-50%", y: "-50%" }} 
+                      className="fixed z-[4000] p-8 bg-black/90 backdrop-blur-2xl text-white rounded-[3rem] shadow-[0_50px_100px_rgba(0,0,0,0.5)] space-y-6 w-[360px] left-1/2 top-1/2 border border-white/10"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="space-y-0.5">
+                          <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white/30">Neural Command</span>
+                          <h4 className="text-sm font-bold text-[#1B3FBF]">Selected Element</h4>
+                        </div>
+                        <button onClick={() => setSelectedElementContext(null)} className="p-2 hover:bg-white/10 rounded-full transition-all text-white/40 hover:text-white">
+                          <X size={16} />
+                        </button>
+                      </div>
+
+                      {/* Rapid Mutation HUD */}
+                      <div className="grid grid-cols-4 gap-2">
+                         <button onClick={() => handleDirectMutation("Delete this element")} className="p-3 bg-white/5 hover:bg-red-500/20 rounded-2xl flex flex-col items-center gap-2 transition-all border border-white/5 hover:border-red-500/30 group">
+                           <Trash2 size={14} className="text-white/40 group-hover:text-red-400" />
+                           <span className="text-[8px] font-black uppercase tracking-widest text-white/20 group-hover:text-red-400/60">Delete</span>
+                         </button>
+                         <button onClick={() => handleDirectMutation("Make text larger")} className="p-3 bg-white/5 hover:bg-[#1B3FBF]/20 rounded-2xl flex flex-col items-center gap-2 transition-all border border-white/5 hover:border-[#1B3FBF]/30 group">
+                           <ZoomIn size={14} className="text-white/40 group-hover:text-[#1B3FBF]" />
+                           <span className="text-[8px] font-black uppercase tracking-widest text-white/20 group-hover:text-[#1B3FBF]/60">Size+</span>
+                         </button>
+                         <button onClick={() => handleDirectMutation("Make text smaller")} className="p-3 bg-white/5 hover:bg-[#1B3FBF]/20 rounded-2xl flex flex-col items-center gap-2 transition-all border border-white/5 hover:border-[#1B3FBF]/30 group">
+                           <ZoomOut size={14} className="text-white/40 group-hover:text-[#1B3FBF]" />
+                           <span className="text-[8px] font-black uppercase tracking-widest text-white/20 group-hover:text-[#1B3FBF]/60">Size-</span>
+                         </button>
+                         <button onClick={() => handleDirectMutation("Make text bold")} className="p-3 bg-white/5 hover:bg-[#1B3FBF]/20 rounded-2xl flex flex-col items-center gap-2 transition-all border border-white/5 hover:border-[#1B3FBF]/30 group">
+                           <Sparkles size={14} className="text-white/40 group-hover:text-[#1B3FBF]" />
+                           <span className="text-[8px] font-black uppercase tracking-widest text-white/20 group-hover:text-[#1B3FBF]/60">Bold</span>
+                         </button>
+                      </div>
+
+                      <div className="space-y-4">
+                        <textarea 
+                          autoFocus 
+                          value={refinementInput} 
+                          onChange={(e) => setRefinementInput(e.target.value)} 
+                          onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submitRefinement(); } }} 
+                          placeholder="Describe specific refinements..." 
+                          className="w-full h-24 bg-white/5 border border-white/10 rounded-2xl p-4 text-sm focus:outline-none placeholder:text-white/20 resize-none focus:border-[#1B3FBF]/50 transition-all font-light" 
+                        />
+                        <button 
+                          onClick={submitRefinement} 
+                          className="w-full py-4 bg-[#1B3FBF] text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.4em] shadow-xl shadow-[#1B3FBF]/20 hover:scale-[1.02] active:scale-95 transition-all"
+                        >
+                          Execute Orchestration
+                        </button>
+                      </div>
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -446,24 +510,68 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, onRefinement, readO
                     })()}
                     {showKnobs && (
                       <motion.div initial={{ opacity: 0, scale: 0.9, x: 20 }} animate={{ opacity: 1, scale: 1, x: 0 }} exit={{ opacity: 0, scale: 0.9, x: 20 }} className="absolute bottom-12 right-12 z-[1000] w-[340px] bg-white/90 backdrop-blur-2xl rounded-[2.5rem] shadow-2xl p-8 space-y-8 border border-black/5">
-                        <div className="space-y-4">
-                          <span className="text-[10px] font-black uppercase tracking-widest text-black/20">Aesthetic Engine</span>
+                        <div className="space-y-6">
+                          <div className="flex justify-between items-center pb-2 border-b border-black/5">
+                            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-black">Aesthetic Engine</span>
+                            <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-[#1B3FBF]/10 text-[#1B3FBF] text-[8px] font-black uppercase">
+                              <Sparkles size={10} /> Live Override
+                            </div>
+                          </div>
+
                           <div className="space-y-6">
                             <div className="space-y-3">
-                              <div className="flex justify-between items-center"><span className="text-[10px] font-bold uppercase tracking-wider">Primary Tone</span><span className="text-[10px] font-mono opacity-40">{primaryColor}</span></div>
-                              <input type="color" value={primaryColor} onChange={(e) => { setPrimaryColor(e.target.value); applyKnobChange('primary-color', e.target.value); }} className="w-full h-8 rounded-lg cursor-pointer bg-black/5 border-none" />
+                              <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-wider text-black/60">
+                                <span>Brand Primary</span>
+                                <span className="font-mono text-[#1B3FBF] bg-[#1B3FBF]/5 px-2 py-0.5 rounded">{primaryColor}</span>
+                              </div>
+                              <input 
+                                type="color" 
+                                value={primaryColor} 
+                                onChange={(e) => { setPrimaryColor(e.target.value); applyKnobChange('primary-color', e.target.value); }} 
+                                className="w-full h-10 rounded-2xl cursor-pointer bg-black/5 border-none p-1 transition-all hover:bg-black/10" 
+                              />
                             </div>
+
                             <div className="space-y-3">
-                              <div className="flex justify-between items-center"><span className="text-[10px] font-bold uppercase tracking-wider">Corner Radius</span><span className="text-[10px] font-mono opacity-40">{borderRadius}</span></div>
-                              <input type="range" min="0" max="32" value={parseInt(borderRadius)} onChange={(e) => { const v = e.target.value + "px"; setBorderRadius(v); applyKnobChange('border-radius', v); }} className="w-full accent-[#1B3FBF]" />
+                              <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-wider text-black/60">
+                                <span>Edge Rounding</span>
+                                <span className="font-mono">{borderRadius}</span>
+                              </div>
+                              <input 
+                                type="range" 
+                                min="0" max="40" 
+                                value={parseInt(borderRadius)} 
+                                onChange={(e) => { const v = e.target.value + "px"; setBorderRadius(v); applyKnobChange('border-radius', v); }} 
+                                className="w-full h-1.5 bg-black/5 rounded-full appearance-none accent-[#1B3FBF] cursor-pointer" 
+                              />
                             </div>
+
                             <div className="space-y-3">
-                              <div className="flex justify-between items-center"><span className="text-[10px] font-bold uppercase tracking-wider">Font Scale</span><span className="text-[10px] font-mono opacity-40">{fontSize}</span></div>
-                              <input type="range" min="12" max="24" value={parseInt(fontSize)} onChange={(e) => { const v = e.target.value + "px"; setFontSize(v); applyKnobChange('font-size', v); }} className="w-full accent-[#1B3FBF]" />
+                              <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-wider text-black/60">
+                                <span>Text Volume</span>
+                                <span className="font-mono">{fontSize}</span>
+                              </div>
+                              <input 
+                                type="range" 
+                                min="10" max="32" 
+                                value={parseInt(fontSize)} 
+                                onChange={(e) => { const v = e.target.value + "px"; setFontSize(v); applyKnobChange('font-size', v); }} 
+                                className="w-full h-1.5 bg-black/5 rounded-full appearance-none accent-[#1B3FBF] cursor-pointer" 
+                              />
                             </div>
+
                             <div className="space-y-3">
-                              <div className="flex justify-between items-center"><span className="text-[10px] font-bold uppercase tracking-wider">Spacing Flux</span><span className="text-[10px] font-mono opacity-40">{spacingScale}</span></div>
-                              <input type="range" min="0.5" max="2" step="0.1" value={parseFloat(spacingScale)} onChange={(e) => { const v = e.target.value; setSpacingScale(v); applyKnobChange('spacing', v); }} className="w-full accent-[#1B3FBF]" />
+                              <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-wider text-black/60">
+                                <span>Layout Density</span>
+                                <span className="font-mono">{spacingScale}x</span>
+                              </div>
+                              <input 
+                                type="range" 
+                                min="0.5" max="2.5" step="0.1" 
+                                value={parseFloat(spacingScale)} 
+                                onChange={(e) => { const v = e.target.value; setSpacingScale(v); applyKnobChange('spacing', v); }} 
+                                className="w-full h-1.5 bg-black/5 rounded-full appearance-none accent-[#1B3FBF] cursor-pointer" 
+                              />
                             </div>
                           </div>
                         </div>

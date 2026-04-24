@@ -42,6 +42,8 @@ export const exportAsPPTX = async (iframeId: string) => {
   pptx.writeFile({ fileName: "kreo-presentation.pptx" });
 };
 
-export const exportToCanva = () => {
-  window.open('https://www.canva.com/create/', '_blank');
+export const exportToCanva = (code: string) => {
+  navigator.clipboard.writeText(code).then(() => {
+    window.open('https://www.canva.com/create/', '_blank');
+  });
 };

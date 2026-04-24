@@ -2,29 +2,40 @@ import { RefObject } from 'react';
 
 export const useArtifactTools = (iframeRef: RefObject<HTMLIFrameElement>) => {
   
+  const rulesMap: Record<string, string> = {};
+
   const applyKnobChange = (variable: string, value: string) => {
     if (!iframeRef.current) return;
     const doc = iframeRef.current.contentDocument || iframeRef.current.contentWindow?.document;
     if (!doc) return;
 
-    let styleTag = doc.getElementById('kreo-dynamic-knobs');
+    let styleTag = doc.getElementById('kreo-dynamic-knobs') as HTMLStyleElement;
     if (!styleTag) {
       styleTag = doc.createElement('style');
       styleTag.id = 'kreo-dynamic-knobs';
       doc.head.appendChild(styleTag);
     }
 
-    // This logic assumes the artifact uses standard CSS variables or we just inject global overrides
-    const rules: Record<string, string> = {
-      'primary-color': `--primary: ${value};`,
-      'border-radius': `--radius: ${value};`,
+    const templates: Record<string, string> = {
+      'primary-color': `--primary: ${value} !important;`,
+      'border-radius': `--radius: ${value} !important;`,
       'font-size': `body { font-size: ${value} !important; }`,
-      'spacing': `:root { --spacing-scale: ${value}; }`
+      'spacing': `:root { --spacing-scale: ${value} !important; }`
     };
 
-    if (rules[variable]) {
-      // Very crude way to append/update, better to maintain a state object of overrides
-      styleTag.innerHTML += ` :root { ${rules[variable]} } ${rules[variable].includes('font-size') ? rules[variable] : ''}`;
+    if (templates[variable]) {
+      rulesMap[variable] = templates[variable];
+      
+      // Update entire style tag with current state of all knobs
+      const css = `
+        :root {
+          ${rulesMap['primary-color'] || ''}
+          ${rulesMap['border-radius'] || ''}
+          ${rulesMap['spacing'] || ''}
+        }
+        ${rulesMap['font-size'] || ''}
+      `;
+      styleTag.innerHTML = css;
     }
   };
 
