@@ -4,11 +4,14 @@ import {
   Eye, Code2, Copy, Download, RefreshCw, 
   ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Maximize, Minimize, RotateCcw,
   Share2, Play, MousePointer2, SlidersHorizontal, Settings2, Sparkles, FileArchive, Presentation, Image,
-  Monitor, Smartphone
+  Monitor, Smartphone, Volume2
 } from "lucide-react";
+import { generateArtifact } from "@/lib/ai";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLang } from "@/context/LanguageContext";
+import { useArtifactTools } from "@/features/useArtifactTools";
+import * as exportUtils from "@/features/exportUtils";
 
 interface ArtifactPanelProps {
   code: string;
@@ -40,6 +43,13 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, onRefinement, readO
   const [primaryColor, setPrimaryColor] = useState("#1B3FBF");
   const [borderRadius, setBorderRadius] = useState("0.5rem");
   const [deviceMode, setDeviceMode] = useState<"desktop" | "phone">("desktop");
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const { applyKnobChange, setupLiveEdit } = useArtifactTools(iframeRef);
+  const [showExportHub, setShowExportHub] = useState(false);
+  
+  // Knob values
+  const [fontSize, setFontSize] = useState("16px");
+  const [spacingScale, setSpacingScale] = useState("1");
 
   // Detect Presentation Mode
   const isPresentation = prompt?.toLowerCase().includes("ppt") || prompt?.toLowerCase().includes("presentation") || prompt?.toLowerCase().includes("slideshow");
@@ -73,25 +83,65 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, onRefinement, readO
 
   useEffect(() => {
     const handleMessage = (e: MessageEvent) => {
-      if (e.data?.type === 'ELEMENT_CLICKED' && inlineEditMode) {
+      if (e.data?.type === 'KREO_LIVE_EDIT_CLICK' && inlineEditMode) {
         setSelectedElementContext({
-          tag: e.data.tag,
-          text: e.data.text,
-          x: e.data.x,
-          y: e.data.y
+          tag: e.data.selector, // Use selector for better targeting in refinement
+          text: e.data.outerHTML, // Full content for context
+          x: 0,
+          y: 0
         });
+        setRefinementInput(`Apply this change to the selected element...`);
       }
     };
     window.addEventListener('message', handleMessage);
     return () => window.removeEventListener('message', handleMessage);
   }, [inlineEditMode]);
 
-  const submitRefinement = () => {
-    if (!refinementInput.trim() || !onRefinement || !selectedElementContext) return;
-    const fullRefinement = `In the ${selectedElementContext.tag} element containing "${selectedElementContext.text}", please: ${refinementInput}`;
-    onRefinement(fullRefinement);
-    setRefinementInput("");
-    setSelectedElementContext(null);
+  useEffect(() => {
+    if (inlineEditMode) {
+      setupLiveEdit(() => {});
+    }
+  }, [inlineEditMode, setupLiveEdit, iframeId]); // Refresh on iframe reload
+
+  const submitRefinement = async () => {
+    if (!refinementInput.trim() || !selectedElementContext) return;
+    
+    // Live Edit Path: Localized Node Replacement (No Full Regeneration)
+    if (inlineEditMode && iframeRef.current) {
+      const doc = iframeRef.current.contentDocument || iframeRef.current.contentWindow?.document;
+      const element = doc?.querySelector(selectedElementContext.tag) as HTMLElement;
+      
+      if (element) {
+        const originalText = refinementInput;
+        setRefinementInput("⚡ Orchestrating Local Edit...");
+        
+        try {
+          const response = await generateArtifact(
+            `Here is an HTML element: ${element.outerHTML}. Apply this change: ${originalText}. Return ONLY the updated element HTML. Do not include markdown code blocks.`,
+            [], undefined, false
+          );
+          
+          // Hot-swapping the node
+          const cleanHtml = response.replace(/```(?:html|tsx|jsx|javascript|js)?/gi, '').trim();
+          element.outerHTML = cleanHtml;
+          
+          setRefinementInput("");
+          setSelectedElementContext(null);
+          return;
+        } catch (err) {
+          console.error("Local Manifest Refinement failed", err);
+          setRefinementInput(originalText);
+        }
+      }
+    }
+
+    // Standard Refinement Path: Full Manifestation Update
+    if (onRefinement) {
+      const fullRefinement = `In the ${selectedElementContext.tag} element, please: ${refinementInput}`;
+      onRefinement(fullRefinement);
+      setRefinementInput("");
+      setSelectedElementContext(null);
+    }
   };
 
   // Robust Manifestation Engine
@@ -264,8 +314,39 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, onRefinement, readO
              <button onClick={() => setDeviceMode("phone")} className={`p-1.5 rounded-lg ${deviceMode === 'phone' ? "bg-white text-black shadow-sm" : "text-black/40"}`}><Smartphone size={14} /></button>
           </div>
           <button onClick={() => setIsFullscreen(!isFullscreen)} className="p-2 text-black/30 hover:text-[#1B3FBF]">{isFullscreen ? <Minimize size={15} /> : <Maximize size={15} />}</button>
-          {!readOnly && <button onClick={() => setIframeId(i => i + 1)} className="p-2 text-black/30"><RefreshCw size={15} /></button>}
-          {!readOnly && <button onClick={handleDownload} className="p-2 text-black/30"><Download size={15} /></button>}
+          <button onClick={() => setIframeId(i => i + 1)} className="p-2 text-black/30 hover:text-[#1B3FBF]"><RefreshCw size={15} /></button>
+          <div className="relative">
+            <button 
+              onMouseEnter={() => setShowExportHub(true)} 
+              className="p-2 text-black/30 hover:text-[#1B3FBF]"
+            >
+              <Download size={15} />
+            </button>
+            <AnimatePresence>
+              {showExportHub && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                  onMouseLeave={() => setShowExportHub(false)}
+                  className="absolute right-0 top-10 z-[3000] w-48 bg-white rounded-[2rem] shadow-2xl border border-black/5 p-2 overflow-hidden"
+                >
+                  <button onClick={() => exportUtils.exportAsHTML(getManifestationSrcDoc())} className="w-full flex items-center gap-3 px-4 py-3 hover:bg-black/5 rounded-2xl text-[10px] font-black uppercase tracking-widest text-black/60 hover:text-[#1B3FBF] transition-all">
+                    <Code2 size={14} /> HTML Source
+                  </button>
+                  <button onClick={() => exportUtils.exportAsZip(getManifestationSrcDoc())} className="w-full flex items-center gap-3 px-4 py-3 hover:bg-black/5 rounded-2xl text-[10px] font-black uppercase tracking-widest text-black/60 hover:text-[#1B3FBF] transition-all">
+                    <FileArchive size={14} /> Dev ZIP Hub
+                  </button>
+                  <button onClick={() => exportUtils.exportAsPPTX("manifestation-iframe")} className="w-full flex items-center gap-3 px-4 py-3 hover:bg-black/5 rounded-2xl text-[10px] font-black uppercase tracking-widest text-black/60 hover:text-[#1B3FBF] transition-all">
+                    <Presentation size={14} /> PPTX Slide
+                  </button>
+                  <button onClick={() => exportUtils.exportToCanva()} className="w-full flex items-center gap-3 px-4 py-3 hover:bg-black/5 rounded-2xl text-[10px] font-black uppercase tracking-widest text-black/60 hover:text-[#1B3FBF] transition-all">
+                    <Image size={14} /> Canva Logic
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
           {!readOnly && (
             <div className="flex items-center gap-1 bg-black/[0.03] p-1 rounded-xl">
                <button onClick={() => setInlineEditMode(!inlineEditMode)} className={`p-1.5 rounded-lg transition-all flex items-center gap-2 ${inlineEditMode ? "bg-[#1B3FBF] text-white" : "text-black/40"}`}>
@@ -354,6 +435,8 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, onRefinement, readO
 
                       return (
                         <iframe 
+                          id="manifestation-iframe"
+                          ref={iframeRef}
                           key={`${iframeId}-${currentSlide}`} 
                           srcDoc={getManifestationSrcDoc()} 
                           title="Manifestation Player" 
@@ -362,18 +445,35 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, onRefinement, readO
                       );
                     })()}
                     {showKnobs && (
-                      <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="absolute bottom-12 right-12 z-[1000] w-[340px] bg-white rounded-[2.5rem] shadow-2xl p-8 space-y-8">
+                      <motion.div initial={{ opacity: 0, scale: 0.9, x: 20 }} animate={{ opacity: 1, scale: 1, x: 0 }} exit={{ opacity: 0, scale: 0.9, x: 20 }} className="absolute bottom-12 right-12 z-[1000] w-[340px] bg-white/90 backdrop-blur-2xl rounded-[2.5rem] shadow-2xl p-8 space-y-8 border border-black/5">
                         <div className="space-y-4">
-                          <span className="text-[10px] font-black uppercase tracking-widest text-black/20">Manifest Style</span>
-                          <div className="flex items-center bg-black/[0.03] p-1 rounded-2xl h-14">
-                             {['light', 'dark', 'ultra'].map((t) => (
-                               <button key={t} onClick={() => setRenderTheme(t as any)} className={`flex-1 h-full rounded-xl text-[9px] font-black uppercase transition-all ${renderTheme === t ? 'bg-[#1B3FBF] text-white' : 'text-black/30'}`}>{t}</button>
-                             ))}
+                          <span className="text-[10px] font-black uppercase tracking-widest text-black/20">Aesthetic Engine</span>
+                          <div className="space-y-6">
+                            <div className="space-y-3">
+                              <div className="flex justify-between items-center"><span className="text-[10px] font-bold uppercase tracking-wider">Primary Tone</span><span className="text-[10px] font-mono opacity-40">{primaryColor}</span></div>
+                              <input type="color" value={primaryColor} onChange={(e) => { setPrimaryColor(e.target.value); applyKnobChange('primary-color', e.target.value); }} className="w-full h-8 rounded-lg cursor-pointer bg-black/5 border-none" />
+                            </div>
+                            <div className="space-y-3">
+                              <div className="flex justify-between items-center"><span className="text-[10px] font-bold uppercase tracking-wider">Corner Radius</span><span className="text-[10px] font-mono opacity-40">{borderRadius}</span></div>
+                              <input type="range" min="0" max="32" value={parseInt(borderRadius)} onChange={(e) => { const v = e.target.value + "px"; setBorderRadius(v); applyKnobChange('border-radius', v); }} className="w-full accent-[#1B3FBF]" />
+                            </div>
+                            <div className="space-y-3">
+                              <div className="flex justify-between items-center"><span className="text-[10px] font-bold uppercase tracking-wider">Font Scale</span><span className="text-[10px] font-mono opacity-40">{fontSize}</span></div>
+                              <input type="range" min="12" max="24" value={parseInt(fontSize)} onChange={(e) => { const v = e.target.value + "px"; setFontSize(v); applyKnobChange('font-size', v); }} className="w-full accent-[#1B3FBF]" />
+                            </div>
+                            <div className="space-y-3">
+                              <div className="flex justify-between items-center"><span className="text-[10px] font-bold uppercase tracking-wider">Spacing Flux</span><span className="text-[10px] font-mono opacity-40">{spacingScale}</span></div>
+                              <input type="range" min="0.5" max="2" step="0.1" value={parseFloat(spacingScale)} onChange={(e) => { const v = e.target.value; setSpacingScale(v); applyKnobChange('spacing', v); }} className="w-full accent-[#1B3FBF]" />
+                            </div>
                           </div>
                         </div>
-                        <div className="flex items-center justify-between">
-                           <div className="space-y-1"><span className="text-sm font-bold">Split Architecture</span><p className="text-[10px] text-black/30">Parallel neural execution</p></div>
-                           <button onClick={() => setSplitArchitecture(!splitArchitecture)} className={`w-12 h-6 rounded-full transition-all flex items-center px-1 ${splitArchitecture ? 'bg-[#1B3FBF]' : 'bg-black/10'}`}><div className={`w-4 h-4 rounded-full bg-white shadow-sm transform transition-all ${splitArchitecture ? 'translate-x-6' : ''}`} /></button>
+                        <div className="pt-4 border-t border-black/5 flex items-center justify-between">
+                           <div className="space-y-0.5"><span className="text-[10px] font-black uppercase tracking-widest">Environment</span><p className="text-[8px] text-black/30">Atmospheric override active</p></div>
+                           <div className="flex p-0.5 bg-black/5 rounded-lg">
+                             {['light', 'dark'].map((t) => (
+                               <button key={t} onClick={() => setRenderTheme(t as any)} className={`px-3 py-1 rounded-md text-[8px] font-black uppercase ${renderTheme === t ? 'bg-white shadow-sm' : 'text-black/30'}`}>{t}</button>
+                             ))}
+                           </div>
                         </div>
                       </motion.div>
                     )}

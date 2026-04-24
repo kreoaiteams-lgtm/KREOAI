@@ -157,7 +157,14 @@ async function fetchRealWorldContext(prompt: string, isPaidUser: boolean): Promi
   return "";
 }
 
-export const generateArtifact = async (prompt: string, chatHistory: {role: string, content: string}[] = [], imageUrl?: string, isPaidUser: boolean = false) => {
+export const generateArtifact = async (
+  prompt: string, 
+  chatHistory: {role: string, content: string}[] = [], 
+  imageUrl?: string, 
+  isPaidUser: boolean = false,
+  brandKitRule: string = "",
+  styleMimicRule: string = ""
+) => {
   if (!SARVAM_API_KEY) {
     console.warn("Sarvam API key missing. Falling back...");
     return getDemoFallback(prompt);
@@ -174,7 +181,7 @@ export const generateArtifact = async (prompt: string, chatHistory: {role: strin
     const sanitizedHistory = chatHistory.map(({ role, content }) => ({ role, content }));
 
     const messages = [
-      { role: "system", content: AESTHETICS_SYSTEM_PROMPT },
+      { role: "system", content: `${AESTHETICS_SYSTEM_PROMPT}\n${brandKitRule}\n${styleMimicRule}` },
       ...sanitizedHistory,
       { role: "user", content: enrichedPrompt },
     ];

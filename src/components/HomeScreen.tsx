@@ -8,7 +8,10 @@ import {
   Presentation, Code2, Table2, GitGraph, Smile, Trash2, RefreshCw
 } from "lucide-react";
 
-import { narrateText, generateBio } from "@/lib/ai";
+import { narrateText, generateBio, generateArtifact } from "@/lib/ai";
+import { useBrandKit } from "@/features/useBrandKit";
+import { useStyleMimic } from "@/features/useStyleMimic";
+import { BrandKitModal } from "./BrandKitModal";
 import KreonCard from "./KreonCard";
 import IdentityScreen from "./IdentityScreen";
 
@@ -458,6 +461,10 @@ const HomeScreen = ({
   const [captureUrl, setCaptureUrl] = useState("");
   const [isCapturing, setIsCapturing] = useState(false);
   const [residentBio, setResidentBio] = useState(() => localStorage.getItem('kreo_resident_bio') || "");
+  
+  const { brandKit, saveBrandKit, getBrandKitPromptRule } = useBrandKit();
+  const { mimicUrl, setMimicUrl, getStyleMimicPromptRule, clearStyleMimic } = useStyleMimic();
+  const [showBrandKitModal, setShowBrandKitModal] = useState(false);
 
   useEffect(() => {
     localStorage.setItem('kreo_last_query', query);
@@ -880,7 +887,14 @@ const HomeScreen = ({
         `;
       }
 
-      const code = await generateArtifact(backgroundEnhancedQuery, historyToSend, uploadedFile?.url, false);
+      const code = await generateArtifact(
+        backgroundEnhancedQuery, 
+        historyToSend, 
+        uploadedFile?.url, 
+        isPro, 
+        getBrandKitPromptRule(), 
+        getStyleMimicPromptRule()
+      );
 
       if (code) {
         setArtifact(code);
@@ -1176,7 +1190,7 @@ const HomeScreen = ({
               </div>
             </div>
             <div className="space-y-3">
-              <button onClick={() => alert("Brand Kit Setup initialized! Extracting CSS rules...")} className="w-full py-4 border border-[#1B3FBF]/10 bg-white text-[#1B3FBF] text-[10px] font-black uppercase tracking-[0.4em] rounded-2xl hover:bg-[#1B3FBF]/5 transition-all flex items-center justify-center gap-2 group shadow-sm">
+              <button onClick={() => { setShowBrandKitModal(true); setProfileOpen(false); }} className="w-full py-4 border border-[#1B3FBF]/10 bg-white text-[#1B3FBF] text-[10px] font-black uppercase tracking-[0.4em] rounded-2xl hover:bg-[#1B3FBF]/5 transition-all flex items-center justify-center gap-2 group shadow-sm">
                 <Palette size={14} className="group-hover:rotate-12 transition-transform" /> Brand Kit Setup
               </button>
               <button
@@ -1296,13 +1310,27 @@ const HomeScreen = ({
                   <div className="absolute left-3 top-1/2 -translate-y-1/2">
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <button type="button" onClick={() => setShowWebCaptureModal(true)} className="p-2 text-black/30 hover:text-[#1B3FBF] hover:bg-[#1B3FBF]/10 rounded-lg transition-all">
+                        <button type="button" onClick={() => setShowWebCaptureModal(true)} className={`p-2 rounded-lg transition-all ${mimicUrl ? 'text-[#1B3FBF] bg-[#1B3FBF]/10' : 'text-black/30 hover:text-[#1B3FBF] hover:bg-[#1B3FBF]/10'}`}>
                           <Globe size={18} />
                         </button>
                       </TooltipTrigger>
-                      <TooltipContent>Mimic URL Aesthetics</TooltipContent>
+                      <TooltipContent>Mimic Style — {mimicUrl || "Enter URL"}</TooltipContent>
                     </Tooltip>
                   </div>
+                  {/* Style Mimic Active Pill */}
+                  <AnimatePresence>
+                    {mimicUrl && (
+                      <motion.div 
+                        initial={{ opacity: 0, x: -10, scale: 0.8 }} 
+                        animate={{ opacity: 1, x: 0, scale: 1 }} 
+                        exit={{ opacity: 0, x: -10, scale: 0.8 }}
+                        className="absolute -bottom-10 left-0 bg-[#1B3FBF] text-white py-1.5 px-4 rounded-full text-[9px] font-black uppercase tracking-widest flex items-center gap-2 shadow-lg shadow-[#1B3FBF]/20"
+                      >
+                        <Globe size={10} /> {mimicUrl.replace(/^https?:\/\//, '').split('/')[0]}
+                        <button type="button" onClick={clearStyleMimic} className="hover:scale-110"><X size={10} /></button>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                   <div className="absolute right-3 top-1/2 -translate-y-1/2">
                     <button type="submit" disabled={isSubmitting} className="p-2.5 bg-[#1B3FBF] text-white rounded-xl shadow-lg hover:scale-110 active:scale-95 transition-all disabled:opacity-50">
                       {isSubmitting ? (
@@ -1437,6 +1465,13 @@ const HomeScreen = ({
         )}
       </AnimatePresence>
 
+      <BrandKitModal 
+        isOpen={showBrandKitModal} 
+        onClose={() => setShowBrandKitModal(false)} 
+        brandKit={brandKit} 
+        onSave={saveBrandKit} 
+      />
+
       {shareDialogOpen && (
         <div className="fixed inset-0 z-[2000] flex items-center justify-center p-6 bg-black/60 backdrop-blur-xl animate-in fade-in duration-300">
           <motion.div
@@ -1565,11 +1600,9 @@ const HomeScreen = ({
                     onChange={(e) => setCaptureUrl(e.target.value)}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' && captureUrl) {
-                        const fullQuery = query ? `${query} Mimic style of ${captureUrl}` : `Mimic style of ${captureUrl}`;
-                        setQuery(fullQuery);
+                        setMimicUrl(captureUrl);
                         setShowWebCaptureModal(false);
                         setCaptureUrl("");
-                        handleSubmit(fullQuery);
                       }
                     }}
                   />
@@ -1579,11 +1612,9 @@ const HomeScreen = ({
               <button
                 onClick={() => {
                   if (captureUrl) {
-                    const fullQuery = query ? `${query} Mimic style of ${captureUrl}` : `Mimic style of ${captureUrl}`;
-                    setQuery(fullQuery);
+                    setMimicUrl(captureUrl);
                     setShowWebCaptureModal(false);
                     setCaptureUrl("");
-                    handleSubmit(fullQuery);
                   }
                 }}
                 disabled={!captureUrl}
