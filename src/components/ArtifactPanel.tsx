@@ -345,7 +345,7 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, onRefinement, readO
                 >
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <button onClick={() => exportUtils.exportToCanva(getManifestationSrcDoc())} className="w-full flex items-center gap-3 px-4 py-3 bg-[#1B3FBF]/5 hover:bg-[#1B3FBF] rounded-2xl text-[10px] font-black uppercase tracking-widest text-[#1B3FBF] hover:text-white transition-all border border-[#1B3FBF]/10 mb-1">
+                      <button onClick={() => exportUtils.automatedExportToCanva("manifestation-iframe")} className="w-full flex items-center gap-3 px-4 py-3 bg-[#1B3FBF]/5 hover:bg-[#1B3FBF] rounded-2xl text-[10px] font-black uppercase tracking-widest text-[#1B3FBF] hover:text-white transition-all border border-[#1B3FBF]/10 mb-1">
                         <Image size={14} /> Manifest to Canva
                       </button>
                     </TooltipTrigger>
@@ -428,7 +428,7 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, onRefinement, readO
                            <ZoomOut size={14} className="text-white/40 group-hover:text-[#1B3FBF]" />
                            <span className="text-[8px] font-black uppercase tracking-widest text-white/20 group-hover:text-[#1B3FBF]/60">Size-</span>
                          </button>
-                         <button onClick={() => exportUtils.exportToCanva(getManifestationSrcDoc())} className="p-3 bg-gradient-to-br from-[#1B3FBF] to-[#0020C2] hover:scale-105 active:scale-95 rounded-2xl flex flex-col items-center gap-2 transition-all border border-white/10 group shadow-lg shadow-[#1B3FBF]/20">
+                         <button onClick={() => exportUtils.automatedExportToCanva("manifestation-iframe")} className="p-3 bg-gradient-to-br from-[#1B3FBF] to-[#0020C2] hover:scale-105 active:scale-95 rounded-2xl flex flex-col items-center gap-2 transition-all border border-white/10 group shadow-lg shadow-[#1B3FBF]/20">
                            <Image size={14} className="text-white/80" />
                            <span className="text-[8px] font-black uppercase tracking-widest text-white/60">Canva</span>
                          </button>

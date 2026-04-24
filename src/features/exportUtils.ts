@@ -1,6 +1,7 @@
 import JSZip from 'jszip';
 import html2canvas from 'html2canvas';
 import pptxgen from 'pptxgenjs';
+import { supabase } from '../lib/supabase';
 
 export const exportAsHTML = (code: string) => {
   const blob = new Blob([code], { type: "text/html" });
@@ -46,4 +47,39 @@ export const exportToCanva = (code: string) => {
   navigator.clipboard.writeText(code).then(() => {
     window.open('https://www.canva.com/create/', '_blank');
   });
+};
+
+export const automatedExportToCanva = async (iframeId: string) => {
+  const iframe = document.getElementById(iframeId) as HTMLIFrameElement;
+  if (!iframe) {
+    window.open('https://www.canva.com/create/', '_blank');
+    return;
+  }
+
+  try {
+    const canvas = await html2canvas(iframe.contentDocument!.body, {
+      useCORS: true,
+      scale: 2 // High resolution for Canva
+    });
+    
+    const blob = await new Promise<Blob | null>(res => canvas.toBlob(res, 'image/png'));
+    if (!blob) throw new Error("Capture failed");
+
+    const fileName = `canva_${Date.now()}_${Math.random().toString(36).substring(7)}.png`;
+    const { error: uploadError } = await supabase.storage
+      .from('manifests')
+      .upload(fileName, blob);
+
+    if (uploadError) throw uploadError;
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('manifests')
+      .getPublicUrl(fileName);
+
+    // Canva Media Import URL
+    window.open(`https://www.canva.com/create/design?media=${encodeURIComponent(publicUrl)}`, '_blank');
+  } catch (err) {
+    console.error("[KREO] Canva automation failed:", err);
+    window.open('https://www.canva.com/create/', '_blank');
+  }
 };
