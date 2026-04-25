@@ -1035,7 +1035,14 @@ const HomeScreen = ({
       )}
       {!artifact && !isSubmitting && !isIncomingPortal && (
         <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-3 bg-transparent backdrop-blur-3xl border-b border-white/5 transition-all">
-          <div className="text-foreground group cursor-pointer max-w-[150px]" onClick={() => { setArtifact(null); setCurrentArtifactId(null); setChatHistory([]); window.history.replaceState(null, '', '/'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
+          <div className="text-foreground group cursor-pointer max-w-[150px]" onClick={() => { 
+            setArtifact(null); 
+            setCurrentArtifactId(null); 
+            setChatHistory([]); 
+            setIsArtifactActive(false);
+            navigate('/'); 
+            window.scrollTo({ top: 0, behavior: 'smooth' }); 
+          }}>
             <KreoLogo isPro={isPro} />
           </div>
           <div className="flex items-center gap-1">
@@ -1259,11 +1266,12 @@ const HomeScreen = ({
               <div className="shrink-0 flex justify-between items-center px-6 py-4 border-b border-black/[0.06] bg-white/90 backdrop-blur-xl">
                 <button
                   onClick={() => {
-                    // Auto-save is implicit as manifest updates state on generation
+                    // Holistic reset of manifestation state
                     setArtifact(null);
                     setChatHistory([]);
                     setCurrentArtifactId(null);
-                    window.history.replaceState(null, '', '/');
+                    setIsArtifactActive(false);
+                    navigate('/');
                   }}
                   className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.35em] text-black/30 hover:text-[#1B3FBF] transition-all group"
                 >
