@@ -131,35 +131,37 @@ export const generateArtifact = async (
     }
 
     const data = await response.json();
-    let content = data.choices[0].message.content;
+    let content = data.choices[0].message.cont    // --- RECURSIVE NEURAL BRIDGE CONTINUATION LOGIC ---
+    let bridgesUsed = 0;
+    const MAX_BRIDGES = 3;
+    const SECOND_KEY = "sk_7y0ofcio_tgRuQhhq8JyWkyXasSI7XJIR";
 
-    // --- NEURAL BRIDGE CONTINUATION LOGIC ---
-    // If output feels truncated (no closing tags and roughly at limit), bridge to the second key
-    const isTruncated = (content.trim().length > 3500) && 
-                       !(content.toLowerCase().includes('</html>') || content.trim().endsWith('}') || content.trim().endsWith('```'));
-
-    if (isTruncated) {
-        console.debug("Neural Manifest Truncated. Triggering Bridge Continuation...");
-        const SECOND_KEY = "sk_7y0ofcio_tgRuQhhq8JyWkyXasSI7XJIR";
+    while (bridgesUsed < MAX_BRIDGES) {
+        const isTruncated = (content.trim().length > 3200) && 
+                           !(content.toLowerCase().includes('</html>') || content.trim().endsWith('}') || content.trim().endsWith('```'));
         
-        const bridgeMessages = [
-            ...messages,
-            { role: "assistant", content: content },
-            { role: "user", content: "Continue from the exact character where you left off. Do NOT repeat code. Start immediately with the next character. Complete the manifest." }
-        ];
+        if (!isTruncated) break;
 
+        console.debug(`Neural Manifest Truncated (${content.length} chars). Triggering Bridge ${bridgesUsed + 1}...`);
+        
         try {
+            const bridgeMessages = [
+                ...messages,
+                { role: "assistant", content: content },
+                { role: "user", content: "Continue from the exact character where you left off. Do NOT repeat code. Start immediately with the next character. Complete the manifest." }
+            ];
+
             const bridgeRes = await fetch(SARVAM_ENDPOINT, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${SECOND_KEY}`,
+                    "Authorization": `Bearer ${bridgesUsed % 2 === 0 ? SECOND_KEY : SARVAM_API_KEY}`,
                 },
                 body: JSON.stringify({
                     model: "sarvam-105b",
                     messages: bridgeMessages,
                     max_tokens: 4096,
-                    temperature: 0.5,
+                    temperature: 0.3,
                 }),
             });
 
@@ -168,9 +170,8 @@ export const generateArtifact = async (
                 const continuation = bridgeData?.choices?.[0]?.message?.content;
                 
                 if (continuation) {
-                    // STITCH LOGIC: More conservative stitching to avoid dropping characters
                     let overlap = 0;
-                    const checkLen = Math.min(content.length, 50); // Shorter check window for safety
+                    const checkLen = Math.min(content.length, 60);
                     const suffix = content.slice(-checkLen);
                     for (let i = checkLen; i > 0; i--) {
                         if (continuation.startsWith(suffix.slice(-i))) {
@@ -178,127 +179,63 @@ export const generateArtifact = async (
                             break;
                         }
                     }
-                    
                     content += continuation.slice(overlap);
-                    console.debug("Neural Bridge Successful. Manifest Extended.");
-                }
-            }
+                    bridgesUsed++;
+                } else break;
+            } else break;
         } catch (e) {
             console.error("Neural Bridge Failed:", e);
+            break;
         }
     }
-    // ----------------------------------------
 
-    // Fast-fail artifact extraction
-    const match = content.match(/```(?:html|tsx|jsx|mermaid|python|javascript|ts|js|react)?\s*([\s\S]*?)```/gi);
-    if (match) {
-        // If it's a UI-ready block (HTML or React/JSX), extract and return RAW code
-        // This allows ArtifactPanel to render it via Babel/Iframe
-        const firstBlock = match[0];
-        const typeMatch = firstBlock.match(/^```(\w+)?/);
-        const type = typeMatch && typeMatch[1] ? typeMatch[1].toLowerCase() : '';
-        const rawCode = firstBlock.replace(/^```.*?[\r\n]|```$/g, '').trim();
+    // --- ROBUST EXTRACTION & SITUATION MODE ---
+    const allBlocksMatch = content.match(/```(?:html|tsx|jsx|mermaid|python|javascript|ts|js|react)?\s*([\s\S]*?)(?:```|$)/gi);
+    
+    if (allBlocksMatch) {
+       const firstBlock = allBlocksMatch[0];
+       const typeMatch = firstBlock.match(/^```(\w+)?/);
+       const type = (typeMatch && typeMatch[1] ? typeMatch[1].toLowerCase() : '').replace(/[\r\n]/g, '');
+       const rawCode = firstBlock.replace(/^```.*?[\r\n]|```$/g, '').trim();
 
-        if (type === 'html' || type === 'tsx' || type === 'jsx' || type === 'react' || rawCode.includes('<html') || (rawCode.includes('export default') && rawCode.includes('return'))) {
-            return rawCode;
-        }
+       // If it's a UI-ready block, return it for rendering
+       if (type === 'html' || type === 'tsx' || type === 'jsx' || type === 'react' || rawCode.includes('<html') || (rawCode.includes('export default') && rawCode.includes('return'))) {
+           return rawCode;
+       }
 
-        // SITUATION MODE (App Architecture / Backend Snippets / Mermaid)
-        const blocks = match.map((b: string) => {
-             const tMatch = b.match(/^```(\w+)?/);
-             const t = tMatch && tMatch[1] ? tMatch[1].toLowerCase() : 'text';
-             const code = b.replace(/^```.*?[\r\n]|```$/g, '').trim();
-             
-             if (t === 'mermaid') {
-                  const safeCode = code.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-                  return `<pre class="mermaid">\n${safeCode}\n</pre>`;
-             } else {
-                  return `<div class="code-header">${t.toUpperCase()} SNIPPET</div><pre><code class="language-${t}">${code.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</code></pre>`;
-             }
-        }).join('\n\n');
+       // Otherwise, handle as Situation Mode (Multi-block snippets)
+       const blocks = allBlocksMatch.map((b: string) => {
+           const tMatch = b.match(/^```(\w+)?/);
+           const t = (tMatch && tMatch[1] ? tMatch[1].toLowerCase() : 'text').replace(/[\r\n]/g, '');
+           const code = b.replace(/^```.*?[\r\n]|```$/g, '').trim();
+           
+           if (t === 'mermaid') {
+                const safeCode = code.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                return `<pre class="mermaid">\n${safeCode}\n</pre>`;
+           } else {
+                return `<div class="code-header">${t.toUpperCase()} SNIPPET</div><pre><code class="language-${t}">${code.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</code></pre>`;
+           }
+       }).join('\n\n');
 
-        return `<!DOCTYPE html>
+       return `<!DOCTYPE html>
 <html>
 <head>
     <script type="module">
       import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
-      mermaid.initialize({
-        startOnLoad: true,
-        theme: 'default',
-        securityLevel: 'loose',
-        flowchart: { useMaxWidth: false, htmlLabels: true, curve: 'basis', nodeSpacing: 60, rankSpacing: 60 },
-        fontSize: 15,
-        fontFamily: 'Satoshi, sans-serif'
-      });
+      mermaid.initialize({ startOnLoad: true, theme: 'default', securityLevel: 'loose', flowchart: { useMaxWidth: false, htmlLabels: true, curve: 'basis', nodeSpacing: 60, rankSpacing: 60 }, fontSize: 15, fontFamily: 'Satoshi, sans-serif' });
     </script>
     <link href="https://api.fontshare.com/v2/css?f[]=satoshi@700,500,400&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
     <style>
       * { box-sizing: border-box; margin: 0; padding: 0; }
-      body {
-        background: #ffffff;
-        color: #111;
-        font-family: 'Satoshi', sans-serif;
-        padding: 2.5rem 3rem;
-        overflow-y: auto;
-        overflow-x: hidden;
-        min-height: 100vh;
-      }
-      .page-title {
-        font-size: 1.1rem;
-        font-weight: 700;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        color: #1B3FBF;
-        border-bottom: 3px solid #1B3FBF;
-        padding-bottom: 1rem;
-        margin-bottom: 2.5rem;
-      }
-      .diagram-wrap {
-        background: #f8f9ff;
-        border: 2px solid #e8ebff;
-        border-radius: 1rem;
-        padding: 2rem;
-        margin-bottom: 2.5rem;
-        overflow-x: auto;
-        overflow-y: visible;
-        -webkit-overflow-scrolling: touch;
-      }
-      .diagram-wrap .mermaid {
-        min-width: 900px;
-        display: block;
-      }
-      .diagram-wrap svg {
-        width: 100% !important;
-        height: auto !important;
-        min-width: 900px;
-        display: block;
-      }
-      .code-label {
-        font-size: 0.65rem;
-        font-weight: 800;
-        letter-spacing: 0.2em;
-        text-transform: uppercase;
-        color: #1B3FBF;
-        background: #eef1ff;
-        border: 2px solid #1B3FBF;
-        border-bottom: none;
-        padding: 0.5rem 1rem;
-        border-radius: 0.5rem 0.5rem 0 0;
-        display: inline-block;
-        margin-top: 1.5rem;
-      }
-      pre[class*="language-"] {
-        border-radius: 0 0.5rem 0.5rem 0.5rem !important;
-        border: 2px solid #e8ebff !important;
-        font-size: 0.8rem !important;
-        margin-top: 0 !important;
-        background: #fafbff !important;
-      }
-      code { font-family: 'Fira Code', 'Fira Mono', monospace; }
+      body { background: #ffffff; color: #111; font-family: 'Satoshi', sans-serif; padding: 2.5rem 3rem; overflow-y: auto; overflow-x: hidden; min-height: 100vh; }
+      .page-title { font-size: 1.1rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #1B3FBF; border-bottom: 3px solid #1B3FBF; padding-bottom: 1rem; margin-bottom: 2.5rem; }
+      .diagram-wrap { background: #f8f9ff; border: 2px solid #e8ebff; border-radius: 1rem; padding: 2rem; margin-bottom: 2.5rem; overflow-x: auto; }
+      .diagram-wrap .mermaid { min-width: 900px; display: block; }
+      .code-label { font-size: 0.65rem; font-weight: 800; letter-spacing: 0.2em; text-transform: uppercase; color: #1B3FBF; background: #eef1ff; border: 2px solid #1B3FBF; border-bottom: none; padding: 0.5rem 1rem; border-radius: 0.5rem 0.5rem 0 0; display: inline-block; margin-top: 1.5rem; }
+      pre[class*="language-"] { border-radius: 0 0.5rem 0.5rem 0.5rem !important; border: 2px solid #e8ebff !important; font-size: 0.8rem !important; margin-top: 0 !important; background: #fafbff !important; }
     </style>
 </head>
 <body>
@@ -306,6 +243,16 @@ export const generateArtifact = async (
     ${blocks.replace(/<pre class="mermaid">/g, '<div class="diagram-wrap"><pre class="mermaid">').replace(/<\/pre>\s*(?=\n*<div class="code-header"|$)/g, '</pre></div>').replace(/<div class="code-header">([^<]+)<\/div>/g, '<div class="code-label">$1</div>')}
 </body>
 </html>`;
+    }
+
+    // html tag fallback
+    if (content.toLowerCase().includes('<html')) {
+        const start = content.toLowerCase().indexOf('<html');
+        const end = content.lastIndexOf('</html>');
+        if (start !== -1) return content.slice(start, end !== -1 ? end + 7 : undefined).trim();
+    }
+
+    return content.trim();tml>`;
     }
     return content.trim();
   } catch (err) {
