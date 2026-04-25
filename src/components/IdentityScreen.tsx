@@ -396,15 +396,21 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
               <div className="absolute inset-0 overflow-hidden pointer-events-none p-12 opacity-40">
                 <div className="grid grid-cols-5 gap-12 h-fit">
                   {[1, 2, 3, 4, 5].map(col => (
-                    <div key={col} className="space-y-12">
+                    <div key={col} className={`space-y-12 ${col < 5 ? 'border-r border-black/10 pr-12' : ''}`}>
                       <div className="space-y-4">
                         <h4 className="text-xl font-black uppercase tracking-tighter leading-tight border-b-2 border-black pb-2">
                           {col === 1 ? "NEURAL DAWN" : col === 2 ? "RANK 0-19" : col === 3 ? "VISUAL ERA" : col === 4 ? "THE REGISTER" : "FINAL NODE"}
                         </h4>
                         <div className="space-y-3">
-                           <p className="text-[10px] leading-relaxed text-black/80">The manifestation of digital identity has reached its zenith. As we transition from code-first to intent-first architectures, the KREO platform stands as a testament to the power of neural orchestration.</p>
+                           <p className="text-[11px] leading-relaxed text-black/80">
+                             {col === 1 && <span className="float-left text-5xl font-black mr-2 mt-1 leading-[0.8]">T</span>}
+                             The manifestation of digital identity has reached its zenith. As we transition from code-first to intent-first architectures, the KREO platform stands as a testament to the power of neural orchestration.
+                           </p>
                            <p className="text-[10px] leading-relaxed text-black/80 font-black italic">"Every line of generated visual logic is a signature of human intent," says the Registry Director.</p>
-                           <div className="w-full h-24 bg-black/5 border border-black/10 flex items-center justify-center italic text-[8px] uppercase tracking-widest">Fig. {col}.01 — Manifest Density</div>
+                           <div className="w-full h-32 bg-black/10 grayscale contrast-125 brightness-90 relative overflow-hidden flex items-center justify-center italic text-[8px] uppercase tracking-widest border border-black/20">
+                             <div className="absolute inset-0 opacity-20" style={{ backgroundImage: `radial-gradient(black 1px, transparent 0)`, backgroundSize: '3px 3px' }} />
+                             RESIDENT PORTRAIT_NODE_{col}
+                           </div>
                         </div>
                       </div>
                       <div className="space-y-4">
@@ -412,7 +418,7 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
                         <p className="text-[9px] leading-relaxed text-black/60">Across the globe, residents are joining the registry in droves. What started as a simple playground for designers has evolved into a global standard for visual manifestations. From cinematic dashboards to complex financial maps, the logic is sound and the design is pristine.</p>
                       </div>
                       <div className="pt-8 border-t border-black/10">
-                        <span className="text-[8px] font-black uppercase tracking-[0.4em]">CONTINUED ON PAGE {col + 12}</span>
+                        <span className="text-[8px] font-black uppercase tracking-[0.4em]">CONTINUED ON PAGE {col + 12} — ED. 24</span>
                       </div>
                     </div>
                   ))}
@@ -420,7 +426,6 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
               </div>
 
               <div className="absolute inset-0 opacity-[0.05]" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")` }} />
-            </div>
 
               <div className="absolute inset-x-0 top-[28%] pointer-events-none hidden xl:flex justify-between items-start px-24 w-full h-full z-10">
                 <motion.div initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.5 }} className="w-[380px] text-left flex flex-col gap-10 pointer-events-auto bg-[#f4f1ea]/80 backdrop-blur-md p-10 border-r border-black/10">
