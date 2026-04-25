@@ -114,54 +114,48 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
     const phaseOrder: Record<string, number> = { pref: 0, brand: 1, interview: 2, reveal: 3 };
     const activeStep = phaseOrder[phase] ?? 0;
     return (
-      <div className="flex flex-col gap-1 mb-12 border-b border-black/20 pb-4">
-        <div className="text-[10px] font-black uppercase tracking-[0.4em] text-black/40 mb-2">Registry Progress Log — Ed. 24</div>
-        <div className="flex items-center gap-4">
-          {steps.map((s, i) => (
-            <React.Fragment key={s}>
-              <div className="flex items-center gap-2">
-                <span className={`text-[11px] font-black uppercase tracking-tighter ${
-                  i === activeStep ? 'text-black border-b-2 border-black' : i < activeStep ? 'text-black/40 line-through decoration-black/20' : 'text-black/15'
-                }`}>{s}</span>
+      <div className="flex items-center gap-3 mb-12">
+        {steps.map((s, i) => (
+          <React.Fragment key={s}>
+            <div className="flex items-center gap-2">
+              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-black border transition-all ${
+                i < activeStep ? 'bg-[#1B3FBF] border-[#1B3FBF] text-white' :
+                i === activeStep ? 'bg-white border-[#1B3FBF] text-[#1B3FBF]' :
+                'bg-transparent border-black/10 text-black/20'
+              }`}>
+                {i < activeStep ? <Check size={10} /> : i + 1}
               </div>
-              {i < steps.length - 1 && <span className="text-black/10">/</span>}
-            </React.Fragment>
-          ))}
-        </div>
+              <span className={`text-[9px] font-black uppercase tracking-widest hidden md:block ${
+                i === activeStep ? 'text-[#1B3FBF]' : i < activeStep ? 'text-black/40' : 'text-black/15'
+              }`}>{s}</span>
+            </div>
+            {i < steps.length - 1 && <div className={`flex-1 h-[1px] ${i < activeStep ? 'bg-[#1B3FBF]/40' : 'bg-black/5'}`} />}
+          </React.Fragment>
+        ))}
       </div>
     );
   };
 
   return (
-    <div className="fixed inset-0 z-[3000] bg-[#f4f1ea] overflow-y-auto flex flex-col font-serif">
+    <div className="fixed inset-0 z-[3000] bg-[#F9FAFF] overflow-y-auto flex flex-col">
       {/* Atmospheric Background */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute inset-0 opacity-[0.08]" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")` }} />
-        <div className="absolute top-0 left-0 w-full h-[1px] bg-black/10 mt-32" />
-        <div className="absolute top-0 left-0 w-full h-[1px] bg-black/10 mt-[34px]" />
-      </div>
-
-      {/* Newspaper Header */}
-      <div className="hidden lg:flex absolute top-0 left-0 w-full flex-col items-center pt-8 pointer-events-none opacity-20">
-        <h2 className="text-[120px] font-black uppercase tracking-[-0.05em] leading-none text-black/90">THE KREON REGISTER</h2>
-        <div className="w-full max-w-7xl flex justify-between border-y-2 border-black/40 py-2 mt-4 px-6 text-[12px] font-black uppercase tracking-widest text-black">
-          <span>VOL. XXIV — NO. 1247</span>
-          <span>SATURDAY, APRIL 25, 2026</span>
-          <span>PRICE: ONE MANIFESTO</span>
-        </div>
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#1B3FBF]/5 rounded-full blur-[120px]" />
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-purple-500/5 rounded-full blur-[100px]" />
+        <div className="absolute inset-0 opacity-[0.02]" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")` }} />
       </div>
 
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-[4000] flex items-center justify-between px-8 py-5 bg-[#f4f1ea]/80 backdrop-blur-2xl border-b border-black/10">
+      <header className="fixed top-0 left-0 right-0 z-[4000] flex items-center justify-between px-8 py-5 bg-white/80 backdrop-blur-2xl border-b border-black/[0.04]">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-black rounded-full flex items-center justify-center">
-            <Newspaper size={14} className="text-white" />
+          <div className="w-8 h-8 bg-[#1B3FBF] rounded-full flex items-center justify-center">
+            <Zap size={14} className="text-white" />
           </div>
-          <span className="text-[10px] font-black uppercase tracking-[0.3em] text-black">The Residency Register</span>
+          <span className="text-[10px] font-black uppercase tracking-[0.3em] text-black">KREON Identity Registry</span>
         </div>
         <button onClick={onClose} className="group flex items-center gap-2 px-5 py-2.5 rounded-full bg-black/5 hover:bg-black/10 transition-all">
           <X size={13} className="text-black/30 group-hover:text-black" />
-          <span className="text-[10px] font-black uppercase tracking-widest text-black group-hover:text-black">Close</span>
+          <span className="text-[10px] font-black uppercase tracking-widest text-black group-hover:text-black">Exit</span>
         </button>
       </header>
 
@@ -174,9 +168,9 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
               <div className="w-full md:w-1/2 flex flex-col px-10 md:px-20 py-12">
                 {stepIndicator(0)}
                 <div className="space-y-4 mb-10">
-                  <span className="text-[9px] font-black uppercase tracking-[0.4em] text-black/60">Step 01</span>
+                  <span className="text-[9px] font-black uppercase tracking-[0.4em] text-[#1B3FBF]/60">Step 01</span>
                   <h1 className="text-4xl md:text-5xl font-serif italic text-black tracking-tight leading-tight">
-                    What's your primary<br /><span className="underline decoration-1 underline-offset-8 decoration-black/20">discipline?</span>
+                    What's your primary<br /><span className="text-[#1B3FBF]">discipline?</span>
                   </h1>
                   <p className="text-sm text-black/40 font-light">This shapes your KREON card and how artifacts are generated for you.</p>
                 </div>
@@ -224,9 +218,9 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
               <div className="w-full md:w-1/2 flex flex-col px-10 md:px-20 py-12">
                 {stepIndicator(1)}
                 <div className="space-y-3 mb-10">
-                  <span className="text-[9px] font-black uppercase tracking-[0.4em] text-black/60">Step 02</span>
+                  <span className="text-[9px] font-black uppercase tracking-[0.4em] text-[#1B3FBF]/60">Step 02</span>
                   <h1 className="text-4xl md:text-5xl font-serif italic text-black tracking-tight leading-tight">
-                    Set your<br /><span className="underline decoration-1 underline-offset-8 decoration-black/20">Brand DNA.</span>
+                    Set your<br /><span className="text-[#1B3FBF]">Brand DNA.</span>
                   </h1>
                   <p className="text-sm text-black/40 font-light max-w-md">These values will be automatically injected into every artifact you generate. Your brand, always consistent.</p>
                 </div>
@@ -390,90 +384,64 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
 
           {/* ── PHASE 4: REVEAL ── */}
           {phase === 'reveal' && (
-            <motion.div key="reveal" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex-1 flex flex-col p-12 relative overflow-hidden">
-               {/* Proper Newspaper Header */}
-               <div className="w-full border-b-[6px] border-black pb-6 mb-12 flex flex-col items-center">
-                  <h1 className="text-[140px] font-black uppercase tracking-[-0.04em] leading-none text-black select-none">
-                    The Kreon Register
-                  </h1>
-                  <div className="w-full flex justify-between border-y-2 border-black/80 py-2.5 mt-6 px-4 text-[13px] font-black uppercase tracking-[0.4em] text-black italic">
-                    <span>Vol. XXIV — NO. 1247</span>
-                    <span>Saturday, April 25, 2026</span>
-                    <span>Registry Manifestation: Verified</span>
-                  </div>
-               </div>
+            <motion.div key="reveal" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex-1 flex flex-col items-center justify-center p-10 py-8 relative">
+              {/* Atmospheric Elements */}
+              <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                <motion.div animate={{ y: [0, -20, 0], opacity: [0.3, 0.6, 0.3] }} transition={{ duration: 5, repeat: Infinity }} className="absolute top-[20%] left-[15%] w-32 h-32 bg-[#1B3FBF]/10 rounded-full blur-3xl" />
+                <motion.div animate={{ y: [0, 20, 0], opacity: [0.2, 0.5, 0.2] }} transition={{ duration: 7, repeat: Infinity }} className="absolute bottom-[20%] right-[15%] w-48 h-48 bg-purple-500/10 rounded-full blur-3xl" />
+                <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")` }} />
+              </div>
 
-               <div className="flex-1 flex flex-row gap-20">
-                  {/* Left Column: The Lead Story */}
-                  <div className="flex-[1.4] flex flex-col gap-10 border-r border-black/10 pr-20">
-                    <div className="space-y-6">
-                      <span className="text-[12px] font-black uppercase tracking-[0.6em] text-black/40">Exclusive Bulletin</span>
-                      <h2 className="text-[90px] font-serif italic font-black leading-[0.9] text-black tracking-tighter">
-                        The Residency <br />Has Begun.
-                      </h2>
-                      <div className="flex gap-10 items-start">
-                        <div className="flex-1 space-y-6">
-                          <p className="text-2xl font-serif italic text-black/80 leading-relaxed border-l-4 border-black pl-8 py-2">
-                             "A landmark moment for the visual registry. Resident #{cardNumber} has officially manifested their neural identity."
-                          </p>
-                          <div className="columns-2 gap-10 space-y-6 text-sm text-black/70 leading-[1.8] font-serif">
-                            <p><span className="float-left text-7xl font-black mr-3 mt-2 leading-[0.7]">T</span>he manifestation of digital identity has reached its zenith. As we transition from code-first to intent-first architectures, the KREO platform stands as a testament to the power of neural orchestration. Every line of generated visual logic is now a signature of human intent.</p>
-                            <p>Residents joining the registry are verified through a series of identity interviews, ensuring that their visual manifestations are unique, high-fidelity, and persistent across the entire KREO ecosystem. "Your KREON card is more than a status," says the Director, "it is your permanent signature in the machine."</p>
-                            <p>Continued on Page A12 — Registry Protocol</p>
+              <div className="absolute inset-x-0 top-[35%] -translate-y-1/2 pointer-events-none hidden xl:flex justify-between items-center px-24 w-full h-[600px] z-10">
+                <motion.div initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.5 }} className="w-[320px] text-left flex flex-col gap-8 pointer-events-auto">
+                  <div>
+                    <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[#1B3FBF] block mb-3">Welcome to</span>
+                    <h3 className="text-5xl font-serif italic text-black leading-tight">
+                      The <span className="text-[#1B3FBF]">Residency.</span>
+                    </h3>
+                    <p className="text-sm text-black font-light leading-relaxed mt-5 max-w-[280px]">Your identity is now registry-verified. Built for the future of visual engineering.</p>
+                    <div className="mt-8 pt-8 border-t border-black/10 space-y-4">
+                       <span className="text-[10px] font-black uppercase tracking-[0.3em] text-black">Master Registry</span>
+                       <div className="flex flex-col gap-2">
+                          <div className="flex justify-between text-[11px] font-black uppercase tracking-widest text-[#1B3FBF]">
+                             <span>Resident Rank</span>
+                             <span>Core</span>
                           </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="mt-auto pt-10 border-t-2 border-black/10 grid grid-cols-2 gap-12">
-                      <div>
-                        <span className="text-[10px] font-black uppercase tracking-widest text-black mb-3 block">Registry Rank</span>
-                        <div className="text-3xl font-serif italic font-black text-black">Founder Tier / 0-19</div>
-                      </div>
-                      <div>
-                        <span className="text-[10px] font-black uppercase tracking-widest text-black mb-3 block">Manifest ID</span>
-                        <div className="text-3xl font-serif italic font-black text-black">Serial Key #{cardNumber}</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Right Column: The Card Display */}
-                  <div className="flex-1 flex flex-col items-center justify-between bg-black/[0.02] rounded-[40px] p-12 border border-black/5 shadow-inner">
-                    <div className="flex flex-col items-center gap-4">
-                      <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/5 border border-black/10">
-                        <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                        <span className="text-[10px] font-black uppercase tracking-widest text-black">Registry Manifest Verified</span>
-                      </div>
-                      <span className="text-[12px] font-serif italic text-black/40">Manifestation ID: #{cardNumber}</span>
-                    </div>
-
-                    <motion.div initial={{ scale: 0.9, opacity: 0, rotate: -4 }} animate={{ scale: 1, opacity: 1, rotate: -2 }} transition={{ delay: 0.4, type: 'spring' }} className="shadow-[0_60px_120px_rgba(0,0,0,0.35)] hover:rotate-0 transition-transform duration-700">
-                      <KreonCard userEmail={userEmail} userName={userName} interest={interest} bio={residentBio} cardNumber={cardNumber} />
-                    </motion.div>
-                    
-                    <div className="w-full space-y-8">
-                       <div className="flex flex-col items-center gap-4">
-                          <p className="text-[11px] text-black/30 font-serif italic text-center max-w-[240px]">This KREON card is your permanent signature across the registry.</p>
-                          <div className="h-[1px] w-12 bg-black/10" />
-                       </div>
-                       
-                       <div className="flex flex-col gap-3">
-                          <div className="grid grid-cols-2 gap-3">
-                             <button onClick={() => window.open('https://twitter.com/intent/tweet?text=I am KREON Resident #' + cardNumber + ' at KREO. %23KREO %23AI', '_blank')} className="group flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-black text-white text-[10px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95 shadow-xl shadow-black/20">
-                                Twitter <ChevronRight size={14} />
-                             </button>
-                             <button onClick={onClose} className="group flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-[#1B3FBF] text-white text-[10px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95 shadow-xl shadow-[#1B3FBF]/20">
-                                Proceed <ChevronRight size={14} />
-                             </button>
+                          <div className="flex justify-between text-[11px] font-black uppercase tracking-widest text-black">
+                             <span>Serial Node</span>
+                             <span>#{cardNumber}</span>
                           </div>
-                          <p className="text-center text-[9px] font-black uppercase tracking-[0.2em] text-black/20">Registry Entry Finalized</p>
                        </div>
                     </div>
                   </div>
-               </div>
+                </motion.div>
+                <div className="w-[320px]" />
+              </div>
 
-               {/* Atmospheric Grits */}
-               <div className="absolute inset-0 pointer-events-none opacity-[0.04]" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")` }} />
+              <div className="z-20 flex flex-col items-center gap-12">
+                <div className="flex flex-col items-center gap-6">
+                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="flex flex-col items-center gap-1">
+                    <div className="h-[1px] w-12 bg-[#1B3FBF]" />
+                    <span className="text-[11px] font-black uppercase tracking-[0.2em] text-[#1B3FBF]">Identity Confirmed</span>
+                  </motion.div>
+                  <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.4, type: 'spring' }}>
+                    <KreonCard userEmail={userEmail} userName={userName} interest={interest} bio={residentBio} cardNumber={cardNumber} />
+                  </motion.div>
+                </div>
+
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8 }} className="flex flex-col items-center gap-6 w-full max-w-sm">
+                   <div className="h-[1px] w-full bg-black/5" />
+                   <div className="grid grid-cols-2 gap-4 w-full">
+                      <button onClick={() => window.open('https://twitter.com/intent/tweet?text=I am KREON Resident #' + cardNumber + ' at KREO. %23KREO %23AI', '_blank')} className="group flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-black text-white text-[10px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95 shadow-xl shadow-black/20">
+                         Twitter <ChevronRight size={14} />
+                      </button>
+                      <button onClick={onClose} className="group flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-[#1B3FBF] text-white text-[10px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95 shadow-xl shadow-[#1B3FBF]/20">
+                         Proceed <ChevronRight size={14} />
+                      </button>
+                   </div>
+                   <p className="text-[9px] font-black uppercase tracking-[0.2em] text-black/40">Share your card with others</p>
+                </motion.div>
+              </div>
             </motion.div>
           )}
 

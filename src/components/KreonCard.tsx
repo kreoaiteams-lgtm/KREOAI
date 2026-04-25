@@ -220,6 +220,7 @@ const KreonCard: React.FC<KreonCardProps> = ({ userEmail, userName, interest, bi
   const [copied, setCopied] = useState(false);
   const [isCapturing, setIsCapturing] = useState(false);
   const [isFlipped, setIsFlipped] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
 
   // Fallback to internal generator if no external number provided
   const [fallbackNumber] = useState(() => getCardNumber(userEmail));
@@ -232,21 +233,25 @@ const KreonCard: React.FC<KreonCardProps> = ({ userEmail, userName, interest, bi
   };
 
   const captureCard = async (): Promise<HTMLCanvasElement | null> => {
-    const captureEl = document.getElementById('kreon-final-capture-anchor');
-    if (!captureEl) return null;
+    if (!cardRef.current) return null;
     try {
+      setIsExporting(true);
+      // Wait for React to render the forced 'Front' state
+      await new Promise(res => setTimeout(res, 100));
+
       const mod = await import('html2canvas').catch(() => null);
       const html2canvas = (mod as any)?.default ?? mod;
       if (!html2canvas) return null;
-      return await html2canvas(captureEl as HTMLElement, {
-        backgroundColor: null,
-        scale: 4, // Ultra high res for "Proper Newspaper" quality
+      return await html2canvas(cardRef.current, {
+        backgroundColor: '#030308',
+        scale: 2.5,
         useCORS: true,
         logging: false,
-        width: 340,
-        height: 480
       });
     } catch { return null; }
+    finally {
+      setIsExporting(false);
+    }
   };
 
   const handleDownload = async () => {
@@ -314,15 +319,16 @@ const KreonCard: React.FC<KreonCardProps> = ({ userEmail, userName, interest, bi
             transition={{ type: "spring", stiffness: 400, damping: 25 }}
             style={{ cursor: 'pointer' }}
           >
-            <KreonCardVisual userEmail={userEmail} userName={userName} cardNumber={cardNumber} interest={interest} bio={bio} isFlipped={isFlipped} />
+            <KreonCardVisual 
+              ref={cardRef} 
+              userEmail={userEmail} 
+              userName={userName} 
+              cardNumber={cardNumber} 
+              interest={interest} 
+              bio={bio} 
+              isFlipped={isExporting ? false : isFlipped} 
+            />
           </motion.div>
-        </div>
-
-        {/* Hidden Capture Anchor (Always Front) */}
-        <div style={{ position: 'fixed', top: '-10000px', left: '-10000px', width: '340px', height: '480px', pointerEvents: 'none', zIndex: -1000 }}>
-          <div id="kreon-final-capture-anchor" style={{ width: '340px', height: '480px' }}>
-            <KreonCardVisual userEmail={userEmail} userName={userName} cardNumber={cardNumber} interest={interest} bio={bio} isFlipped={false} />
-          </div>
         </div>
 
         {/* Floating Flip Arrow */}
