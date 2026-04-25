@@ -281,6 +281,13 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, onRefinement, readO
             .ultra { background-color: #1a42f0; color: white; }
             body { font-family: 'Satoshi', sans-serif; margin: 0; min-height: 100vh; overflow-y: auto; }
             #root { min-height: 100vh; }
+            #root:empty::after { 
+              content: 'ORCHESTRATING NEURAL MANIFESTATION...'; 
+              position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+              font-size: 10px; font-weight: 900; letter-spacing: 0.4em; color: rgba(0,0,0,0.1);
+              animation: pulse 2s infinite;
+            }
+            @keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.8; } }
           </style>
         </head>
         <body class="${renderTheme === 'dark' ? 'dark' : renderTheme === 'ultra' ? 'ultra' : ''}">
@@ -307,9 +314,10 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, onRefinement, readO
             window.AnimatePresence = ({ children }) => children;
 
             window.onerror = (message, _src, lineno) => {
+              console.error("Manifest Error:", message);
               document.getElementById('root').innerHTML =
-                '<div style="padding:2rem 2.5rem;color:#c00;font-family:sans-serif;background:#fff0f0;border-left:4px solid #c00;margin:2rem;border-radius:1rem">' +
-                '<b>Neural Manifest Collision</b><br/><code style="font-size:0.85rem">' + message + '</code>' +
+                '<div style="padding:2.5rem;color:#c00;font-family:sans-serif;background:#fff0f0;border-radius:1.5rem;margin:2rem;border:1px solid #ffcccc">' +
+                '<b style="text-transform:uppercase;letter-spacing:0.1em;font-size:0.7rem">Neural Manifest Collision</b><br/><code style="font-size:0.8rem;display:block;margin-top:1rem">' + message + '</code>' +
                 (lineno ? '<br/><small>Line: ' + lineno + '</small>' : '') + '</div>';
               return true;
             };
@@ -317,11 +325,12 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, onRefinement, readO
           <script type="text/babel" data-presets="react">
             try {
               ${cleanCodeForBabel}
-              const App = window.__Component;
+              const App = window.__Component || (typeof Manifestation !== 'undefined' ? Manifestation : null);
               if (App) {
-                ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(App));
+                const root = ReactDOM.createRoot(document.getElementById('root'));
+                root.render(React.createElement(App));
               } else {
-                document.getElementById('root').innerHTML = '<div style="padding:2rem;color:orange;font-family:sans-serif">No default export found. Use <code>export default function YourComponent()</code>.</div>';
+                document.getElementById('root').innerHTML = '<div style="padding:2rem;color:rgba(0,0,0,0.2);font-family:sans-serif;text-align:center;text-transform:uppercase;letter-spacing:0.2em;font-size:10px">No Manifest Export Found</div>';
               }
             } catch (err) {
               window.onerror(err.message, null, null);
@@ -489,7 +498,6 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, onRefinement, readO
                 </AnimatePresence>
                 <AnimatePresence mode="wait">
                   <motion.div key={`${currentSlide}-${iframeId}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="h-full w-full">
-                      return (
                         <iframe 
                           id="manifestation-iframe"
                           ref={iframeRef}
@@ -499,7 +507,6 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, onRefinement, readO
                           className="h-full w-full border-none" 
                           onLoad={() => { if (inlineEditMode) setupLiveEdit(() => {}); }}
                         />
-                      );
                     {showKnobs && (
                       <motion.div initial={{ opacity: 0, scale: 0.9, x: 20 }} animate={{ opacity: 1, scale: 1, x: 0 }} exit={{ opacity: 0, scale: 0.9, x: 20 }} className="absolute bottom-12 right-12 z-[1000] w-[340px] bg-white/90 backdrop-blur-2xl rounded-[2.5rem] shadow-2xl p-8 space-y-8 border border-black/5">
                         <div className="space-y-6">
