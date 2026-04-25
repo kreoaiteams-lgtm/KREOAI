@@ -132,53 +132,58 @@ const Scene2 = () => {
   }, []);
 
   return (
-    <div className="fixed inset-0 bg-white flex flex-col">
-      {/* Left Text */}
-      <div className="absolute left-10 md:left-20 top-1/2 -translate-y-1/2 z-10 max-w-sm space-y-5">
-        <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}>
-          <SAT className="text-[9px] font-black uppercase tracking-[0.5em] text-[#1B3FBF]/50 block mb-3">01 / Identity</SAT>
+    <div className="fixed inset-0 bg-white flex items-center justify-center px-8 md:px-16 overflow-hidden">
+      <div className="w-full max-w-5xl flex flex-col md:flex-row items-center gap-12 md:gap-16">
+
+        {/* Left Text */}
+        <motion.div
+          initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}
+          className="flex-1 min-w-0 space-y-5 text-center md:text-left"
+        >
+          <SAT className="text-[9px] font-black uppercase tracking-[0.5em] text-[#1B3FBF]/50 block">01 / Identity</SAT>
           <h2 style={{ fontFamily: "'Instrument Serif', serif" }} className="text-5xl md:text-6xl italic text-black tracking-tighter leading-tight">
-            KREO feels like a <span className="text-[#1B3FBF]">community.</span>
+            KREO feels like a&nbsp;<span className="text-[#1B3FBF]">community.</span>
           </h2>
-          <p style={{ fontFamily: "'Satoshi', sans-serif" }} className="text-base text-black/40 font-light leading-relaxed mt-4">
+          <p style={{ fontFamily: "'Satoshi', sans-serif" }} className="text-base text-black/40 font-light leading-relaxed">
             KREONs. Discipline-based identity cards. Onboarding that knows who you are. Claude has zero concept of this.
           </p>
-          <div className="flex items-center gap-3 mt-6 p-3 rounded-2xl bg-[#1B3FBF]/5 border border-[#1B3FBF]/10">
+          <div className="inline-flex items-center gap-3 p-3 rounded-2xl bg-[#1B3FBF]/5 border border-[#1B3FBF]/10">
             <div className="w-7 h-7 rounded-full bg-[#1B3FBF] flex items-center justify-center flex-shrink-0">
               <Check size={12} className="text-white" />
             </div>
             <p style={{ fontFamily: "'Satoshi', sans-serif" }} className="text-[11px] text-[#1B3FBF] font-black">KREO WINS — Community & Identity</p>
           </div>
         </motion.div>
-      </div>
 
-      {/* Fanned Cards */}
-      <div className="absolute right-0 top-0 bottom-0 flex items-center justify-end pr-10 md:pr-20">
-        <div className="relative" style={{ width: 340, height: 480 }}>
-          {CARD_DATA.map((card, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 60, rotate: -15 + i * 5 }}
-              animate={i < visible ? {
-                opacity: 1,
-                y: i * -18,
-                x: i * 6,
-                rotate: -8 + i * 4,
-                zIndex: i,
-              } : {}}
-              transition={{ type: 'spring', stiffness: 200, damping: 22 }}
-              className="absolute"
-              style={{ transformOrigin: 'bottom center' }}
-            >
-              <KreonCardVisual
-                cardNumber={card.num}
-                userName={card.name}
-                interest={card.interest}
-                bio="Visual creator & KREON resident."
-              />
-            </motion.div>
-          ))}
+        {/* Fanned Cards — scaled down and contained */}
+        <div className="flex-shrink-0 flex items-center justify-center" style={{ width: 280, height: 400 }}>
+          <div className="relative" style={{ width: 265, height: 375 }}>
+            {CARD_DATA.map((card, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 50, rotate: -12 + i * 4 }}
+                animate={i < visible ? {
+                  opacity: 1,
+                  y: i * -14,
+                  x: i * 5,
+                  rotate: -6 + i * 3,
+                  zIndex: i,
+                } : {}}
+                transition={{ type: 'spring', stiffness: 180, damping: 24 }}
+                className="absolute"
+                style={{ transformOrigin: 'bottom center', transform: 'scale(0.78)' }}
+              >
+                <KreonCardVisual
+                  cardNumber={card.num}
+                  userName={card.name}
+                  interest={card.interest}
+                  bio="Visual creator & KREON resident."
+                />
+              </motion.div>
+            ))}
+          </div>
         </div>
+
       </div>
     </div>
   );
