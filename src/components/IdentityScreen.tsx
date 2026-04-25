@@ -137,25 +137,35 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-[3000] bg-[#F9FAFF] overflow-y-auto flex flex-col">
+    <div className="fixed inset-0 z-[3000] bg-[#f4f1ea] overflow-y-auto flex flex-col font-serif">
       {/* Atmospheric Background */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#1B3FBF]/5 rounded-full blur-[120px]" />
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-purple-500/5 rounded-full blur-[100px]" />
-        <div className="absolute inset-0 opacity-[0.02]" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")` }} />
+        <div className="absolute inset-0 opacity-[0.08]" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")` }} />
+        <div className="absolute top-0 left-0 w-full h-[1px] bg-black/10 mt-32" />
+        <div className="absolute top-0 left-0 w-full h-[1px] bg-black/10 mt-[34px]" />
+      </div>
+
+      {/* Newspaper Header */}
+      <div className="hidden lg:flex absolute top-0 left-0 w-full flex-col items-center pt-8 pointer-events-none opacity-20">
+        <h2 className="text-[120px] font-black uppercase tracking-[-0.05em] leading-none text-black/90">THE KREON REGISTER</h2>
+        <div className="w-full max-w-7xl flex justify-between border-y-2 border-black/40 py-2 mt-4 px-6 text-[12px] font-black uppercase tracking-widest text-black">
+          <span>VOL. XXIV — NO. 1247</span>
+          <span>SATURDAY, APRIL 25, 2026</span>
+          <span>PRICE: ONE MANIFESTO</span>
+        </div>
       </div>
 
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-[4000] flex items-center justify-between px-8 py-5 bg-white/80 backdrop-blur-2xl border-b border-black/[0.04]">
+      <header className="fixed top-0 left-0 right-0 z-[4000] flex items-center justify-between px-8 py-5 bg-[#f4f1ea]/80 backdrop-blur-2xl border-b border-black/10">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-[#1B3FBF] rounded-full flex items-center justify-center">
-            <Zap size={14} className="text-white" />
+          <div className="w-8 h-8 bg-black rounded-full flex items-center justify-center">
+            <Newspaper size={14} className="text-white" />
           </div>
-          <span className="text-[10px] font-black uppercase tracking-[0.3em] text-black">KREON Identity Registry</span>
+          <span className="text-[10px] font-black uppercase tracking-[0.3em] text-black">The Residency Register</span>
         </div>
         <button onClick={onClose} className="group flex items-center gap-2 px-5 py-2.5 rounded-full bg-black/5 hover:bg-black/10 transition-all">
           <X size={13} className="text-black/30 group-hover:text-black" />
-          <span className="text-[10px] font-black uppercase tracking-widest text-black group-hover:text-black">Exit</span>
+          <span className="text-[10px] font-black uppercase tracking-widest text-black group-hover:text-black">Close</span>
         </button>
       </header>
 
@@ -168,9 +178,9 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
               <div className="w-full md:w-1/2 flex flex-col px-10 md:px-20 py-12">
                 {stepIndicator(0)}
                 <div className="space-y-4 mb-10">
-                  <span className="text-[9px] font-black uppercase tracking-[0.4em] text-[#1B3FBF]/60">Step 01</span>
+                  <span className="text-[9px] font-black uppercase tracking-[0.4em] text-black/60">Step 01</span>
                   <h1 className="text-4xl md:text-5xl font-serif italic text-black tracking-tight leading-tight">
-                    What's your primary<br /><span className="text-[#1B3FBF]">discipline?</span>
+                    What's your primary<br /><span className="underline decoration-1 underline-offset-8 decoration-black/20">discipline?</span>
                   </h1>
                   <p className="text-sm text-black/40 font-light">This shapes your KREON card and how artifacts are generated for you.</p>
                 </div>
@@ -218,9 +228,9 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
               <div className="w-full md:w-1/2 flex flex-col px-10 md:px-20 py-12">
                 {stepIndicator(1)}
                 <div className="space-y-3 mb-10">
-                  <span className="text-[9px] font-black uppercase tracking-[0.4em] text-[#1B3FBF]/60">Step 02</span>
+                  <span className="text-[9px] font-black uppercase tracking-[0.4em] text-black/60">Step 02</span>
                   <h1 className="text-4xl md:text-5xl font-serif italic text-black tracking-tight leading-tight">
-                    Set your<br /><span className="text-[#1B3FBF]">Brand DNA.</span>
+                    Set your<br /><span className="underline decoration-1 underline-offset-8 decoration-black/20">Brand DNA.</span>
                   </h1>
                   <p className="text-sm text-black/40 font-light max-w-md">These values will be automatically injected into every artifact you generate. Your brand, always consistent.</p>
                 </div>
@@ -395,9 +405,9 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
               <div className="absolute inset-x-0 top-[35%] -translate-y-1/2 pointer-events-none hidden xl:flex justify-between items-center px-24 w-full h-[600px] z-10">
                 <motion.div initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.5 }} className="w-[320px] text-left flex flex-col gap-8 pointer-events-auto">
                   <div>
-                    <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[#1B3FBF] block mb-3">Welcome to</span>
-                    <h3 className="text-5xl font-serif italic text-black leading-tight">
-                      The <span className="text-[#1B3FBF]">Residency.</span>
+                    <span className="text-[10px] font-black uppercase tracking-[0.4em] text-black/40 block mb-3">Front Page News</span>
+                    <h3 className="text-5xl font-serif italic text-black leading-tight border-b-2 border-black pb-4">
+                      The New <br />Residency.
                     </h3>
                     <p className="text-sm text-black font-light leading-relaxed mt-5 max-w-[280px]">Your identity is now registry-verified. Built for the future of visual engineering.</p>
                     <div className="mt-8 pt-8 border-t border-black/10 space-y-4">
