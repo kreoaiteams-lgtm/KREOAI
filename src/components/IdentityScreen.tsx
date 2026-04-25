@@ -390,96 +390,90 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
 
           {/* ── PHASE 4: REVEAL ── */}
           {phase === 'reveal' && (
-            <motion.div key="reveal" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex-1 flex flex-col items-center justify-center p-10 py-8 relative">
-              {/* Atmospheric Elements */}
-              {/* Newspaper Background Grid */}
-              <div className="absolute inset-0 overflow-hidden pointer-events-none p-12 opacity-40">
-                <div className="grid grid-cols-5 gap-12 h-fit">
-                  {[1, 2, 3, 4, 5].map(col => (
-                    <div key={col} className={`space-y-12 ${col < 5 ? 'border-r border-black/10 pr-12' : ''}`}>
-                      <div className="space-y-4">
-                        <h4 className="text-xl font-black uppercase tracking-tighter leading-tight border-b-2 border-black pb-2">
-                          {col === 1 ? "NEURAL DAWN" : col === 2 ? "RANK 0-19" : col === 3 ? "VISUAL ERA" : col === 4 ? "THE REGISTER" : "FINAL NODE"}
-                        </h4>
-                        <div className="space-y-3">
-                           <p className="text-[11px] leading-relaxed text-black/80">
-                             {col === 1 && <span className="float-left text-5xl font-black mr-2 mt-1 leading-[0.8]">T</span>}
-                             The manifestation of digital identity has reached its zenith. As we transition from code-first to intent-first architectures, the KREO platform stands as a testament to the power of neural orchestration.
-                           </p>
-                           <p className="text-[10px] leading-relaxed text-black/80 font-black italic">"Every line of generated visual logic is a signature of human intent," says the Registry Director.</p>
-                           <div className="w-full h-32 bg-black/10 grayscale contrast-125 brightness-90 relative overflow-hidden flex items-center justify-center italic text-[8px] uppercase tracking-widest border border-black/20">
-                             <div className="absolute inset-0 opacity-20" style={{ backgroundImage: `radial-gradient(black 1px, transparent 0)`, backgroundSize: '3px 3px' }} />
-                             RESIDENT PORTRAIT_NODE_{col}
-                           </div>
+            <motion.div key="reveal" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex-1 flex flex-col p-12 relative overflow-hidden">
+               {/* Proper Newspaper Header */}
+               <div className="w-full border-b-[6px] border-black pb-6 mb-12 flex flex-col items-center">
+                  <h1 className="text-[140px] font-black uppercase tracking-[-0.04em] leading-none text-black select-none">
+                    The Kreon Register
+                  </h1>
+                  <div className="w-full flex justify-between border-y-2 border-black/80 py-2.5 mt-6 px-4 text-[13px] font-black uppercase tracking-[0.4em] text-black italic">
+                    <span>Vol. XXIV — NO. 1247</span>
+                    <span>Saturday, April 25, 2026</span>
+                    <span>Registry Manifestation: Verified</span>
+                  </div>
+               </div>
+
+               <div className="flex-1 flex flex-row gap-20">
+                  {/* Left Column: The Lead Story */}
+                  <div className="flex-[1.4] flex flex-col gap-10 border-r border-black/10 pr-20">
+                    <div className="space-y-6">
+                      <span className="text-[12px] font-black uppercase tracking-[0.6em] text-black/40">Exclusive Bulletin</span>
+                      <h2 className="text-[90px] font-serif italic font-black leading-[0.9] text-black tracking-tighter">
+                        The Residency <br />Has Begun.
+                      </h2>
+                      <div className="flex gap-10 items-start">
+                        <div className="flex-1 space-y-6">
+                          <p className="text-2xl font-serif italic text-black/80 leading-relaxed border-l-4 border-black pl-8 py-2">
+                             "A landmark moment for the visual registry. Resident #{cardNumber} has officially manifested their neural identity."
+                          </p>
+                          <div className="columns-2 gap-10 space-y-6 text-sm text-black/70 leading-[1.8] font-serif">
+                            <p><span className="float-left text-7xl font-black mr-3 mt-2 leading-[0.7]">T</span>he manifestation of digital identity has reached its zenith. As we transition from code-first to intent-first architectures, the KREO platform stands as a testament to the power of neural orchestration. Every line of generated visual logic is now a signature of human intent.</p>
+                            <p>Residents joining the registry are verified through a series of identity interviews, ensuring that their visual manifestations are unique, high-fidelity, and persistent across the entire KREO ecosystem. "Your KREON card is more than a status," says the Director, "it is your permanent signature in the machine."</p>
+                            <p>Continued on Page A12 — Registry Protocol</p>
+                          </div>
                         </div>
                       </div>
-                      <div className="space-y-4">
-                        <h4 className="text-lg font-light italic leading-tight">Beyond the blueprint: How KREO is redefining high-fidelity design for the next billion users.</h4>
-                        <p className="text-[9px] leading-relaxed text-black/60">Across the globe, residents are joining the registry in droves. What started as a simple playground for designers has evolved into a global standard for visual manifestations. From cinematic dashboards to complex financial maps, the logic is sound and the design is pristine.</p>
+                    </div>
+
+                    <div className="mt-auto pt-10 border-t-2 border-black/10 grid grid-cols-2 gap-12">
+                      <div>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-black mb-3 block">Registry Rank</span>
+                        <div className="text-3xl font-serif italic font-black text-black">Founder Tier / 0-19</div>
                       </div>
-                      <div className="pt-8 border-t border-black/10">
-                        <span className="text-[8px] font-black uppercase tracking-[0.4em]">CONTINUED ON PAGE {col + 12} — ED. 24</span>
+                      <div>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-black mb-3 block">Manifest ID</span>
+                        <div className="text-3xl font-serif italic font-black text-black">Serial Key #{cardNumber}</div>
                       </div>
                     </div>
-                  ))}
-                </div>
-              </div>
+                  </div>
 
-              <div className="absolute inset-0 opacity-[0.05]" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")` }} />
-
-              <div className="absolute inset-x-0 top-[28%] pointer-events-none hidden xl:flex justify-between items-start px-24 w-full h-full z-10">
-                <motion.div initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.5 }} className="w-[380px] text-left flex flex-col gap-10 pointer-events-auto bg-[#f4f1ea]/80 backdrop-blur-md p-10 border-r border-black/10">
-                  <div className="space-y-8">
-                    <div className="space-y-4">
-                      <span className="text-[10px] font-black uppercase tracking-[0.5em] text-black/30 block">Latest Bulletin</span>
-                      <h3 className="text-6xl font-serif italic text-black leading-tight border-b-8 border-black pb-6">
-                        The <br />Residency.
-                      </h3>
-                      <p className="text-base text-black/80 font-serif leading-relaxed italic">"A landmark moment for the visual registry. Resident #{cardNumber} has officially manifested."</p>
+                  {/* Right Column: The Card Display */}
+                  <div className="flex-1 flex flex-col items-center justify-between bg-black/[0.02] rounded-[40px] p-12 border border-black/5 shadow-inner">
+                    <div className="flex flex-col items-center gap-4">
+                      <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/5 border border-black/10">
+                        <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                        <span className="text-[10px] font-black uppercase tracking-widest text-black">Registry Manifest Verified</span>
+                      </div>
+                      <span className="text-[12px] font-serif italic text-black/40">Manifestation ID: #{cardNumber}</span>
                     </div>
+
+                    <motion.div initial={{ scale: 0.9, opacity: 0, rotate: -4 }} animate={{ scale: 1, opacity: 1, rotate: -2 }} transition={{ delay: 0.4, type: 'spring' }} className="shadow-[0_60px_120px_rgba(0,0,0,0.35)] hover:rotate-0 transition-transform duration-700">
+                      <KreonCard userEmail={userEmail} userName={userName} interest={interest} bio={residentBio} cardNumber={cardNumber} />
+                    </motion.div>
                     
-                    <div className="space-y-6 pt-10 border-t border-black">
-                       <p className="text-[11px] leading-relaxed text-black/60 font-serif italic">Your identity is now registry-verified. Built for the future of visual engineering. This KREON card serves as your permanent signature across the entire KREO ecosystem of neural manifestations.</p>
-                       <div className="flex flex-col gap-4">
-                          <div className="flex justify-between items-end border-b border-black/20 pb-2">
-                             <span className="text-[10px] font-black uppercase tracking-widest text-black/30">Resident Rank</span>
-                             <span className="text-sm font-black uppercase tracking-widest text-black">Founder Tier / 0-19</span>
+                    <div className="w-full space-y-8">
+                       <div className="flex flex-col items-center gap-4">
+                          <p className="text-[11px] text-black/30 font-serif italic text-center max-w-[240px]">This KREON card is your permanent signature across the registry.</p>
+                          <div className="h-[1px] w-12 bg-black/10" />
+                       </div>
+                       
+                       <div className="flex flex-col gap-3">
+                          <div className="grid grid-cols-2 gap-3">
+                             <button onClick={() => window.open('https://twitter.com/intent/tweet?text=I am KREON Resident #' + cardNumber + ' at KREO. %23KREO %23AI', '_blank')} className="group flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-black text-white text-[10px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95 shadow-xl shadow-black/20">
+                                Twitter <ChevronRight size={14} />
+                             </button>
+                             <button onClick={onClose} className="group flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-[#1B3FBF] text-white text-[10px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95 shadow-xl shadow-[#1B3FBF]/20">
+                                Proceed <ChevronRight size={14} />
+                             </button>
                           </div>
-                          <div className="flex justify-between items-end border-b border-black/20 pb-2">
-                             <span className="text-[10px] font-black uppercase tracking-widest text-black/30">Registry Key</span>
-                             <span className="text-sm font-black uppercase tracking-widest text-black">#{cardNumber}</span>
-                          </div>
+                          <p className="text-center text-[9px] font-black uppercase tracking-[0.2em] text-black/20">Registry Entry Finalized</p>
                        </div>
                     </div>
                   </div>
-                </motion.div>
-                <div className="w-[320px]" />
-              </div>
+               </div>
 
-              <div className="z-20 flex flex-col items-center gap-12">
-                <div className="flex flex-col items-center gap-6">
-                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="flex flex-col items-center gap-1">
-                    <div className="h-[1px] w-12 bg-[#1B3FBF]" />
-                    <span className="text-[11px] font-black uppercase tracking-[0.2em] text-[#1B3FBF]">Identity Confirmed</span>
-                  </motion.div>
-                  <motion.div initial={{ scale: 0.9, opacity: 0, rotate: 0 }} animate={{ scale: 1, opacity: 1, rotate: -2 }} transition={{ delay: 0.4, type: 'spring' }} className="hover:rotate-0 transition-transform duration-500 shadow-[0_50px_100px_rgba(0,0,0,0.3)]">
-                    <KreonCard userEmail={userEmail} userName={userName} interest={interest} bio={residentBio} cardNumber={cardNumber} />
-                  </motion.div>
-                </div>
-
-                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8 }} className="flex flex-col items-center gap-6 w-full max-w-sm">
-                   <div className="h-[1px] w-full bg-black/5" />
-                   <div className="grid grid-cols-2 gap-4 w-full">
-                      <button onClick={() => window.open('https://twitter.com/intent/tweet?text=I am KREON Resident #' + cardNumber + ' at KREO. %23KREO %23AI', '_blank')} className="group flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-black text-white text-[10px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95 shadow-xl shadow-black/20">
-                         Twitter <ChevronRight size={14} />
-                      </button>
-                      <button onClick={onClose} className="group flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-[#1B3FBF] text-white text-[10px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95 shadow-xl shadow-[#1B3FBF]/20">
-                         Proceed <ChevronRight size={14} />
-                      </button>
-                   </div>
-                   <p className="text-[9px] font-black uppercase tracking-[0.2em] text-black/40">Share your card with others</p>
-                </motion.div>
-              </div>
+               {/* Atmospheric Grits */}
+               <div className="absolute inset-0 pointer-events-none opacity-[0.04]" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")` }} />
             </motion.div>
           )}
 
