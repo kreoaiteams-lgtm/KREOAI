@@ -232,17 +232,19 @@ const KreonCard: React.FC<KreonCardProps> = ({ userEmail, userName, interest, bi
   };
 
   const captureCard = async (): Promise<HTMLCanvasElement | null> => {
-    const captureEl = document.getElementById(`kreon-capture-${cardNumber}`);
+    const captureEl = document.getElementById('kreon-final-capture-anchor');
     if (!captureEl) return null;
     try {
       const mod = await import('html2canvas').catch(() => null);
       const html2canvas = (mod as any)?.default ?? mod;
       if (!html2canvas) return null;
       return await html2canvas(captureEl as HTMLElement, {
-        backgroundColor: '#00000000',
-        scale: 3,
+        backgroundColor: null,
+        scale: 4, // Ultra high res for "Proper Newspaper" quality
         useCORS: true,
         logging: false,
+        width: 340,
+        height: 480
       });
     } catch { return null; }
   };
@@ -317,8 +319,8 @@ const KreonCard: React.FC<KreonCardProps> = ({ userEmail, userName, interest, bi
         </div>
 
         {/* Hidden Capture Anchor (Always Front) */}
-        <div className="fixed -left-[10000px] pointer-events-none aria-hidden">
-          <div id={`kreon-capture-${cardNumber}`}>
+        <div style={{ position: 'fixed', top: '-10000px', left: '-10000px', width: '340px', height: '480px', pointerEvents: 'none', zIndex: -1000 }}>
+          <div id="kreon-final-capture-anchor" style={{ width: '340px', height: '480px' }}>
             <KreonCardVisual userEmail={userEmail} userName={userName} cardNumber={cardNumber} interest={interest} bio={bio} isFlipped={false} />
           </div>
         </div>

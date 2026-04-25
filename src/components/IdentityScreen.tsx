@@ -114,24 +114,20 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
     const phaseOrder: Record<string, number> = { pref: 0, brand: 1, interview: 2, reveal: 3 };
     const activeStep = phaseOrder[phase] ?? 0;
     return (
-      <div className="flex items-center gap-3 mb-12">
-        {steps.map((s, i) => (
-          <React.Fragment key={s}>
-            <div className="flex items-center gap-2">
-              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-black border transition-all ${
-                i < activeStep ? 'bg-[#1B3FBF] border-[#1B3FBF] text-white' :
-                i === activeStep ? 'bg-white border-[#1B3FBF] text-[#1B3FBF]' :
-                'bg-transparent border-black/10 text-black/20'
-              }`}>
-                {i < activeStep ? <Check size={10} /> : i + 1}
+      <div className="flex flex-col gap-1 mb-12 border-b border-black/20 pb-4">
+        <div className="text-[10px] font-black uppercase tracking-[0.4em] text-black/40 mb-2">Registry Progress Log — Ed. 24</div>
+        <div className="flex items-center gap-4">
+          {steps.map((s, i) => (
+            <React.Fragment key={s}>
+              <div className="flex items-center gap-2">
+                <span className={`text-[11px] font-black uppercase tracking-tighter ${
+                  i === activeStep ? 'text-black border-b-2 border-black' : i < activeStep ? 'text-black/40 line-through decoration-black/20' : 'text-black/15'
+                }`}>{s}</span>
               </div>
-              <span className={`text-[9px] font-black uppercase tracking-widest hidden md:block ${
-                i === activeStep ? 'text-[#1B3FBF]' : i < activeStep ? 'text-black/40' : 'text-black/15'
-              }`}>{s}</span>
-            </div>
-            {i < steps.length - 1 && <div className={`flex-1 h-[1px] ${i < activeStep ? 'bg-[#1B3FBF]/40' : 'bg-black/5'}`} />}
-          </React.Fragment>
-        ))}
+              {i < steps.length - 1 && <span className="text-black/10">/</span>}
+            </React.Fragment>
+          ))}
+        </div>
       </div>
     );
   };
@@ -396,30 +392,57 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
           {phase === 'reveal' && (
             <motion.div key="reveal" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex-1 flex flex-col items-center justify-center p-10 py-8 relative">
               {/* Atmospheric Elements */}
-              <div className="absolute inset-0 pointer-events-none overflow-hidden">
-                <motion.div animate={{ y: [0, -20, 0], opacity: [0.3, 0.6, 0.3] }} transition={{ duration: 5, repeat: Infinity }} className="absolute top-[20%] left-[15%] w-32 h-32 bg-[#1B3FBF]/10 rounded-full blur-3xl" />
-                <motion.div animate={{ y: [0, 20, 0], opacity: [0.2, 0.5, 0.2] }} transition={{ duration: 7, repeat: Infinity }} className="absolute bottom-[20%] right-[15%] w-48 h-48 bg-purple-500/10 rounded-full blur-3xl" />
-                <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")` }} />
+              {/* Newspaper Background Grid */}
+              <div className="absolute inset-0 overflow-hidden pointer-events-none p-12 opacity-40">
+                <div className="grid grid-cols-5 gap-12 h-fit">
+                  {[1, 2, 3, 4, 5].map(col => (
+                    <div key={col} className="space-y-12">
+                      <div className="space-y-4">
+                        <h4 className="text-xl font-black uppercase tracking-tighter leading-tight border-b-2 border-black pb-2">
+                          {col === 1 ? "NEURAL DAWN" : col === 2 ? "RANK 0-19" : col === 3 ? "VISUAL ERA" : col === 4 ? "THE REGISTER" : "FINAL NODE"}
+                        </h4>
+                        <div className="space-y-3">
+                           <p className="text-[10px] leading-relaxed text-black/80">The manifestation of digital identity has reached its zenith. As we transition from code-first to intent-first architectures, the KREO platform stands as a testament to the power of neural orchestration.</p>
+                           <p className="text-[10px] leading-relaxed text-black/80 font-black italic">"Every line of generated visual logic is a signature of human intent," says the Registry Director.</p>
+                           <div className="w-full h-24 bg-black/5 border border-black/10 flex items-center justify-center italic text-[8px] uppercase tracking-widest">Fig. {col}.01 — Manifest Density</div>
+                        </div>
+                      </div>
+                      <div className="space-y-4">
+                        <h4 className="text-lg font-light italic leading-tight">Beyond the blueprint: How KREO is redefining high-fidelity design for the next billion users.</h4>
+                        <p className="text-[9px] leading-relaxed text-black/60">Across the globe, residents are joining the registry in droves. What started as a simple playground for designers has evolved into a global standard for visual manifestations. From cinematic dashboards to complex financial maps, the logic is sound and the design is pristine.</p>
+                      </div>
+                      <div className="pt-8 border-t border-black/10">
+                        <span className="text-[8px] font-black uppercase tracking-[0.4em]">CONTINUED ON PAGE {col + 12}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
 
-              <div className="absolute inset-x-0 top-[35%] -translate-y-1/2 pointer-events-none hidden xl:flex justify-between items-center px-24 w-full h-[600px] z-10">
-                <motion.div initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.5 }} className="w-[320px] text-left flex flex-col gap-8 pointer-events-auto">
-                  <div>
-                    <span className="text-[10px] font-black uppercase tracking-[0.4em] text-black/40 block mb-3">Front Page News</span>
-                    <h3 className="text-5xl font-serif italic text-black leading-tight border-b-2 border-black pb-4">
-                      The New <br />Residency.
-                    </h3>
-                    <p className="text-sm text-black font-light leading-relaxed mt-5 max-w-[280px]">Your identity is now registry-verified. Built for the future of visual engineering.</p>
-                    <div className="mt-8 pt-8 border-t border-black/10 space-y-4">
-                       <span className="text-[10px] font-black uppercase tracking-[0.3em] text-black">Master Registry</span>
-                       <div className="flex flex-col gap-2">
-                          <div className="flex justify-between text-[11px] font-black uppercase tracking-widest text-[#1B3FBF]">
-                             <span>Resident Rank</span>
-                             <span>Core</span>
+              <div className="absolute inset-0 opacity-[0.05]" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")` }} />
+            </div>
+
+              <div className="absolute inset-x-0 top-[28%] pointer-events-none hidden xl:flex justify-between items-start px-24 w-full h-full z-10">
+                <motion.div initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.5 }} className="w-[380px] text-left flex flex-col gap-10 pointer-events-auto bg-[#f4f1ea]/80 backdrop-blur-md p-10 border-r border-black/10">
+                  <div className="space-y-8">
+                    <div className="space-y-4">
+                      <span className="text-[10px] font-black uppercase tracking-[0.5em] text-black/30 block">Latest Bulletin</span>
+                      <h3 className="text-6xl font-serif italic text-black leading-tight border-b-8 border-black pb-6">
+                        The <br />Residency.
+                      </h3>
+                      <p className="text-base text-black/80 font-serif leading-relaxed italic">"A landmark moment for the visual registry. Resident #{cardNumber} has officially manifested."</p>
+                    </div>
+                    
+                    <div className="space-y-6 pt-10 border-t border-black">
+                       <p className="text-[11px] leading-relaxed text-black/60 font-serif italic">Your identity is now registry-verified. Built for the future of visual engineering. This KREON card serves as your permanent signature across the entire KREO ecosystem of neural manifestations.</p>
+                       <div className="flex flex-col gap-4">
+                          <div className="flex justify-between items-end border-b border-black/20 pb-2">
+                             <span className="text-[10px] font-black uppercase tracking-widest text-black/30">Resident Rank</span>
+                             <span className="text-sm font-black uppercase tracking-widest text-black">Founder Tier / 0-19</span>
                           </div>
-                          <div className="flex justify-between text-[11px] font-black uppercase tracking-widest text-black">
-                             <span>Serial Node</span>
-                             <span>#{cardNumber}</span>
+                          <div className="flex justify-between items-end border-b border-black/20 pb-2">
+                             <span className="text-[10px] font-black uppercase tracking-widest text-black/30">Registry Key</span>
+                             <span className="text-sm font-black uppercase tracking-widest text-black">#{cardNumber}</span>
                           </div>
                        </div>
                     </div>
@@ -434,7 +457,7 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
                     <div className="h-[1px] w-12 bg-[#1B3FBF]" />
                     <span className="text-[11px] font-black uppercase tracking-[0.2em] text-[#1B3FBF]">Identity Confirmed</span>
                   </motion.div>
-                  <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.4, type: 'spring' }}>
+                  <motion.div initial={{ scale: 0.9, opacity: 0, rotate: 0 }} animate={{ scale: 1, opacity: 1, rotate: -2 }} transition={{ delay: 0.4, type: 'spring' }} className="hover:rotate-0 transition-transform duration-500 shadow-[0_50px_100px_rgba(0,0,0,0.3)]">
                     <KreonCard userEmail={userEmail} userName={userName} interest={interest} bio={residentBio} cardNumber={cardNumber} />
                   </motion.div>
                 </div>
