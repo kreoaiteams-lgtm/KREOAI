@@ -252,8 +252,6 @@ export const generateArtifact = async (
         if (start !== -1) return content.slice(start, end !== -1 ? end + 7 : undefined).trim();
     }
 
-    return content.trim();tml>`;
-    }
     return content.trim();
   } catch (err) {
     console.error("Sarvam generation failed:", err);
