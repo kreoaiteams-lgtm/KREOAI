@@ -429,17 +429,15 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
                   </motion.div>
                 </div>
 
-                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8 }} className="flex flex-col items-center gap-6 w-full max-w-sm">
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8 }} className="flex flex-col items-center gap-6 w-full max-w-[340px]">
                    <div className="h-[1px] w-full bg-black/5" />
-                   <div className="grid grid-cols-2 gap-4 w-full">
-                      <button onClick={() => window.open('https://twitter.com/intent/tweet?text=I am KREON Resident #' + cardNumber + ' at KREO. %23KREO %23AI', '_blank')} className="group flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-black text-white text-[10px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95 shadow-xl shadow-black/20">
-                         Twitter <ChevronRight size={14} />
-                      </button>
-                      <button onClick={onClose} className="group flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-[#1B3FBF] text-white text-[10px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95 shadow-xl shadow-[#1B3FBF]/20">
-                         Proceed <ChevronRight size={14} />
-                      </button>
-                   </div>
-                   <p className="text-[9px] font-black uppercase tracking-[0.2em] text-black/40">Share your card with others</p>
+                   <button 
+                     onClick={onClose} 
+                     className="w-full py-5 bg-black text-white text-[10px] font-black uppercase tracking-[0.4em] rounded-2xl shadow-xl shadow-black/20 hover:scale-[1.02] active:scale-95 transition-all text-center"
+                   >
+                     Enter KREO
+                   </button>
+                   <p className="text-[9px] font-black uppercase tracking-widest text-black/20">Identity Manifestation Complete</p>
                 </motion.div>
               </div>
             </motion.div>

@@ -489,49 +489,6 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, onRefinement, readO
                 </AnimatePresence>
                 <AnimatePresence mode="wait">
                   <motion.div key={`${currentSlide}-${iframeId}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="h-full w-full">
-                    {(() => {
-                      const strippedCode = code
-                        .replace(/```(jsx|tsx|javascript|js|html|react-native|react)?/g, "")
-                        .replace(/```/g, "")
-                        .trim();
-                      
-                      const isRawHtml = strippedCode.toLowerCase().startsWith("<!doctype") || strippedCode.toLowerCase().startsWith("<html");
-                      const isReact = !isRawHtml && !isPresentation && (strippedCode.includes('import ') || strippedCode.includes('React') || strippedCode.includes('useState') || strippedCode.includes('Manifestation'));
-
-                      if (isReact && !isPresentation) {
-                        return (
-                          <div className="h-full w-full sandpack-full-height">
-                            <style>{`
-                              .sandpack-full-height .sp-wrapper, 
-                              .sandpack-full-height .sp-layout, 
-                              .sandpack-full-height .sp-stack { 
-                                height: 100% !important; 
-                                border: none !important;
-                                border-radius: 0 !important;
-                                background: white !important;
-                              }
-                              .sp-preview-container { background: white !important; }
-                            `}</style>
-                            <Sandpack
-                              template="react"
-                              files={{
-                                "/App.js": strippedCode,
-                              }}
-                              options={{
-                                showPreview: true,
-                                showCode: false,
-                                showTabs: false,
-                                showConsoleButton: false,
-                                showRefreshButton: false,
-                                showInlineErrors: true,
-                                wrapContent: true,
-                              }}
-                              theme="light"
-                            />
-                          </div>
-                        );
-                      }
-
                       return (
                         <iframe 
                           id="manifestation-iframe"
@@ -543,7 +500,6 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, onRefinement, readO
                           onLoad={() => { if (inlineEditMode) setupLiveEdit(() => {}); }}
                         />
                       );
-                    })()}
                     {showKnobs && (
                       <motion.div initial={{ opacity: 0, scale: 0.9, x: 20 }} animate={{ opacity: 1, scale: 1, x: 0 }} exit={{ opacity: 0, scale: 0.9, x: 20 }} className="absolute bottom-12 right-12 z-[1000] w-[340px] bg-white/90 backdrop-blur-2xl rounded-[2.5rem] shadow-2xl p-8 space-y-8 border border-black/5">
                         <div className="space-y-6">
