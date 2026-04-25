@@ -1,539 +1,63 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { KreonCardVisual } from './KreonCard';
+import { Check, X, Zap, ChevronRight } from 'lucide-react';
 import Lottie from 'lottie-react';
 import animationData from './Hello (apple).json';
 
-// --- CONSTANTS ---
+// ─── Typography Helpers ───────────────────────────────────────────────────────
+const IS = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => (
+  <span style={{ fontFamily: "'Instrument Serif', serif" }} className={className}>{children}</span>
+);
+const SAT = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => (
+  <span style={{ fontFamily: "'Satoshi', sans-serif" }} className={className}>{children}</span>
+);
+
+// ─── Scene Durations ──────────────────────────────────────────────────────────
 const SCENE_DURATION = [
-  10000, // 0: Scenes Stacking
-  4000,  // 1: White screen "so many problems..."
-  4600,  // 2: Splash (KREO Revelation)
-  64500, // 3: Interactive Visual Loop (4 demos + text screens)
-  22000, // 4: Possibilities Pile (BOMBARDMENT) 
-  6000,  // 5: Finale (Typing KREO)
+  4500,  // 0: Intro — "Honestly?"
+  5000,  // 1: Problem — "Claude is great, but..."
+  6000,  // 2: Identity — KREON cards
+  5500,  // 3: Style Mimic
+  5500,  // 4: Brand Kit
+  5500,  // 5: Live Edit
+  5500,  // 6: Knobs
+  5500,  // 7: Export
+  6000,  // 8: Price
+  6000,  // 9: CTA
 ];
 const TOTAL_SCENES = SCENE_DURATION.length;
 
-// --- SHARED COMPONENTS ---
-const ScenarioCard = ({ text, subtext, index, theme = 'blue' }: { text: string; subtext: string; index: number; theme?: 'blue' | 'accent' }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 100, scale: 0.95, rotate: (index % 2 === 0 ? -2 : 2) }}
-    animate={{ 
-      opacity: 1, 
-      y: index * 20, 
-      rotate: (index % 3 === 0 ? -1 : index % 3 === 1 ? 1 : 0),
-      scale: 1, 
-      zIndex: index 
-    }}
-    transition={{ delay: index * 0.7, duration: 1, ease: [0.16, 1, 0.3, 1] }}
-    className={`absolute w-full max-w-2xl p-10 rounded-[2.5rem] border shadow-2xl ${
-      theme === 'blue' ? 'bg-[#1B3FBF] border-white/20 text-white' : 'bg-white border-black/10 text-black'
-    }`}
-  >
-    <div className="text-center space-y-3">
-      <h2 className="text-xl md:text-3xl font-serif italic tracking-tight leading-tight">{text}</h2>
-      <p className={`text-sm md:text-base font-light ${theme === 'blue' ? 'text-white/60' : 'text-black/40'}`}>{subtext}</p>
-    </div>
-  </motion.div>
-);
-
-// --- SCENE 0: Merged Scenario Pile ---
-const SCENARIOS = [
-  { t: "Meeting in 2 hours. No deck.", s: "The idea is there. The visuals aren't." },
-  { t: "Flowchart for a 40-page PDF.", s: "The exam is tomorrow. You need it visual." },
-  { t: "FD @ 7.5% vs SIP @ 12%.", s: "Stop the math. Manifest the result." },
-  { t: "Startup needs a landing page.", s: "No dev team? No problem." },
-  { t: "Mockup in 10 minutes.", s: "You promised. KREO delivers." },
-  { t: "Scientific diagram check.", s: "Complex reality, simple manifestation." },
-  { t: "Physics project due at 9 AM.", s: "Vector dynamics in seconds." },
-  { t: "Quarterly review board.", s: "Data into aesthetic architecture." },
-  { t: "Architecture plan needs 3D.", s: "From wireframe to vision." },
-  { t: "Client pitch at noon.", s: "Wow them before they speak." }
-];
-
-const Scene0 = () => (
-  <div className="fixed inset-0 bg-white flex flex-col items-center justify-center pt-16 px-6 overflow-hidden">
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center mb-12">
-        <p className="text-[#1B3FBF] text-[10px] font-black tracking-[0.5em] uppercase mb-2">Neural Reality</p>
-        <h1 className="text-4xl md:text-6xl font-serif italic text-black tracking-tighter leading-tight">We all face situations</h1>
-    </motion.div>
-    <div className="relative w-full max-w-2xl flex-1 flex items-start justify-center">
-       {SCENARIOS.map((card, i) => (
-         <ScenarioCard key={i} index={i} text={card.t} subtext={card.s} theme="blue" />
-       ))}
-    </div>
-  </div>
-);
-
-// --- SCENE 1: Transition White Screen ---
-const Scene1 = () => (
-  <div className="fixed inset-0 bg-white flex flex-col items-center justify-center text-center px-6">
-    <motion.h2 initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}
-      className="text-4xl md:text-7xl font-serif italic tracking-tighter text-black/80 leading-none">
-      So many problems but <br/>
-      only one{' '}
-      <motion.span initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 1, duration: 1 }} className="text-[#1B3FBF] not-italic font-normal">solution</motion.span>
-    </motion.h2>
-  </div>
-);
-
-// --- SCENE 2: Embedded Splash Screen Logic ---
-const SceneSplash = () => {
-  const [phase, setPhase] = useState<"idle" | "lottie" | "reveal" | "exit">("idle");
-
+// ─── SCENE 0: Intro ───────────────────────────────────────────────────────────
+const Scene0 = () => {
+  const [step, setStep] = useState(0);
   useEffect(() => {
-    const t1 = setTimeout(() => setPhase("lottie"), 200);   
-    const t2 = setTimeout(() => setPhase("reveal"), 2400);  
-    const t3 = setTimeout(() => setPhase("exit"),   3400);  
-    return () => [t1, t2, t3].forEach(clearTimeout);
+    const t1 = setTimeout(() => setStep(1), 800);
+    const t2 = setTimeout(() => setStep(2), 2000);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
   }, []);
-
-  const lottieVisible = phase !== "idle" && phase !== "exit";
-  const kreoVisible   = phase === "reveal" || phase === "exit";
-  const exitActive    = phase === "exit";
-
   return (
-    <div
-      className="fixed inset-0 z-[1000] flex flex-col items-center justify-center bg-[#1B3FBF] overflow-hidden"
-      style={{
-        opacity:    exitActive ? 0 : 1,
-        transition: exitActive ? "opacity 1.0s cubic-bezier(0.4,0,0.2,1)" : "none",
-      }}
-    >
-      <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/30 pointer-events-none" />
-
-      {/* Lottie Animation */}
-      <div 
-        className={`w-[600px] h-[600px] transition-all duration-1000 ${lottieVisible ? 'opacity-100 scale-100 blur-0' : 'opacity-0 scale-90 blur-xl'}`}
-        style={{ 
-           transform: kreoVisible ? 'translateY(-60px) scale(0.6)' : 'translateY(0) scale(1)',
-           filter: 'brightness(0) invert(1)' 
-        }}
-      >
-        <Lottie animationData={animationData} loop={false} className="w-full h-full" />
-      </div>
-
-      {/* Celebrational Graffiti Field */}
-      <div className={`absolute inset-0 z-0 pointer-events-none transition-all duration-1000 ${kreoVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}>
-        {[...Array(40)].map((_, i) => {
-          const colors = ['bg-[#facc15]', 'bg-[#3b82f6]', 'bg-[#ef4444]', 'bg-[#10b981]', 'bg-white'];
-          const x = (Math.random() * 100);
-          const y = (Math.random() * 100);
-          const size = Math.random() * 0.8 + 0.2;
-          return (
-            <div key={i} className={`absolute animate-bounce ${colors[i % colors.length] || 'bg-white'}`} style={{
-                left: x + '%', top: y + '%', width: size + 'rem', height: size + 'rem', opacity: 0.6, animationDelay: (Math.random() * 0.5) + 's', borderRadius: i % 2 === 0 ? '50%' : '2px'
-            }} />
-          );
-        })}
-      </div>
-
-      {/* Identity Revelation */}
-      <div className={`absolute inset-0 flex flex-col items-center justify-center transition-all duration-1000 ${kreoVisible ? 'opacity-100 translate-y-12' : 'opacity-0 translate-y-20 blur-md'}`}>
-        <span className="relative z-10 text-8xl md:text-9xl font-light font-serif italic tracking-tighter text-white" style={{ textShadow: '0 0 50px rgba(255,255,255,0.4)' }}>
-          KREO
-        </span>
-        <span className="relative z-10 mt-8 text-[9px] font-black tracking-[0.6em] uppercase text-white/40">Studio Engaged</span>
-      </div>
-    </div>
-  );
-};
-
-// --- SCENE 3: Interactive Visual Loop ---
-const Scene2 = () => {
-  const [subPhase, setSubPhase] = useState(0); 
-  
-  useEffect(() => {
-    const sequence = [
-      { p: 13, d: 4000 }, // "An instant visualizer..."
-      { p: 14, d: 4500 }, // "Sometimes you need apps..."
-      { p: 15, d: 6000 }, // "Studies show visuals..."
-      { p: 0, d: 3500 },  // Type PPT
-      { p: 1, d: 4000 },  // PPT Slide 1
-      { p: 2, d: 4000 },  // PPT Slide 2
-      
-      { p: 16, d: 6000 }, // "For students..."
-      { p: 4, d: 3500 },  // Type Flow
-      { p: 5, d: 5000 },  // Flowchart
-      
-      { p: 17, d: 4500 }, // "I just wanna convince..."
-      { p: 7, d: 3500 },  // Type UI
-      { p: 8, d: 5000 },  // UI Dashboard
-      
-      { p: 18, d: 6000 }, // "Why think? Just enter a vague prompt..."
-      { p: 10, d: 3500 }, // Type Brand
-      { p: 11, d: 5000 }, // Brand Toolkit UI
-      { p: 12, d: 3000 }  // what more?
-    ];
-    let time = 0;
-    const timers = sequence.map(item => {
-      time += item.d;
-      return setTimeout(() => setSubPhase(item.p), time - item.d);
-    });
-    return () => timers.forEach(clearTimeout);
-  }, []);
-
-  return (
-    <div className="flex flex-col items-center justify-center h-full w-full px-6 bg-white overflow-hidden">
-       <AnimatePresence mode="wait">
-          {subPhase === 13 && (
-             <motion.div key="s13" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="text-center space-y-6">
-                <p className="text-[#1B3FBF] text-[10px] font-black tracking-[0.5em] uppercase mb-4">Phase 01 / Manifestation</p>
-                <h1 className="text-4xl md:text-7xl font-serif italic text-black tracking-tighter leading-tight max-w-5xl">
-                  An instant visualizer for your current imaginations.
-                </h1>
-                <div className="flex justify-center gap-2 pt-4">
-                  {[...Array(3)].map((_, i) => <motion.div key={i} animate={{ scale: [1, 1.5, 1], opacity: [0.3, 0.6, 0.3] }} transition={{ repeat: Infinity, duration: 2, delay: i * 0.4 }} className="w-1.5 h-1.5 rounded-full bg-[#1B3FBF]" />)}
-                </div>
-             </motion.div>
-          )}
-
-          {subPhase === 14 && (
-             <motion.div key="s14" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="text-center space-y-6">
-                <p className="text-[#1B3FBF] text-[10px] font-black tracking-[0.5em] uppercase mb-4">Phase 02 / The Need</p>
-                <h1 className="text-4xl md:text-7xl font-serif italic text-black tracking-tighter leading-tight max-w-5xl">
-                   Sometimes you need apps, <br/>
-                   <span className="text-[#1B3FBF] not-italic font-normal">but can't wait for someone to build it or a tool.</span>
-                </h1>
-             </motion.div>
-          )}
-
-          {subPhase === 15 && (
-             <motion.div key="s15" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="text-center space-y-6">
-                <p className="text-[#1B3FBF] text-[10px] font-black tracking-[0.5em] uppercase mb-4">Phase 03 / The Power</p>
-                <h1 className="text-4xl md:text-7xl font-serif italic text-black tracking-tighter leading-tight max-w-5xl">
-                  Studies show visuals have a great impact on many.
-                </h1>
-                <p className="text-2xl md:text-4xl font-light text-black/50 italic">
-                   Don't hassle anymore. <br/>
-                   Just rule the space. <span className="text-[#1B3FBF] font-serif not-italic">Become the one.</span>
-                </p>
-             </motion.div>
-          )}
-
-          {subPhase === 16 && (
-             <motion.div key="s16" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="text-center space-y-6">
-                <p className="text-[#1B3FBF] text-[10px] font-black tracking-[0.5em] uppercase mb-4">Phase 04 / For Students</p>
-                <h1 className="text-4xl md:text-7xl font-serif italic text-black tracking-tighter leading-tight max-w-5xl">
-                  You don't always understand text or explanations...
-                </h1>
-                <h2 className="text-[#1B3FBF] text-5xl md:text-7xl font-normal">but visuals help.</h2>
-             </motion.div>
-          )}
-
-          {subPhase === 17 && (
-             <motion.div key="s17" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="text-center space-y-6">
-                <p className="text-[#1B3FBF] text-[10px] font-black tracking-[0.5em] uppercase mb-4">Phase 05 / Conviction</p>
-                <h1 className="text-4xl md:text-7xl font-serif italic text-black tracking-tighter leading-tight max-w-5xl">
-                  "I just wanna convince people to join me."
-                </h1>
-                <p className="text-black/40 text-sm uppercase tracking-[0.4em]">Scaling the vision in seconds</p>
-             </motion.div>
-          )}
-
-          {subPhase === 18 && (
-             <motion.div key="s18" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="text-center space-y-8">
-                <p className="text-[#1B3FBF] text-[10px] font-black tracking-[0.5em] uppercase mb-4">Phase 06 / Speed</p>
-                <h1 className="text-4xl md:text-7xl font-serif italic text-black tracking-tighter leading-tight max-w-5xl">
-                  Why think? Just enter a vague prompt.
-                </h1>
-                <p className="text-[#1B3FBF] text-3xl md:text-6xl font-normal leading-none">
-                  Something is better than nothing.
-                </p>
-             </motion.div>
-          )}
-
-          {(subPhase === 0 || subPhase === 4 || subPhase === 7 || subPhase === 10) && (
-            <motion.div key="typing" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="w-full max-w-2xl border border-black/5 p-10 rounded-[2rem] bg-[#f8f9ff]">
-               <div className="flex gap-2 mb-4">
-                  <div className="w-2 h-2 rounded-full bg-[#1B3FBF]" />
-                  <div className="w-2 h-2 rounded-full bg-black/5" />
-               </div>
-               <div className="text-black/60 text-lg md:text-2xl font-serif italic tracking-tight leading-snug">
-                  {subPhase === 0 ? "Create a presentation on Global Energy Trends in 2026..." : 
-                   subPhase === 4 ? "Manifest a physics flowchart for Motion in One Dimension..." : 
-                   subPhase === 7 ? "Build a sleek SaaS dashboard for crypto investment tracking..." :
-                   "Generate a premium brand toolkit for an AI startup called NEURA..."}
-                  <motion.span animate={{ opacity: [1, 0, 1] }} transition={{ repeat: Infinity, duration: 0.8 }} className="ml-1 inline-block w-[2px] h-[0.9em] bg-[#1B3FBF] align-middle" />
-               </div>
-            </motion.div>
-          )}
-
-          {(subPhase === 1 || subPhase === 2) && (
-            <motion.div key="ppt" initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.02 }} className="w-full max-w-5xl h-[500px] bg-white rounded-[3rem] p-0 shadow-2xl relative border border-black/5 flex overflow-hidden">
-                <div className="w-1/4 bg-[#f8f9ff] border-r border-black/5 p-8 flex flex-col gap-4">
-                   <div className="h-4 w-20 bg-black/10 rounded-full mb-8" />
-                   {[...Array(4)].map((_, i) => (
-                     <div key={i} className={`h-16 rounded-xl border ${i === (subPhase === 1 ? 0 : 1) ? 'bg-white border-[#1B3FBF] shadow-sm' : 'bg-black/5 border-transparent'} p-3 space-y-2`}>
-                        <div className="h-1.5 w-1/2 bg-black/20 rounded-full" />
-                        <div className="h-1.5 w-3/4 bg-black/10 rounded-full" />
-                     </div>
-                   ))}
-                </div>
-                <div className="flex-1 p-16 flex flex-col justify-center relative">
-                   <div className="absolute top-12 right-12 text-black/10 text-[9px] font-black uppercase tracking-[0.4em]">MANIFESTED PRESENTATION / SLIDE 0{subPhase}</div>
-                   <div className="space-y-8">
-                      <motion.h1 key={subPhase} initial={{ x: 30, opacity: 0 }} animate={{ x: 0, opacity: 1 }} className="text-5xl md:text-7xl font-serif italic text-black leading-none tracking-tighter">
-                         {subPhase === 1 ? "Efficiency Peak" : "The Grid Shift"}
-                      </motion.h1>
-                      <div className="flex items-center gap-3">
-                         <motion.div initial={{ width: 0 }} animate={{ width: "120px" }} transition={{ duration: 1 }} className="h-2 bg-[#1B3FBF]" />
-                         <span className="text-[10px] font-black uppercase tracking-widest text-[#1B3FBF]">Neural Energy Analysis</span>
-                      </div>
-                      <p className="text-black/70 text-xl font-light max-w-2xl leading-relaxed">
-                         {subPhase === 1 ? "Solar PV efficiency is projected to reach a record 28.5% by Q2 2026, driven by perovskite tandem cell integration." : 
-                          "Smart grid connectivity increases by 42%, enabling decentralized transactive energy markets across oceanic cables."}
-                      </p>
-                      
-                      <div className="flex gap-4 pt-8">
-                         {[...Array(4)].map((_, i) => (
-                           <motion.div key={i} initial={{ height: 0 }} animate={{ height: [20, 60, 40][i % 3] || 30 }} transition={{ delay: 0.5 + (i * 0.1), duration: 1 }} className="w-12 bg-black/5 rounded-t-lg relative group">
-                              <div className={`absolute inset-0 bg-[#1B3FBF] rounded-t-lg transition-transform origin-bottom scale-y-0 group-hover:scale-y-100 duration-500`} style={{ height: '70%' }} />
-                           </motion.div>
-                         ))}
-                      </div>
-                   </div>
-                </div>
-            </motion.div>
-          )}
-
-          {(subPhase === 3 || subPhase === 6 || subPhase === 9) && (
-            <motion.h1 key="more" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-5xl md:text-8xl font-serif italic text-black tracking-tighter uppercase leading-none text-center">
-               {subPhase === 3 ? "Wait, there's more?" : subPhase === 6 ? "Even more?" : "Still more?"}
-            </motion.h1>
-          )}
-
-          {subPhase === 5 && (
-            <motion.div key="flow" initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="w-full max-w-5xl h-[550px] bg-white border border-black/5 rounded-[3rem] p-16 relative overflow-hidden shadow-2xl flex flex-col items-center justify-center">
-               <div className="absolute top-10 left-10 flex gap-1.5">
-                  {[...Array(3)].map((_, i) => <div key={i} className="w-2.5 h-2.5 rounded-full bg-black/5" />)}
-               </div>
-               <div className="text-black/10 text-[10px] font-black uppercase tracking-[0.6em] mb-12 text-center">STUDENT PORTAL / MOTION FLOWCHART</div>
-               <div className="flex flex-col items-center space-y-10 w-full relative">
-                  <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="px-12 py-6 bg-[#f8f9ff] border border-black/5 rounded-[1.5rem] text-black font-serif italic text-3xl shadow-sm z-10 relative">
-                    Translatory Motion
-                    <div className="absolute -bottom-10 left-1/2 w-0.5 h-10 bg-gradient-to-b from-[#1B3FBF]/40 to-transparent -translate-x-1/2" />
-                  </motion.div>
-                  
-                  <div className="flex gap-12 pt-4 relative">
-                     <div className="absolute top-0 left-0 right-0 h-0.5 bg-[#1B3FBF]/10 -translate-y-4" />
-                     {[
-                        { title: 'Position', sub: 's = displacement' },
-                        { title: 'Velocity', sub: 'v = ∆s / ∆t' },
-                        { title: 'Acceleration', sub: 'a = dv / dt' }
-                     ].map((item, i) => (
-                        <motion.div key={i} initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2 + (i * 0.1) }} className="flex flex-col items-center space-y-4">
-                           <div className="px-6 py-4 bg-[#1B3FBF] rounded-2xl text-white font-bold tracking-widest text-xs uppercase shadow-xl ring-8 ring-[#1B3FBF]/5">
-                              {item.title}
-                           </div>
-                           <div className="text-[10px] text-black/50 font-mono italic px-4 py-2 bg-black/5 rounded-full">{item.sub}</div>
-                        </motion.div>
-                     ))}
-                  </div>
-
-                  <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.8 }} className="px-12 py-7 border-2 border-[#1B3FBF] bg-white rounded-[2rem] text-[#1B3FBF] font-serif italic text-4xl shadow-xl leading-none relative">
-                     Equations of Motion
-                     <div className="absolute -top-10 left-1/2 w-0.5 h-10 bg-gradient-to-t from-[#1B3FBF]/40 to-transparent -translate-x-1/2" />
-                  </motion.div>
-               </div>
-               
-               {/* Background neural web */}
-               <div className="absolute inset-0 -z-10 opacity-[0.03]">
-                  <svg width="100%" height="100%">
-                     <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                        <circle cx="20" cy="20" r="1.5" fill="#1B3FBF" />
-                     </pattern>
-                     <rect width="100%" height="100%" fill="url(#grid)" />
-                  </svg>
-               </div>
-            </motion.div>
-          )}
-
-          {subPhase === 8 && (
-            <motion.div key="ui" initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-5xl h-[500px] bg-white border border-black/5 rounded-[3rem] shadow-2xl flex overflow-hidden ring-1 ring-black/5">
-               <div className="w-64 border-r border-black/5 bg-[#f8f9ff] p-10 space-y-10">
-                  <div className="flex items-center gap-3">
-                     <div className="w-10 h-10 rounded-xl bg-[#1B3FBF] flex items-center justify-center">
-                        <div className="w-4 h-4 rounded-full border-2 border-white" />
-                     </div>
-                     <span className="font-bold tracking-tighter text-black uppercase text-xs">Aesthetics UI</span>
-                  </div>
-                  <div className="space-y-6 pt-6">
-                     {[...Array(5)].map((_, i) => (
-                        <div key={i} className="flex items-center gap-3">
-                           <div className={`w-2 h-2 rounded-full ${i === 0 ? 'bg-[#1B3FBF]' : 'bg-black/5'}`} />
-                           <div className={`h-2 rounded-full ${i === 0 ? 'bg-black/20 w-3/4' : 'bg-black/5 w-1/2'}`} />
-                        </div>
-                     ))}
-                  </div>
-               </div>
-               <div className="flex-1 p-16 space-y-12 bg-white relative">
-                  <div className="absolute top-0 right-0 w-64 h-64 bg-[#1B3FBF]/5 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/2" />
-                  <div className="flex justify-between items-center relative">
-                     <div className="space-y-1">
-                        <h3 className="text-3xl font-serif italic text-black">Crypto Portfolio Explorer</h3>
-                        <p className="text-black/30 text-[10px] font-black uppercase tracking-[0.3em]">Neural Real-Time Update</p>
-                     </div>
-                     <div className="flex items-center gap-4">
-                        <div className="px-4 py-2 bg-green-50 rounded-full text-green-600 text-[10px] font-bold tracking-widest uppercase">Live Nodes: 12</div>
-                        <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse shadow-[0_0_15px_rgba(34,197,94,0.5)]" />
-                     </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-8 relative">
-                     <motion.div initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} className="h-44 rounded-[2rem] bg-[#f8f9ff] border border-black/5 p-8 flex flex-col justify-between shadow-sm">
-                        <div className="flex justify-between items-start">
-                           <span className="text-[10px] font-black uppercase text-black/20 tracking-widest italic">Btc/Usd Index</span>
-                           <span className="text-green-500 font-bold text-xs">+4.2%</span>
-                        </div>
-                        <span className="text-4xl font-light text-black tracking-tighter">$67,492.00</span>
-                        <div className="h-2 bg-black/5 rounded-full w-full overflow-hidden">
-                           <motion.div initial={{ width: 0 }} animate={{ width: "78%" }} transition={{ duration: 2 }} className="h-full bg-gradient-to-r from-[#1B3FBF] to-[#4F75FF]" />
-                        </div>
-                     </motion.div>
-                     <motion.div initial={{ x: 20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} className="h-44 rounded-[2rem] bg-black p-8 flex flex-col justify-between shadow-2xl">
-                        <div className="flex justify-between items-start">
-                           <span className="text-[10px] font-black uppercase text-white/40 tracking-widest italic">Master Portfolio</span>
-                           <div className="w-2 h-2 rounded-full bg-[#1B3FBF]" />
-                        </div>
-                        <span className="text-4xl font-light text-white tracking-tighter">$ +14,250.40</span>
-                        <div className="text-[10px] text-[#1B3FBF] font-black uppercase tracking-widest">+12.4% Neural Gain</div>
-                     </motion.div>
-                  </div>
-               </div>
-            </motion.div>
-          )}
-
-          {subPhase === 11 && (
-            <motion.div key="brand" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="w-full max-w-6xl h-[550px] bg-white border border-black/10 rounded-[4rem] shadow-2xl p-16 flex flex-col items-center justify-between relative overflow-hidden">
-               <div className="absolute top-0 left-0 w-full h-2 bg-[#1B3FBF]" />
-               <div className="text-black/20 text-[10px] font-black uppercase tracking-[1em] mb-4">NEURA / IDENTITY SYSTEM 2026</div>
-               <div className="flex-1 w-full grid grid-cols-2 gap-20">
-                  <div className="flex flex-col items-center justify-center space-y-10 border-r border-black/5 relative">
-                     <motion.div initial={{ rotate: -10, scale: 0.8 }} animate={{ rotate: 0, scale: 1 }} className="w-48 h-48 bg-black rounded-[3rem] flex items-center justify-center shadow-2xl ring-12 ring-black/5">
-                        <span className="text-white font-serif text-9xl italic">N</span>
-                     </motion.div>
-                     <div className="text-center">
-                        <p className="text-black text-2xl font-black uppercase tracking-[0.3em] italic mb-1">Primary Wordmark</p>
-                        <p className="text-black/30 text-[9px] font-bold uppercase tracking-widest">Designed by KREO Engine</p>
-                     </div>
-                     <div className="absolute bottom-4 left-4 flex gap-1">
-                        {[...Array(3)].map((_, i) => <div key={i} className="w-1.5 h-1.5 rounded-full bg-black/10" />)}
-                     </div>
-                  </div>
-                  <div className="space-y-16 justify-center flex flex-col">
-                     <div className="space-y-6">
-                        <p className="text-[10px] font-black uppercase text-black/40 tracking-[0.5em]">Chromatic Palette</p>
-                        <div className="flex gap-6">
-                           {[
-                              { c: '#000000', n: 'Void' },
-                              { c: '#1B3FBF', n: 'Kreo Blue' },
-                              { c: '#FACC15', n: 'Accent' },
-                              { c: '#F8F9FF', n: 'Surface' }
-                           ].map((item, i) => (
-                              <motion.div key={i} initial={{ y: 10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.4 + (i * 0.1) }} className="space-y-2">
-                                 <div className="w-14 h-14 rounded-2xl border border-black/5 shadow-inner" style={{ backgroundColor: item.c }} />
-                                 <div className="text-[8px] font-black uppercase text-black/20 text-center tracking-tighter">{item.n}</div>
-                              </motion.div>
-                           ))}
-                        </div>
-                     </div>
-                     <div className="space-y-6">
-                        <p className="text-[10px] font-black uppercase text-black/40 tracking-[0.5em]">Typography Spec</p>
-                        <div className="space-y-1">
-                           <h2 className="text-6xl font-serif italic text-black tracking-tighter">Instrument Serif</h2>
-                           <h2 className="text-4xl font-sans text-black/40 tracking-tight">Inter / Geometric Mono</h2>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-            </motion.div>
-          )}
-
-          {subPhase === 12 && (
-            <div className="text-center space-y-4">
-               <motion.h1 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-3xl md:text-5xl font-serif italic text-black/20 tracking-tight leading-none">What more can you do with</motion.h1>
-               <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} className="block text-6xl md:text-9xl font-serif text-[#1B3FBF] tracking-tighter leading-none">KREO app</motion.span>
-            </div>
-          )}
-       </AnimatePresence>
-    </div>
-  );
-};
-
-// --- SCENE 4: Possibilities Pile ---
-const EXAMPLES = [
-  "Scientific Diagrams", "Market Reports", "Logic Workflows", "Financial Models", 
-  "Flashcard Sets", "Landing Pages", "Mockup Suites", "Pitch Decks", "API Docs", 
-  "System Architecture", "Global Strategies", "User Experience Flow", "Legal Briefs",
-  "Creative Scripts", "Project Roadmaps", "Course Curriculum", "SaaS Dashboards",
-  "Portfolio Sites", "Budget Trackers", "Scientific Papers", "Audit Reports",
-  "Marketing Funnels", "Product Wikis", "Hiring Pipelines", "Travel Itineraries",
-  "E-commerce Checkouts", "Auth Flows", "Database Schemas", "Network Maps",
-  "Org Charts", "Mind Maps", "Style Guides", "Brand Toolkits", "Event Planning"
-];
-
-const Scene3 = () => {
-  const [visibleCount, setVisibleCount] = useState(0);
-  const [complete, setComplete] = useState(false);
-  
-  const positions = useMemo(() => {
-    return EXAMPLES.map(() => ({
-      x: (Math.random() * 70) - 35, 
-      y: (Math.random() * 60) - 30, 
-      rotate: (Math.random() * 40) - 20 
-    }));
-  }, []);
-
-  useEffect(() => {
-    let count = 0;
-    const interval = setInterval(() => {
-      count++;
-      setVisibleCount(count);
-      if (count >= EXAMPLES.length) {
-        clearInterval(interval);
-        setTimeout(() => setComplete(true), 1500);
-      }
-    }, 400); 
-    return () => clearInterval(interval);
-  }, []);
-
-  return (
-    <div className="fixed inset-0 bg-white flex flex-col items-center justify-center p-6 overflow-hidden">
-      <div className="text-center mb-0 relative z-[1000] self-start w-full pt-16">
-        <p className="text-[#1B3FBF] text-[10px] font-black tracking-[0.6em] uppercase mb-2">Neural Domain</p>
-        <h1 className="text-4xl md:text-6xl font-serif italic text-black tracking-tighter leading-none">What you can do with KREO</h1>
-      </div>
-      
-      <div className="relative flex-1 w-full flex items-center justify-center">
-         {EXAMPLES.map((text, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, scale: 0.5, y: 150 }}
-              animate={{ 
-                opacity: i < visibleCount ? 1 : 0, 
-                scale: i < visibleCount ? 1 : 0.5, 
-                x: `${positions[i].x}vw`,
-                y: `${positions[i].y}vh`,
-                rotate: positions[i].rotate,
-                zIndex: i 
-              }}
-              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="absolute p-6 md:p-8 rounded-[2.5rem] border border-white/10 shadow-2xl flex items-center justify-center min-w-[280px] md:min-w-[320px] bg-[#1B3FBF]"
-            >
-              <span className="text-white font-serif italic text-xl md:text-2xl tracking-tighter leading-none">{text}</span>
-            </motion.div>
-         ))}
-      </div>
-
-      <AnimatePresence>
-        {complete && (
-          <motion.div initial={{ opacity: 0, backdropFilter: 'blur(0px)' }} animate={{ opacity: 1, backdropFilter: 'blur(50px)' }}
-            className="fixed inset-0 bg-white/[0.05] z-[2000] flex items-center justify-center text-center px-6">
-             <motion.h1 initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 1 }}
-               className="text-6xl md:text-[10vw] font-serif italic text-white tracking-tighter mix-blend-difference leading-none">
-                The limit is your <br/>
-                <span className="not-italic font-normal">imagination.</span>
-             </motion.h1>
+    <div className="fixed inset-0 bg-white flex flex-col items-center justify-center text-center px-8">
+      <AnimatePresence mode="wait">
+        {step === 0 && (
+          <motion.div key="s0" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <SAT className="text-[10px] font-black uppercase tracking-[0.5em] text-black/20">A Visual Creator's Reality Check</SAT>
+          </motion.div>
+        )}
+        {step === 1 && (
+          <motion.div key="s1" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-4">
+            <h1 style={{ fontFamily: "'Instrument Serif', serif" }} className="text-7xl md:text-[10vw] italic text-black tracking-tighter leading-none">
+              Honestly?
+            </h1>
+            <p style={{ fontFamily: "'Satoshi', sans-serif" }} className="text-lg text-black/30 font-light">Let's be real about this.</p>
+          </motion.div>
+        )}
+        {step === 2 && (
+          <motion.div key="s2" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="space-y-6 max-w-3xl">
+            <h1 style={{ fontFamily: "'Instrument Serif', serif" }} className="text-5xl md:text-7xl italic text-black tracking-tighter leading-tight">
+              Where does <span className="text-[#1B3FBF]">KREO</span> actually win?
+            </h1>
+            <p style={{ fontFamily: "'Satoshi', sans-serif" }} className="text-base text-black/30 font-light uppercase tracking-[0.4em] text-sm">8 reasons. Clear, honest, real.</p>
           </motion.div>
         )}
       </AnimatePresence>
@@ -541,35 +65,466 @@ const Scene3 = () => {
   );
 };
 
-// --- SCENE 5: Finale (Typing KREO) ---
-const Scene4 = () => {
-  const [text, setText] = useState("");
-  const target = "KREO";
-
+// ─── SCENE 1: Claude Problem ──────────────────────────────────────────────────
+const Scene1 = () => {
+  const [step, setStep] = useState(0);
   useEffect(() => {
-    let index = 0;
-    const t = setInterval(() => {
-      setText(target.slice(0, index + 1));
-      index++;
-      if (index >= target.length) clearInterval(t);
-    }, 400);
-    return () => clearInterval(t);
+    const t1 = setTimeout(() => setStep(1), 600);
+    const t2 = setTimeout(() => setStep(2), 2200);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
   }, []);
-
   return (
-    <div className="flex flex-col items-center justify-center h-full w-full bg-white">
-       <div className="text-center space-y-8 w-full px-10">
-          <motion.h1 className="text-[15vw] font-serif italic text-[#1B3FBF] tracking-tighter leading-none">
-             {text}
-             <motion.span animate={{ opacity: [1, 0, 1] }} transition={{ repeat: Infinity, duration: 0.8 }} className="ml-2 inline-block w-[3px] h-[1em] bg-[#1B3FBF] align-middle" />
-          </motion.h1>
-          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2 }} className="text-[#1B3FBF] text-[10px] font-black uppercase tracking-[1em] opacity-20">creoai.vercel.app</motion.p>
-       </div>
+    <div className="fixed inset-0 bg-[#f8f9ff] flex items-center justify-center px-10">
+      <div className="max-w-5xl w-full grid grid-cols-2 gap-12 items-center">
+        <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }} className="space-y-6">
+          <SAT className="text-[9px] font-black uppercase tracking-[0.5em] text-[#1B3FBF]/50">The Context</SAT>
+          <h2 style={{ fontFamily: "'Instrument Serif', serif" }} className="text-5xl md:text-6xl italic text-black tracking-tighter leading-tight">
+            Claude is brilliant.<br />
+            <span className="text-black/30">For general AI.</span>
+          </h2>
+          <p style={{ fontFamily: "'Satoshi', sans-serif" }} className="text-lg text-black/40 font-light leading-relaxed">
+            It's one of the most impressive AI systems ever built. It also has zero features built for visual creators.
+          </p>
+        </motion.div>
+        <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.5 }} className="space-y-4">
+          {[
+            { text: 'No identity system', sub: 'You are just a session ID' },
+            { text: 'No visual persistence', sub: 'Forgets your brand every time' },
+            { text: 'No live element editing', sub: 'Regenerates everything, always' },
+            { text: 'No export suite', sub: 'Code in. You figure out the rest.' },
+          ].map((item, i) => (
+            <motion.div key={i} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.6 + i * 0.12 }}
+              className="flex items-start gap-4 p-4 rounded-2xl bg-white border border-black/5">
+              <div className="w-7 h-7 rounded-full bg-red-50 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <X size={12} className="text-red-400" />
+              </div>
+              <div>
+                <p style={{ fontFamily: "'Satoshi', sans-serif" }} className="text-[12px] font-black text-black">{item.text}</p>
+                <p style={{ fontFamily: "'Satoshi', sans-serif" }} className="text-[11px] text-black/30 font-light">{item.sub}</p>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
+      </div>
     </div>
   );
 };
 
-// --- MAIN COMPONENT ---
+// ─── SCENE 2: Identity — Real Kreon Cards ────────────────────────────────────
+const CARD_DATA = [
+  { interest: 'tech' as const, name: 'DHRUV G.', num: '0012' },
+  { interest: 'design' as const, name: 'ANYA M.', num: '0047' },
+  { interest: 'product' as const, name: 'RAJAN K.', num: '0091' },
+  { interest: 'art' as const, name: 'PRIYA S.', num: '0133' },
+  { interest: 'music' as const, name: 'ARJUN R.', num: '0197' },
+];
+
+const Scene2 = () => {
+  const [visible, setVisible] = useState(0);
+  useEffect(() => {
+    let i = 0;
+    const t = setInterval(() => {
+      i++;
+      setVisible(i);
+      if (i >= CARD_DATA.length) clearInterval(t);
+    }, 600);
+    return () => clearInterval(t);
+  }, []);
+
+  return (
+    <div className="fixed inset-0 bg-white flex flex-col">
+      {/* Left Text */}
+      <div className="absolute left-10 md:left-20 top-1/2 -translate-y-1/2 z-10 max-w-sm space-y-5">
+        <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}>
+          <SAT className="text-[9px] font-black uppercase tracking-[0.5em] text-[#1B3FBF]/50 block mb-3">01 / Identity</SAT>
+          <h2 style={{ fontFamily: "'Instrument Serif', serif" }} className="text-5xl md:text-6xl italic text-black tracking-tighter leading-tight">
+            KREO feels like a <span className="text-[#1B3FBF]">community.</span>
+          </h2>
+          <p style={{ fontFamily: "'Satoshi', sans-serif" }} className="text-base text-black/40 font-light leading-relaxed mt-4">
+            KREONs. Discipline-based identity cards. Onboarding that knows who you are. Claude has zero concept of this.
+          </p>
+          <div className="flex items-center gap-3 mt-6 p-3 rounded-2xl bg-[#1B3FBF]/5 border border-[#1B3FBF]/10">
+            <div className="w-7 h-7 rounded-full bg-[#1B3FBF] flex items-center justify-center flex-shrink-0">
+              <Check size={12} className="text-white" />
+            </div>
+            <p style={{ fontFamily: "'Satoshi', sans-serif" }} className="text-[11px] text-[#1B3FBF] font-black">KREO WINS — Community & Identity</p>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Fanned Cards */}
+      <div className="absolute right-0 top-0 bottom-0 flex items-center justify-end pr-10 md:pr-20">
+        <div className="relative" style={{ width: 340, height: 480 }}>
+          {CARD_DATA.map((card, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 60, rotate: -15 + i * 5 }}
+              animate={i < visible ? {
+                opacity: 1,
+                y: i * -18,
+                x: i * 6,
+                rotate: -8 + i * 4,
+                zIndex: i,
+              } : {}}
+              transition={{ type: 'spring', stiffness: 200, damping: 22 }}
+              className="absolute"
+              style={{ transformOrigin: 'bottom center' }}
+            >
+              <KreonCardVisual
+                cardNumber={card.num}
+                userName={card.name}
+                interest={card.interest}
+                bio="Visual creator & KREON resident."
+              />
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ─── GENERIC FEATURE SCENE ───────────────────────────────────────────────────
+interface FeatureSceneProps {
+  num: string;
+  label: string;
+  title: React.ReactNode;
+  kreo: string;
+  claude: string;
+  visual: React.ReactNode;
+  bg?: string;
+  dark?: boolean;
+}
+
+const FeatureScene = ({ num, label, title, kreo, claude, visual, bg = 'bg-white', dark = false }: FeatureSceneProps) => {
+  const text = dark ? 'text-white' : 'text-black';
+  const sub = dark ? 'text-white/40' : 'text-black/40';
+  return (
+    <div className={`fixed inset-0 ${bg} flex items-center justify-center px-10 overflow-hidden`}>
+      <div className="max-w-6xl w-full grid md:grid-cols-2 gap-16 items-center">
+        <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }} className="space-y-6">
+          <SAT className={`text-[9px] font-black uppercase tracking-[0.5em] ${dark ? 'text-white/30' : 'text-[#1B3FBF]/50'}`}>{num} / {label}</SAT>
+          <h2 style={{ fontFamily: "'Instrument Serif', serif" }} className={`text-5xl md:text-6xl italic ${text} tracking-tighter leading-tight`}>
+            {title}
+          </h2>
+          <div className="space-y-3 pt-2">
+            <div className={`flex items-start gap-3 p-4 rounded-2xl ${dark ? 'bg-white/10 border-white/10' : 'bg-[#1B3FBF]/5 border-[#1B3FBF]/10'} border`}>
+              <div className="w-6 h-6 rounded-full bg-[#1B3FBF] flex items-center justify-center flex-shrink-0 mt-0.5"><Check size={10} className="text-white" /></div>
+              <p style={{ fontFamily: "'Satoshi', sans-serif" }} className={`text-[12px] ${dark ? 'text-white/80' : 'text-black/70'} font-light leading-relaxed`}><span className="font-black">KREO:</span> {kreo}</p>
+            </div>
+            <div className={`flex items-start gap-3 p-4 rounded-2xl ${dark ? 'bg-white/5 border-white/5' : 'bg-black/[0.02] border-black/5'} border`}>
+              <div className="w-6 h-6 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0 mt-0.5"><X size={10} className="text-red-400" /></div>
+              <p style={{ fontFamily: "'Satoshi', sans-serif" }} className={`text-[12px] ${dark ? 'text-white/40' : 'text-black/40'} font-light leading-relaxed`}><span className="font-black">Claude:</span> {claude}</p>
+            </div>
+          </div>
+        </motion.div>
+        <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4 }}>
+          {visual}
+        </motion.div>
+      </div>
+    </div>
+  );
+};
+
+// ─── SCENE 3: Style Mimic ────────────────────────────────────────────────────
+const Scene3 = () => (
+  <FeatureScene
+    num="02" label="Style Mimic"
+    title={<>Paste a URL.<br /><span className="text-[#1B3FBF]">Get that exact aesthetic.</span></>}
+    kreo="Paste stripe.com, get that aesthetic — colors, spacing, components. Instant extraction, instant application."
+    claude="Cannot read live websites. Cannot extract or replicate visual styles. There is no equivalent feature."
+    visual={
+      <div className="rounded-3xl bg-[#f0f4ff] border border-black/5 p-8 space-y-5">
+        <div className="flex items-center gap-3 p-3 rounded-2xl bg-white border border-black/5">
+          <div className="w-6 h-6 rounded-full bg-[#1B3FBF] flex items-center justify-center flex-shrink-0">
+            <Zap size={10} className="text-white" />
+          </div>
+          <span style={{ fontFamily: "'Satoshi', sans-serif" }} className="text-[11px] text-black/40 font-light flex-1">https://stripe.com</span>
+          <div className="text-[9px] text-[#1B3FBF] font-black uppercase tracking-widest bg-[#1B3FBF]/10 px-2 py-1 rounded-full">Captured</div>
+        </div>
+        <div className="h-[1px] bg-black/5" />
+        <div className="space-y-3">
+          {['#6772E5', '#F6F9FC', '#32325D', 'Inter', '4px radius'].map((v, i) => (
+            <div key={i} className="flex items-center justify-between">
+              <span style={{ fontFamily: "'Satoshi', sans-serif" }} className="text-[10px] text-black/30 uppercase tracking-widest">
+                {['Primary', 'Background', 'Dark', 'Font', 'Radius'][i]}
+              </span>
+              <div className="flex items-center gap-2">
+                {i < 3 && <div className="w-4 h-4 rounded" style={{ background: v }} />}
+                <span style={{ fontFamily: "'Satoshi', sans-serif" }} className="text-[11px] font-black text-black">{v}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="p-4 rounded-2xl text-white text-center text-[11px] font-black uppercase tracking-widest" style={{ background: '#6772E5', fontFamily: "'Satoshi', sans-serif" }}>
+          Style Applied to Artifact
+        </div>
+      </div>
+    }
+  />
+);
+
+// ─── SCENE 4: Brand Kit ──────────────────────────────────────────────────────
+const Scene4 = () => (
+  <FeatureScene
+    num="03" label="Brand Kit"
+    title={<>Your design system.<br /><span className="text-[#1B3FBF]">Persists forever.</span></>}
+    kreo="Colors, fonts, radius — saved once, injected automatically into every artifact you ever generate."
+    claude="Forgets everything between sessions. Your brand has to be re-explained every single time, from scratch."
+    visual={
+      <div className="space-y-4">
+        <div className="rounded-3xl bg-[#f0f4ff] border border-black/5 p-6 space-y-5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-black" style={{ background: '#1B3FBF', fontFamily: "'Satoshi', sans-serif" }}>K</div>
+              <div>
+                <p style={{ fontFamily: "'Satoshi', sans-serif" }} className="text-[11px] font-black">Brand Kit Active</p>
+                <p style={{ fontFamily: "'Satoshi', sans-serif" }} className="text-[9px] text-black/30">Persists across sessions</p>
+              </div>
+            </div>
+            <div className="w-3 h-3 rounded-full bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.6)]" />
+          </div>
+          <div className="grid grid-cols-4 gap-2">
+            {['#1B3FBF','#0020C2','#F0F4FF','#000000'].map((c, i) => (
+              <div key={i} className="aspect-square rounded-xl border border-white/50" style={{ background: c }} />
+            ))}
+          </div>
+          <div className="flex gap-2">
+            {['Inter', '12px', 'Logo ✓'].map((v, i) => (
+              <div key={i} style={{ fontFamily: "'Satoshi', sans-serif" }} className="flex-1 text-center py-2 rounded-xl text-[9px] font-black bg-white border border-black/5 text-black/50 uppercase tracking-wider">{v}</div>
+            ))}
+          </div>
+        </div>
+        <div style={{ fontFamily: "'Satoshi', sans-serif" }} className="text-center text-[9px] text-black/30 font-black uppercase tracking-[0.4em]">
+          ↓ Applied to every artifact automatically
+        </div>
+        <div className="grid grid-cols-3 gap-2">
+          {['Dashboard', 'Landing', 'Pitch'].map((v, i) => (
+            <div key={i} className="py-3 rounded-2xl text-white text-center text-[9px] font-black uppercase tracking-wide" style={{ background: '#1B3FBF', fontFamily: "'Satoshi', sans-serif" }}>{v}</div>
+          ))}
+        </div>
+      </div>
+    }
+  />
+);
+
+// ─── SCENE 5: Live Edit ──────────────────────────────────────────────────────
+const Scene5 = () => (
+  <FeatureScene
+    num="04" label="Live Edit"
+    title={<>Click any element.<br /><span className="text-[#1B3FBF]">Re-prompt just that piece.</span></>}
+    kreo="Enable Live Edit, click any element in your manifest, describe the change. Only that element gets updated."
+    claude="Regenerates the entire codebase from scratch every single time. One word change = full rebuild."
+    visual={
+      <div className="rounded-3xl bg-[#030318] p-8 space-y-4">
+        <div style={{ fontFamily: "'Satoshi', sans-serif" }} className="text-[9px] text-white/20 uppercase tracking-[0.5em] mb-4">Live Manifest — Neural Edit Mode</div>
+        <div className="space-y-3">
+          {[
+            { el: 'nav', label: 'Navigation', active: false },
+            { el: 'h1', label: 'Hero Title', active: true },
+            { el: 'p', label: 'Body Copy', active: false },
+            { el: 'button', label: 'CTA Button', active: false },
+          ].map((item, i) => (
+            <div key={i} className={`flex items-center gap-3 p-3 rounded-xl border transition-all ${item.active ? 'border-[#1B3FBF] bg-[#1B3FBF]/20' : 'border-white/5 bg-white/5'}`}>
+              <div className={`w-6 h-6 rounded-lg flex items-center justify-center text-[9px] font-black ${item.active ? 'bg-[#1B3FBF] text-white' : 'bg-white/5 text-white/20'}`} style={{ fontFamily: "'Satoshi', sans-serif" }}>
+                {item.el}
+              </div>
+              <span style={{ fontFamily: "'Satoshi', sans-serif" }} className={`text-[11px] font-black ${item.active ? 'text-white' : 'text-white/30'}`}>{item.label}</span>
+              {item.active && <div style={{ fontFamily: "'Satoshi', sans-serif" }} className="ml-auto text-[9px] text-[#1B3FBF] font-black uppercase tracking-widest bg-[#1B3FBF]/20 px-2 py-0.5 rounded-full">Selected</div>}
+            </div>
+          ))}
+        </div>
+        <div className="mt-4 p-3 rounded-xl bg-[#1B3FBF]/10 border border-[#1B3FBF]/20">
+          <p style={{ fontFamily: "'Satoshi', sans-serif" }} className="text-[10px] text-[#1B3FBF] font-light italic">"Make this text bold and increase size to 5xl"</p>
+          <div style={{ fontFamily: "'Satoshi', sans-serif" }} className="text-[9px] text-[#1B3FBF]/50 mt-1 font-black uppercase tracking-widest">⚡ Orchestrating Local Edit...</div>
+        </div>
+      </div>
+    }
+    bg="bg-white"
+  />
+);
+
+// ─── SCENE 6: Knobs ──────────────────────────────────────────────────────────
+const Scene6 = () => {
+  const [primary, setPrimary] = useState('#1B3FBF');
+  const [radius, setRadius] = useState(12);
+  useEffect(() => {
+    const colors = ['#1B3FBF', '#ec4899', '#f97316', '#22c55e', '#8b5cf6'];
+    let i = 0;
+    const t = setInterval(() => {
+      i++;
+      setPrimary(colors[i % colors.length]);
+      setRadius(4 + (i % 5) * 6);
+    }, 1200);
+    return () => clearInterval(t);
+  }, []);
+
+  return (
+    <FeatureScene
+      num="05" label="Knobs"
+      title={<>Real-time controls.<br /><span style={{ color: primary }}>Zero credits spent.</span></>}
+      kreo="Live sliders for brand color, border radius, font size, dark mode — all instant, no regeneration, no credits."
+      claude="Has no concept of real-time visual controls. Every change goes back through the full generation pipeline."
+      visual={
+        <div className="rounded-3xl bg-[#f0f4ff] border border-black/5 p-8 space-y-6">
+          <div style={{ fontFamily: "'Satoshi', sans-serif" }} className="text-[9px] text-black/30 font-black uppercase tracking-[0.4em]">Aesthetic Engine · Live Override</div>
+          <div className="space-y-5">
+            <div className="space-y-2">
+              <div className="flex justify-between">
+                <span style={{ fontFamily: "'Satoshi', sans-serif" }} className="text-[10px] font-black text-black/50 uppercase tracking-widest">Brand Primary</span>
+                <span style={{ fontFamily: "'Satoshi', sans-serif" }} className="text-[10px] font-mono font-black" style={{ color: primary }}>{primary}</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl border border-black/5 transition-all duration-1000" style={{ background: primary }} />
+                <div className="flex-1 h-2 rounded-full bg-black/5 overflow-hidden">
+                  <div className="h-full rounded-full transition-all duration-1000" style={{ width: '60%', background: primary }} />
+                </div>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <div className="flex justify-between">
+                <span style={{ fontFamily: "'Satoshi', sans-serif" }} className="text-[10px] font-black text-black/50 uppercase tracking-widest">Border Radius</span>
+                <span style={{ fontFamily: "'Satoshi', sans-serif" }} className="text-[10px] font-mono font-black text-black">{radius}px</span>
+              </div>
+              <div className="h-2 bg-black/5 rounded-full overflow-hidden">
+                <div className="h-full bg-black rounded-full transition-all duration-1000" style={{ width: `${radius * 2.5}%` }} />
+              </div>
+            </div>
+            <div className="flex gap-2">
+              {['Light', 'Dark'].map((m) => (
+                <div key={m} style={{ fontFamily: "'Satoshi', sans-serif", borderRadius: radius + 'px' }} className="flex-1 py-3 text-center text-[9px] font-black uppercase tracking-widest transition-all duration-1000" style={{ background: m === 'Light' ? primary : '#030318', color: 'white', borderRadius: radius + 'px' }}>{m}</div>
+              ))}
+            </div>
+          </div>
+          <div className="p-4 rounded-2xl bg-white border border-black/5">
+            <p style={{ fontFamily: "'Satoshi', sans-serif" }} className="text-[9px] text-black/30 font-black uppercase tracking-widest text-center">Changes apply instantly · No credits consumed</p>
+          </div>
+        </div>
+      }
+    />
+  );
+};
+
+// ─── SCENE 7: Export ─────────────────────────────────────────────────────────
+const Scene7 = () => (
+  <FeatureScene
+    num="06" label="Ecosystem Export"
+    title={<>ZIP. PPTX. Canva.<br /><span className="text-[#1B3FBF]">One click each.</span></>}
+    kreo="Export as HTML/ZIP package, cinematic PPTX, or push directly to Canva — automated, no manual steps."
+    claude="Gives you code. You figure out the rest. How to turn it into a PPTX is entirely your problem."
+    visual={
+      <div className="space-y-3">
+        {[
+          { label: 'Manifest Source', ext: '.html', desc: 'Full production-ready HTML', color: '#1B3FBF' },
+          { label: 'Dev Package', ext: '.zip', desc: 'Complete project bundle', color: '#8b5cf6' },
+          { label: 'Cinematic PPTX', ext: '.pptx', desc: 'Presentation-ready slides', color: '#f97316' },
+          { label: 'Canva Bridge', ext: 'Canva', desc: 'Auto-inject media asset', color: '#ec4899' },
+        ].map((item, i) => (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.4 + i * 0.15 }}
+            className="flex items-center gap-4 p-4 rounded-2xl bg-[#f8f9ff] border border-black/5 hover:border-black/10 transition-all"
+          >
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white text-[9px] font-black flex-shrink-0" style={{ background: item.color, fontFamily: "'Satoshi', sans-serif" }}>
+              {item.ext}
+            </div>
+            <div className="flex-1">
+              <p style={{ fontFamily: "'Satoshi', sans-serif" }} className="text-[12px] font-black text-black">{item.label}</p>
+              <p style={{ fontFamily: "'Satoshi', sans-serif" }} className="text-[10px] text-black/30 font-light">{item.desc}</p>
+            </div>
+            <div className="w-7 h-7 rounded-full bg-black/5 flex items-center justify-center">
+              <ChevronRight size={11} className="text-black/30" />
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    }
+  />
+);
+
+// ─── SCENE 8: Price ──────────────────────────────────────────────────────────
+const Scene8 = () => (
+  <div className="fixed inset-0 bg-black flex items-center justify-center px-10">
+    <div className="max-w-4xl w-full">
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-12">
+        <SAT className="text-[9px] font-black uppercase tracking-[0.5em] text-white/30 block mb-4">07 / Pricing Reality Check</SAT>
+        <h2 style={{ fontFamily: "'Instrument Serif', serif" }} className="text-6xl md:text-8xl italic text-white tracking-tighter leading-none">
+          $1 vs. $20.
+        </h2>
+        <p style={{ fontFamily: "'Satoshi', sans-serif" }} className="text-base text-white/30 font-light mt-4">Per month. No asterisk.</p>
+      </motion.div>
+      <div className="grid grid-cols-2 gap-6">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
+          className="rounded-3xl border border-[#1B3FBF]/30 bg-[#1B3FBF]/10 p-8 relative">
+          <div className="absolute top-4 right-4 text-[8px] font-black uppercase tracking-widest text-white bg-[#1B3FBF] px-3 py-1 rounded-full" style={{ fontFamily: "'Satoshi', sans-serif" }}>KREO Pro</div>
+          <div style={{ fontFamily: "'Instrument Serif', serif" }} className="text-6xl italic text-white mb-6">$1<span className="text-2xl text-white/30 not-italic font-light">/mo</span></div>
+          {['Unlimited generations', 'Brand Kit persistence', 'Live Edit & Knobs', 'Style Mimic', 'Full export suite', 'KREON Identity Card'].map(f => (
+            <div key={f} className="flex items-center gap-3 mb-2">
+              <div className="w-5 h-5 rounded-full bg-[#1B3FBF] flex items-center justify-center flex-shrink-0"><Check size={8} className="text-white" /></div>
+              <span style={{ fontFamily: "'Satoshi', sans-serif" }} className="text-[11px] text-white/60 font-light">{f}</span>
+            </div>
+          ))}
+        </motion.div>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
+          className="rounded-3xl border border-white/5 bg-white/[0.03] p-8 relative">
+          <div className="absolute top-4 right-4 text-[8px] font-black uppercase tracking-widest text-white/30 bg-white/5 px-3 py-1 rounded-full" style={{ fontFamily: "'Satoshi', sans-serif" }}>Claude Pro</div>
+          <div style={{ fontFamily: "'Instrument Serif', serif" }} className="text-6xl italic text-white/20 mb-6">$20<span className="text-2xl not-italic font-light">/mo</span></div>
+          {[['General AI assistant', true], ['No visual artifacts', false], ['No Brand Kit', false], ['No style mimic', false], ['No live editing', false], ['No identity system', false]].map(([f, ok]) => (
+            <div key={String(f)} className="flex items-center gap-3 mb-2">
+              <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 ${ok ? 'bg-white/10' : 'bg-white/5'}`}>
+                {ok ? <Check size={8} className="text-white/30" /> : <X size={8} className="text-white/20" />}
+              </div>
+              <span style={{ fontFamily: "'Satoshi', sans-serif" }} className={`text-[11px] font-light ${ok ? 'text-white/30' : 'text-white/15 line-through'}`}>{String(f)}</span>
+            </div>
+          ))}
+        </motion.div>
+      </div>
+    </div>
+  </div>
+);
+
+// ─── SCENE 9: CTA ────────────────────────────────────────────────────────────
+const Scene9 = () => {
+  const [show, setShow] = useState(false);
+  useEffect(() => { const t = setTimeout(() => setShow(true), 800); return () => clearTimeout(t); }, []);
+  return (
+    <div className="fixed inset-0 bg-white flex flex-col items-center justify-center text-center px-8">
+      <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }} className="space-y-8 max-w-3xl">
+        <SAT className="text-[9px] font-black uppercase tracking-[0.5em] text-black/20">The Answer</SAT>
+        <h1 style={{ fontFamily: "'Instrument Serif', serif" }} className="text-6xl md:text-8xl italic text-black tracking-tighter leading-none">
+          Stop explaining.<br />
+          <span className="text-[#1B3FBF]">Start building.</span>
+        </h1>
+        <p style={{ fontFamily: "'Satoshi', sans-serif" }} className="text-lg text-black/30 font-light leading-relaxed max-w-xl mx-auto">
+          You shouldn't pay $20/month for a text box that forgets your brand, rebuilds everything on every change, and has no idea who you are.
+        </p>
+        <AnimatePresence>
+          {show && (
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col items-center gap-4">
+              <a href="/" style={{ fontFamily: "'Satoshi', sans-serif" }} className="inline-flex items-center gap-3 px-10 py-5 bg-[#1B3FBF] text-white text-[11px] font-black uppercase tracking-[0.4em] rounded-full hover:scale-105 active:scale-95 transition-all shadow-2xl shadow-[#1B3FBF]/30">
+                Join KREO for $1/month <ChevronRight size={14} />
+              </a>
+              <p style={{ fontFamily: "'Satoshi', sans-serif" }} className="text-[9px] text-black/20 font-black uppercase tracking-widest">kreoai.vercel.app</p>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
+
+      {/* Subtle fanned cards in background */}
+      <div className="absolute right-8 bottom-8 flex gap-3 opacity-10">
+        {(['tech', 'design', 'art'] as const).map((interest, i) => (
+          <div key={i} style={{ transform: `rotate(${-4 + i * 4}deg) translateY(${i * -8}px)`, transformOrigin: 'bottom', scale: '0.4' }}>
+            <KreonCardVisual cardNumber={`00${i + 1}2`} userName="KREON" interest={interest} bio="" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// ─── MAIN ─────────────────────────────────────────────────────────────────────
 export default function KreoPromo4() {
   const [scene, setScene] = useState(0);
   const [progress, setProgress] = useState(0);
@@ -594,32 +549,45 @@ export default function KreoPromo4() {
   }, [scene]);
 
   const scenes = [
-    <Scene0 />, 
-    <Scene1 />, 
-    <SceneSplash />, 
-    <Scene2 />, 
-    <Scene3 />, 
-    <Scene4 />
+    <Scene0 />, <Scene1 />, <Scene2 />, <Scene3 />, <Scene4 />,
+    <Scene5 />, <Scene6 />, <Scene7 />, <Scene8 />, <Scene9 />,
   ];
 
   return (
-    <div className={`relative w-full h-screen overflow-hidden cursor-default select-none bg-white`}>
-      {/* Navigation */}
-      <div className="fixed top-12 right-14 z-[6000] flex items-center gap-2">
+    <div className="relative w-full h-screen overflow-hidden cursor-default select-none bg-white">
+      {/* Scene dots nav */}
+      <div className="fixed top-10 right-12 z-[6000] flex items-center gap-2">
         {Array.from({ length: TOTAL_SCENES }).map((_, i) => (
-          <button key={i} onClick={() => { setScene(i); setProgress(0); }}
-            className={`rounded-full transition-all duration-500 ${i === scene ? 'w-8 h-2 bg-[#1B3FBF]' : 'w-2 h-2 bg-black/5 hover:bg-black/10'}`} />
+          <button
+            key={i}
+            onClick={() => { setScene(i); setProgress(0); }}
+            className={`rounded-full transition-all duration-500 ${i === scene ? 'w-8 h-2 bg-[#1B3FBF]' : 'w-2 h-2 bg-black/10 hover:bg-black/20'}`}
+          />
         ))}
+      </div>
+
+      {/* Scene counter */}
+      <div className="fixed top-10 left-12 z-[6000] flex items-center gap-3">
+        <div className="w-7 h-7 bg-black rounded-full flex items-center justify-center"><Zap size={12} className="text-white" /></div>
+        <span style={{ fontFamily: "'Satoshi', sans-serif" }} className="text-[10px] font-black uppercase tracking-[0.3em] text-black/30">KREO vs Claude · {scene + 1}/{TOTAL_SCENES}</span>
       </div>
 
       {/* Scene */}
       <AnimatePresence mode="wait">
-        <motion.div key={scene} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.8 }} className="w-full h-full">
+        <motion.div
+          key={scene}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
+          className="w-full h-full"
+        >
           {scenes[scene]}
         </motion.div>
       </AnimatePresence>
 
-      <div className="fixed bottom-0 left-0 w-full h-1 z-[6000] bg-black/5">
+      {/* Progress bar */}
+      <div className="fixed bottom-0 left-0 w-full h-0.5 z-[6000] bg-black/5">
         <div className="h-full bg-[#1B3FBF] transition-all duration-[50ms]" style={{ width: `${progress}%` }} />
       </div>
     </div>
