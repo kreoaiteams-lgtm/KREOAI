@@ -77,7 +77,7 @@ export const automatedExportToCanva = async (iframeId: string) => {
       .getPublicUrl(fileName);
 
     // Canva Media Import URL
-    window.open(`https://www.canva.com/create/design?media=${encodeURIComponent(publicUrl)}`, '_blank');
+    window.open(`https://www.canva.com/design/play?import=${encodeURIComponent(publicUrl)}`, '_blank');
   } catch (err) {
     console.error("[KREO] Canva automation failed:", err);
     window.open('https://www.canva.com/create/', '_blank');

@@ -422,7 +422,7 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
                 <div className="flex flex-col items-center gap-6">
                   <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="flex flex-col items-center gap-1">
                     <div className="h-[1px] w-12 bg-[#1B3FBF]" />
-                    <span className="text-[11px] font-black uppercase tracking-[0.6em] text-[#1B3FBF]">Identity Confirmed</span>
+                    <span className="text-[11px] font-black uppercase tracking-[0.2em] text-[#1B3FBF]">Identity Confirmed</span>
                   </motion.div>
                   <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.4, type: 'spring' }}>
                     <KreonCard userEmail={userEmail} userName={userName} interest={interest} bio={residentBio} cardNumber={cardNumber} />
@@ -439,7 +439,7 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
                          Proceed <ChevronRight size={14} />
                       </button>
                    </div>
-                   <p className="text-[9px] font-black uppercase tracking-[0.4em] text-black/40">Share your identity with the registry</p>
+                   <p className="text-[9px] font-black uppercase tracking-[0.2em] text-black/40">Share your card with others</p>
                 </motion.div>
               </div>
             </motion.div>

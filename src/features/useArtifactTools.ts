@@ -19,8 +19,8 @@ export const useArtifactTools = (iframeRef: RefObject<HTMLIFrameElement>) => {
     const templates: Record<string, string> = {
       'primary-color': `--primary: ${value} !important;`,
       'border-radius': `--radius: ${value} !important;`,
-      'font-size': `body { font-size: ${value} !important; }`,
-      'spacing': `:root { --spacing-scale: ${value} !important; }`,
+      'font-size': `* { font-size: ${value} !important; }`,
+      'spacing': `* { --spacing-scale: ${value} !important; }`,
       'theme': value === 'dark' 
         ? `body { background: #0a0a0a !important; color: white !important; } .bg-white { background: #1a1a1a !important; } .text-black { color: white !important; }` 
         : `body { background: white !important; color: black !important; }`
@@ -28,17 +28,17 @@ export const useArtifactTools = (iframeRef: RefObject<HTMLIFrameElement>) => {
 
     if (templates[variable]) {
       rulesMap[variable] = templates[variable];
-      
-      // Update entire style tag with current state of all knobs
-      const css = `
-        :root {
-          ${rulesMap['primary-color'] || ''}
-          ${rulesMap['border-radius'] || ''}
-          ${rulesMap['spacing'] || ''}
-        }
-        ${rulesMap['font-size'] || ''}
-      `;
+      const css = Object.values(rulesMap).join('\n');
       styleTag.innerHTML = css;
+    }
+  };
+
+  const applyRapidStyle = (selector: string, style: Partial<CSSStyleDeclaration>) => {
+    if (!iframeRef.current) return;
+    const doc = iframeRef.current.contentDocument || iframeRef.current.contentWindow?.document;
+    const el = doc?.querySelector(selector) as HTMLElement;
+    if (el) {
+      Object.assign(el.style, style);
     }
   };
 
@@ -103,5 +103,5 @@ export const useArtifactTools = (iframeRef: RefObject<HTMLIFrameElement>) => {
     doc.body.appendChild(script);
   };
 
-  return { applyKnobChange, setupLiveEdit };
+  return { applyKnobChange, setupLiveEdit, applyRapidStyle };
 };

@@ -382,7 +382,7 @@ const KreonCard: React.FC<KreonCardProps> = ({ userEmail, userName, interest, bi
       </div>
       
       <div className="flex flex-col items-center gap-2">
-        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-black/20">Click card to reveal profile</p>
+        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-black/20">Click card to reveal profile</p>
         <div className="w-1 h-1 rounded-full bg-[#1B3FBF] animate-ping" />
       </div>
     </div>

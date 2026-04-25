@@ -44,7 +44,7 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, onRefinement, readO
   const [borderRadius, setBorderRadius] = useState("0.5rem");
   const [deviceMode, setDeviceMode] = useState<"desktop" | "phone">("desktop");
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const { applyKnobChange, setupLiveEdit } = useArtifactTools(iframeRef);
+  const { applyKnobChange, setupLiveEdit, applyRapidStyle } = useArtifactTools(iframeRef);
   const [showExportHub, setShowExportHub] = useState(false);
   
   // Knob values
@@ -124,6 +124,22 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, onRefinement, readO
     const fullInstruction = `In the ${selectedElementContext.tag} element, please: ${instruction}. Return the entire updated manifestation code.`;
     onRefinement(fullInstruction);
     setSelectedElementContext(null);
+  };
+
+  const handleRapidAction = (type: 'size+' | 'size-' | 'delete') => {
+    if (!selectedElementContext) return;
+    const target = selectedElementContext.tag;
+
+    if (type === 'size+') {
+      applyRapidStyle(target, { fontSize: '120%' });
+      handleDirectMutation("Make the text in this element larger");
+    } else if (type === 'size-') {
+      applyRapidStyle(target, { fontSize: '80%' });
+      handleDirectMutation("Make the text in this element smaller");
+    } else if (type === 'delete') {
+      applyRapidStyle(target, { display: 'none' });
+      handleDirectMutation("Delete this element");
+    }
   };
 
   const submitRefinement = async () => {
@@ -224,12 +240,12 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, onRefinement, readO
     if (isRawHtml) return strippedCode;
 
     if (code.includes('MANIFEST_EN_ROUTE')) {
-       return `<html><head><script src="https://cdn.tailwindcss.com"></script><style>@keyframes pulse-bg { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } } .pulse { animation: pulse-bg 2s infinite; }</style></head><body style="margin:0; background: #fff; display: flex; align-items:center; justify-content:center; height:100vh;"><div class="pulse text-black/20 font-black uppercase tracking-[0.5em]">Neural Orchestration</div></body></html>`;
+       return `<html><head><script src="https://cdn.tailwindcss.com"></script><style>@keyframes pulse-bg { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } } .pulse { animation: pulse-bg 2s infinite; }</style></head><body style="margin:0; background: #fff; display: flex; align-items:center; justify-content:center; height:100vh;"><div class="pulse text-black/20 font-black uppercase tracking-widest">Building your project...</div></body></html>`;
     }
 
     const isProbableText = !strippedCode.includes('import ') && !strippedCode.includes('export default') && !strippedCode.includes('function') && !strippedCode.includes('const') && !strippedCode.includes('<');
     if (isProbableText) {
-      return `<html><head><script src="https://cdn.tailwindcss.com"></script></head><body style="margin:0; background: #f8f9fa; display: flex; align-items:center; justify-content:center; height:100vh;"><div class="max-w-xl p-16 bg-white rounded-[3rem] shadow-2xl text-center"><div class="text-[9px] font-black uppercase tracking-[0.4em] text-[#1B3FBF] mb-8">Neural Clarification</div><h3 class="text-xl font-light">${strippedCode.replace(/\n/g, '<br/>')}</h3></div></body></html>`;
+      return `<html><head><script src="https://cdn.tailwindcss.com"></script></head><body style="margin:0; background: #f8f9fa; display: flex; align-items:center; justify-content:center; height:100vh;"><div class="max-w-xl p-16 bg-white rounded-[3rem] shadow-2xl text-center"><div class="text-[9px] font-black uppercase tracking-widest text-[#1B3FBF] mb-8">Quick Note</div><h3 class="text-xl font-light">${strippedCode.replace(/\n/g, '<br/>')}</h3></div></body></html>`;
     }
 
     let cleanCodeForBabel = strippedCode
@@ -424,7 +440,7 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, onRefinement, readO
                     >
                       <div className="flex items-center justify-between">
                         <div className="space-y-0.5">
-                          <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white/30">Neural Command</span>
+                          <span className="text-[10px] font-black uppercase tracking-widest text-white/30">Edit Command</span>
                           <h4 className="text-sm font-bold text-[#1B3FBF]">Selected Element</h4>
                         </div>
                         <button onClick={() => setSelectedElementContext(null)} className="p-2 hover:bg-white/10 rounded-full transition-all text-white/40 hover:text-white">
@@ -434,15 +450,15 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, onRefinement, readO
 
                       {/* Rapid Mutation HUD */}
                       <div className="grid grid-cols-4 gap-2">
-                         <button onClick={() => handleDirectMutation("Delete this element")} className="p-3 bg-white/5 hover:bg-red-500/20 rounded-2xl flex flex-col items-center gap-2 transition-all border border-white/5 hover:border-red-500/30 group">
+                         <button onClick={() => handleRapidAction('delete')} className="p-3 bg-white/5 hover:bg-red-500/20 rounded-2xl flex flex-col items-center gap-2 transition-all border border-white/5 hover:border-red-500/30 group">
                            <Trash2 size={14} className="text-white/40 group-hover:text-red-400" />
                            <span className="text-[8px] font-black uppercase tracking-widest text-white/20 group-hover:text-red-400/60">Delete</span>
                          </button>
-                         <button onClick={() => handleDirectMutation("Make text larger")} className="p-3 bg-white/5 hover:bg-[#1B3FBF]/20 rounded-2xl flex flex-col items-center gap-2 transition-all border border-white/5 hover:border-[#1B3FBF]/30 group">
+                         <button onClick={() => handleRapidAction('size+')} className="p-3 bg-white/5 hover:bg-[#1B3FBF]/20 rounded-2xl flex flex-col items-center gap-2 transition-all border border-white/5 hover:border-[#1B3FBF]/30 group">
                            <ZoomIn size={14} className="text-white/40 group-hover:text-[#1B3FBF]" />
                            <span className="text-[8px] font-black uppercase tracking-widest text-white/20 group-hover:text-[#1B3FBF]/60">Size+</span>
                          </button>
-                         <button onClick={() => handleDirectMutation("Make text smaller")} className="p-3 bg-white/5 hover:bg-[#1B3FBF]/20 rounded-2xl flex flex-col items-center gap-2 transition-all border border-white/5 hover:border-[#1B3FBF]/30 group">
+                         <button onClick={() => handleRapidAction('size-')} className="p-3 bg-white/5 hover:bg-[#1B3FBF]/20 rounded-2xl flex flex-col items-center gap-2 transition-all border border-white/5 hover:border-[#1B3FBF]/30 group">
                            <ZoomOut size={14} className="text-white/40 group-hover:text-[#1B3FBF]" />
                            <span className="text-[8px] font-black uppercase tracking-widest text-white/20 group-hover:text-[#1B3FBF]/60">Size-</span>
                          </button>
@@ -463,9 +479,9 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, onRefinement, readO
                         />
                         <button 
                           onClick={submitRefinement} 
-                          className="w-full py-4 bg-[#1B3FBF] text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.4em] shadow-xl shadow-[#1B3FBF]/20 hover:scale-[1.02] active:scale-95 transition-all"
+                          className="w-full py-4 bg-[#1B3FBF] text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-[#1B3FBF]/20 hover:scale-[1.02] active:scale-95 transition-all"
                         >
-                          Execute Orchestration
+                          Update project
                         </button>
                       </div>
                     </motion.div>

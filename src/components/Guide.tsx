@@ -12,26 +12,26 @@ interface Step {
 const STEPS: Step[] = [
   {
     target: 'kreo-tour-prompt',
-    title: 'The Neural Link',
-    content: 'This is where every manifest begins. Describe anything—from cinematic presentations to complex dashboards—and watch KREO orchestrate the logic.',
+    title: 'Prompt Box',
+    content: 'Type anything you want to create here. From websites to presentations, KREO builds it for you in seconds.',
     position: 'bottom'
   },
   {
     target: 'kreo-tour-upload',
-    title: 'Data Anchoring',
-    content: 'Attach PDFs, images, or paste live URLs. KREO will analyze the source and ground your manifestations in real data.',
+    title: 'Add Files',
+    content: 'Upload PDFs, images, or paste links. KREO uses them as a style guide or for data to build your project.',
     position: 'bottom'
   },
   {
     target: 'kreo-tour-history',
-    title: 'Neural History',
-    content: 'Access every creation you’ve ever manifested. All artifacts are persistent and registry-synced across your sessions.',
+    title: 'Your History',
+    content: 'Find everything you’ve created here. All your projects are saved automatically.',
     position: 'bottom'
   },
   {
     target: 'kreo-tour-profile',
-    title: 'Resident Identity',
-    content: 'Your KREON card is your verified signature. Customize your Brand DNA here to ensure every artifact inherits your unique style.',
+    title: 'Your Profile',
+    content: 'Manage your settings and brand style here to keep your designs consistent.',
     position: 'bottom'
   }
 ];

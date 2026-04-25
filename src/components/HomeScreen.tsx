@@ -1198,20 +1198,20 @@ const HomeScreen = ({
               </div>
               <div className="text-center space-y-1">
                 <div className="text-2xl font-medium tracking-tight text-black">{userEmail.split('@')[0]}</div>
-                <div className="text-[10px] font-black uppercase tracking-[0.3em] text-black/50">{userEmail}</div>
+                <div className="text-[10px] font-black uppercase tracking-widest text-black/50">{userEmail}</div>
               </div>
             </div>
             <div className="space-y-3">
-              <button onClick={() => { setShowBrandKitModal(true); setProfileOpen(false); }} className="w-full py-4 border border-[#1B3FBF]/10 bg-white text-[#1B3FBF] text-[10px] font-black uppercase tracking-[0.4em] rounded-2xl hover:bg-[#1B3FBF]/5 transition-all flex items-center justify-center gap-2 group shadow-sm">
+              <button onClick={() => { setShowBrandKitModal(true); setProfileOpen(false); }} className="w-full py-4 border border-[#1B3FBF]/10 bg-white text-[#1B3FBF] text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-[#1B3FBF]/5 transition-all flex items-center justify-center gap-2 group shadow-sm">
                 <Palette size={14} className="group-hover:rotate-12 transition-transform" /> Brand Kit Setup
               </button>
               <button
                 onClick={() => { setShowKreonModal(true); setProfileOpen(false); }}
-                className="w-full py-5 border border-[#1B3FBF]/10 bg-[#1B3FBF]/5 text-[#1B3FBF] text-[10px] font-black uppercase tracking-[0.4em] rounded-2xl hover:bg-[#1B3FBF]/10 transition-all flex items-center justify-center gap-2 group"
+                className="w-full py-5 border border-[#1B3FBF]/10 bg-[#1B3FBF]/5 text-[#1B3FBF] text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-[#1B3FBF]/10 transition-all flex items-center justify-center gap-2 group"
               >
                 <ShieldCheck size={14} className="group-hover:scale-110 transition-transform" /> View KREON ID
               </button>
-              <button onClick={handleLogout} className="w-full py-5 bg-red-500/5 text-red-500 text-[10px] font-black uppercase tracking-[0.4em] rounded-2xl hover:bg-red-500/10 transition-all font-black">Sign Out Portal</button>
+              <button onClick={handleLogout} className="w-full py-5 bg-red-500/5 text-red-500 text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-red-500/10 transition-all font-black">Sign Out Portal</button>
             </div>
             <button
               onClick={() => setProfileOpen(false)}
@@ -1255,7 +1255,7 @@ const HomeScreen = ({
                 className="text-center"
               >
                 <div 
-                  className="text-2xl font-black uppercase tracking-[0.4em] text-[#1B3FBF] animate-pulse"
+                  className="text-2xl font-black uppercase tracking-widest text-[#1B3FBF] animate-pulse"
                   style={{ fontFamily: "'Satoshi', sans-serif" }}
                 >
                   Coming right up...
