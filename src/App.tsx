@@ -14,6 +14,7 @@ import KreoPromo4 from "./components/KreoPromo4";
 import KreoPromo5 from "./components/KreoPromo5";
 import KreoPromo6 from "./components/KreoPromo6";
 import Promo8 from "./components/Promo8";
+import KreoVsClaudePromo from "./components/KreoVsClaudePromo";
 import SocialManagerPage from "./components/SocialManagerPage";
 import ShareView from "./components/ShareView";
 import ProjectRouter from "./components/ProjectRouter";
@@ -49,6 +50,7 @@ const App = () => (
           <Route path="/promo8" element={<Promo8 />} />
           <Route path="/share/:id" element={<ShareView />} />
           <Route path="/link/:id" element={<ShareView />} />
+          <Route path="/versus" element={<KreoVsClaudePromo />} />
           <Route path="/social-manifest" element={<SocialManagerPage />} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/build" element={<CampaignPage />} />

@@ -56,20 +56,34 @@ export const useArtifactTools = (iframeRef: RefObject<HTMLIFrameElement>) => {
       (function() {
         let lastHovered = null;
         document.addEventListener('mouseover', (e) => {
-          if (lastHovered) lastHovered.style.outline = '';
-          e.target.style.outline = '2px dashed #1B3FBF';
-          e.target.style.outlineOffset = '2px';
-          lastHovered = e.target;
+          if (!window.parent.KREO_LIVE_EDIT_ACTIVE) return;
+          if (lastHovered) { 
+            lastHovered.style.outline = '';
+            lastHovered.style.cursor = '';
+          }
+          const el = e.target;
+          el.style.outline = '2px dashed #1B3FBF';
+          el.style.outlineOffset = '2px';
+          el.style.cursor = 'crosshair';
+          lastHovered = el;
         });
+
         document.addEventListener('click', (e) => {
+          if (!window.parent.KREO_LIVE_EDIT_ACTIVE) return;
           e.preventDefault();
           e.stopPropagation();
+          
           window.parent.postMessage({
             type: 'KREO_LIVE_EDIT_CLICK',
             outerHTML: e.target.outerHTML,
             selector: getSelector(e.target)
           }, '*');
-        });
+
+          // Visual Feedback on capture
+          const original = e.target.style.background;
+          e.target.style.background = '#1B3FBF22';
+          setTimeout(() => e.target.style.background = original, 500);
+        }, true); // Use capture phase
 
         function getSelector(el) {
           if (el.id) return '#' + el.id;

@@ -98,10 +98,26 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, onRefinement, readO
   }, [inlineEditMode]);
 
   useEffect(() => {
+    (window as any).KREO_LIVE_EDIT_ACTIVE = inlineEditMode;
     if (inlineEditMode) {
       setupLiveEdit(() => {});
     }
-  }, [inlineEditMode, setupLiveEdit, iframeId]); // Refresh on iframe reload
+  }, [inlineEditMode, setupLiveEdit, iframeId]);
+
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (event.data?.type === 'KREO_LIVE_EDIT_CLICK') {
+        setSelectedElementContext({
+          tag: event.data.selector,
+          text: event.data.outerHTML,
+          x: 0,
+          y: 0
+        });
+      }
+    };
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, []);
 
   const handleDirectMutation = async (instruction: string) => {
     if (!selectedElementContext || !onRefinement) return;
@@ -304,8 +320,8 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, onRefinement, readO
   const handleZoomOut = () => setZoom(prev => Math.max(prev - 0.25, 0.5));
 
   return (
-    <div className={`flex flex-col h-full w-full bg-white shadow-xl animate-in fade-in zoom-in-95 duration-500 overflow-hidden ${isFullscreen ? "fixed inset-0 z-[2000] rounded-none bg-black" : isPresentation ? "rounded-none" : isSplitView ? "" : "rounded-[2.5rem]"}`}>
-      <div className={`flex items-center justify-between px-6 py-4 border-b border-black/[0.06] backdrop-blur-xl transition-all duration-500 ${isFullscreen ? "bg-black/90 text-white border-white/10" : "bg-white/95 text-black"}`}>
+    <div className={`flex flex-col h-full w-full bg-white shadow-xl animate-in fade-in zoom-in-95 duration-500 overflow-hidden ${isFullscreen ? "fixed inset-0 z-[5000] rounded-none bg-black" : isPresentation ? "rounded-none" : isSplitView ? "" : "rounded-[2.5rem]"}`}>
+      <div className={`flex items-center justify-between px-6 py-4 border-b border-black/[0.06] backdrop-blur-xl transition-all duration-500 relative z-[2000] ${isFullscreen ? "bg-black/90 text-white border-white/10" : "bg-white/95 text-black shadow-sm"}`}>
         <div className="flex items-center gap-4">
           {!isPresentation && (
             <div className={`flex p-1 rounded-xl border gap-0.5 ${isFullscreen ? "bg-white/5 border-white/10" : "bg-black/[0.04] border-black/[0.07]"}`}>
@@ -341,8 +357,9 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, onRefinement, readO
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 10, scale: 0.95 }}
                   onMouseLeave={() => setShowExportHub(false)}
-                  className="absolute right-0 top-10 z-[3000] w-48 bg-white rounded-[2rem] shadow-2xl border border-black/5 p-2 overflow-hidden"
+                  className="absolute right-0 top-full pt-2 z-[9999] w-56"
                 >
+                  <div className="bg-white rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-black/5 p-2 overflow-hidden">
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <button onClick={() => exportUtils.automatedExportToCanva("manifestation-iframe")} className="w-full flex items-center gap-3 px-4 py-3 bg-[#1B3FBF]/5 hover:bg-[#1B3FBF] rounded-2xl text-[10px] font-black uppercase tracking-widest text-[#1B3FBF] hover:text-white transition-all border border-[#1B3FBF]/10 mb-1">
@@ -360,6 +377,7 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, onRefinement, readO
                   <button onClick={() => exportUtils.exportAsPPTX("manifestation-iframe")} className="w-full flex items-center gap-3 px-4 py-3 hover:bg-black/5 rounded-2xl text-[10px] font-black uppercase tracking-widest text-black/60 hover:text-[#1B3FBF] transition-all">
                     <Presentation size={14} /> Cinematic PPTX
                   </button>
+                  </div>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -506,6 +524,7 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, onRefinement, readO
                           srcDoc={getManifestationSrcDoc()} 
                           title="Manifestation Player" 
                           className="h-full w-full border-none" 
+                          onLoad={() => { if (inlineEditMode) setupLiveEdit(() => {}); }}
                         />
                       );
                     })()}
