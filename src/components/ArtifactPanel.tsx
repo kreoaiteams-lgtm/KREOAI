@@ -445,14 +445,14 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, onRefinement, readO
                       initial={{ opacity: 0, scale: 0.9, x: "-50%", y: "-50%" }} 
                       animate={{ opacity: 1, scale: 1, x: "-50%", y: "-50%" }} 
                       exit={{ opacity: 0, scale: 0.9, x: "-50%", y: "-50%" }} 
-                      className="fixed z-[4000] p-8 bg-black/90 backdrop-blur-2xl text-white rounded-[3rem] shadow-[0_50px_100px_rgba(0,0,0,0.5)] space-y-6 w-[360px] left-1/2 top-1/2 border border-white/10"
+                      className="fixed z-[4000] p-8 bg-white backdrop-blur-2xl text-black rounded-[2.5rem] shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] space-y-6 w-[360px] left-1/2 top-1/2 border-2 border-black overflow-hidden"
                     >
                       <div className="flex items-center justify-between">
                         <div className="space-y-0.5">
-                          <span className="text-[10px] font-black uppercase tracking-widest text-white/30">Edit Command</span>
+                          <span className="text-[10px] font-black uppercase tracking-widest text-black/30">Edit Command</span>
                           <h4 className="text-sm font-bold text-[#1B3FBF]">Selected Element</h4>
                         </div>
-                        <button onClick={() => setSelectedElementContext(null)} className="p-2 hover:bg-white/10 rounded-full transition-all text-white/40 hover:text-white">
+                        <button onClick={() => setSelectedElementContext(null)} className="p-2 hover:bg-black/5 rounded-full transition-all text-black/20 hover:text-black">
                           <X size={16} />
                         </button>
                       </div>
@@ -484,11 +484,11 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, onRefinement, readO
                           onChange={(e) => setRefinementInput(e.target.value)} 
                           onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submitRefinement(); } }} 
                           placeholder="Describe specific refinements..." 
-                          className="w-full h-24 bg-white/5 border border-white/10 rounded-2xl p-4 text-sm focus:outline-none placeholder:text-white/20 resize-none focus:border-[#1B3FBF]/50 transition-all font-light" 
+                          className="w-full h-24 bg-black/[0.03] border-2 border-black rounded-2xl p-4 text-sm focus:outline-none placeholder:text-black/20 resize-none focus:bg-white transition-all font-light" 
                         />
                         <button 
                           onClick={submitRefinement} 
-                          className="w-full py-4 bg-[#1B3FBF] text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-[#1B3FBF]/20 hover:scale-[1.02] active:scale-95 transition-all"
+                          className="w-full py-4 bg-black text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-[4px_4px_0px_0px_rgba(27,63,191,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] active:translate-x-0 active:translate-y-0 transition-all border-2 border-black"
                         >
                           Update project
                         </button>
@@ -508,7 +508,12 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, onRefinement, readO
                           onLoad={() => { if (inlineEditMode) setupLiveEdit(() => {}); }}
                         />
                     {showKnobs && (
-                      <motion.div initial={{ opacity: 0, scale: 0.9, x: 20 }} animate={{ opacity: 1, scale: 1, x: 0 }} exit={{ opacity: 0, scale: 0.9, x: 20 }} className="absolute bottom-12 right-12 z-[1000] w-[340px] bg-white/90 backdrop-blur-2xl rounded-[2.5rem] shadow-2xl p-8 space-y-8 border border-black/5">
+                      <motion.div 
+                        initial={{ opacity: 0, scale: 0.9, x: 20 }} 
+                        animate={{ opacity: 1, scale: 1, x: 0 }} 
+                        exit={{ opacity: 0, scale: 0.9, x: 20 }} 
+                        className="absolute bottom-12 right-12 z-[1000] w-[340px] bg-white rounded-[2.5rem] shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] p-8 space-y-8 border-2 border-black"
+                      >
                         <div className="space-y-6">
                           <div className="flex justify-between items-center pb-2 border-b border-black/5">
                             <span className="text-[10px] font-black uppercase tracking-[0.3em] text-black">Aesthetic Engine</span>

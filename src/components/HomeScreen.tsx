@@ -1290,9 +1290,9 @@ const HomeScreen = ({
               <div className="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-5">
                 {chatHistory.map((msg, i) => (
                   <div key={i} className={`flex w-full ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                    <div className={`max-w-[88%] rounded-2xl p-4 text-[13px] font-light leading-relaxed tracking-wide ${msg.role === 'user'
-                      ? 'bg-[#1B3FBF] text-white rounded-tr-sm shadow-sm opacity-90'
-                      : 'bg-white border border-black/[0.07] text-black/60 rounded-tl-sm shadow-sm'
+                    <div className={`max-w-[88%] rounded-2xl p-4 text-[13px] font-bold leading-relaxed tracking-wide border-2 border-black ${msg.role === 'user'
+                      ? 'bg-[#1B3FBF] text-white rounded-tr-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]'
+                      : 'bg-white text-black/60 rounded-tl-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]'
                       }`}>
                       <div className="flex justify-between items-start gap-4">
                         <div className="flex-1">{msg.display || msg.content}</div>
@@ -1314,7 +1314,7 @@ const HomeScreen = ({
                 <form onSubmit={handleSubmit} className="relative">
                   <input
                     type="text"
-                    className="w-full rounded-2xl px-6 py-4 pl-14 pr-14 text-sm outline-none border border-black/[0.08] bg-[#f0f3ff] text-black placeholder:text-black/30 focus:border-[#1B3FBF]/60 focus:bg-white transition-all font-light disabled:opacity-40"
+                    className="w-full rounded-2xl px-6 py-4 pl-14 pr-14 text-sm outline-none border-2 border-black bg-white text-black placeholder:text-black/30 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] focus:translate-x-[-2px] focus:translate-y-[-2px] transition-all font-bold disabled:opacity-40"
                     placeholder="Refine the manifest..."
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
@@ -1345,11 +1345,11 @@ const HomeScreen = ({
                     )}
                   </AnimatePresence>
                   <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                    <button type="submit" disabled={isSubmitting} className="p-2.5 bg-[#1B3FBF] text-white rounded-xl shadow-lg hover:scale-110 active:scale-95 transition-all disabled:opacity-50">
+                    <button type="submit" disabled={isSubmitting} className="p-2.5 bg-[#1B3FBF] text-white rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] border-2 border-black hover:translate-x-[-2px] hover:translate-y-[-2px] active:translate-x-0 active:translate-y-0 transition-all disabled:opacity-50">
                       {isSubmitting ? (
                         <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                       ) : (
-                        <ArrowUp size={14} strokeWidth={3} />
+                        <ArrowUp size={14} strokeWidth={4} />
                       )}
                     </button>
                   </div>
@@ -1383,7 +1383,7 @@ const HomeScreen = ({
               </div>
               <div className="w-full max-w-2xl">
                 <form onSubmit={handleSubmit}>
-                  <div id="kreo-tour-prompt" className={`flex items-center rounded-[1.8rem] px-6 py-4 shadow-2xl transition-all border ring-1 gap-3 ${theme === 'light' ? 'bg-white border-black/10 ring-black/5 text-black' : 'glass-panel border-white/20 ring-white/10 backdrop-blur-3xl text-white'}`}>
+                  <div id="kreo-tour-prompt" className={`flex items-center rounded-[1.8rem] px-6 py-5 shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] transition-all border-2 border-black gap-3 bg-white text-black`}>
                     <div id="kreo-tour-upload" className={`flex items-center gap-2 pr-2 border-r leading-none ${theme === 'light' ? 'border-black/10' : 'border-white/10'}`}>
                       <button type="button" onClick={() => fileInputRef.current?.click()} className="p-2 text-foreground/40 hover:text-foreground">
                         <Paperclip size={20} />
