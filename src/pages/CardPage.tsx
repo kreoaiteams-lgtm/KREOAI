@@ -61,7 +61,7 @@ const CardPage = ({ onboarding = false }: { onboarding?: boolean }) => {
         initialBio={residentBio}
         initialInterest={residentInterest}
         initialPhase={onboarding ? 'pref' : 'reveal'}
-        onPhaseChange={(newPhase) => {
+        onPhaseChange={(newPhase: 'pref' | 'brand' | 'interview' | 'reveal') => {
           if (onboarding && newPhase === 'reveal') {
             // Once we hit reveal in onboarding, move to the permanent /card path
             navigate('/card');

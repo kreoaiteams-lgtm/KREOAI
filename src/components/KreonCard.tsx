@@ -342,39 +342,49 @@ const KreonCard: React.FC<KreonCardProps> = ({ userEmail, userName, interest, bi
         </AnimatePresence>
       </div>
 
-      <div style={{ display: 'flex', gap: '10px', width: '340px' }}>
-        <motion.button
-          whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.96 }}
-          onClick={handleCopyLink}
-          style={{
-            flex: 1, height: '52px', borderRadius: '16px',
-            background: copied ? 'rgba(16,185,129,0.15)' : '#fff',
-            color: copied ? '#10b981' : '#000',
-            border: copied ? '1px solid rgba(16,185,129,0.3)' : 'none',
-            fontSize: '10px', fontWeight: 900, letterSpacing: '0.3em',
-            textTransform: 'uppercase', cursor: 'pointer',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-            transition: 'all 0.3s',
-          }}
-        >
-          {copied ? "Copied!" : "Share Link"}
-        </motion.button>
+      <div className="flex flex-col gap-4 w-[340px]">
+        <div className="flex gap-3">
+          <motion.button
+            whileHover={{ scale: 1.02, y: -2 }} whileTap={{ scale: 0.98 }}
+            onClick={handleCopyLink}
+            className={`flex-1 h-14 rounded-2xl flex items-center justify-center gap-3 transition-all ${
+              copied ? 'bg-green-500 text-white shadow-lg shadow-green-500/20' : 'bg-white text-black border border-black/5 shadow-xl shadow-black/5'
+            }`}
+            style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.3em' }}
+          >
+            {copied ? <Check size={14} /> : <Link size={14} />}
+            {copied ? "Link Copied" : "Copy Registry Link"}
+          </motion.button>
+
+          <motion.button
+            whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }}
+            onClick={handleDownload}
+            disabled={isCapturing}
+            className="w-14 h-14 rounded-2xl bg-black text-white flex items-center justify-center shadow-xl shadow-black/20"
+          >
+            {isCapturing ? (
+              <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+            ) : (
+              <Download size={18} />
+            )}
+          </motion.button>
+        </div>
 
         <motion.button
-          whileHover={{ scale: 1.08, y: -2 }} whileTap={{ scale: 0.96 }}
+          whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
           onClick={handleNativeShare}
-          style={{
-            width: '52px', height: '52px', borderRadius: '16px',
-            background: 'rgba(27,63,191,0.25)', border: '1px solid rgba(27,63,191,0.4)',
-            color: '#a5b8ff', cursor: 'pointer',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}
+          className="w-full h-14 rounded-2xl bg-[#1B3FBF] text-white flex items-center justify-center gap-3 shadow-xl shadow-[#1B3FBF]/20"
+          style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.3em' }}
         >
-          <Share2 size={15} />
+          <Share2 size={14} />
+          Share to Socials
         </motion.button>
       </div>
       
-      <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/30 animate-pulse">Click to flip card</p>
+      <div className="flex flex-col items-center gap-2">
+        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-black/20">Click card to reveal profile</p>
+        <div className="w-1 h-1 rounded-full bg-[#1B3FBF] animate-ping" />
+      </div>
     </div>
   );
 };

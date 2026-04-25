@@ -25,6 +25,7 @@ import { createWorker } from "tesseract.js";
 import Dither from "./Dither";
 import { useToast } from "@/hooks/use-toast";
 import { AnimatePresence, motion } from "framer-motion";
+import { Guide } from "./Guide";
 import Footer from "./Footer";
 import { useLang } from "@/context/LanguageContext";
 import { LANGUAGES } from "@/lib/i18n";
@@ -1021,6 +1022,7 @@ const HomeScreen = ({
 
   return (
     <div className="relative flex flex-col min-h-screen bg-transparent">
+      <Guide />
       {(theme === 'light' || theme === 'dark') && (
         <Dither
           waveColor={theme === 'light' ? [0.9, 0.9, 0.9] : [0.5, 0.5, 0.5]}
@@ -1049,6 +1051,7 @@ const HomeScreen = ({
             <Tooltip>
               <TooltipTrigger asChild>
                 <button
+                  id="history-trigger"
                   onClick={() => setHistoryOpen(!historyOpen)}
                   className={`rounded-full p-2 transition-all ${historyOpen ? "text-primary bg-primary/10" : "text-foreground/80 hover:text-foreground"}`}
                 >
@@ -1130,7 +1133,7 @@ const HomeScreen = ({
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
-                <button onClick={() => setProfileOpen(true)} className="rounded-full p-2 text-foreground/80 hover:text-foreground transition-all">
+                <button id="profile-trigger" onClick={() => setProfileOpen(true)} className="rounded-full p-2 text-foreground/80 hover:text-foreground transition-all">
                   <User size={20} />
                 </button>
               </TooltipTrigger>
@@ -1380,8 +1383,8 @@ const HomeScreen = ({
               </div>
               <div className="w-full max-w-2xl">
                 <form onSubmit={handleSubmit}>
-                  <div className={`flex items-center rounded-[1.8rem] px-6 py-4 shadow-2xl transition-all border ring-1 gap-3 ${theme === 'light' ? 'bg-white border-black/10 ring-black/5 text-black' : 'glass-panel border-white/20 ring-white/10 backdrop-blur-3xl text-white'}`}>
-                    <div className={`flex items-center gap-2 pr-2 border-r leading-none ${theme === 'light' ? 'border-black/10' : 'border-white/10'}`}>
+                  <div id="prompt-area" className={`flex items-center rounded-[1.8rem] px-6 py-4 shadow-2xl transition-all border ring-1 gap-3 ${theme === 'light' ? 'bg-white border-black/10 ring-black/5 text-black' : 'glass-panel border-white/20 ring-white/10 backdrop-blur-3xl text-white'}`}>
+                    <div id="upload-bridge" className={`flex items-center gap-2 pr-2 border-r leading-none ${theme === 'light' ? 'border-black/10' : 'border-white/10'}`}>
                       <button type="button" onClick={() => fileInputRef.current?.click()} className="p-2 text-foreground/40 hover:text-foreground">
                         <Paperclip size={20} />
                       </button>

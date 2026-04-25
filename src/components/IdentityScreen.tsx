@@ -7,7 +7,6 @@ import {
 } from 'lucide-react';
 import KreonCard, { KreonCardVisual } from './KreonCard';
 import { generateBio } from '@/lib/ai';
-import { useLang } from '@/context/LanguageContext';
 
 interface IdentityScreenProps {
   userEmail: string;
@@ -51,7 +50,8 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
   initialPhase,
   onPhaseChange
 }) => {
-  const { t } = useLang();
+  // Language hook reserved for future i18n of onboarding strings
+  // const { t } = useLang();
   const [phase, setPhase] = useState<'pref' | 'brand' | 'interview' | 'reveal'>(
     initialPhase || (initialBio ? 'reveal' : 'pref')
   );
@@ -151,11 +151,11 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
           <div className="w-8 h-8 bg-[#1B3FBF] rounded-full flex items-center justify-center">
             <Zap size={14} className="text-white" />
           </div>
-          <span className="text-[10px] font-black uppercase tracking-[0.3em] text-black/40">KREON Identity Setup</span>
+          <span className="text-[10px] font-black uppercase tracking-[0.3em] text-black">KREON Identity Registry</span>
         </div>
         <button onClick={onClose} className="group flex items-center gap-2 px-5 py-2.5 rounded-full bg-black/5 hover:bg-black/10 transition-all">
           <X size={13} className="text-black/30 group-hover:text-black" />
-          <span className="text-[10px] font-black uppercase tracking-widest text-black/30 group-hover:text-black">Exit</span>
+          <span className="text-[10px] font-black uppercase tracking-widest text-black group-hover:text-black">Exit</span>
         </button>
       </header>
 
@@ -229,7 +229,7 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
                   {/* Primary Color */}
                   <div className="space-y-2">
                     <div className="flex justify-between items-center">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-black/50">Primary Color</label>
+                      <label className="text-[10px] font-black uppercase tracking-widest text-black">Primary Color</label>
                       <span className="text-[10px] font-mono text-[#1B3FBF] bg-[#1B3FBF]/5 px-2 py-0.5 rounded">{brandPrimary}</span>
                     </div>
                     <div className="flex items-center gap-3">
@@ -240,7 +240,7 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
                   {/* Secondary Color */}
                   <div className="space-y-2">
                     <div className="flex justify-between items-center">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-black/50">Accent Color</label>
+                      <label className="text-[10px] font-black uppercase tracking-widest text-black">Accent Color</label>
                       <span className="text-[10px] font-mono text-[#1B3FBF] bg-[#1B3FBF]/5 px-2 py-0.5 rounded">{brandSecondary}</span>
                     </div>
                     <div className="flex items-center gap-3">
@@ -253,7 +253,7 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
                   {/* Font + Radius row */}
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-black/50">Font Family</label>
+                      <label className="text-[10px] font-black uppercase tracking-widest text-black">Font Family</label>
                       <select value={brandFont} onChange={e => setBrandFont(e.target.value)} className="w-full h-10 rounded-xl border-2 border-black/5 bg-white px-3 text-[11px] font-semibold focus:outline-none focus:border-[#1B3FBF]/40">
                         {['Inter', 'Satoshi', 'Sora', 'DM Sans', 'Outfit', 'Plus Jakarta Sans', 'Space Grotesk', 'Poppins'].map(f => (
                           <option key={f}>{f}</option>
@@ -262,15 +262,15 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
                     </div>
                     <div className="space-y-2">
                       <div className="flex justify-between items-center">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-black/50">Border Radius</label>
-                        <span className="text-[10px] font-mono text-black/40">{brandRadius}</span>
+                        <label className="text-[10px] font-black uppercase tracking-widest text-black">Border Radius</label>
+                        <span className="text-[10px] font-mono text-black">{brandRadius}</span>
                       </div>
                       <input type="range" min="0" max="32" value={parseInt(brandRadius)} onChange={e => setBrandRadius(e.target.value + 'px')} className="w-full mt-2 accent-[#1B3FBF]" />
                     </div>
                   </div>
                   {/* Logo URL */}
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-black/50">Logo URL <span className="normal-case font-medium text-black/20">(optional)</span></label>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-black">Logo URL <span className="normal-case font-medium text-black/40">(optional)</span></label>
                     <div className="relative">
                       <LinkIcon size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-black/20" />
                       <input type="url" value={brandLogoUrl} onChange={e => setBrandLogoUrl(e.target.value)} placeholder="https://your-logo-url.com/logo.png" className="w-full h-10 rounded-xl border-2 border-black/5 bg-white pl-9 pr-3 text-[11px] focus:outline-none focus:border-[#1B3FBF]/40" />
@@ -279,7 +279,7 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
 
                   {/* Live Preview */}
                   <div className="p-4 rounded-2xl border-2 border-black/5" style={{ fontFamily: brandFont, borderRadius: brandRadius }}>
-                    <div className="text-[9px] font-black uppercase tracking-widest text-black/30 mb-3">Brand Preview</div>
+                    <div className="text-[9px] font-black uppercase tracking-widest text-black mb-3">Brand DNA Preview</div>
                     <div className="flex items-center gap-3">
                       <div className="px-4 py-2 text-white text-[10px] font-black uppercase tracking-widest rounded-lg" style={{ background: brandPrimary, borderRadius: brandRadius }}>Primary Button</div>
                       <div className="px-4 py-2 text-[10px] font-black uppercase tracking-widest rounded-lg border-2" style={{ color: brandPrimary, borderColor: brandPrimary, borderRadius: brandRadius }}>Outline</div>
@@ -325,7 +325,7 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
                       <div key={c} className="text-center py-3 rounded-xl text-[8px] font-black uppercase tracking-wide text-white" style={{ background: brandPrimary, opacity: 0.7 + Math.random() * 0.3 }}>{c}</div>
                     ))}
                   </div>
-                  <p className="text-center text-[9px] text-black/30 font-light">6+ artifact types · Your style, every time</p>
+                  <p className="text-center text-[10px] text-black font-black uppercase tracking-widest">6+ artifact types · Personal style, enforced</p>
                 </div>
               </div>
             </motion.div>
@@ -347,7 +347,7 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
                     {[0, 1, 2].map(i => (
                       <div key={i} className={`h-1 rounded-full transition-all duration-500 ${i <= interviewPhase ? 'w-10 bg-[#1B3FBF]' : 'w-5 bg-[#1B3FBF]/10'}`} />
                     ))}
-                    <span className="text-[9px] font-black uppercase tracking-widest text-black/30">{interviewPhase + 1} / 3</span>
+                    <span className="text-[9px] font-black uppercase tracking-widest text-black">{interviewPhase + 1} / 3</span>
                   </div>
                   <span className="text-[9px] font-black uppercase tracking-[0.4em] text-[#1B3FBF]/60">Step 03 · Identity Interview</span>
                 </div>
@@ -385,31 +385,62 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
           {/* ── PHASE 4: REVEAL ── */}
           {phase === 'reveal' && (
             <motion.div key="reveal" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex-1 flex flex-col items-center justify-center p-10 py-8 relative">
+              {/* Atmospheric Elements */}
+              <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                <motion.div animate={{ y: [0, -20, 0], opacity: [0.3, 0.6, 0.3] }} transition={{ duration: 5, repeat: Infinity }} className="absolute top-[20%] left-[15%] w-32 h-32 bg-[#1B3FBF]/10 rounded-full blur-3xl" />
+                <motion.div animate={{ y: [0, 20, 0], opacity: [0.2, 0.5, 0.2] }} transition={{ duration: 7, repeat: Infinity }} className="absolute bottom-[20%] right-[15%] w-48 h-48 bg-purple-500/10 rounded-full blur-3xl" />
+                <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")` }} />
+              </div>
+
               <div className="absolute inset-x-0 top-[35%] -translate-y-1/2 pointer-events-none hidden xl:flex justify-between items-center px-24 w-full h-[600px] z-10">
-                <motion.div initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.5 }} className="w-[320px] text-left flex flex-col gap-8">
+                <motion.div initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.5 }} className="w-[320px] text-left flex flex-col gap-8 pointer-events-auto">
                   <div>
-                    <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[#1B3FBF]/40 block mb-3">Welcome to</span>
-                    <h3 className="text-4xl font-serif italic text-[#1B3FBF] leading-tight">
-                      The Residency.<br />
-                      <span className="not-italic font-black text-5xl tracking-tighter text-black">KREO</span>.
+                    <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[#1B3FBF] block mb-3">Welcome to</span>
+                    <h3 className="text-5xl font-serif italic text-black leading-tight">
+                      The <span className="text-[#1B3FBF]">Residency.</span>
                     </h3>
-                    <p className="text-sm text-black/40 leading-relaxed mt-5 font-light max-w-[280px]">Your identity card is your key to the most powerful design engine on the planet. Use it. Share it.</p>
-                    <div className="mt-6 pt-6 border-t border-black/5">
-                      <span className="text-[8px] font-black uppercase tracking-[0.3em] text-black/20">Resident Census</span>
-                      <p className="text-sm font-serif italic text-[#1B3FBF] mt-1">#{cardNumber} of 2,048</p>
+                    <p className="text-sm text-black font-light leading-relaxed mt-5 max-w-[280px]">Your identity is now registry-verified. Built for the future of visual engineering.</p>
+                    <div className="mt-8 pt-8 border-t border-black/10 space-y-4">
+                       <span className="text-[10px] font-black uppercase tracking-[0.3em] text-black">Master Registry</span>
+                       <div className="flex flex-col gap-2">
+                          <div className="flex justify-between text-[11px] font-black uppercase tracking-widest text-[#1B3FBF]">
+                             <span>Resident Rank</span>
+                             <span>Core</span>
+                          </div>
+                          <div className="flex justify-between text-[11px] font-black uppercase tracking-widest text-black">
+                             <span>Serial Node</span>
+                             <span>#{cardNumber}</span>
+                          </div>
+                       </div>
                     </div>
                   </div>
                 </motion.div>
                 <div className="w-[320px]" />
               </div>
 
-              <div className="z-20 flex flex-col items-center gap-6">
-                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="flex flex-col items-center gap-1 opacity-40">
-                  <div className="h-[1px] w-8 bg-black/10" />
-                  <span className="text-[10px] font-black uppercase tracking-[0.5em] text-black/40">Resident ID</span>
-                  <span className="text-2xl font-serif italic text-black/60">#{cardNumber}</span>
+              <div className="z-20 flex flex-col items-center gap-12">
+                <div className="flex flex-col items-center gap-6">
+                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="flex flex-col items-center gap-1">
+                    <div className="h-[1px] w-12 bg-[#1B3FBF]" />
+                    <span className="text-[11px] font-black uppercase tracking-[0.6em] text-[#1B3FBF]">Identity Confirmed</span>
+                  </motion.div>
+                  <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.4, type: 'spring' }}>
+                    <KreonCard userEmail={userEmail} userName={userName} interest={interest} bio={residentBio} cardNumber={cardNumber} />
+                  </motion.div>
+                </div>
+
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8 }} className="flex flex-col items-center gap-6 w-full max-w-sm">
+                   <div className="h-[1px] w-full bg-black/5" />
+                   <div className="grid grid-cols-2 gap-4 w-full">
+                      <button onClick={() => window.open('https://twitter.com/intent/tweet?text=I am KREON Resident #' + cardNumber + ' at KREO. %23KREO %23AI', '_blank')} className="group flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-black text-white text-[10px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95 shadow-xl shadow-black/20">
+                         Twitter <ChevronRight size={14} />
+                      </button>
+                      <button onClick={onClose} className="group flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-[#1B3FBF] text-white text-[10px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95 shadow-xl shadow-[#1B3FBF]/20">
+                         Proceed <ChevronRight size={14} />
+                      </button>
+                   </div>
+                   <p className="text-[9px] font-black uppercase tracking-[0.4em] text-black/40">Share your identity with the registry</p>
                 </motion.div>
-                <KreonCard userEmail={userEmail} userName={userName} interest={interest} bio={residentBio} cardNumber={cardNumber} />
               </div>
             </motion.div>
           )}
