@@ -11,25 +11,25 @@ interface Step {
 
 const STEPS: Step[] = [
   {
-    target: 'prompt-area',
+    target: 'kreo-tour-prompt',
     title: 'The Neural Link',
     content: 'This is where every manifest begins. Describe anything—from cinematic presentations to complex dashboards—and watch KREO orchestrate the logic.',
     position: 'bottom'
   },
   {
-    target: 'upload-bridge',
+    target: 'kreo-tour-upload',
     title: 'Data Anchoring',
     content: 'Attach PDFs, images, or paste live URLs. KREO will analyze the source and ground your manifestations in real data.',
     position: 'bottom'
   },
   {
-    target: 'history-trigger',
+    target: 'kreo-tour-history',
     title: 'Neural History',
     content: 'Access every creation you’ve ever manifested. All artifacts are persistent and registry-synced across your sessions.',
     position: 'bottom'
   },
   {
-    target: 'profile-trigger',
+    target: 'kreo-tour-profile',
     title: 'Resident Identity',
     content: 'Your KREON card is your verified signature. Customize your Brand DNA here to ensure every artifact inherits your unique style.',
     position: 'bottom'
@@ -39,7 +39,7 @@ const STEPS: Step[] = [
 export const Guide: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(-1);
   const [isVisible, setIsVisible] = useState(false);
-  const [spotlight, setSpotlight] = useState({ top: 0, left: 0, width: 0, height: 0 });
+  const [spotlight, setSpotlight] = useState({ top: 0, left: 0, width: 0, height: 0, radius: 24 });
 
   useEffect(() => {
     const completed = localStorage.getItem('kreo_guide_completed');
@@ -47,32 +47,56 @@ export const Guide: React.FC = () => {
       const timer = setTimeout(() => {
         setIsVisible(true);
         setCurrentStep(0);
-      }, 2000);
+      }, 3000); // 3s delay for hero animations
       return () => clearTimeout(timer);
     }
   }, []);
 
   useEffect(() => {
+    let rafId: number;
+    
     const updateSpotlight = () => {
-      if (currentStep >= 0 && currentStep < STEPS.length) {
+      if (isVisible && currentStep >= 0 && currentStep < STEPS.length) {
         const step = STEPS[currentStep];
         const el = document.getElementById(step.target);
         if (el) {
           const rect = el.getBoundingClientRect();
-          setSpotlight({
-            top: rect.top - 8,
-            left: rect.left - 8,
-            width: rect.width + 16,
-            height: rect.height + 16,
+          const targetRadius = window.getComputedStyle(el).borderRadius;
+          const radius = parseInt(targetRadius) || 24;
+
+          setSpotlight(prev => {
+            if (
+              Math.abs(prev.top - rect.top) < 0.1 && 
+              Math.abs(prev.left - rect.left) < 0.1 &&
+              Math.abs(prev.width - rect.width) < 0.1 &&
+              prev.radius === radius + 8
+            ) return prev;
+
+            return {
+              top: rect.top - 8,
+              left: rect.left - 8,
+              width: rect.width + 16,
+              height: rect.height + 16,
+              radius: radius + 8
+            };
           });
         }
       }
+      rafId = requestAnimationFrame(updateSpotlight);
     };
 
-    updateSpotlight();
-    window.addEventListener('resize', updateSpotlight);
-    return () => window.removeEventListener('resize', updateSpotlight);
-  }, [currentStep]);
+    if (isVisible) {
+      rafId = requestAnimationFrame(updateSpotlight);
+      window.addEventListener('resize', updateSpotlight);
+      window.addEventListener('scroll', updateSpotlight, true);
+    }
+    
+    return () => {
+      cancelAnimationFrame(rafId);
+      window.removeEventListener('resize', updateSpotlight);
+      window.removeEventListener('scroll', updateSpotlight, true);
+    };
+  }, [currentStep, isVisible]);
 
   const nextStep = () => {
     if (currentStep < STEPS.length - 1) {
@@ -93,24 +117,31 @@ export const Guide: React.FC = () => {
 
   return (
     <div className="fixed inset-0 z-[10000] pointer-events-none">
-      {/* Dimmed Overlay */}
+      {/* Dimmed Overlay with Mask Spotlight */}
       <motion.div 
-        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-        className="absolute inset-0 bg-black/60 backdrop-blur-[2px] pointer-events-auto"
+        initial={{ opacity: 0 }} 
+        animate={{ opacity: 1 }} 
+        exit={{ opacity: 0 }}
+        className="absolute inset-0 bg-black/60 backdrop-blur-[1px] pointer-events-auto shadow-[inset_0_0_100px_rgba(0,0,0,0.5)]"
         style={{
-          clipPath: `polygon(
-            0% 0%, 0% 100%, 
-            ${spotlight.left}px 100%, 
-            ${spotlight.left}px ${spotlight.top}px, 
-            ${spotlight.left + spotlight.width}px ${spotlight.top}px, 
-            ${spotlight.left + spotlight.width}px ${spotlight.top + spotlight.height}px, 
-            ${spotlight.left}px ${spotlight.top + spotlight.height}px, 
-            ${spotlight.left}px 100%, 
-            100% 100%, 100% 0%
-          )`
+          maskImage: `radial-gradient(circle at ${spotlight.left + spotlight.width/2}px ${spotlight.top + spotlight.height/2}px, transparent ${spotlight.width/2}px, black ${spotlight.width/2 + 2}px)`,
+          WebkitMaskImage: `paint(spotlight-mask)`, // Fallback logic below
         }}
         onClick={closeGuide}
-      />
+      >
+        {/* Modern Hole Logic using Clip-Path Donut (Fixed Coordinates) */}
+        <div 
+          className="absolute inset-0 bg-black/60"
+          style={{
+            clipPath: `polygon(0% 0%, 0% 100%, 100% 100%, 100% 0%, 0% 0%, 
+              ${spotlight.left}px ${spotlight.top}px, 
+              ${spotlight.left + spotlight.width}px ${spotlight.top}px, 
+              ${spotlight.left + spotlight.width}px ${spotlight.top + spotlight.height}px, 
+              ${spotlight.left}px ${spotlight.top + spotlight.height}px, 
+              ${spotlight.left}px ${spotlight.top}px)`
+          }}
+        />
+      </motion.div>
 
       {/* Tooltip */}
       <AnimatePresence mode="wait">
