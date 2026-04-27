@@ -12,6 +12,12 @@ const CoWorkPanel = ({ onManifestGenerated, onClose }: CoWorkPanelProps) => {
   const [query, setQuery] = useState("");
   const [isRunning, setIsRunning] = useState(false);
   const [steps, setSteps] = useState<CoWorkStep[]>([]);
+  const [showSplash, setShowSplash] = useState(true);
+
+  useEffect(() => {
+    const t = setTimeout(() => setShowSplash(false), 2000);
+    return () => clearTimeout(t);
+  }, []);
 
   const handleStart = async () => {
     if (!query.trim()) return;
@@ -31,49 +37,79 @@ const CoWorkPanel = ({ onManifestGenerated, onClose }: CoWorkPanelProps) => {
   };
 
   return (
-    <div className="w-full max-w-5xl mx-auto p-8 space-y-12 animate-in fade-in duration-1000">
-      {/* KREO Badge / Branding */}
-      <div className="flex flex-col items-center text-center space-y-2">
-        <motion.div 
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          className="space-y-0 text-center"
-        >
-          <h1 className="text-6xl font-serif italic tracking-tighter text-[#D2B48C] leading-none mb-1">KREO</h1>
-          <div className="relative inline-block mt-[-4px]">
-            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-black/40">co-working</span>
-            <motion.div 
-              initial={{ width: 0 }}
-              animate={{ width: "100%" }}
-              transition={{ delay: 0.5, duration: 1 }}
-              className="absolute -bottom-1 left-0 h-[2px] bg-[#E63946]"
-            />
-          </div>
-        </motion.div>
-      </div>
-
-      {/* Input Area */}
-      <div className="relative group">
-        <div className="absolute -inset-1 bg-gradient-to-r from-black/5 to-black/5 rounded-[3rem] blur-xl opacity-25 group-hover:opacity-40 transition duration-1000"></div>
-        <div className="relative bg-white/80 backdrop-blur-3xl rounded-[2.5rem] border border-black/5 p-2 flex items-center shadow-2xl shadow-black/5">
-          <input 
-            type="text" 
-            placeholder="Describe your research mission... (e.g. Compare iPhone 16 vs S25 Ultra prices in India)"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleStart()}
-            disabled={isRunning}
-            className="flex-1 bg-transparent px-8 py-5 text-lg outline-none font-serif italic placeholder:text-black/20"
-          />
-          <button 
-            onClick={handleStart}
-            disabled={isRunning || !query.trim()}
-            className="p-4 bg-black text-white rounded-full hover:scale-110 active:scale-95 transition-all disabled:opacity-20"
+    <div className="w-full h-full max-w-5xl mx-auto p-8 relative flex flex-col items-center justify-center">
+      <AnimatePresence>
+        {showSplash ? (
+           <motion.div 
+             key="splash"
+             initial={{ opacity: 0, scale: 0.9 }}
+             animate={{ opacity: 1, scale: 1 }}
+             exit={{ opacity: 0, scale: 1.1, filter: 'blur(10px)' }}
+             transition={{ duration: 0.8 }}
+             className="absolute inset-0 flex flex-col items-center justify-center z-50 bg-[#fafafa]"
+           >
+             <h1 className="text-8xl text-black leading-none mb-4" style={{ fontFamily: '"TAN-Nimbus", serif' }}>KREO</h1>
+             <div className="flex gap-2">
+                <motion.div animate={{ scale: [1, 1.5, 1], opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.5, delay: 0 }} className="w-2 h-2 rounded-full bg-black/40" />
+                <motion.div animate={{ scale: [1, 1.5, 1], opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.5, delay: 0.2 }} className="w-2 h-2 rounded-full bg-[#E63946]" />
+                <motion.div animate={{ scale: [1, 1.5, 1], opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.5, delay: 0.4 }} className="w-2 h-2 rounded-full bg-black/40" />
+             </div>
+           </motion.div>
+        ) : (
+          <motion.div 
+            key="content"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="w-full space-y-12"
           >
-            {isRunning ? <Loader2 className="animate-spin" size={24} /> : <Sparkles size={24} />}
-          </button>
-        </div>
-      </div>
+            {/* KREO Badge / Branding */}
+            <div className="flex flex-col items-center text-center space-y-2">
+              <motion.div 
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                className="space-y-0 text-center"
+              >
+                <h1 className="text-6xl text-black leading-none mb-1" style={{ fontFamily: '"TAN-Nimbus", serif' }}>KREO</h1>
+                <div className="relative inline-block mt-[-4px]">
+                  <span className="text-[10px] font-black uppercase tracking-[0.4em] text-black">co-working</span>
+                  <motion.div 
+                    initial={{ width: 0 }}
+                    animate={{ width: "100%" }}
+                    transition={{ delay: 0.5, duration: 1 }}
+                    className="absolute -bottom-1 left-0 h-[2px] bg-[#E63946]"
+                  />
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Input Area */}
+            <div className="flex items-center rounded-[1.8rem] px-6 py-4 shadow-2xl transition-all border ring-1 gap-3 bg-white border-black/10 ring-black/5 text-black">
+              <div className="flex items-center gap-2 pr-2 border-r leading-none border-black/10">
+                <button type="button" className="p-2 text-black/40 hover:text-black">
+                  <FileText size={20} />
+                </button>
+                <button type="button" className="p-2 text-black/40 hover:text-[#E63946]">
+                  <Globe size={20} />
+                </button>
+              </div>
+              <input 
+                type="text" 
+                placeholder="compare prices of m4 and surface 2"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleStart()}
+                disabled={isRunning}
+                className="flex-1 bg-transparent text-lg outline-none font-sans text-black placeholder:text-black/30"
+              />
+              <button 
+                onClick={handleStart}
+                disabled={isRunning || !query.trim()}
+                className="p-2.5 bg-[#0020C2] text-white rounded-2xl shadow-xl hover:scale-105 transition-all disabled:opacity-20"
+              >
+                {isRunning ? <Loader2 className="animate-spin" size={20} /> : <div className="p-1"><Search size={14} strokeWidth={3} /></div>}
+              </button>
+            </div>
 
       {/* Agent Log */}
       <AnimatePresence>
@@ -143,7 +179,11 @@ const CoWorkPanel = ({ onManifestGenerated, onClose }: CoWorkPanelProps) => {
             </button>
           ))}
         </div>
+            </div>
+          )}
+        </motion.div>
       )}
+      </AnimatePresence>
     </div>
   );
 };
