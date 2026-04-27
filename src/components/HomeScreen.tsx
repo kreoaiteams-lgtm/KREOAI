@@ -1462,7 +1462,6 @@ const HomeScreen = ({
             <Footer />
           </div>
         )}
-        )}
       </main>
 
       {/* Manifest Success Upgrade Popup */}
