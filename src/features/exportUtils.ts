@@ -50,25 +50,51 @@ export const exportToCanva = (code: string) => {
 };
 
 export const automatedExportToCanva = async (iframeId: string) => {
-  const iframe = document.getElementById(iframeId) as HTMLIFrameElement;
-  if (!iframe) {
+  const sourceIframe = document.getElementById(iframeId) as HTMLIFrameElement;
+  if (!sourceIframe) {
     window.open('https://www.canva.com/create/', '_blank');
     return;
   }
 
   try {
-    const canvas = await html2canvas(iframe.contentDocument!.body, {
+    const htmlContent = sourceIframe.srcdoc || sourceIframe.contentDocument?.documentElement.outerHTML || '';
+    if (!htmlContent) throw new Error("No content to capture");
+
+    // Blob URL strategy to force same-origin for html2canvas
+    const blob = new Blob([htmlContent], { type: "text/html" });
+    const url = URL.createObjectURL(blob);
+
+    const hiddenIframe = document.createElement('iframe');
+    hiddenIframe.style.position = 'absolute';
+    hiddenIframe.style.top = '-9999px';
+    hiddenIframe.style.width = '1440px';
+    hiddenIframe.style.height = '900px';
+    hiddenIframe.style.border = 'none';
+
+    await new Promise<void>((resolve, reject) => {
+      hiddenIframe.onload = () => setTimeout(resolve, 500); // Allow fonts to load
+      hiddenIframe.onerror = reject;
+      hiddenIframe.src = url;
+      document.body.appendChild(hiddenIframe);
+    });
+
+    const canvas = await html2canvas(hiddenIframe.contentDocument!.body, {
       useCORS: true,
-      scale: 2 // High resolution for Canva
+      scale: 2,
+      logging: false,
     });
     
-    const blob = await new Promise<Blob | null>(res => canvas.toBlob(res, 'image/png'));
-    if (!blob) throw new Error("Capture failed");
+    // Clean up
+    document.body.removeChild(hiddenIframe);
+    URL.revokeObjectURL(url);
+
+    const imageBlob = await new Promise<Blob | null>(res => canvas.toBlob(res, 'image/png'));
+    if (!imageBlob) throw new Error("Capture failed");
 
     const fileName = `canva_${Date.now()}_${Math.random().toString(36).substring(7)}.png`;
     const { error: uploadError } = await supabase.storage
       .from('manifests')
-      .upload(fileName, blob);
+      .upload(fileName, imageBlob);
 
     if (uploadError) throw uploadError;
 
@@ -76,7 +102,6 @@ export const automatedExportToCanva = async (iframeId: string) => {
       .from('manifests')
       .getPublicUrl(fileName);
 
-    // Canva Media Import URL
     window.open(`https://www.canva.com/design/play?import=${encodeURIComponent(publicUrl)}`, '_blank');
   } catch (err) {
     console.error("[KREO] Canva automation failed:", err);

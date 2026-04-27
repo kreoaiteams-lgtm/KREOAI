@@ -131,7 +131,14 @@ export const generateArtifact = async (
     }
 
     const data = await response.json();
-    let content = data.choices[0].message.cont    // --- RECURSIVE NEURAL BRIDGE CONTINUATION LOGIC ---
+    let content = data?.choices?.[0]?.message?.content;
+
+    if (!content) {
+        console.error("Sarvam response missing content:", data);
+        throw new Error("Neural manifest synthesis failed: Empty response from engine.");
+    }
+
+    // --- RECURSIVE NEURAL BRIDGE CONTINUATION LOGIC ---
     let bridgesUsed = 0;
     const MAX_BRIDGES = 3;
     const SECOND_KEY = "sk_7y0ofcio_tgRuQhhq8JyWkyXasSI7XJIR";
@@ -425,3 +432,150 @@ if __name__ == "__main__":
 
   return `<!DOCTYPE html><html><head><script src="https://cdn.tailwindcss.com"></script></head><body class="min-h-screen bg-slate-900 flex items-center justify-center text-white p-12 text-center"><div><h2 class="text-4xl font-serif italic mb-4">"${prompt}"</h2><p class="text-slate-400">Offline generation complete.</p></div></body></html>`;
 }
+
+/**
+ * COWORK AGENT LOGIC
+ */
+
+export interface CoWorkStep {
+  id: string;
+  type: 'plan' | 'research' | 'synthesize' | 'manifest';
+  status: 'pending' | 'running' | 'done' | 'error';
+  content: string;
+  query?: string;
+  results?: string;
+}
+
+const COWORK_PLANNER_PROMPT = `
+You are the KREO Neural Orchestrator. 
+The user is in COWORK MODE—which means they want a deep, multi-step research or strategic manifest.
+Your goal is to break the user's request into 3-5 logical steps.
+Steps can be:
+- 'research': Scouring the web for live data, prices, or comparisons.
+- 'synthesize': Organizing data into a strategic framework.
+- 'manifest': Building the final editorial UI.
+
+Output ONLY a JSON array of steps:
+[{ "type": "research", "content": "Search for iPhone 16 price in India" }, ...]
+`;
+
+export const runCoWorkAgent = async (
+  prompt: string,
+  onUpdate: (steps: CoWorkStep[]) => void
+) => {
+  let steps: CoWorkStep[] = [
+    { id: '1', type: 'plan', status: 'running', content: 'Orchestrating Task DNA...' }
+  ];
+  onUpdate([...steps]);
+
+  try {
+    // 1. PLANNING PHASE
+    const planRes = await fetch(SARVAM_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${SARVAM_API_KEY}` },
+      body: JSON.stringify({
+        model: "sarvam-105b",
+        messages: [
+          { role: "system", content: COWORK_PLANNER_PROMPT },
+          { role: "user", content: prompt }
+        ],
+        max_tokens: 500,
+        temperature: 0.1
+      })
+    });
+
+    const planData = await planRes.json();
+    let rawPlan = planData.choices[0].message.content;
+    // Extract JSON
+    const jsonMatch = rawPlan.match(/\[[\s\S]*\]/);
+    const plan = JSON.parse(jsonMatch ? jsonMatch[0] : rawPlan);
+
+    steps = [
+      { id: '1', type: 'plan', status: 'done', content: 'Task blueprint locked.' },
+      ...plan.map((s: any, i: number) => ({
+        id: String(i + 2),
+        type: s.type,
+        status: 'pending',
+        content: s.content,
+        query: s.type === 'research' ? s.content : undefined
+      })),
+      { id: String(plan.length + 2), type: 'manifest', status: 'pending', content: 'Final Manifest Manifestation' }
+    ];
+    onUpdate([...steps]);
+
+    // 2. EXECUTION PHASE (Research/Synthesize)
+    let accumulatedContext = "";
+
+    for (const step of steps) {
+      if (step.status === 'done' || step.type === 'manifest') continue;
+
+      step.status = 'running';
+      onUpdate([...steps]);
+
+      if (step.type === 'research') {
+        try {
+          const res = await fetch("https://api.tavily.com/search", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              api_key: "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",
+              query: step.query || step.content,
+              search_depth: "advanced"
+            })
+          });
+          const searchData = await res.json();
+          const snippets = searchData.results?.slice(0, 4).map((r: any) => r.content).join("\n") || "No live data found.";
+          step.results = snippets;
+          accumulatedContext += `\n\n[CONTEXT FROM ${step.content}]:\n${snippets}`;
+          step.status = 'done';
+        } catch (e) {
+          step.status = 'error';
+        }
+      } else if (step.type === 'synthesize') {
+        const synthRes = await fetch(SARVAM_ENDPOINT, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Authorization": `Bearer ${SARVAM_API_KEY}` },
+          body: JSON.stringify({
+            model: "sarvam-105b",
+            messages: [
+              { role: "system", content: "Synthesize the provided research data into a crisp strategic overview." },
+              { role: "user", content: `Context: ${accumulatedContext}\nGoal: ${step.content}` }
+            ],
+            max_tokens: 800,
+            temperature: 0.5
+          })
+        });
+        const synthData = await synthRes.json();
+        step.results = synthData.choices[0].message.content;
+        accumulatedContext += `\n\n[SYNTHESIZED STRATEGY]:\n${step.results}`;
+        step.status = 'done';
+      }
+      onUpdate([...steps]);
+    }
+
+    // 3. FINAL MANIFESTATION
+    const manifestStep = steps.find(s => s.type === 'manifest');
+    if (manifestStep) {
+      manifestStep.status = 'running';
+      onUpdate([...steps]);
+
+      const finalArtifact = await generateArtifact(
+        `[COWORK AGENT MISSION COMPLETED]\nBased on this deep research context, build a stunning editorial manifest:\n${accumulatedContext}\n\nORIGINAL REQUEST: ${prompt}`,
+        [],
+        undefined,
+        true // CoWork always uses search-enabled context
+      );
+
+      manifestStep.status = 'done';
+      manifestStep.results = finalArtifact;
+      onUpdate([...steps]);
+      return finalArtifact;
+    }
+
+  } catch (error) {
+    console.error("CoWork Agent Failed:", error);
+    steps.forEach(s => { if (s.status === 'running') s.status = 'error'; });
+    onUpdate([...steps]);
+    throw error;
+  }
+};

@@ -17,6 +17,7 @@ import IdentityScreen from "./IdentityScreen";
 
 import KreoLogo from "./KreoLogo";
 import ArtifactPanel from "./ArtifactPanel";
+import CoWorkPanel from "./CoWorkPanel";
 import CloudFraming from "./CloudFraming";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { generateArtifact } from "@/lib/ai";
@@ -450,6 +451,7 @@ const HomeScreen = ({
   const [showUpgradePop, setShowUpgradePop] = useState(false);
   const [manifestCount, setManifestCount] = useState(0);
   const [isPro, setIsPro] = useState(localStorage.getItem('is_kreo_pro') === 'true');
+  const [isCoWorkMode, setIsCoWorkMode] = useState(false);
 
   const [uploadedFile, setUploadedFile] = useState<{ url: string, name: string, type: string, ocr?: string } | null>(() => {
     const saved = localStorage.getItem('kreo_last_upload');
@@ -1021,7 +1023,7 @@ const HomeScreen = ({
   };
 
   return (
-    <div className="relative flex flex-col min-h-screen bg-transparent">
+    <div className={`relative flex flex-col min-h-screen transition-colors duration-1000 ${isCoWorkMode ? 'bg-[#fafafa]' : 'bg-transparent'}`}>
       <Guide />
       {(theme === 'light' || theme === 'dark') && (
         <Dither
@@ -1059,6 +1061,18 @@ const HomeScreen = ({
                 </button>
               </TooltipTrigger>
               <TooltipContent>{t.history}</TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={() => setIsCoWorkMode(!isCoWorkMode)}
+                  className={`rounded-full p-2 transition-all ${isCoWorkMode ? "text-[#E63946] bg-[#E63946]/10" : "text-foreground/80 hover:text-foreground"}`}
+                >
+                  <BrainCircuit size={20} />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>CoWork Mode (Agent)</TooltipContent>
             </Tooltip>
 
             <Tooltip>
@@ -1370,6 +1384,19 @@ const HomeScreen = ({
               />
             </div>
           </div>
+        ) : isCoWorkMode && !artifact ? (
+          <section className="min-h-screen py-32 relative w-full flex items-center justify-center">
+            <CoWorkPanel
+               onManifestGenerated={(code, p) => {
+                 setArtifact(code);
+                 setQuery(p);
+                 setChatHistory([{ role: 'user', content: p }, { role: 'assistant', content: code, display: "Agent Orchestration Complete: Live manifest generated from deep research." }]);
+                 setIsArtifactActive(true);
+                 setIsCoWorkMode(false); // Turn off mode to see the result clearly
+               }}
+               onClose={() => setIsCoWorkMode(false)}
+            />
+          </section>
         ) : (
           <div className="flex flex-col items-center w-full relative">
             <section className="min-h-screen flex flex-col items-center justify-center gap-16 px-4 pb-32 relative w-full">
@@ -1383,7 +1410,7 @@ const HomeScreen = ({
               </div>
               <div className="w-full max-w-2xl">
                 <form onSubmit={handleSubmit}>
-                  <div id="kreo-tour-prompt" className={`flex items-center rounded-[1.8rem] px-6 py-4 shadow-2xl transition-all border ring-1 gap-3 ${theme === 'light' ? 'bg-white border-black/10 ring-black/5 text-black' : 'glass-panel border-white/20 ring-white/10 backdrop-blur-3xl text-white'}`}>
+                  <div id="kreo-tour-prompt" className={`flex items-center rounded-[1.8rem] px-6 py-4 shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] transition-all border-2 border-black gap-3 bg-white text-black`}>
                     <div id="kreo-tour-upload" className={`flex items-center gap-2 pr-2 border-r leading-none ${theme === 'light' ? 'border-black/10' : 'border-white/10'}`}>
                       <button type="button" onClick={() => fileInputRef.current?.click()} className="p-2 text-foreground/40 hover:text-foreground">
                         <Paperclip size={20} />
@@ -1434,6 +1461,7 @@ const HomeScreen = ({
             </section>
             <Footer />
           </div>
+        )}
         )}
       </main>
 
