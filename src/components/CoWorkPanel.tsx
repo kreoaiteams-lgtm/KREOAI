@@ -179,12 +179,11 @@ const CoWorkPanel = ({ onManifestGenerated, onClose }: CoWorkPanelProps) => {
             </button>
           ))}
         </div>
-            </div>
-          )}
-        </motion.div>
       )}
-      </AnimatePresence>
-    </div>
+      </motion.div>
+    )}
+    </AnimatePresence>
+  </div>
   );
 };
 
