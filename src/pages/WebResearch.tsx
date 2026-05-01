@@ -68,15 +68,20 @@ export default function WebResearch() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.2, duration: 0.8 }}
-              className="space-y-2"
+              className="space-y-0"
             >
-              <span className="text-[10px] font-black uppercase tracking-[0.8em] text-black/20 block mb-4">Establishing Portal</span>
-              <h1 
-                className="text-7xl md:text-8xl font-bold tracking-tighter text-black" 
-                style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }}
-              >
-                Welcome to <br />
-                <span className="text-[#E63946]">Research Portal</span>
+              <span className="text-[10px] font-black uppercase tracking-[0.8em] text-black/20 block mb-6">Establishing Portal</span>
+              <h1 className="tracking-tighter text-black leading-[0.8]">
+                <span className="text-4xl md:text-5xl font-black uppercase tracking-[0.2em] font-satoshi">Welcome</span>
+                <br />
+                <span className="text-5xl md:text-6xl font-serif italic font-light opacity-40">to</span>
+                <br />
+                <span 
+                  className="text-7xl md:text-9xl font-bold text-[#E63946]" 
+                  style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }}
+                >
+                  Research Portal
+                </span>
               </h1>
             </motion.div>
           </motion.div>
@@ -102,7 +107,7 @@ export default function WebResearch() {
           />
         )}
 
-        <header className="fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-8 py-6 bg-white/40 backdrop-blur-2xl border-b border-black/[0.03]">
+        <header className="fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-8 py-4 bg-white/40 backdrop-blur-2xl border-b border-black/[0.03]">
           <div className="flex items-center gap-6">
             <button
               onClick={() => navigate('/')}
@@ -116,7 +121,7 @@ export default function WebResearch() {
             <div className="h-4 w-px bg-black/10" />
             <div className="flex items-center gap-3">
               <span 
-                className="text-2xl font-bold tracking-tighter text-black" 
+                className="text-xl font-bold tracking-tighter text-black" 
                 style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }}
               >
                 Research Portal
@@ -153,48 +158,93 @@ export default function WebResearch() {
           </div>
         </header>
 
-        <main className="flex-1 flex flex-col relative z-10 pt-20">
+        <main className="flex-1 flex flex-col relative z-10 pt-16">
           {!artifact ? (
-            <section className="min-h-[calc(100vh-5rem)] relative w-full flex flex-col items-center justify-center py-20 px-6">
-              {/* Floating UI Decorative Elements */}
-              <div className="absolute top-1/4 left-10 opacity-20 hidden lg:block">
-                <div className="flex flex-col gap-8">
-                  <div className="space-y-1">
-                    <div className="text-[8px] font-black uppercase tracking-[0.2em] text-black/40">Signal Strength</div>
-                    <div className="flex gap-0.5">
-                      {[1,1,1,1,0.3].map((op, i) => <div key={i} className="w-1 h-3 bg-black" style={{ opacity: op }} />)}
+            <section className="min-h-[calc(100vh-4rem)] relative w-full flex flex-col items-center justify-center py-12 px-6">
+              {/* HIGH DENSITY LEFT SIDEBAR */}
+              <div className="absolute top-20 left-8 bottom-20 w-48 border-r border-black/[0.03] pr-8 hidden lg:flex flex-col gap-10">
+                <div className="space-y-6">
+                  <div className="space-y-2">
+                    <div className="text-[8px] font-black uppercase tracking-[0.2em] text-black/40">Neural Sync</div>
+                    <div className="flex gap-1 h-1">
+                      {Array.from({length: 12}).map((_, i) => (
+                        <motion.div 
+                          key={i} 
+                          animate={{ height: [4, 8, 4], opacity: [0.3, 1, 0.3] }}
+                          transition={{ repeat: Infinity, duration: 1.5, delay: i * 0.1 }}
+                          className="flex-1 bg-[#1B3FBF]" 
+                        />
+                      ))}
                     </div>
                   </div>
+                  <div className="space-y-2">
+                    <div className="text-[8px] font-black uppercase tracking-[0.2em] text-black/40">Latency</div>
+                    <div className="text-xs font-mono text-black/60">12.4ms <span className="text-[8px] text-green-500">OPT_OK</span></div>
+                  </div>
+                </div>
+
+                <div className="flex-1 space-y-4">
+                  <div className="text-[8px] font-black uppercase tracking-[0.2em] text-black/20">System Logs</div>
+                  <div className="space-y-2 font-mono text-[8px] leading-tight text-black/30">
+                    <div>[0.00] PKT_INIT_SEND</div>
+                    <div>[0.12] BRIDGING_JINA_V2</div>
+                    <div>[0.45] SYNCING_MANIFEST...</div>
+                    <motion.div animate={{ opacity: [0, 1] }} transition={{ repeat: Infinity, duration: 0.5 }}>[ONLINE] AGENT_READY_</motion.div>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
                   <div className="flex items-center gap-3">
-                    <Radio size={14} className="text-[#1B3FBF]" />
-                    <span className="text-[9px] font-mono tracking-tighter text-black/40">SCANNING_NETWORK...</span>
+                    <Radio size={12} className="text-[#1B3FBF]" />
+                    <span className="text-[8px] font-black uppercase tracking-[0.1em] text-black/40">Broadcasting...</span>
                   </div>
                 </div>
               </div>
 
-              <div className="absolute bottom-1/4 right-10 opacity-20 hidden lg:block text-right">
-                <div className="flex flex-col items-end gap-8">
-                  <div className="space-y-1">
-                    <div className="text-[8px] font-black uppercase tracking-[0.2em] text-black/40">Core Load</div>
-                    <div className="w-32 h-1 bg-black/10 overflow-hidden">
+              {/* HIGH DENSITY RIGHT SIDEBAR */}
+              <div className="absolute top-20 right-8 bottom-20 w-48 border-l border-black/[0.03] pl-8 hidden lg:flex flex-col gap-10 text-right">
+                <div className="space-y-6">
+                  <div className="space-y-2">
+                    <div className="text-[8px] font-black uppercase tracking-[0.2em] text-black/40">Encryption</div>
+                    <div className="text-[10px] font-mono text-black/60 uppercase">AES-256-KREO</div>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="text-[8px] font-black uppercase tracking-[0.2em] text-black/40">Packet Flux</div>
+                    <div className="w-full h-1.5 bg-black/5 rounded-full overflow-hidden">
                       <motion.div 
-                        animate={{ x: [-128, 128] }}
-                        transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
-                        className="w-full h-full bg-[#E63946]"
+                        animate={{ width: ["10%", "90%", "30%", "60%"] }}
+                        transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+                        className="h-full bg-black/20"
                       />
                     </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <span className="text-[9px] font-mono tracking-tighter text-black/40">BUFFERING_NEURAL_LINK</span>
-                    <Cpu size={14} className="text-[#1B3FBF]" />
+                </div>
+
+                <div className="flex-1 space-y-4">
+                  <div className="text-[8px] font-black uppercase tracking-[0.2em] text-black/20">Active Nodes</div>
+                  <div className="grid grid-cols-2 gap-2">
+                    {['NY', 'LDN', 'MUM', 'TKO'].map(n => (
+                      <div key={n} className="p-1 border border-black/5 rounded bg-black/[0.01] text-[8px] font-bold text-black/30">{n}</div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  <div className="text-[8px] font-black uppercase tracking-[0.2em] text-black/40">Neural Load</div>
+                  <div className="w-full h-1 bg-black/10 overflow-hidden">
+                    <motion.div 
+                      animate={{ x: [-128, 128] }}
+                      transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
+                      className="w-full h-full bg-[#E63946]"
+                    />
                   </div>
                 </div>
               </div>
 
-              <div className="w-full max-w-5xl relative">
+              <div className="w-full max-w-4xl relative">
                 {/* Visual Frame */}
-                <div className="absolute -inset-10 border border-black/[0.03] rounded-[4rem] pointer-events-none" />
-                <div className="absolute -inset-20 border border-black/[0.01] rounded-[6rem] pointer-events-none" />
+                <div className="absolute -inset-6 border border-black/[0.02] rounded-[3rem] pointer-events-none" />
+                <div className="absolute -inset-12 border border-black/[0.01] rounded-[4rem] pointer-events-none" />
                 
                 <CoWorkPanel
                    onManifestGenerated={(code, p) => {
@@ -210,7 +260,7 @@ export default function WebResearch() {
               </div>
 
               {/* Status Bar Detail */}
-              <div className="mt-20 flex items-center gap-12">
+              <div className="mt-12 flex items-center gap-12">
                 <div className="flex items-center gap-3 opacity-30">
                   <Crosshair size={14} />
                   <span className="text-[10px] font-black uppercase tracking-[0.4em]">Target Lock</span>
@@ -228,9 +278,9 @@ export default function WebResearch() {
               </div>
             </section>
           ) : (
-            <div className={`flex w-full h-[calc(100vh-5rem)] animate-in fade-in slide-in-from-bottom-8 duration-1000 ${isSplitView ? "flex-row overflow-hidden" : "flex-col items-center p-8 overflow-auto"}`}>
+            <div className={`flex w-full h-[calc(100vh-4rem)] animate-in fade-in slide-in-from-bottom-8 duration-1000 ${isSplitView ? "flex-row overflow-hidden" : "flex-col items-center p-8 overflow-auto"}`}>
               <div className={`${isSplitView ? "w-[450px] shrink-0" : "w-full max-w-2xl mb-8"} flex flex-col ${isSplitView ? "h-full" : "min-h-[60vh]"} overflow-hidden bg-[#f8faff] border-r border-black/[0.03]`}>
-                <div className="shrink-0 flex justify-between items-center px-8 py-6 border-b border-black/[0.03] bg-white/90 backdrop-blur-2xl">
+                <div className="shrink-0 flex justify-between items-center px-8 py-4 border-b border-black/[0.03] bg-white/90 backdrop-blur-2xl">
                   <button
                     onClick={() => {
                       setArtifact(null);
