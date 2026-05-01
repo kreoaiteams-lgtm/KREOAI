@@ -25,13 +25,13 @@ You are an ELITE UI ARCHITECT. Your mission is to eliminate "AI slop"—the gene
 - **Atmospheric Details**: Use subtle gradients (bg-gradient-to-br from-white to-blue-50/30) and "floating" decorative elements (soft blurs, light flares) to add visual interest without clutter.
 - **Premium Utility**: Every interactive element should have a subtle hover state (scale-105, slight shadow increase) that feels alive and responsive.
 
-### 4. TECHNICAL CONSTRAINTS
-- **STRICT STANDALONE HTML/JS**: NO React. NO JSX. Single HTML file only.
-- **NO PLACEHOLDERS**: Real copy, real data only.
-- **FULL FUNCTIONALITY**: Everything clickable must work.
+### 4. DATA INTEGRITY (THE ANTI-SLOP PROTOCOL)
+- **NO HALLUCINATIONS**: Do not invent marketing slogans (e.g., "Quantum Paradigm") for real-world products. Use researched specs only.
+- **TECHNICAL PRECISION**: If the context provides specs (Price, Range, Speed, Battery), these MUST be the centerpiece of the manifest.
+- **NO PLACEHOLDERS**: Real copy, real data only. If data is missing, state it clearly rather than making it up.
 - **SCROLLABLE**: Ensure body { overflow-y: auto; } is always set.
 
-You are KREO. Deliver a very beautiful, minimal, and premium masterpiece.
+You are KREO. Deliver a very beautiful, minimal, and TRUTHFUL masterpiece.
 </frontend_aesthetics>
 `;
 
@@ -85,8 +85,7 @@ export const generateArtifact = async (
   styleMimicRule: string = ""
 ) => {
   if (!SARVAM_API_KEY) {
-    console.warn("Sarvam API key missing. Falling back...");
-    return getDemoFallback(prompt);
+    return "";
   }
 
   try {
@@ -94,7 +93,7 @@ export const generateArtifact = async (
     let enrichedPrompt = prompt + liveContext;
 
     if (imageUrl) {
-      enrichedPrompt += `\n\n[VISUAL ASSET PROVIDED]:\nA source image is available at this URL: ${imageUrl}. \nINSTRUCTION: You MUST place this image as the core visual foundation of the design (e.g. hero image, featured asset, or background focal point). Generate the UI architectural flow around this specific image. Use <img> tags with this URL.`;
+      enrichedPrompt += `\n\n[VISUAL ASSET PROVIDED]:\nA source image is available at this URL: ${imageUrl}.`;
     }
 
     const sanitizedHistory = chatHistory.map(({ role, content }) => ({ role, content }));
@@ -119,314 +118,56 @@ export const generateArtifact = async (
       }),
     });
 
-    if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        console.error("Sarvam API Detailed Error:", errorData);
-        throw new Error(`Sarvam API error: ${response.status} ${JSON.stringify(errorData)}`);
-    }
-
     const data = await response.json();
     let content = data?.choices?.[0]?.message?.content;
-
-    if (!content) {
-        console.error("Sarvam response missing content:", data);
-        throw new Error("Neural manifest synthesis failed: Empty response from engine.");
-    }
-
-    // --- RECURSIVE NEURAL BRIDGE CONTINUATION LOGIC ---
-    let bridgesUsed = 0;
-    const MAX_BRIDGES = 3;
-    const SECOND_KEY = "sk_7y0ofcio_tgRuQhhq8JyWkyXasSI7XJIR";
-
-    while (bridgesUsed < MAX_BRIDGES) {
-        const isTruncated = (content.trim().length > 3200) && 
-                           !(content.toLowerCase().includes('</html>') || content.trim().endsWith('}') || content.trim().endsWith('```'));
-        
-        if (!isTruncated) break;
-
-        console.debug(`Neural Manifest Truncated (${content.length} chars). Triggering Bridge ${bridgesUsed + 1}...`);
-        
-        try {
-            const bridgeMessages = [
-                ...messages,
-                { role: "assistant", content: content },
-                { role: "user", content: "Continue from the exact character where you left off. Do NOT repeat code. Start immediately with the next character. Complete the manifest." }
-            ];
-
-            const bridgeRes = await fetch(SARVAM_ENDPOINT, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${bridgesUsed % 2 === 0 ? SECOND_KEY : SARVAM_API_KEY}`,
-                },
-                body: JSON.stringify({
-                    model: "sarvam-105b",
-                    messages: bridgeMessages,
-                    max_tokens: 4096,
-                    temperature: 0.3,
-                }),
-            });
-
-            if (bridgeRes.ok) {
-                const bridgeData = await bridgeRes.json();
-                const continuation = bridgeData?.choices?.[0]?.message?.content;
-                
-                if (continuation) {
-                    let overlap = 0;
-                    const checkLen = Math.min(content.length, 60);
-                    const suffix = content.slice(-checkLen);
-                    for (let i = checkLen; i > 0; i--) {
-                        if (continuation.startsWith(suffix.slice(-i))) {
-                            overlap = i;
-                            break;
-                        }
-                    }
-                    content += continuation.slice(overlap);
-                    bridgesUsed++;
-                } else break;
-            } else break;
-        } catch (e) {
-            console.error("Neural Bridge Failed:", e);
-            break;
-        }
-    }
-
-    // --- ROBUST EXTRACTION & SITUATION MODE ---
-    const allBlocksMatch = content.match(/```(?:html|tsx|jsx|mermaid|python|javascript|ts|js|react)?\s*([\s\S]*?)(?:```|$)/gi);
-    
-    if (allBlocksMatch) {
-       const firstBlock = allBlocksMatch[0];
-       const typeMatch = firstBlock.match(/^```(\w+)?/);
-       const type = (typeMatch && typeMatch[1] ? typeMatch[1].toLowerCase() : '').replace(/[\r\n]/g, '');
-       const rawCode = firstBlock.replace(/^```.*?[\r\n]|```$/g, '').trim();
-
-       // If it's a UI-ready block, return it for rendering
-       if (type === 'html' || type === 'tsx' || type === 'jsx' || type === 'react' || rawCode.includes('<html') || (rawCode.includes('export default') && rawCode.includes('return'))) {
-           return rawCode;
-       }
-
-       // Otherwise, handle as Situation Mode (Multi-block snippets)
-       const blocks = allBlocksMatch.map((b: string) => {
-           const tMatch = b.match(/^```(\w+)?/);
-           const t = (tMatch && tMatch[1] ? tMatch[1].toLowerCase() : 'text').replace(/[\r\n]/g, '');
-           const code = b.replace(/^```.*?[\r\n]|```$/g, '').trim();
-           
-           if (t === 'mermaid') {
-                const safeCode = code.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-                return `<pre class="mermaid">\n${safeCode}\n</pre>`;
-           } else {
-                return `<div class="code-header">${t.toUpperCase()} SNIPPET</div><pre><code class="language-${t}">${code.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</code></pre>`;
-           }
-       }).join('\n\n');
-
-       return `<!DOCTYPE html>
-<html>
-<head>
-    <script type="module">
-      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
-      mermaid.initialize({ startOnLoad: true, theme: 'default', securityLevel: 'loose', flowchart: { useMaxWidth: false, htmlLabels: true, curve: 'basis', nodeSpacing: 60, rankSpacing: 60 }, fontSize: 15, fontFamily: 'Satoshi, sans-serif' });
-    </script>
-    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@700,500,400&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
-    <style>
-      * { box-sizing: border-box; margin: 0; padding: 0; }
-      body { background: #ffffff; color: #111; font-family: 'Satoshi', sans-serif; padding: 2.5rem 3rem; overflow-y: auto; overflow-x: hidden; min-height: 100vh; }
-      .page-title { font-size: 1.1rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #1B3FBF; border-bottom: 3px solid #1B3FBF; padding-bottom: 1rem; margin-bottom: 2.5rem; }
-      .diagram-wrap { background: #f8f9ff; border: 2px solid #e8ebff; border-radius: 1rem; padding: 2rem; margin-bottom: 2.5rem; overflow-x: auto; }
-      .diagram-wrap .mermaid { min-width: 900px; display: block; }
-      .code-label { font-size: 0.65rem; font-weight: 800; letter-spacing: 0.2em; text-transform: uppercase; color: #1B3FBF; background: #eef1ff; border: 2px solid #1B3FBF; border-bottom: none; padding: 0.5rem 1rem; border-radius: 0.5rem 0.5rem 0 0; display: inline-block; margin-top: 1.5rem; }
-      pre[class*="language-"] { border-radius: 0 0.5rem 0.5rem 0.5rem !important; border: 2px solid #e8ebff !important; font-size: 0.8rem !important; margin-top: 0 !important; background: #fafbff !important; }
-    </style>
-</head>
-<body>
-    <div class="page-title">Architecture Blueprint</div>
-    ${blocks.replace(/<pre class="mermaid">/g, '<div class="diagram-wrap"><pre class="mermaid">').replace(/<\/pre>\s*(?=\n*<div class="code-header"|$)/g, '</pre></div>').replace(/<div class="code-header">([^<]+)<\/div>/g, '<div class="code-label">$1</div>')}
-</body>
-</html>`;
-    }
-
-    // html tag fallback
-    if (content.toLowerCase().includes('<html')) {
-        const start = content.toLowerCase().indexOf('<html');
-        const end = content.lastIndexOf('</html>');
-        if (start !== -1) return content.slice(start, end !== -1 ? end + 7 : undefined).trim();
-    }
-
-    return content.trim();
+    return content || "";
   } catch (err) {
     console.error("Sarvam generation failed:", err);
-    return getDemoFallback(prompt);
+    return "";
   }
 };
 
 /**
- * Generate a Resident Bio from interview answers
+ * Generate Structured Comparison Data for Native UI
  */
-export const generateBio = async (answers: string[]) => {
-  if (!SARVAM_API_KEY) return "A creative force within the KREO ecosystem, dedicated to building new worlds.";
-
+export const generateComparisonData = async (prompt: string, context: string) => {
   try {
-    const QUESTIONS = [
-      "How would you describe your creative style?",
-      "What is your favorite tool or craft?",
-      "Where do you find your best ideas?"
-    ];
-    const prompt = `Summarize these three characteristics of a KREO Resident into a single, high-end, cinematic sentence:
-    - Style: ${answers[0]}
-    - Tool/Craft: ${answers[1]}
-    - Inspiration: ${answers[2]}
-    
-    Make it feel architectural, sophisticated, and elite. A single quote without surrounding text. Max 25 words.`;
-
     const response = await fetch(SARVAM_ENDPOINT, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${SARVAM_API_KEY}`,
-      },
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${SARVAM_API_KEY}` },
       body: JSON.stringify({
         model: "sarvam-105b",
         messages: [
-          { role: "system", content: "You are the KREO Neural Studio architect. You summarize creative identities into elite resident bios." },
-          { role: "user", content: prompt },
+          { 
+            role: "system", 
+            content: `You are a TECHNICAL DATA ARCHITECT. 
+                     Extract a structured comparison between TWO items from the provided research context. 
+                     Return ONLY a JSON object. NO MARKDOWN. NO CHAT.
+                     
+                     Schema:
+                     {
+                       "optionA": { "name": string, "specs": { "Price": string, "Range": string, "Battery": string, "Performance": string, "Pros": string[] } },
+                       "optionB": { "name": string, "specs": { "Price": string, "Range": string, "Battery": string, "Performance": string, "Pros": string[] } },
+                       "verdict": string,
+                       "winner": "A" | "B" | "Tie"
+                     }` 
+          },
+          { role: "user", content: `Context: ${context}\nObjective: ${prompt}` }
         ],
-        max_tokens: 100,
-        temperature: 0.8,
-      }),
+        max_tokens: 1000,
+        temperature: 0.1
+      })
     });
 
     const data = await response.json();
-    return data.choices[0].message.content.replace(/^["']|["']$/g, '').trim();
+    const content = data.choices[0].message.content;
+    const jsonMatch = content.match(/\{[\s\S]*\}/);
+    return JSON.parse(jsonMatch ? jsonMatch[0] : content);
   } catch (err) {
-    console.error("Bio generation failed:", err);
-    return "A manifestation of pure imagination, weaving through the KREO neural net.";
+    console.error("Comparison data generation failed:", err);
+    return null;
   }
 };
-
-export const narrateText = async (text: string) => {
-  if (!SARVAM_API_KEY) return;
-
-  try {
-    const response = await fetch("https://api.sarvam.ai/text-to-speech/stream", {
-        method: "POST",
-        headers: {
-            "api-subscription-key": SARVAM_API_KEY,
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            inputs: [{ text: text }],
-            target_language_code: "en-IN",
-            speaker: "meera",
-            model: "bulbul:v2",
-            speech_sample_rate: 22050,
-            enable_preprocessing: true
-        })
-    });
-    
-    if (!response.ok) {
-        throw new Error(`TTS HTTP error! status: ${response.status}`);
-    }
-    
-    // Process streaming audio
-    const chunks = [];
-    const reader = response.body?.getReader();
-    if (!reader) return;
-
-    while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        chunks.push(value);
-    }
-    
-    const blob = new Blob(chunks, { type: "audio/mpeg" });
-    const audio = new Audio(URL.createObjectURL(blob));
-    audio.play();
-  } catch (err) {
-    console.error("Narrate Manifestation Failed:", err);
-  }
-};
-
-function getDemoFallback(prompt: string): string {
-  const p = prompt.toLowerCase();
-  
-  if (p.includes("dashboard")) {
-    return `<!DOCTYPE html><html><head><script src="https://cdn.tailwindcss.com"></script><style>body{background:#020617;color:white;font-family:sans-serif;}.glass{background:rgba(255,255,255,0.03);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.05);}</style></head><body class="p-8"><div class="max-w-6xl mx-auto"><h1 class="text-3xl font-bold mb-8">Executive Analytics</h1><div class="grid grid-cols-3 gap-6"><div class="glass p-6 rounded-3xl h-32 flex items-center justify-center text-white/40">Revenue stream</div><div class="glass p-6 rounded-3xl h-32 flex items-center justify-center text-white/40">Active Users</div><div class="glass p-6 rounded-3xl h-32 flex items-center justify-center text-white/40">Uptime metrics</div></div><div class="glass mt-8 p-12 rounded-[3rem] h-96 flex items-center justify-center text-white/20">Chart Visualization</div></div></body></html>`;
-  }
-  
-  if (p.includes("landing")) {
-    return `<!DOCTYPE html><html><head><script src="https://cdn.tailwindcss.com"></script></head><body class="bg-black text-white flex flex-col items-center justify-center min-h-screen p-10"><h1 class="text-7xl font-black mb-6 tracking-tighter">FUTURE_STORM</h1><p class="text-xl text-white/40 mb-12">The next generation of creative tools.</p><button class="px-10 py-4 bg-white text-black font-bold rounded-full hover:scale-105 transition">Early Access</button></body></html>`;
-  }
-
-  if (p.includes("flowchart") || p.includes("logic")) {
-    return `<!DOCTYPE html>
-<html>
-<head>
-    <script type="module">
-      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
-      mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
-    </script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-      body { background: #020617; color: #e2e8f0; font-family: sans-serif; padding: 2rem; }
-      .mermaid { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 1rem; padding: 2rem; margin-bottom: 2rem; display: flex; justify-content: center; }
-      .mermaid svg { max-width: 100%; height: auto; }
-    </style>
-</head>
-<body>
-    <div class="max-w-4xl mx-auto">
-      <h2 class="text-2xl font-serif text-[#e8eaf0] italic mb-8 mt-4 tracking-tight">Offline Flowchart Demo</h2>
-      <pre class="mermaid">
-graph TD
-    A[User Setup] --&gt; B{Valid Key?}
-    B -- Yes --&gt; C[Access LLM API]
-    B -- No --&gt; D[Use Offline Demos]
-    C --&gt; E[Generate Artifact]
-    D --&gt; E
-    E --&gt; F[Render in Canvas]
-      </pre>
-    </div>
-</body>
-</html>`;
-  }
-
-  if (p.includes("python") || p.includes("api") || p.includes("script")) {
-    return `<!DOCTYPE html>
-<html>
-<head>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-      body { background: #020617; color: #e2e8f0; font-family: sans-serif; padding: 2rem; }
-      pre { border-radius: 0 0 1rem 1rem !important; margin-top: 0 !important; border: 1px solid rgba(255,255,255,0.05); border-top: none; }
-      .code-header { background: rgba(255,255,255,0.04); padding: 0.75rem 1rem; font-size: 0.65rem; font-weight: 800; letter-spacing: 0.15em; color: #94a3b8; border-radius: 1rem 1rem 0 0; border: 1px solid rgba(255,255,255,0.05); font-family: monospace; }
-    </style>
-</head>
-<body>
-    <div class="max-w-3xl mx-auto mt-10">
-      <div class="code-header">PYTHON SNIPPET</div>
-      <pre><code class="language-python">
-import requests
-
-def fetch_data():
-    print("Initiating API request...")
-    res = requests.get("https://api.kreo.ai/v1/mock")
-    return res.json()
-
-if __name__ == "__main__":
-    data = fetch_data()
-    print("Received:", data)
-      </code></pre>
-    </div>
-</body>
-</html>`;
-  }
-
-  return `<!DOCTYPE html><html><head><script src="https://cdn.tailwindcss.com"></script></head><body class="min-h-screen bg-slate-900 flex items-center justify-center text-white p-12 text-center"><div><h2 class="text-4xl font-serif italic mb-4">"${prompt}"</h2><p class="text-slate-400">Offline generation complete.</p></div></body></html>`;
-}
 
 /**
  * COWORK AGENT LOGIC
@@ -447,15 +188,14 @@ The user is in COWORK MODE—which means they want a deep, multi-step research o
 Your goal is to break the user's request into 3-6 logical steps.
 
 CRITICAL: ALWAYS START WITH AT LEAST 2 RESEARCH STEPS to ensure "Live Web Checking". 
-Queries should be specific and diverse to cover multiple angles of the user's request.
 
 Steps can be:
-- 'research': Scouring the web for live data, prices, or comparisons. (e.g. "Search for latest iPhone 16 Pro prices in Croma, Reliance Digital and Amazon India")
-- 'synthesize': Organizing data into a strategic framework or comparison table.
+- 'research': Scouring the web for live data.
+- 'synthesize': Organizing data into a strategic framework.
 - 'manifest': Building the final editorial UI.
 
 Output ONLY a JSON array of steps:
-[{ "type": "research", "content": "Fetch latest interest rates from SBI and HDFC for 2025" }, { "type": "research", "content": "Analyze competitor bank rates for ICICI and Axis" }, ...]
+[{ "type": "research", "content": "Fetch details for..." }, ...]
 `;
 
 export const runCoWorkAgent = async (
@@ -469,50 +209,56 @@ export const runCoWorkAgent = async (
 
   try {
     // 1. PLANNING PHASE
-    const planRes = await fetch(SARVAM_ENDPOINT, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${SARVAM_API_KEY}` },
-      body: JSON.stringify({
-        model: "sarvam-105b",
-        messages: [
-          { role: "system", content: COWORK_PLANNER_PROMPT },
-          { role: "user", content: prompt }
-        ],
-        max_tokens: 500,
-        temperature: 0.1
-      })
-    });
+    let plan = [];
+    try {
+      const planRes = await fetch(SARVAM_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${SARVAM_API_KEY}` },
+        body: JSON.stringify({
+          model: "sarvam-105b",
+          messages: [
+            { role: "system", content: COWORK_PLANNER_PROMPT },
+            { role: "user", content: prompt }
+          ],
+          max_tokens: 500,
+          temperature: 0.1
+        })
+      });
 
-    if (!planRes.ok) {
-        const errText = await planRes.text();
-        throw new Error(`Orchestration failed with status ${planRes.status}: ${errText.slice(0, 100)}`);
+      if (planRes.ok) {
+        const planData = await planRes.json();
+        let rawPlan = planData?.choices?.[0]?.message?.content;
+        if (rawPlan) {
+          const jsonMatch = rawPlan.match(/\[[\s\S]*\]/);
+          plan = JSON.parse(jsonMatch ? jsonMatch[0] : rawPlan);
+        }
+      }
+    } catch (e) {
+      plan = [
+        { type: "research", content: `Deep research for: ${prompt}` },
+        { type: "research", content: `Compare alternatives for: ${prompt}` },
+        { type: "synthesize", content: `Analyze findings` }
+      ];
     }
 
-    const planData = await planRes.json();
-    let rawPlan = planData?.choices?.[0]?.message?.content;
-    
-    if (!rawPlan) {
-        throw new Error("Neural Orchestrator failed to generate a plan.");
+    if (!Array.isArray(plan) || plan.length === 0) {
+       plan = [{ type: "research", content: `Direct research for: ${prompt}` }];
     }
-
-    // Extract JSON
-    const jsonMatch = rawPlan.match(/\[[\s\S]*\]/);
-    const plan = JSON.parse(jsonMatch ? jsonMatch[0] : rawPlan);
 
     steps = [
-      { id: '1', type: 'plan', status: 'done', content: 'Task blueprint locked.' },
+      { id: '1', type: 'plan', status: 'done', content: 'Mission DNA established.' },
       ...plan.map((s: any, i: number) => ({
         id: String(i + 2),
-        type: s.type,
+        type: s.type || 'research',
         status: 'pending',
-        content: s.content,
+        content: s.content || "Processing research node...",
         query: s.type === 'research' ? s.content : undefined
       })),
-      { id: String(plan.length + 2), type: 'manifest', status: 'pending', content: 'Final Manifest Manifestation' }
+      { id: String(plan.length + 2), type: 'manifest', status: 'pending', content: 'Final Manifestation' }
     ];
     onUpdate([...steps]);
 
-    // 2. EXECUTION PHASE (Research/Synthesize)
+    // 2. EXECUTION PHASE
     let accumulatedContext = "";
 
     for (const step of steps) {
@@ -524,14 +270,11 @@ export const runCoWorkAgent = async (
       if (step.type === 'research') {
         try {
           const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s timeout
+          const timeoutId = setTimeout(() => controller.abort(), 15000);
 
           const res = await fetch(`https://s.jina.ai/${encodeURIComponent(step.query || step.content)}`, {
             method: "GET",
-            headers: {
-              "Authorization": `Bearer ${JINA_API_KEY}`,
-              "Accept": "application/json"
-            },
+            headers: { "Authorization": `Bearer ${JINA_API_KEY}`, "Accept": "application/json" },
             signal: controller.signal
           });
           clearTimeout(timeoutId);
@@ -542,8 +285,7 @@ export const runCoWorkAgent = async (
           accumulatedContext += `\n\n### LIVE WEB CHECK: ${step.content}\n${snippets}`;
           step.status = 'done';
         } catch (e) {
-          console.warn("Research step failed or timed out:", e);
-          step.status = 'done'; // Mark as done to continue the mission even if one search fails
+          step.status = 'done';
           step.results = "Resource temporarily unavailable.";
         }
       } else if (step.type === 'synthesize') {
@@ -554,7 +296,7 @@ export const runCoWorkAgent = async (
             body: JSON.stringify({
               model: "sarvam-105b",
               messages: [
-                { role: "system", content: "You are an ELITE ANALYST. Synthesize research data into a crisp, multi-perspective strategic overview. Focus on delta, trends, and specific facts." },
+                { role: "system", content: "You are an ELITE ANALYST. Synthesize research data into a crisp, multi-perspective strategic overview." },
                 { role: "user", content: `Context: ${accumulatedContext}\nObjective: ${step.content}` }
               ],
               max_tokens: 1000,
@@ -572,35 +314,19 @@ export const runCoWorkAgent = async (
       onUpdate([...steps]);
     }
 
-    // 3. FINAL MANIFESTATION
+    // 3. FINAL MANIFESTATION (Native Data)
     const manifestStep = steps.find(s => s.type === 'manifest');
     if (manifestStep) {
       manifestStep.status = 'running';
       onUpdate([...steps]);
 
-      const finalArtifact = await generateArtifact(
-        `[COWORK AGENT MISSION COMPLETED]
-         Based on this deep research context, build a stunning editorial manifest.
-         
-         CRITICAL UI REQUIREMENT:
-         1. Use a TABBED INTERFACE for the final decision/comparison.
-         2. Tabs should include individual data for each option (e.g., 'Option A', 'Option B') and a 'Final Verdict' tab.
-         3. Use beautiful, minimal charts and rich editorial typography.
-         4. NO BRUTALISM. Pure, beautiful minimalism only.
-         
-         Context: ${accumulatedContext}
-         ORIGINAL REQUEST: ${prompt}`,
-        [],
-        undefined,
-        true // CoWork always uses search-enabled context
-      );
+      const finalData = await generateComparisonData(prompt, accumulatedContext);
 
       manifestStep.status = 'done';
-      manifestStep.results = finalArtifact;
+      manifestStep.results = JSON.stringify(finalData);
       onUpdate([...steps]);
-      return finalArtifact;
+      return finalData;
     }
-
   } catch (error) {
     console.error("CoWork Agent Failed:", error);
     steps.forEach(s => { if (s.status === 'running') s.status = 'error'; });

@@ -1,21 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, Share2, Volume2, Globe, ArrowUp, X, Sparkles, ShieldCheck, Crosshair, Cpu, Radio, Zap } from 'lucide-react';
+import { ChevronLeft, Share2, Globe, Sparkles, ShieldCheck, Crosshair, Cpu, Radio, Zap, CheckCircle2, TrendingUp, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import CoWorkPanel from '../components/CoWorkPanel';
-import ArtifactPanel from '../components/ArtifactPanel';
 import CloudBackground from '../components/CloudBackground';
-import { Tooltip, TooltipContent, TooltipTrigger } from '../components/ui/tooltip';
+
+interface ComparisonData {
+  optionA: { name: string; specs: Record<string, string>; pros: string[] };
+  optionB: { name: string; specs: Record<string, string>; pros: string[] };
+  verdict: string;
+  winner: string;
+}
 
 export default function WebResearch() {
   const navigate = useNavigate();
-  const [artifact, setArtifact] = useState<string | null>(null);
+  const [data, setData] = useState<ComparisonData | null>(null);
   const [query, setQuery] = useState("");
   const [isSplitView, setIsSplitView] = useState(true);
-  const [shareDialogOpen, setShareDialogOpen] = useState(false);
-  const [chatHistory, setChatHistory] = useState<{ role: "user" | "assistant", content: string, display?: string }[]>([]);
-  
-  // Splash Sequence State: 'phase1' | 'phase2' | 'complete'
   const [splashPhase, setSplashPhase] = useState<'phase1' | 'phase2' | 'complete'>('phase1');
 
   useEffect(() => {
@@ -85,17 +86,14 @@ export default function WebResearch() {
         )}
       </AnimatePresence>
 
-      {/* Main UI */}
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: splashPhase === 'complete' ? 1 : 0 }}
         className="flex flex-col min-h-screen relative"
       >
-        {/* Immersive Background for Research Phase */}
-        {!artifact && <CloudBackground speed={0.2} />}
+        {!data && <CloudBackground speed={0.2} />}
 
-        {/* UI Elements / Scanning Grid Overlay */}
-        {!artifact && (
+        {!data && (
           <div className="absolute inset-0 pointer-events-none opacity-[0.02]" 
             style={{ 
               backgroundImage: `radial-gradient(circle, #000 1px, transparent 1px), linear-gradient(to right, #000 1px, transparent 1px), linear-gradient(to bottom, #000 1px, transparent 1px)`,
@@ -130,114 +128,44 @@ export default function WebResearch() {
           </div>
 
           <div className="flex items-center gap-8">
-            <div className="hidden md:flex items-center gap-6">
-              <div className="flex flex-col items-end opacity-20">
-                <span className="text-[10px] font-mono">48.8566</span>
-              </div>
-              <div className="flex flex-col items-end opacity-20">
-                <span className="text-[10px] font-mono">2.3522</span>
-              </div>
+            <div className="hidden md:flex items-center gap-4 opacity-40">
+              <span className="text-[9px] font-mono tracking-tighter">TRUTH_PROTOCOL_ENABLED</span>
+              <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
             </div>
-            <div className="h-8 w-px bg-black/5" />
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-1.5 opacity-40">
-                <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                <span className="text-[9px] font-medium">SECURE</span>
-              </div>
-              <button className="p-2.5 rounded-full bg-black/5 text-black/40 hover:bg-black hover:text-white transition-all">
-                <ShieldCheck size={16} />
-              </button>
-            </div>
+            <button className="p-2.5 rounded-full bg-black text-white hover:scale-105 transition-all shadow-xl shadow-black/20">
+              <Share2 size={14} />
+            </button>
           </div>
         </header>
 
         <main className="flex-1 flex flex-col relative z-10 pt-16">
-          {!artifact ? (
+          {!data ? (
             <section className="min-h-[calc(100vh-4rem)] relative w-full flex flex-col items-center justify-center py-12 px-6">
               
-              {/* ABSTRACT ANIMATED ELEMENTS - LEFT */}
+              {/* ABSTRACT ANIMATED ELEMENTS */}
               <div className="absolute top-20 left-12 bottom-20 w-32 hidden lg:flex flex-col gap-16 justify-center">
                 <div className="flex gap-1.5 h-8">
                   {Array.from({length: 8}).map((_, i) => (
-                    <motion.div 
-                      key={i} 
-                      animate={{ height: [4, 24, 4], opacity: [0.1, 0.4, 0.1] }}
-                      transition={{ repeat: Infinity, duration: 2, delay: i * 0.15 }}
-                      className="w-1 bg-[#1B3FBF]" 
-                    />
+                    <motion.div key={i} animate={{ height: [4, 24, 4], opacity: [0.1, 0.4, 0.1] }} transition={{ repeat: Infinity, duration: 2, delay: i * 0.15 }} className="w-1 bg-[#1B3FBF]" />
                   ))}
-                </div>
-                <div className="space-y-4">
-                  {Array.from({length: 4}).map((_, i) => (
-                    <motion.div 
-                      key={i}
-                      animate={{ opacity: [0.1, 0.3, 0.1], x: [0, 10, 0] }}
-                      transition={{ repeat: Infinity, duration: 3, delay: i * 0.5 }}
-                      className="h-px bg-black w-full"
-                    />
-                  ))}
-                </div>
-                <motion.div 
-                  animate={{ rotate: 360 }}
-                  transition={{ repeat: Infinity, duration: 10, ease: "linear" }}
-                  className="w-10 h-10 border-2 border-dashed border-black/10 rounded-full flex items-center justify-center"
-                >
-                  <div className="w-1.5 h-1.5 bg-[#1B3FBF]/20 rounded-full" />
-                </motion.div>
-              </div>
-
-              {/* ABSTRACT ANIMATED ELEMENTS - RIGHT */}
-              <div className="absolute top-20 right-12 bottom-20 w-32 hidden lg:flex flex-col gap-16 justify-center items-end">
-                <div className="grid grid-cols-3 gap-2">
-                  {Array.from({length: 9}).map((_, i) => (
-                    <motion.div 
-                      key={i}
-                      animate={{ scale: [1, 1.5, 1], opacity: [0.1, 0.4, 0.1] }}
-                      transition={{ repeat: Infinity, duration: 1.5, delay: i * 0.1 }}
-                      className="w-1.5 h-1.5 rounded-full bg-black"
-                    />
-                  ))}
-                </div>
-                <div className="w-full space-y-2">
-                  <div className="w-full h-1 bg-black/5 rounded-full overflow-hidden">
-                    <motion.div 
-                      animate={{ width: ["10%", "90%", "30%", "60%"] }}
-                      transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }}
-                      className="h-full bg-black/10"
-                    />
-                  </div>
-                  <div className="w-2/3 h-1 bg-black/5 rounded-full overflow-hidden">
-                    <motion.div 
-                      animate={{ width: ["90%", "20%", "70%", "40%"] }}
-                      transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-                      className="h-full bg-black/10"
-                    />
-                  </div>
-                </div>
-                <div className="flex gap-2">
-                   <motion.div animate={{ opacity: [0.2, 0.5, 0.2] }} transition={{ repeat: Infinity, duration: 1 }} className="w-1.5 h-1.5 rounded-full bg-[#E63946]" />
-                   <div className="w-1.5 h-1.5 rounded-full bg-black/5" />
-                   <div className="w-1.5 h-1.5 rounded-full bg-black/5" />
                 </div>
               </div>
 
               <div className="w-full max-w-4xl relative">
-                <div className="absolute -inset-4 border border-black/[0.01] rounded-[2rem] pointer-events-none" />
-                
                 <CoWorkPanel
-                   onManifestGenerated={(code, p) => {
-                     setArtifact(code);
-                     setQuery(p);
-                     setChatHistory([
-                       { role: 'user', content: p }, 
-                       { role: 'assistant', content: code, display: "Research Synthesis Complete: Verified manifest generated." }
-                     ]);
+                   onManifestGenerated={(manifestData, p) => {
+                     try {
+                       const parsed = typeof manifestData === 'string' ? JSON.parse(manifestData) : manifestData;
+                       setData(parsed);
+                       setQuery(p);
+                     } catch (e) {
+                       console.error("Failed to parse manifestation data", e);
+                     }
                    }}
                    onClose={() => navigate('/')}
                 />
               </div>
 
-              {/* Status Bar Detail */}
               <div className="mt-12 flex items-center gap-8 opacity-10">
                 <Crosshair size={12} />
                 <div className="w-8 h-px bg-black" />
@@ -247,50 +175,138 @@ export default function WebResearch() {
               </div>
             </section>
           ) : (
-            <div className={`flex w-full h-[calc(100vh-4rem)] animate-in fade-in slide-in-from-bottom-8 duration-1000 ${isSplitView ? "flex-row overflow-hidden" : "flex-col items-center p-8 overflow-auto"}`}>
-              <div className={`${isSplitView ? "w-[400px] shrink-0" : "w-full max-w-2xl mb-8"} flex flex-col ${isSplitView ? "h-full" : "min-h-[60vh]"} overflow-hidden bg-[#fbfbff] border-r border-black/[0.02]`}>
-                <div className="shrink-0 flex justify-between items-center px-8 py-4 border-b border-black/[0.02] bg-white/90 backdrop-blur-2xl">
-                  <button
-                    onClick={() => {
-                      setArtifact(null);
-                      setChatHistory([]);
-                    }}
-                    className="flex items-center gap-3 text-[9px] font-black uppercase tracking-[0.4em] text-black/20 hover:text-[#1B3FBF] transition-all group"
-                  >
-                    <ChevronLeft size={12} className="group-hover:-translate-x-1 transition-transform" /> Reset
-                  </button>
-                  <button
-                    onClick={() => setShareDialogOpen(true)}
-                    className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-black text-white text-[9px] font-black uppercase tracking-widest hover:scale-105 transition-all shadow-xl shadow-black/10"
-                  >
-                    <Share2 size={11} /> Share
-                  </button>
+            <div className="flex-1 overflow-y-auto custom-scrollbar bg-[#f8faff] p-8 md:p-12 lg:p-20">
+              <div className="max-w-7xl mx-auto space-y-20">
+                
+                {/* Header & Reset */}
+                <div className="flex justify-between items-end border-b border-black/5 pb-12">
+                   <div className="space-y-4">
+                     <button onClick={() => setData(null)} className="text-[10px] font-black uppercase tracking-[0.4em] text-black/30 hover:text-[#1B3FBF] transition-all flex items-center gap-2">
+                       <ChevronLeft size={14} /> New Research Mission
+                     </button>
+                     <h2 className="text-4xl md:text-5xl font-serif italic tracking-tight text-black leading-tight max-w-2xl">
+                       {query}
+                     </h2>
+                   </div>
+                   <div className="text-right">
+                     <span className="text-[10px] font-black uppercase tracking-[0.8em] text-black/20 block mb-2">Protocol Result</span>
+                     <div className="px-6 py-2 rounded-full border border-black/5 bg-white text-xs font-bold tracking-widest text-black/60">
+                       CRAWL_COMPLETE_V4
+                     </div>
+                   </div>
                 </div>
-                <div className="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-6">
-                  {chatHistory.map((msg, i) => (
-                    <div key={i} className={`flex w-full ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                      <div className={`max-w-[90%] rounded-2xl p-5 text-[13px] font-light leading-relaxed tracking-wide shadow-sm ${msg.role === 'user'
-                        ? 'bg-[#1B3FBF] text-white'
-                        : 'bg-white border border-black/[0.03] text-black/60'
-                        }`}>
-                        <div className="flex justify-between items-start gap-4">
-                          <div className="flex-1">{msg.display || msg.content}</div>
+
+                {/* SIDE BY SIDE COMPARISON */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-20 relative">
+                  {/* Option A */}
+                  <motion.div initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} className="space-y-12">
+                    <div className="space-y-4">
+                       <span className="text-[10px] font-black uppercase tracking-[0.4em] text-black/20">Option Alpha</span>
+                       <h3 className="text-6xl font-bold tracking-tighter text-black" style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }}>
+                         {data.optionA.name}
+                       </h3>
+                    </div>
+                    
+                    <div className="space-y-8 bg-white p-10 rounded-[3rem] shadow-2xl shadow-black/[0.02] border border-black/[0.02]">
+                       <div className="grid grid-cols-1 gap-6">
+                         {Object.entries(data.optionA.specs).map(([label, value]) => (
+                           <div key={label} className="flex justify-between items-end border-b border-black/[0.03] pb-4">
+                             <span className="text-[9px] font-black uppercase tracking-[0.2em] text-black/40">{label}</span>
+                             <span className="text-lg font-medium text-black/80">{value}</span>
+                           </div>
+                         ))}
+                       </div>
+                       
+                       <div className="pt-6 space-y-4">
+                         <span className="text-[9px] font-black uppercase tracking-[0.2em] text-black/40">Core Strengths</span>
+                         <div className="space-y-2">
+                           {data.optionA.pros.map((pro, i) => (
+                             <div key={i} className="flex items-center gap-3 text-sm text-black/60 font-light italic">
+                               <div className="w-1.5 h-1.5 rounded-full bg-green-500/40" /> {pro}
+                             </div>
+                           ))}
+                         </div>
+                       </div>
+                    </div>
+                  </motion.div>
+
+                  {/* Option B */}
+                  <motion.div initial={{ x: 20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} className="space-y-12">
+                    <div className="space-y-4">
+                       <span className="text-[10px] font-black uppercase tracking-[0.4em] text-black/20">Option Beta</span>
+                       <h3 className="text-6xl font-bold tracking-tighter text-black" style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }}>
+                         {data.optionB.name}
+                       </h3>
+                    </div>
+                    
+                    <div className="space-y-8 bg-white p-10 rounded-[3rem] shadow-2xl shadow-black/[0.02] border border-black/[0.02]">
+                       <div className="grid grid-cols-1 gap-6">
+                         {Object.entries(data.optionB.specs).map(([label, value]) => (
+                           <div key={label} className="flex justify-between items-end border-b border-black/[0.03] pb-4">
+                             <span className="text-[9px] font-black uppercase tracking-[0.2em] text-black/40">{label}</span>
+                             <span className="text-lg font-medium text-black/80">{value}</span>
+                           </div>
+                         ))}
+                       </div>
+                       
+                       <div className="pt-6 space-y-4">
+                         <span className="text-[9px] font-black uppercase tracking-[0.2em] text-black/40">Core Strengths</span>
+                         <div className="space-y-2">
+                           {data.optionB.pros.map((pro, i) => (
+                             <div key={i} className="flex items-center gap-3 text-sm text-black/60 font-light italic">
+                               <div className="w-1.5 h-1.5 rounded-full bg-green-500/40" /> {pro}
+                             </div>
+                           ))}
+                         </div>
+                       </div>
+                    </div>
+                  </motion.div>
+
+                  {/* Center VS Element */}
+                  <div className="hidden lg:flex absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 rounded-full bg-white border border-black/5 shadow-xl items-center justify-center z-10">
+                    <span className="text-2xl font-serif italic text-black/20">vs</span>
+                  </div>
+                </div>
+
+                {/* FINAL VERDICT */}
+                <motion.div initial={{ y: 40, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.4 }} className="w-full">
+                   <div className="bg-[#1B3FBF] text-white p-12 md:p-20 rounded-[4rem] relative overflow-hidden shadow-2xl shadow-blue-900/20">
+                      {/* Decorative Flare */}
+                      <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/2" />
+                      
+                      <div className="relative z-10 flex flex-col items-center text-center space-y-8">
+                        <div className="flex items-center gap-4">
+                           <div className="px-4 py-1 rounded-full bg-white/10 text-[9px] font-black uppercase tracking-[0.4em] backdrop-blur-md">Final Synthesis</div>
+                           <TrendingUp size={20} className="text-white/40" />
+                        </div>
+                        
+                        <h4 className="text-4xl md:text-6xl font-serif italic tracking-tight leading-tight max-w-4xl">
+                          {data.verdict}
+                        </h4>
+                        
+                        <div className="pt-8 flex flex-col items-center gap-4">
+                          <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40">Winner Identified</span>
+                          <div className="text-3xl font-bold tracking-widest text-[#E63946]">
+                            {data.winner === 'A' ? data.optionA.name : data.winner === 'B' ? data.optionB.name : 'Neutral Horizon'}
+                          </div>
+                          <Sparkles className="text-white animate-pulse mt-2" size={24} />
                         </div>
                       </div>
-                    </div>
-                  ))}
+                   </div>
+                </motion.div>
+
+                {/* Footer Readouts */}
+                <div className="flex flex-wrap justify-center gap-12 py-20 opacity-20 border-t border-black/5">
+                   <div className="flex items-center gap-3">
+                     <Cpu size={14} /> <span className="text-[9px] font-mono tracking-widest uppercase">SYSC_V4.0</span>
+                   </div>
+                   <div className="flex items-center gap-3">
+                     <Radio size={14} /> <span className="text-[9px] font-mono tracking-widest uppercase">UP_LINK_7</span>
+                   </div>
+                   <div className="flex items-center gap-3">
+                     <AlertCircle size={14} /> <span className="text-[9px] font-mono tracking-widest uppercase">NO_HALLUCINATION_GUARD_ON</span>
+                   </div>
                 </div>
-              </div>
-              <div className="flex-1 h-full overflow-hidden bg-white">
-                <ArtifactPanel 
-                  code={artifact} 
-                  prompt={query} 
-                  isSplitView={isSplitView} 
-                  onShare={() => setShareDialogOpen(true)} 
-                  onRefinement={(refinement) => {
-                    setQuery(refinement);
-                  }}
-                />
               </div>
             </div>
           )}
