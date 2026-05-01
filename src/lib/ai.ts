@@ -37,6 +37,7 @@ You are KREO. Deliver a very beautiful, minimal, and premium masterpiece.
 
 const SARVAM_API_KEY = import.meta.env.VITE_SARVAM_API_KEY || "sk_5oxchpsn_jrBGzGJ0eu64wBHBdxXBb4Qk";
 const SARVAM_ENDPOINT = "https://api.sarvam.ai/v1/chat/completions";
+const JINA_API_KEY = "jina_1571735a32634468b4b6258b9fcfa276X8wx9LD9fG7zOo7KVosMzfGXolqX";
 
 const NEEDS_SEARCH_REGEX = /(price|cost|today|latest|news|statistics|stats|vs|compare|rate|ranking|best|top|current|roi|bank|market|stock)/i;
 
@@ -45,30 +46,24 @@ async function fetchRealWorldContext(prompt: string, isPaidUser: boolean): Promi
 
   try {
     let searchQuery = prompt;
-    // Enhance bank-related searches for India specific data
     if (prompt.toLowerCase().includes("bank") && prompt.toLowerCase().includes("india")) {
       searchQuery = `latest ROI and savings rates of famous Indian banks 2024 2025 ${prompt}`;
     }
 
-    const res = await fetch("https://api.tavily.com/search", {
-      method: "POST",
+    const res = await fetch(`https://s.jina.ai/${encodeURIComponent(searchQuery)}`, {
+      method: "GET",
       headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        api_key: "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",
-        query: searchQuery,
-        search_depth: "advanced"
-      })
+        "Authorization": `Bearer ${JINA_API_KEY}`,
+        "Accept": "application/json"
+      }
     });
     const data = await res.json();
     
-    if (data.results && data.results.length > 0) {
-      const snippets = data.results.slice(0, 5).map((r: any) => `- ${r.content}`).join('\n');
+    if (data.data && data.data.length > 0) {
+      const snippets = data.data.slice(0, 5).map((r: any) => `- [${r.title}](${r.url}): ${r.description}`).join('\n');
       
-      let context = `\n\n[REAL WORLD LIVE CONTEXT CRAWLED FROM WEB]:\n${snippets}\nUse these facts to satisfy the user's prompt truthfully.`;
+      let context = `\n\n[REAL WORLD LIVE CONTEXT CRAWLED FROM WEB VIA JINA]:\n${snippets}\nUse these facts to satisfy the user's prompt truthfully.`;
       
-      // Enforce Rupee format for Indian context
       if (prompt.toLowerCase().includes("india") || prompt.toLowerCase().includes("bank")) {
         context += `\nCRITICAL: All financial data MUST be presented in Indian Rupees (₹). Use proper Indian numbering (Lakhs/Crores) if applicable.`;
       }
@@ -76,7 +71,7 @@ async function fetchRealWorldContext(prompt: string, isPaidUser: boolean): Promi
       return context;
     }
   } catch (e) {
-    console.warn("Tavily API search failed. Proceeding without live context.", e);
+    console.warn("Jina AI search failed. Proceeding without live context.", e);
   }
   return "";
 }
@@ -449,14 +444,18 @@ export interface CoWorkStep {
 const COWORK_PLANNER_PROMPT = `
 You are the KREO Neural Orchestrator. 
 The user is in COWORK MODE—which means they want a deep, multi-step research or strategic manifest.
-Your goal is to break the user's request into 3-5 logical steps.
+Your goal is to break the user's request into 3-6 logical steps.
+
+CRITICAL: ALWAYS START WITH AT LEAST 2 RESEARCH STEPS to ensure "Live Web Checking". 
+Queries should be specific and diverse to cover multiple angles of the user's request.
+
 Steps can be:
-- 'research': Scouring the web for live data, prices, or comparisons.
-- 'synthesize': Organizing data into a strategic framework.
+- 'research': Scouring the web for live data, prices, or comparisons. (e.g. "Search for latest iPhone 16 Pro prices in Croma, Reliance Digital and Amazon India")
+- 'synthesize': Organizing data into a strategic framework or comparison table.
 - 'manifest': Building the final editorial UI.
 
 Output ONLY a JSON array of steps:
-[{ "type": "research", "content": "Search for iPhone 16 price in India" }, ...]
+[{ "type": "research", "content": "Fetch latest interest rates from SBI and HDFC for 2025" }, { "type": "research", "content": "Analyze competitor bank rates for ICICI and Axis" }, ...]
 `;
 
 export const runCoWorkAgent = async (
@@ -514,19 +513,17 @@ export const runCoWorkAgent = async (
 
       if (step.type === 'research') {
         try {
-          const res = await fetch("https://api.tavily.com/search", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              api_key: "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",
-              query: step.query || step.content,
-              search_depth: "advanced"
-            })
+          const res = await fetch(`https://s.jina.ai/${encodeURIComponent(step.query || step.content)}`, {
+            method: "GET",
+            headers: {
+              "Authorization": `Bearer ${JINA_API_KEY}`,
+              "Accept": "application/json"
+            }
           });
           const searchData = await res.json();
-          const snippets = searchData.results?.slice(0, 4).map((r: any) => r.content).join("\n") || "No live data found.";
+          const snippets = searchData.data?.map((r: any) => `[Source: ${r.url}]\n${r.title}\n${r.content}`).join("\n\n") || "No live data found.";
           step.results = snippets;
-          accumulatedContext += `\n\n[CONTEXT FROM ${step.content}]:\n${snippets}`;
+          accumulatedContext += `\n\n### LIVE WEB CHECK (JINA AI): ${step.content}\n${snippets}`;
           step.status = 'done';
         } catch (e) {
           step.status = 'error';

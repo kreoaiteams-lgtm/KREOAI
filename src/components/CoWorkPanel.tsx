@@ -146,9 +146,18 @@ const CoWorkPanel = ({ onManifestGenerated, onClose }: CoWorkPanelProps) => {
                    <motion.div 
                      initial={{ opacity: 0 }} 
                      animate={{ opacity: 1 }}
-                     className="mt-4 p-3 bg-black/[0.02] rounded-xl text-[10px] font-light leading-relaxed text-black/40 overflow-hidden line-clamp-4"
+                     className="mt-4 space-y-3"
                    >
-                     {step.results}
+                     <div className="flex flex-wrap gap-1.5">
+                       {step.results.match(/\[Source: (https?:\/\/[^\]]+)\]/g)?.slice(0, 3).map((match, idx) => (
+                         <div key={idx} className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-blue-50 border border-blue-100 text-[8px] font-medium text-blue-600 truncate max-w-[120px]">
+                           <Globe size={8} /> {match.replace(/\[Source: (https?:\/\/)?(www\.)?|\]/g, '')}
+                         </div>
+                       ))}
+                     </div>
+                     <div className="p-3 bg-black/[0.02] rounded-xl text-[10px] font-light leading-relaxed text-black/40 overflow-hidden line-clamp-3">
+                       {step.results.replace(/\[Source: [^\]]+\]/g, '')}
+                     </div>
                    </motion.div>
                 )}
               </motion.div>
