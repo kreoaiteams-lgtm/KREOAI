@@ -20,7 +20,6 @@ import ArtifactPanel from "./ArtifactPanel";
 import CoWorkPanel from "./CoWorkPanel";
 import CloudFraming from "./CloudFraming";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { generateArtifact } from "@/lib/ai";
 import { supabase } from "@/lib/supabase";
 import { createWorker } from "tesseract.js";
 import Dither from "./Dither";

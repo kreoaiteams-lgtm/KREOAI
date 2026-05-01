@@ -118,14 +118,98 @@ export const generateArtifact = async (
       }),
     });
 
+    if (!response.ok) return getDemoFallback(prompt);
+
     const data = await response.json();
     let content = data?.choices?.[0]?.message?.content;
-    return content || "";
+    return content || getDemoFallback(prompt);
   } catch (err) {
     console.error("Sarvam generation failed:", err);
-    return "";
+    return getDemoFallback(prompt);
   }
 };
+
+/**
+ * Generate a Resident Bio from interview answers
+ */
+export const generateBio = async (answers: string[]) => {
+  if (!SARVAM_API_KEY) return "A creative force within the KREO ecosystem, dedicated to building new worlds.";
+
+  try {
+    const prompt = `Summarize these three characteristics of a KREO Resident into a single, high-end, cinematic sentence:
+    - Style: ${answers[0]}
+    - Tool/Craft: ${answers[1]}
+    - Inspiration: ${answers[2]}
+    
+    Make it feel architectural, sophisticated, and elite. A single quote without surrounding text. Max 25 words.`;
+
+    const response = await fetch(SARVAM_ENDPOINT, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${SARVAM_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: "sarvam-105b",
+        messages: [
+          { role: "system", content: "You are the KREO Neural Studio architect. You summarize creative identities into elite resident bios." },
+          { role: "user", content: prompt },
+        ],
+        max_tokens: 100,
+        temperature: 0.8,
+      }),
+    });
+
+    const data = await response.json();
+    return data.choices[0].message.content.replace(/^["']|["']$/g, '').trim();
+  } catch (err) {
+    console.error("Bio generation failed:", err);
+    return "A manifestation of pure imagination, weaving through the KREO neural net.";
+  }
+};
+
+export const narrateText = async (text: string) => {
+  if (!SARVAM_API_KEY) return;
+
+  try {
+    const response = await fetch("https://api.sarvam.ai/text-to-speech/stream", {
+        method: "POST",
+        headers: {
+            "api-subscription-key": SARVAM_API_KEY,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            inputs: [{ text: text }],
+            target_language_code: "en-IN",
+            speaker: "meera",
+            model: "bulbul:v2",
+            speech_sample_rate: 22050,
+            enable_preprocessing: true
+        })
+    });
+    
+    if (!response.ok) throw new Error();
+    const chunks = [];
+    const reader = response.body?.getReader();
+    if (!reader) return;
+    while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        chunks.push(value);
+    }
+    const blob = new Blob(chunks, { type: "audio/mpeg" });
+    const audio = new Audio(URL.createObjectURL(blob));
+    audio.play();
+  } catch (err) {
+    console.error("Narrate Failed:", err);
+  }
+};
+
+function getDemoFallback(prompt: string): string {
+  const p = prompt.toLowerCase();
+  if (p.includes("dashboard")) return `<!DOCTYPE html><html><body style="background:#020617;color:white;padding:50px;"><h1>Dashboard Preview</h1></body></html>`;
+  return `<!DOCTYPE html><html><body style="background:black;color:white;padding:50px;"><h2>Manifestation Ready: ${prompt}</h2></body></html>`;
+}
 
 /**
  * Generate Structured Comparison Data for Native UI
