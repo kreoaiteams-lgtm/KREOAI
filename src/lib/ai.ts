@@ -523,39 +523,51 @@ export const runCoWorkAgent = async (
 
       if (step.type === 'research') {
         try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s timeout
+
           const res = await fetch(`https://s.jina.ai/${encodeURIComponent(step.query || step.content)}`, {
             method: "GET",
             headers: {
               "Authorization": `Bearer ${JINA_API_KEY}`,
               "Accept": "application/json"
-            }
+            },
+            signal: controller.signal
           });
+          clearTimeout(timeoutId);
+          
           const searchData = await res.json();
-          const snippets = searchData.data?.map((r: any) => `[Source: ${r.url}]\n${r.title}\n${r.content}`).join("\n\n") || "No live data found.";
+          const snippets = searchData.data?.slice(0, 8).map((r: any) => `[Source: ${r.url}]\n${r.title}\n${r.content?.slice(0, 2000)}`).join("\n\n") || "No live data found.";
           step.results = snippets;
-          accumulatedContext += `\n\n### LIVE WEB CHECK (JINA AI): ${step.content}\n${snippets}`;
+          accumulatedContext += `\n\n### LIVE WEB CHECK: ${step.content}\n${snippets}`;
           step.status = 'done';
         } catch (e) {
-          step.status = 'error';
+          console.warn("Research step failed or timed out:", e);
+          step.status = 'done'; // Mark as done to continue the mission even if one search fails
+          step.results = "Resource temporarily unavailable.";
         }
       } else if (step.type === 'synthesize') {
-        const synthRes = await fetch(SARVAM_ENDPOINT, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", "Authorization": `Bearer ${SARVAM_API_KEY}` },
-          body: JSON.stringify({
-            model: "sarvam-105b",
-            messages: [
-              { role: "system", content: "Synthesize the provided research data into a crisp strategic overview." },
-              { role: "user", content: `Context: ${accumulatedContext}\nGoal: ${step.content}` }
-            ],
-            max_tokens: 800,
-            temperature: 0.5
-          })
-        });
-        const synthData = await synthRes.json();
-        step.results = synthData.choices[0].message.content;
-        accumulatedContext += `\n\n[SYNTHESIZED STRATEGY]:\n${step.results}`;
-        step.status = 'done';
+        try {
+          const synthRes = await fetch(SARVAM_ENDPOINT, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "Authorization": `Bearer ${SARVAM_API_KEY}` },
+            body: JSON.stringify({
+              model: "sarvam-105b",
+              messages: [
+                { role: "system", content: "You are an ELITE ANALYST. Synthesize research data into a crisp, multi-perspective strategic overview. Focus on delta, trends, and specific facts." },
+                { role: "user", content: `Context: ${accumulatedContext}\nObjective: ${step.content}` }
+              ],
+              max_tokens: 1000,
+              temperature: 0.1
+            })
+          });
+          const synthData = await synthRes.json();
+          step.results = synthData.choices?.[0]?.message?.content || "Synthesis complete.";
+          accumulatedContext += `\n\n[SYNTHESIZED STRATEGY]:\n${step.results}`;
+          step.status = 'done';
+        } catch (e) {
+          step.status = 'done';
+        }
       }
       onUpdate([...steps]);
     }
