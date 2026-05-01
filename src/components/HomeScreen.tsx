@@ -451,7 +451,6 @@ const HomeScreen = ({
   const [showUpgradePop, setShowUpgradePop] = useState(false);
   const [manifestCount, setManifestCount] = useState(0);
   const [isPro, setIsPro] = useState(localStorage.getItem('is_kreo_pro') === 'true');
-  const [isCoWorkMode, setIsCoWorkMode] = useState(false);
 
   const [uploadedFile, setUploadedFile] = useState<{ url: string, name: string, type: string, ocr?: string } | null>(() => {
     const saved = localStorage.getItem('kreo_last_upload');
@@ -1029,7 +1028,7 @@ const HomeScreen = ({
   };
 
   return (
-    <div className={`relative flex flex-col min-h-screen transition-colors duration-1000 ${isCoWorkMode ? 'bg-[#fafafa]' : 'bg-transparent'}`}>
+    <div className={`relative flex flex-col min-h-screen transition-colors duration-1000 bg-transparent`}>
       <Guide />
       {(theme === 'light' || theme === 'dark') && (
         <Dither
@@ -1072,8 +1071,8 @@ const HomeScreen = ({
             <Tooltip>
               <TooltipTrigger asChild>
                 <button
-                  onClick={() => setIsCoWorkMode(!isCoWorkMode)}
-                  className={`rounded-full p-2 transition-all ${isCoWorkMode ? "text-[#E63946] bg-[#E63946]/10" : "text-foreground/80 hover:text-foreground"}`}
+                  onClick={() => navigate('/webresearch')}
+                  className="rounded-full p-2 text-foreground/80 hover:text-[#E63946] hover:bg-[#E63946]/10 transition-all"
                 >
                   <BrainCircuit size={20} />
                 </button>
@@ -1390,19 +1389,6 @@ const HomeScreen = ({
               />
             </div>
           </div>
-        ) : isCoWorkMode && !artifact ? (
-          <section className="min-h-screen py-32 relative w-full flex items-center justify-center">
-            <CoWorkPanel
-               onManifestGenerated={(code, p) => {
-                 setArtifact(code);
-                 setQuery(p);
-                 setChatHistory([{ role: 'user', content: p }, { role: 'assistant', content: code, display: "Agent Orchestration Complete: Live manifest generated from deep research." }]);
-                 setIsArtifactActive(true);
-                 setIsCoWorkMode(false); // Turn off mode to see the result clearly
-               }}
-               onClose={() => setIsCoWorkMode(false)}
-            />
-          </section>
         ) : (
           <div className="flex flex-col items-center w-full relative">
             <section className="min-h-screen flex flex-col items-center justify-center gap-16 px-4 pb-32 relative w-full">

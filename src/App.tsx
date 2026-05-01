@@ -23,6 +23,7 @@ import CampaignPage from "./pages/CampaignPage";
 import CardPage from "./pages/CardPage";
 import Pricing from "./pages/PricingPage";
 import NeuralMouse from "@/components/NeuralMouse";
+import WebResearch from "./pages/WebResearch";
 
 import { Analytics } from "@vercel/analytics/react";
 import { LanguageProvider } from "@/context/LanguageContext";
@@ -56,6 +57,8 @@ const App = () => (
           <Route path="/build" element={<CampaignPage />} />
           <Route path="/onboarding" element={<CardPage onboarding={true} />} />
           <Route path="/card" element={<CardPage />} />
+          <Route path="/webresearch" element={<WebResearch />} />
+          <Route path="/webreasearch" element={<WebResearch />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         </LanguageProvider>
