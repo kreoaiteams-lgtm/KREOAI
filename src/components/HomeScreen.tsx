@@ -844,6 +844,12 @@ const HomeScreen = ({
       const hasThemeSpecified = /(dark|black|neon|vibrant|colorful|night)/i.test(finalQuery);
 
       let backgroundEnhancedQuery = `Manifest a ${adj} visual experience for ${finalQuery.trim()} ${phrase}. 
+        CRITICAL DESIGN SYSTEM: 
+        1. NO BRUTALIST UI. Avoid harsh borders, raw layouts, or unpolished elements.
+        2. RICH MINIMALISM: Use vast whitespace, high-fidelity editorial typography (Instrument Serif, Satoshi), and subtle micro-animations.
+        3. PREMIUM AESTHETIC: Use smooth gradients, glassmorphism (backdrop-blur), and a sophisticated color palette.
+        4. EDITORIAL FLOW: Treat every page like a high-end magazine or a premium architectural portal.
+
         CRITICAL: YOU MUST GENERATE THE LIVE, FUNCTIONAL CODE FOR THE APP UI ITSELF. 
         DO NOT generate a 'blueprint', 'documentation', 'overview', or 'code snippet' UI. 
         DO NOT include labels like "ARCHITECTURE BLUEPRINT" or "JSX SNIPPET" in the preview. 
