@@ -245,8 +245,17 @@ export const generateComparisonData = async (prompt: string, context: string) =>
 
     const data = await response.json();
     const content = data.choices[0].message.content;
-    const jsonMatch = content.match(/\{[\s\S]*\}/);
-    return JSON.parse(jsonMatch ? jsonMatch[0] : content);
+    
+    // Improved JSON extraction: find first '{' and last '}'
+    const startIndex = content.indexOf('{');
+    const endIndex = content.lastIndexOf('}');
+    
+    if (startIndex !== -1 && endIndex !== -1) {
+      const jsonStr = content.slice(startIndex, endIndex + 1);
+      return JSON.parse(jsonStr);
+    }
+    
+    return JSON.parse(content); // Fallback
   } catch (err) {
     console.error("Comparison data generation failed:", err);
     return null;
