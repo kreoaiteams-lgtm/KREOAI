@@ -483,8 +483,18 @@ export const runCoWorkAgent = async (
       })
     });
 
+    if (!planRes.ok) {
+        const errText = await planRes.text();
+        throw new Error(`Orchestration failed with status ${planRes.status}: ${errText.slice(0, 100)}`);
+    }
+
     const planData = await planRes.json();
-    let rawPlan = planData.choices[0].message.content;
+    let rawPlan = planData?.choices?.[0]?.message?.content;
+    
+    if (!rawPlan) {
+        throw new Error("Neural Orchestrator failed to generate a plan.");
+    }
+
     // Extract JSON
     const jsonMatch = rawPlan.match(/\[[\s\S]*\]/);
     const plan = JSON.parse(jsonMatch ? jsonMatch[0] : rawPlan);
@@ -557,7 +567,17 @@ export const runCoWorkAgent = async (
       onUpdate([...steps]);
 
       const finalArtifact = await generateArtifact(
-        `[COWORK AGENT MISSION COMPLETED]\nBased on this deep research context, build a stunning editorial manifest:\n${accumulatedContext}\n\nORIGINAL REQUEST: ${prompt}`,
+        `[COWORK AGENT MISSION COMPLETED]
+         Based on this deep research context, build a stunning editorial manifest.
+         
+         CRITICAL UI REQUIREMENT:
+         1. Use a TABBED INTERFACE for the final decision/comparison.
+         2. Tabs should include individual data for each option (e.g., 'Option A', 'Option B') and a 'Final Verdict' tab.
+         3. Use beautiful, minimal charts and rich editorial typography.
+         4. NO BRUTALISM. Pure, beautiful minimalism only.
+         
+         Context: ${accumulatedContext}
+         ORIGINAL REQUEST: ${prompt}`,
         [],
         undefined,
         true // CoWork always uses search-enabled context
