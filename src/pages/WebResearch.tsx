@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, Share2, Globe, Sparkles, ShieldCheck, Crosshair, Cpu, Radio, Zap, CheckCircle2, TrendingUp, AlertCircle, Info } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import CoWorkPanel from '../components/CoWorkPanel';
-import GradientOrb from '../components/mentra/GradientOrb';
-import MouseFlare from '../components/mentra/MouseFlare';
+import { GradientOrb } from '../components/mentra/GradientOrb';
+import { MouseFlare } from '../components/mentra/MouseFlare';
 
 interface ComparisonData {
   optionA: { name: string; specs: Record<string, string>; pros: string[] };
@@ -43,7 +43,7 @@ export default function WebResearch() {
             transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
             className="fixed inset-0 z-[200] bg-[#FAF7F2] flex flex-col items-center justify-center p-8 text-center"
           >
-            <GradientOrb className="opacity-40" />
+            <GradientOrb hue="peach" className="opacity-40" />
             <motion.div 
               initial={{ y: 30, opacity: 0, filter: 'blur(10px)' }}
               animate={{ y: 0, opacity: 1, filter: 'blur(0px)' }}
@@ -70,7 +70,7 @@ export default function WebResearch() {
             transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
             className="fixed inset-0 z-[200] bg-[#FAF7F2] flex flex-col items-center justify-center p-8 text-center"
           >
-            <GradientOrb className="opacity-60" />
+            <GradientOrb hue="lavender" className="opacity-60" />
             <motion.div 
               initial={{ scale: 0.9, opacity: 0, filter: 'blur(20px)' }}
               animate={{ scale: 1, opacity: 1, filter: 'blur(0px)' }}
@@ -98,8 +98,8 @@ export default function WebResearch() {
         className="flex flex-col min-h-screen relative"
       >
         <div className="fixed inset-0 pointer-events-none overflow-hidden">
-          <GradientOrb className="top-[-20%] left-[-10%] opacity-20 scale-150" />
-          <GradientOrb className="bottom-[-20%] right-[-10%] opacity-20 scale-150 rotate-180" />
+          <GradientOrb hue="peach" className="top-[-20%] left-[-10%] opacity-20 scale-150" />
+          <GradientOrb hue="lavender" className="bottom-[-20%] right-[-10%] opacity-20 scale-150 rotate-180" />
         </div>
 
         <header className="fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-10 py-6 bg-[#FAF7F2]/60 backdrop-blur-3xl border-b border-[#2C2415]/5">
