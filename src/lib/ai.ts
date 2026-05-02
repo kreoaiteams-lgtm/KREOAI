@@ -244,18 +244,32 @@ export const generateComparisonData = async (prompt: string, context: string) =>
     });
 
     const data = await response.json();
-    const content = data.choices[0].message.content;
+    const content = data?.choices?.[0]?.message?.content;
     
+    if (!content) {
+      console.warn("AI returned empty content for comparison data.");
+      return null;
+    }
+
     // Improved JSON extraction: find first '{' and last '}'
     const startIndex = content.indexOf('{');
     const endIndex = content.lastIndexOf('}');
     
     if (startIndex !== -1 && endIndex !== -1) {
-      const jsonStr = content.slice(startIndex, endIndex + 1);
-      return JSON.parse(jsonStr);
+      try {
+        const jsonStr = content.slice(startIndex, endIndex + 1);
+        return JSON.parse(jsonStr);
+      } catch (e) {
+        console.error("JSON parse failed for extracted string", e);
+      }
     }
     
-    return JSON.parse(content); // Fallback
+    try {
+      return JSON.parse(content);
+    } catch (e) {
+      console.error("Final fallback JSON parse failed", e);
+      return null;
+    }
   } catch (err) {
     console.error("Comparison data generation failed:", err);
     return null;

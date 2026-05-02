@@ -59,7 +59,7 @@ const CoWorkPanel = ({ onManifestGenerated, onClose }: CoWorkPanelProps) => {
               }}
             >
               <div className="absolute inset-0 bg-black/40 pointer-events-none" />
-              <h1 className="text-8xl text-white leading-none mb-4 brand-font relative z-10">MENTRA</h1>
+              <h1 className="text-9xl md:text-[12rem] text-white leading-none mb-4 brand-font relative z-10">MENTRA</h1>
               <div className="flex gap-2 relative z-10">
                  <motion.div animate={{ scale: [1, 1.5, 1], opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.5, delay: 0 }} className="w-2 h-2 rounded-full bg-white/20" />
                  <motion.div animate={{ scale: [1, 1.5, 1], opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.5, delay: 0.2 }} className="w-2 h-2 rounded-full bg-white/40" />
@@ -74,9 +74,9 @@ const CoWorkPanel = ({ onManifestGenerated, onClose }: CoWorkPanelProps) => {
             transition={{ duration: 0.8 }}
             className="w-full flex flex-col items-center space-y-12"
           >
-            {/* Branding */}
+            {/* Branding - Bigger Mentra */}
             <AnimatePresence>
-                  <h1 className="text-7xl text-white leading-none mb-1 brand-font">MENTRA</h1>
+                  <h1 className="text-8xl md:text-9xl text-white leading-none mb-1 brand-font">MENTRA</h1>
             </AnimatePresence>
 
             {/* Input Area */}
@@ -113,10 +113,10 @@ const CoWorkPanel = ({ onManifestGenerated, onClose }: CoWorkPanelProps) => {
                   e.preventDefault();
                   handleStart();
                 }}
-                className="flex items-center rounded-[2rem] px-8 py-5 transition-all gap-4 glass-card border border-white/10 shadow-2xl relative z-10"
+                className="flex items-center rounded-[2.5rem] px-10 py-6 transition-all gap-4 glass-card border border-white/10 shadow-2xl relative z-10"
               >
                 <div className="flex items-center gap-2 pr-4 border-r border-white/5">
-                  <Globe size={20} className="text-white/40" />
+                  <Globe size={24} className="text-white/40" />
                 </div>
                 <input 
                   type="text" 
@@ -124,14 +124,14 @@ const CoWorkPanel = ({ onManifestGenerated, onClose }: CoWorkPanelProps) => {
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   disabled={isRunning}
-                  className="flex-1 bg-transparent text-xl outline-none font-sans text-white placeholder:text-white/20 font-light"
+                  className="flex-1 bg-transparent text-xl md:text-2xl outline-none font-sans text-white placeholder:text-white/20 font-bold"
                 />
                 <button 
                   type="submit"
                   disabled={isRunning || !query.trim()}
-                  className="p-3 bg-white text-black rounded-2xl shadow-xl hover:scale-105 transition-all disabled:opacity-20 flex items-center justify-center min-w-[50px]"
+                  className="p-4 bg-white text-black rounded-[1.5rem] shadow-xl hover:scale-105 transition-all disabled:opacity-20 flex items-center justify-center min-w-[60px]"
                 >
-                  {isRunning ? <Loader2 className="animate-spin" size={20} /> : <Search size={20} />}
+                  {isRunning ? <Loader2 className="animate-spin" size={24} /> : <Search size={24} />}
                 </button>
               </form>
             </div>
@@ -209,30 +209,8 @@ const CoWorkPanel = ({ onManifestGenerated, onClose }: CoWorkPanelProps) => {
                 </motion.div>
               )}
             </AnimatePresence>
-
-            {!isRunning && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl pt-6">
-                {[
-                  "Market research on premium EV bikes in India 2025",
-                  "Price comparison: MacBook Pro M4 vs Surface Pro 11",
-                  "SWOT analysis of Indian quick-commerce sector",
-                  "Latest savings rates of ICICI vs HDFC vs SBI"
-                ].map((prompt, i) => (
-                  <button 
-                    key={i} 
-                    onClick={() => { setQuery(prompt); handleStart(prompt); }}
-                    className="p-6 rounded-[1.8rem] border border-white/5 bg-white/5 hover:bg-white/10 transition-all text-left group"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-white/20 group-hover:bg-white/10 group-hover:text-white transition-all">
-                        <Globe size={14} />
-                      </div>
-                      <span className="text-xs font-serif italic text-white/40 group-hover:text-white/80">{prompt}</span>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            )}
+            
+            {/* Suggestions Removed as requested */}
           </motion.div>
         )}
       </AnimatePresence>
