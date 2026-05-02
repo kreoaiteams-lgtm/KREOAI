@@ -41,20 +41,20 @@ export default function RandomMentraNotification({ label = "visit mentra", force
           className="fixed bottom-10 right-10 z-[2000] cursor-pointer group"
         >
           <div 
-            className="px-10 py-5 rounded-[1.5rem] border-2 border-white shadow-2xl relative overflow-hidden flex items-center justify-center min-w-[220px]"
+            className="px-12 py-8 rounded-[2rem] border-2 border-white shadow-2xl relative overflow-hidden flex items-center justify-center min-w-[300px]"
             style={{
-              backgroundImage: `url("/Screenshot 2026-05-02 at 2.44.05 PM.png")`,
+              backgroundImage: `url("/mentra-bg.png")`,
               backgroundSize: 'cover',
               backgroundPosition: 'center'
             }}
           >
-            <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors" />
-            <span className="relative z-10 text-white text-[10px] font-bold tracking-[0.5em] uppercase brand-font whitespace-nowrap">
+            <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors" />
+            <span className="relative z-10 text-white text-2xl md:text-3xl font-bold tracking-[0.5em] uppercase brand-font whitespace-nowrap pt-2">
               {label}
             </span>
-            <div className="absolute top-2 right-4 flex gap-1 opacity-40">
-               <div className="w-1 h-1 rounded-full bg-white animate-pulse" />
-               <div className="w-1 h-1 rounded-full bg-white animate-pulse delay-75" />
+            <div className="absolute top-4 right-6 flex gap-1.5 opacity-60">
+               <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+               <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse delay-75" />
             </div>
           </div>
         </motion.div>

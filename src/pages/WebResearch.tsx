@@ -31,13 +31,13 @@ export default function WebResearch() {
     <div 
       className="flex flex-col min-h-screen text-white overflow-hidden font-satoshi selection:bg-white/10 relative"
       style={{
-        backgroundImage: `url("/Screenshot 2026-05-02 at 2.44.05 PM.png")`,
+        backgroundImage: `url("/mentra-bg.png")`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed'
       }}
     >
-      <div className="absolute inset-0 bg-black/30 pointer-events-none" />
+      <div className="absolute inset-0 bg-black/10 pointer-events-none" />
       <div className="grain" />
       
       <AnimatePresence mode="wait">
@@ -75,7 +75,7 @@ export default function WebResearch() {
         animate={{ opacity: splashPhase === 'complete' ? 1 : 0 }}
         className="flex flex-col min-h-screen relative z-10"
       >
-        <header className="fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-8 py-4 bg-black/10 backdrop-blur-md border-b border-white/5">
+        <header className="fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-8 py-4 bg-black/5 backdrop-blur-md border-b border-white/5">
           <div className="flex items-center gap-6">
             <button
               onClick={() => navigate('/')}
@@ -98,10 +98,7 @@ export default function WebResearch() {
           {!data ? (
             <section className="flex-1 flex flex-col items-center justify-center p-8 text-center">
               <div className="w-full max-w-3xl space-y-12 mb-12">
-                <h3 className="text-5xl md:text-8xl font-normal tracking-[-0.04em] text-white brand-font">
-                  MENTRA
-                </h3>
-                
+                {/* Removed redundant MENTRA title as it is already in CoWorkPanel */}
                 <CoWorkPanel
                    onManifestGenerated={(manifestData, p) => {
                      try {
@@ -202,7 +199,6 @@ export default function WebResearch() {
             </div>
           )}
 
-          {/* Random Mentra Notification */}
           <RandomMentraNotification label="visit mentra" />
         </main>
       </motion.div>

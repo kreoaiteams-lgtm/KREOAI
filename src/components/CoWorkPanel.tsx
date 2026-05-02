@@ -51,10 +51,16 @@ const CoWorkPanel = ({ onManifestGenerated, onClose }: CoWorkPanelProps) => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0, filter: 'blur(10px)' }}
               transition={{ duration: 0.8 }}
-              className="absolute inset-0 flex flex-col items-center justify-center z-50 bg-black/95 rounded-[3rem]"
+              className="absolute inset-0 flex flex-col items-center justify-center z-50 bg-black/90 rounded-[3rem] overflow-hidden"
+              style={{
+                backgroundImage: `url("/mentra-bg.png")`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center'
+              }}
             >
-              <h1 className="text-8xl text-white leading-none mb-4 brand-font">MENTRA</h1>
-              <div className="flex gap-2">
+              <div className="absolute inset-0 bg-black/40 pointer-events-none" />
+              <h1 className="text-8xl text-white leading-none mb-4 brand-font relative z-10">MENTRA</h1>
+              <div className="flex gap-2 relative z-10">
                  <motion.div animate={{ scale: [1, 1.5, 1], opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.5, delay: 0 }} className="w-2 h-2 rounded-full bg-white/20" />
                  <motion.div animate={{ scale: [1, 1.5, 1], opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.5, delay: 0.2 }} className="w-2 h-2 rounded-full bg-white/40" />
                  <motion.div animate={{ scale: [1, 1.5, 1], opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.5, delay: 0.4 }} className="w-2 h-2 rounded-full bg-white/20" />
