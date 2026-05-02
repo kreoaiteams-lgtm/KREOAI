@@ -35,7 +35,7 @@ You are KREO. Deliver a very beautiful, minimal, and TRUTHFUL masterpiece.
 </frontend_aesthetics>
 `;
 
-const SARVAM_API_KEY = import.meta.env.VITE_SARVAM_API_KEY || "sk_5oxchpsn_jrBGzGJ0eu64wBHBdxXBb4Qk";
+const SARVAM_API_KEY = import.meta.env.VITE_SARVAM_API_KEY || "sk_re6xoj0j_hWoXVGn7z2ah9nsizyJmKmJY";
 const SARVAM_ENDPOINT = "https://api.sarvam.ai/v1/chat/completions";
 const JINA_API_KEY = "jina_1571735a32634468b4b6258b9fcfa276X8wx9LD9fG7zOo7KVosMzfGXolqX";
 
@@ -243,6 +243,12 @@ export const generateComparisonData = async (prompt: string, context: string) =>
       })
     });
 
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      console.error("Sarvam API Error (400?):", response.status, errorData);
+      return null;
+    }
+
     const data = await response.json();
     const content = data?.choices?.[0]?.message?.content;
     
@@ -427,17 +433,28 @@ export const runCoWorkAgent = async (
       manifestStep.status = 'running';
       onUpdate([...steps]);
 
-      const finalData = await generateComparisonData(prompt, accumulatedContext);
+      // FALLBACK: If no context was accumulated, use the prompt itself as context
+      const finalContext = accumulatedContext.trim().length > 50 
+        ? accumulatedContext 
+        : `Generate based on internal knowledge for: ${prompt}`;
 
-      manifestStep.status = 'done';
-      manifestStep.results = JSON.stringify(finalData);
+      const finalData = await generateComparisonData(prompt, finalContext);
+
+      if (!finalData) {
+        manifestStep.status = 'error';
+        manifestStep.content = "Neural synthesis failed. Please try a different query.";
+      } else {
+        manifestStep.status = 'done';
+        manifestStep.results = JSON.stringify(finalData);
+      }
+      
       onUpdate([...steps]);
       return finalData;
     }
   } catch (error) {
-    console.error("CoWork Agent Failed:", error);
+    console.error("CoWork Agent Failed Core Exception:", error);
     steps.forEach(s => { if (s.status === 'running') s.status = 'error'; });
     onUpdate([...steps]);
-    throw error;
+    return null; // Return null instead of throwing to prevent UI crash
   }
 };
