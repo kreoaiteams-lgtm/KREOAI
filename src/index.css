@@ -27,66 +27,55 @@
   :root {
     --font-sans: 'Satoshi', system-ui, sans-serif;
     --font-serif: 'Instrument Serif', Georgia, serif;
-    --font-brand: 'Glassure', 'Instrument Serif', serif;
 
-    /* Mentra palette mapped into shadcn semantic tokens (HSL) */
-    --background: 38 47% 97%;            /* #FAF7F2 */
-    --foreground: 36 36% 13%;            /* #2C2415 */
+    /* RESTORED COBALT THEME FOR MAIN APP */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 0%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 0%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 0%;
+    --primary: 227 75% 43%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 0%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
+    --accent: 0 0% 96%;
+    --accent-foreground: 0 0% 0%;
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --ring: 227 75% 43%;
+    --radius: 1rem;
 
-    --card: 38 47% 97%;
-    --card-foreground: 36 36% 13%;
-
-    --popover: 38 47% 97%;
-    --popover-foreground: 36 36% 13%;
-
-    --primary: 36 36% 13%;
-    --primary-foreground: 38 47% 97%;
-
-    --secondary: 36 32% 93%;             /* #F4F0E8 */
-    --secondary-foreground: 36 36% 13%;
-
-    --muted: 36 32% 93%;
-    --muted-foreground: 31 19% 47%;      /* #8C7B62 */
-
-    --accent: 36 32% 93%;
-    --accent-foreground: 36 36% 13%;
-
-    --destructive: 8 60% 55%;
-    --destructive-foreground: 38 47% 97%;
-
-    --border: 33 32% 61% / 0.2;
-    --input: 33 32% 61% / 0.1;
-    --ring: 246 60% 80%;
-
-    --radius: 1.5rem;
-
-    /* Mentra raw tokens */
-    --m-bg: #FAF7F2;
-    --m-bg-2: #F4F0E8;
-    --m-text: #2C2415;
-    --m-text-2: #8C7B62;
-    --m-text-3: #B8A898;
-    
     --mx: 50%;
     --my: 50%;
-
-    /* Glass Vars */
-    --glass-blur: 24px;
   }
 
   .dark {
-    --background: 36 36% 13%;
-    --foreground: 38 47% 97%;
-    --border: 33 32% 61% / 0.3;
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --border: 217.2 32.6% 17.5%;
+  }
+
+  /* SCOPED MENTRA THEME */
+  .mentra-theme {
+    --background: 240 10% 4%;            /* Deep Black */
+    --foreground: 0 0% 100%;             /* Pure White */
+    --card: 240 10% 7%;
+    --card-foreground: 0 0% 100%;
+    --primary: 0 0% 100%;
+    --primary-foreground: 240 10% 4%;
+    --border: 255 255 255 / 0.1;
+    --font-brand: 'Glassure', 'Instrument Serif', serif;
   }
 
   * {
     @apply border-border;
-  }
-
-  /* Hide default cursor globally — custom dot+bloom takes over */
-  *, *::before, *::after {
-    cursor: none !important;
   }
 
   body {
@@ -94,66 +83,38 @@
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    overflow-x: hidden;
   }
 }
 
 @layer components {
   .brand-font {
-    font-family: var(--font-brand);
+    font-family: 'Glassure', 'Instrument Serif', serif;
     text-transform: uppercase;
     letter-spacing: 0.1em;
   }
 
+  /* Glass utilities adapt to the theme */
   .glass {
-    background: rgba(255, 255, 255, 0.4);
-    -webkit-backdrop-filter: blur(40px) saturate(2);
+    background: rgba(255, 255, 255, 0.03);
     backdrop-filter: blur(40px) saturate(2);
-    border: 1px solid rgba(255, 255, 255, 0.95);
-    border-bottom-color: rgba(180, 158, 130, 0.12);
-    border-right-color: rgba(180, 158, 130, 0.12);
-    box-shadow: 0 12px 64px rgba(180, 145, 100, 0.08), inset 0 1px 0 rgba(255, 255, 255, 1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
   }
 
   .glass-card {
-    background: rgba(255, 255, 255, 0.35);
-    -webkit-backdrop-filter: blur(28px) saturate(1.6);
-    backdrop-filter: blur(28px) saturate(1.6);
-    border: 1px solid rgba(255, 255, 255, 0.7);
-    border-bottom-color: rgba(180, 158, 130, 0.08);
-    border-right-color: rgba(180, 158, 130, 0.08);
-    box-shadow: 0 24px 96px rgba(180, 145, 100, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.85);
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(30px) saturate(1.8);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 30px 100px rgba(0,0,0,0.4);
     transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
     border-radius: 2.5rem;
-    overflow: hidden;
-  }
-
-  .glass-card:hover {
-    background: rgba(255, 255, 255, 0.45);
-    box-shadow: 0 32px 100px rgba(180, 145, 100, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.95);
-    transform: translateY(-8px) scale(1.015);
   }
 
   .glass-verdict {
-    background: rgba(255, 255, 255, 0.88);
-    -webkit-backdrop-filter: blur(40px) saturate(1.6);
-    backdrop-filter: blur(40px) saturate(1.6);
-    border: 1px solid rgba(255, 255, 255, 0.95);
-    border-bottom-color: rgba(180, 158, 130, 0.2);
-    border-right-color: rgba(180, 158, 130, 0.2);
-    box-shadow: 0 24px 120px rgba(180, 145, 100, 0.15), inset 0 1px 0 rgba(255, 255, 255, 1);
-  }
-
-  .glass-panel {
-    backdrop-filter: blur(var(--glass-blur));
-    -webkit-backdrop-filter: blur(var(--glass-blur));
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-  }
-
-  .font-serif-m {
-    font-family: 'Instrument Serif', ui-serif, Georgia, serif;
-    font-weight: 400;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(50px) saturate(2);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 40px 150px rgba(0,0,0,0.5);
   }
 }
 
@@ -164,7 +125,7 @@
     width: 300%;
     height: 300%;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-    opacity: 0.05;
+    opacity: 0.03;
     pointer-events: none;
     z-index: 100;
     animation: grain 8s steps(10) infinite;
@@ -181,14 +142,5 @@
     70% { transform: translate(0%, 15%); }
     80% { transform: translate(3%, 35%); }
     90% { transform: translate(-10%, 10%); }
-  }
-
-  .animate-float-slow {
-    animation: float 8s ease-in-out infinite;
-  }
-
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-20px); }
   }
 }
