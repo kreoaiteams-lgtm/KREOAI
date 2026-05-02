@@ -11,6 +11,18 @@ interface ComparisonData {
   winner: string;
 }
 
+const MentraNotification = ({ label, delay = 0 }: { label: string; delay?: number }) => (
+  <motion.div
+    initial={{ x: 100, opacity: 0 }}
+    animate={{ x: 0, opacity: 1 }}
+    transition={{ delay, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+    className="mentra-notification px-6 py-3 rounded-2xl flex items-center gap-4 text-white group"
+  >
+    <div className="w-2 h-2 rounded-full bg-white animate-pulse" />
+    <span className="text-[10px] font-bold tracking-[0.3em] uppercase">{label}</span>
+  </motion.div>
+);
+
 export default function WebResearch() {
   const navigate = useNavigate();
   const [data, setData] = useState<ComparisonData | null>(null);
@@ -65,8 +77,8 @@ export default function WebResearch() {
         animate={{ opacity: splashPhase === 'complete' ? 1 : 0 }}
         className="flex flex-col min-h-screen relative z-10"
       >
-        {/* Minimal Compact Header */}
-        <header className="fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-8 py-4 bg-black/20 backdrop-blur-md border-b border-white/5">
+        {/* Minimal Header */}
+        <header className="fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-8 py-4 bg-black/10 backdrop-blur-md border-b border-white/5">
           <div className="flex items-center gap-6">
             <button
               onClick={() => navigate('/')}
@@ -85,11 +97,11 @@ export default function WebResearch() {
           </div>
         </header>
 
-        <main className="flex-1 flex flex-col pt-20">
+        <main className="flex-1 flex flex-col pt-20 relative">
           {!data ? (
             <section className="flex-1 flex flex-col items-center justify-center p-8 text-center">
               <div className="w-full max-w-3xl space-y-12 mb-12">
-                <h3 className="text-4xl md:text-6xl font-normal tracking-[-0.04em] text-white brand-font">
+                <h3 className="text-5xl md:text-8xl font-normal tracking-[-0.04em] text-white brand-font">
                   MENTRA
                 </h3>
                 
@@ -111,21 +123,20 @@ export default function WebResearch() {
             <div className="flex-1 overflow-y-auto p-6 md:p-12 lg:p-20 text-center">
               <div className="max-w-5xl mx-auto space-y-24">
                 
-                {/* Minimal Header Readout */}
                 <div className="flex flex-col items-center space-y-8 border-b border-white/5 pb-16">
                   <button onClick={() => setData(null)} className="text-[9px] font-bold uppercase tracking-[0.4em] text-white/30 hover:text-white transition-all">
-                    New Analysis
+                    New Intelligence Mission
                   </button>
                   <h2 className="text-5xl md:text-7xl font-serif italic tracking-tighter text-white leading-tight max-w-3xl mx-auto">
                     {query}
                   </h2>
                 </div>
 
-                {/* SIDE BY SIDE COMPARISON - MINIMAL */}
+                {/* COMPARISON */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 relative items-stretch">
                   {/* Option A */}
                   <div className="flex flex-col items-center space-y-8">
-                    <h3 className="text-5xl font-normal tracking-[-0.04em] text-white brand-font">
+                    <h3 className="text-5xl font-normal tracking-[-0.04em] text-white brand-font uppercase">
                       {data.optionA.name}
                     </h3>
                     
@@ -154,7 +165,7 @@ export default function WebResearch() {
 
                   {/* Option B */}
                   <div className="flex flex-col items-center space-y-8">
-                    <h3 className="text-5xl font-normal tracking-[-0.04em] text-white brand-font">
+                    <h3 className="text-5xl font-normal tracking-[-0.04em] text-white brand-font uppercase">
                       {data.optionB.name}
                     </h3>
                     
@@ -177,19 +188,19 @@ export default function WebResearch() {
                   </div>
                 </div>
 
-                {/* MINIMAL VERDICT */}
+                {/* VERDICT */}
                 <div className="w-full">
                    <div className="glass-card p-12 md:p-24 rounded-[3rem] relative overflow-hidden border border-white/10">
                       <div className="relative z-10 flex flex-col items-center text-center space-y-12">
-                        <span className="text-[10px] font-bold uppercase tracking-[0.5em] text-white/20">Synthesis</span>
+                        <span className="text-[10px] font-bold uppercase tracking-[0.5em] text-white/20">Analysis Conclusion</span>
                         
                         <h4 className="text-4xl md:text-6xl font-serif italic tracking-tight leading-tight text-white max-w-4xl mx-auto">
                           {data.verdict}
                         </h4>
                         
                         <div className="pt-8 flex flex-col items-center gap-4">
-                          <span className="text-[9px] font-bold uppercase tracking-[0.4em] text-white/30">Recommendation</span>
-                          <div className="text-4xl md:text-5xl font-normal tracking-[-0.04em] text-white brand-font">
+                          <span className="text-[9px] font-bold uppercase tracking-[0.4em] text-white/30">Primary Recommendation</span>
+                          <div className="text-4xl md:text-5xl font-normal tracking-[-0.04em] text-white brand-font uppercase">
                             {data.winner === 'A' ? data.optionA.name : data.winner === 'B' ? data.optionB.name : 'Neutral'}
                           </div>
                         </div>
@@ -198,12 +209,19 @@ export default function WebResearch() {
                 </div>
 
                 <footer className="py-16 opacity-10 flex justify-center gap-12 text-[9px] font-bold tracking-[0.3em] uppercase">
-                   <span>Secure_Link</span>
-                   <span>Synth_Result_V4.2</span>
+                   <span>Secure_Manifest</span>
+                   <span>Synthesis_V4.2</span>
                 </footer>
               </div>
             </div>
           )}
+
+          {/* Bottom Right Notification Stack */}
+          <div className="fixed bottom-8 right-8 z-[150] flex flex-col gap-3">
+             <MentraNotification label="mentra_active" delay={1.5} />
+             <MentraNotification label="neural_link_established" delay={1.8} />
+             <MentraNotification label="truth_protocol_engaged" delay={2.1} />
+          </div>
         </main>
       </motion.div>
     </div>

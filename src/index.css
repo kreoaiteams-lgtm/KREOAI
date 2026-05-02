@@ -31,6 +31,9 @@
 
     /* ROYAL COBALT IDENTITY */
     --background: 227 75% 43%;
+    --accent: 45 100% 60%;           /* Yellow accent #FFB800 */
+    --yellow-accent: 45 100% 60%;
+    --accent-foreground: 227 80% 15%;
     --foreground: 0 0% 100%;
     
     --card: 0 0% 100% / 0.05;
@@ -72,15 +75,23 @@
     border-radius: 2rem;
   }
   
-  /* MENTRA PERSISTENT MESH - CSS ONLY FOR PERFORMANCE */
+  /* MENTRA VIBRANT MESH - V2 HIGH FIDELITY */
   .mentra-mesh {
     background-color: #050505;
     background-image: 
-      radial-gradient(circle at 10% 20%, rgba(255, 0, 122, 0.15) 0%, transparent 40%),
-      radial-gradient(circle at 90% 80%, rgba(138, 43, 226, 0.15) 0%, transparent 40%),
-      radial-gradient(circle at 50% 50%, rgba(255, 69, 0, 0.1) 0%, transparent 50%),
-      radial-gradient(circle at 80% 10%, rgba(199, 21, 133, 0.15) 0%, transparent 40%);
+      radial-gradient(circle at 0% 0%, #FF007A 0%, transparent 45%),
+      radial-gradient(circle at 100% 0%, #8A2BE2 0%, transparent 45%),
+      radial-gradient(circle at 100% 100%, #FF4500 0%, transparent 45%),
+      radial-gradient(circle at 0% 100%, #C71585 0%, transparent 45%),
+      linear-gradient(135deg, #1B3FBF 0%, #050505 100%);
     background-attachment: fixed;
+  }
+
+  .mentra-notification {
+    background: #FF007A;
+    background: radial-gradient(circle at top left, #FF007A 0%, #8A2BE2 100%);
+    border: 2px solid white;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
   }
 }
 
