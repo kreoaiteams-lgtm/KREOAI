@@ -18,6 +18,7 @@ import IdentityScreen from "./IdentityScreen";
 import KreoLogo from "./KreoLogo";
 import ArtifactPanel from "./ArtifactPanel";
 import CoWorkPanel from "./CoWorkPanel";
+import RandomMentraNotification from "./mentra/RandomNotification";
 import CloudFraming from "./CloudFraming";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { supabase } from "@/lib/supabase";
@@ -1657,6 +1658,7 @@ const HomeScreen = ({
           </motion.div>
         </div>
       )}
+      <RandomMentraNotification />
     </div>
   );
 };
