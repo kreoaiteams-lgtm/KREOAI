@@ -63,16 +63,16 @@ async function fetchRealWorldContext(prompt: string, isPaidUser: boolean): Promi
     });
     clearTimeout(timeoutId);
     const data = await res.json();
-    
+
     if (data.data && data.data.length > 0) {
       const snippets = data.data.slice(0, 5).map((r: any) => `- [${r.title}](${r.url}): ${r.description}`).join('\n');
-      
+
       let context = `\n\n[REAL WORLD LIVE CONTEXT CRAWLED FROM WEB VIA JINA]:\n${snippets}\nUse these facts to satisfy the user's prompt truthfully.`;
-      
+
       if (prompt.toLowerCase().includes("india") || prompt.toLowerCase().includes("bank")) {
         context += `\nCRITICAL: All financial data MUST be presented in Indian Rupees (₹). Use proper Indian numbering (Lakhs/Crores) if applicable.`;
       }
-      
+
       return context;
     }
   } catch (e) {
@@ -82,9 +82,9 @@ async function fetchRealWorldContext(prompt: string, isPaidUser: boolean): Promi
 }
 
 export const generateArtifact = async (
-  prompt: string, 
-  chatHistory: {role: string, content: string}[] = [], 
-  imageUrl?: string, 
+  prompt: string,
+  chatHistory: { role: string, content: string }[] = [],
+  imageUrl?: string,
   isPaidUser: boolean = false,
   brandKitRule: string = "",
   styleMimicRule: string = ""
@@ -188,29 +188,29 @@ export const narrateText = async (text: string) => {
 
   try {
     const response = await fetch("https://api.sarvam.ai/text-to-speech/stream", {
-        method: "POST",
-        headers: {
-            "api-subscription-key": SARVAM_API_KEY,
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            inputs: [{ text: text }],
-            target_language_code: "en-IN",
-            speaker: "meera",
-            model: "bulbul:v2",
-            speech_sample_rate: 22050,
-            enable_preprocessing: true
-        })
+      method: "POST",
+      headers: {
+        "api-subscription-key": SARVAM_API_KEY,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        inputs: [{ text: text }],
+        target_language_code: "en-IN",
+        speaker: "meera",
+        model: "bulbul:v2",
+        speech_sample_rate: 22050,
+        enable_preprocessing: true
+      })
     });
-    
+
     if (!response.ok) throw new Error();
     const chunks = [];
     const reader = response.body?.getReader();
     if (!reader) return;
     while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        chunks.push(value);
+      const { done, value } = await reader.read();
+      if (done) break;
+      chunks.push(value);
     }
     const blob = new Blob(chunks, { type: "audio/mpeg" });
     const audio = new Audio(URL.createObjectURL(blob));
@@ -241,8 +241,8 @@ export const generateComparisonData = async (prompt: string, context: string) =>
       body: JSON.stringify({
         model: "sarvam-105b",
         messages: [
-          { 
-            role: "system", 
+          {
+            role: "system",
             content: `You are a TECHNICAL DATA ARCHITECT. 
                      Extract a structured comparison between TWO items from the provided research context. 
                      Return ONLY a JSON object. NO MARKDOWN. NO CHAT.
@@ -253,7 +253,7 @@ export const generateComparisonData = async (prompt: string, context: string) =>
                        "optionB": { "name": string, "specs": { "Price": string, "Range": string, "Battery": string, "Performance": string, "Pros": string[] } },
                        "verdict": string,
                        "winner": "A" | "B" | "Tie"
-                     }` 
+                     }`
           },
           { role: "user", content: `Context: ${context}\nObjective: ${prompt}` }
         ],
@@ -271,7 +271,7 @@ export const generateComparisonData = async (prompt: string, context: string) =>
 
     const data = await response.json();
     const content = data?.choices?.[0]?.message?.content;
-    
+
     if (!content) {
       console.warn("AI returned empty content for comparison data.");
       return null;
@@ -280,7 +280,7 @@ export const generateComparisonData = async (prompt: string, context: string) =>
     // Improved JSON extraction: find first '{' and last '}'
     const startIndex = content.indexOf('{');
     const endIndex = content.lastIndexOf('}');
-    
+
     if (startIndex !== -1 && endIndex !== -1) {
       try {
         const jsonStr = content.slice(startIndex, endIndex + 1);
@@ -289,7 +289,7 @@ export const generateComparisonData = async (prompt: string, context: string) =>
         console.error("JSON parse failed for extracted string", e);
       }
     }
-    
+
     try {
       return JSON.parse(content);
     } catch (e) {
@@ -303,7 +303,7 @@ export const generateComparisonData = async (prompt: string, context: string) =>
 };
 
 /**
- * COWORK AGENT LOGIC
+ * COWORK AGENT LOGI
  */
 
 export interface CoWorkStep {
@@ -375,7 +375,7 @@ export const runCoWorkAgent = async (
     }
 
     if (!Array.isArray(plan) || plan.length === 0) {
-       plan = [{ type: "research", content: `Direct research for: ${prompt}` }];
+      plan = [{ type: "research", content: `Direct research for: ${prompt}` }];
     }
 
     steps = [
@@ -411,7 +411,7 @@ export const runCoWorkAgent = async (
             signal: controller.signal
           });
           clearTimeout(timeoutId);
-          
+
           const searchData = await res.json();
           const snippets = searchData.data?.slice(0, 8).map((r: any) => `[Source: ${r.url}]\n${r.title}\n${r.content?.slice(0, 2000)}`).join("\n\n") || "No live data found.";
           step.results = snippets;
@@ -459,8 +459,8 @@ export const runCoWorkAgent = async (
       onUpdate([...steps]);
 
       // FALLBACK: If no context was accumulated, use the prompt itself as context
-      const finalContext = accumulatedContext.trim().length > 50 
-        ? accumulatedContext 
+      const finalContext = accumulatedContext.trim().length > 50
+        ? accumulatedContext
         : `Generate based on internal knowledge for: ${prompt}`;
 
       const finalData = await generateComparisonData(prompt, finalContext);
@@ -472,7 +472,7 @@ export const runCoWorkAgent = async (
         manifestStep.status = 'done';
         manifestStep.results = JSON.stringify(finalData);
       }
-      
+
       onUpdate([...steps]);
       return finalData;
     }
