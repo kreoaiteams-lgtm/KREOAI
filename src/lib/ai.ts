@@ -221,9 +221,58 @@ export const narrateText = async (text: string) => {
 };
 
 function getDemoFallback(prompt: string): string {
-  const p = prompt.toLowerCase();
-  if (p.includes("dashboard")) return `<!DOCTYPE html><html><body style="background:#020617;color:white;padding:50px;"><h1>Dashboard Preview</h1></body></html>`;
-  return `<!DOCTYPE html><html><body style="background:black;color:white;padding:50px;"><h2>Manifestation Ready: ${prompt}</h2></body></html>`;
+  // Extract only the user's core intent if it's an enhanced query
+  const cleanPrompt = prompt.split('\n')[0].slice(0, 100);
+  
+  return `
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap" rel="stylesheet">
+      <script src="https://cdn.tailwindcss.com"></script>
+      <style>
+        @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@1&display=swap');
+        body { font-family: 'Satoshi', sans-serif; background: #060606; color: white; overflow: hidden; }
+        .serif { font-family: 'Instrument Serif', serif; font-style: italic; }
+        .mesh {
+          background-image: 
+            radial-gradient(circle at 0% 0%, #1B3FBF20 0%, transparent 50%),
+            radial-gradient(circle at 100% 100%, #1B3FBF10 0%, transparent 50%);
+        }
+      </style>
+    </head>
+    <body class="h-screen w-screen flex items-center justify-center mesh p-12">
+      <div class="max-w-2xl w-full space-y-8 text-center animate-pulse">
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10">
+          <div class="w-1.5 h-1.5 rounded-full bg-[#1B3FBF] shadow-[0_0_8px_#1B3FBF]"></div>
+          <span class="text-[9px] font-black uppercase tracking-[0.4em] opacity-40">Neural Link Unstable</span>
+        </div>
+        
+        <h1 class="text-6xl md:text-8xl serif tracking-tighter leading-none">
+          Manifesting<br/><span class="opacity-30">In Progress.</span>
+        </h1>
+        
+        <div class="space-y-2 pt-8">
+          <p class="text-[10px] font-black uppercase tracking-[0.3em] opacity-20">Current Objective</p>
+          <p class="text-xl font-light opacity-50">${cleanPrompt}...</p>
+        </div>
+
+        <div class="pt-12">
+           <div class="w-48 h-[1px] bg-white/10 mx-auto relative overflow-hidden">
+              <div class="absolute inset-0 bg-[#1B3FBF] w-1/3 animate-[slide_2s_infinite_linear]"></div>
+           </div>
+        </div>
+      </div>
+
+      <style>
+        @keyframes slide {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(300%); }
+        }
+      </style>
+    </body>
+  </html>
+  `;
 }
 
 /**
