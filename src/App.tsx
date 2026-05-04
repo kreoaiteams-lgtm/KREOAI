@@ -15,6 +15,7 @@ import KreoPromo5 from "./components/KreoPromo5";
 import KreoPromo6 from "./components/KreoPromo6";
 import Promo8 from "./components/Promo8";
 import KreoVsClaudePromo from "./components/KreoVsClaudePromo";
+import MentraPromo from "./components/MentraPromo";
 import SocialManagerPage from "./components/SocialManagerPage";
 import ShareView from "./components/ShareView";
 import ProjectRouter from "./components/ProjectRouter";
@@ -59,6 +60,7 @@ const App = () => (
           <Route path="/card" element={<CardPage />} />
           <Route path="/webresearch" element={<WebResearch />} />
           <Route path="/webreasearch" element={<WebResearch />} />
+          <Route path="/promo-mentra" element={<MentraPromo />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         </LanguageProvider>
