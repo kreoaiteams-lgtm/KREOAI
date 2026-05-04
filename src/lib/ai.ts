@@ -50,13 +50,18 @@ async function fetchRealWorldContext(prompt: string, isPaidUser: boolean): Promi
       searchQuery = `latest ROI and savings rates of famous Indian banks 2024 2025 ${prompt}`;
     }
 
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s for research
+
     const res = await fetch(`https://s.jina.ai/${encodeURIComponent(searchQuery)}`, {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${JINA_API_KEY}`,
         "Accept": "application/json"
-      }
+      },
+      signal: controller.signal
     });
+    clearTimeout(timeoutId);
     const data = await res.json();
     
     if (data.data && data.data.length > 0) {
@@ -104,12 +109,16 @@ export const generateArtifact = async (
       { role: "user", content: enrichedPrompt },
     ];
 
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s timeout
+
     const response = await fetch(SARVAM_ENDPOINT, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${SARVAM_API_KEY}`,
       },
+      signal: controller.signal,
       body: JSON.stringify({
         model: "sarvam-105b",
         messages: messages,
@@ -117,6 +126,7 @@ export const generateArtifact = async (
         temperature: 0.7,
       }),
     });
+    clearTimeout(timeoutId);
 
     if (!response.ok) return getDemoFallback(prompt);
 
@@ -143,12 +153,16 @@ export const generateBio = async (answers: string[]) => {
     
     Make it feel architectural, sophisticated, and elite. A single quote without surrounding text. Max 25 words.`;
 
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
+
     const response = await fetch(SARVAM_ENDPOINT, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${SARVAM_API_KEY}`,
       },
+      signal: controller.signal,
       body: JSON.stringify({
         model: "sarvam-105b",
         messages: [
@@ -159,6 +173,7 @@ export const generateBio = async (answers: string[]) => {
         temperature: 0.8,
       }),
     });
+    clearTimeout(timeoutId);
 
     const data = await response.json();
     return data.choices[0].message.content.replace(/^["']|["']$/g, '').trim();
@@ -216,9 +231,13 @@ function getDemoFallback(prompt: string): string {
  */
 export const generateComparisonData = async (prompt: string, context: string) => {
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000);
+
     const response = await fetch(SARVAM_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json", "Authorization": `Bearer ${SARVAM_API_KEY}` },
+      signal: controller.signal,
       body: JSON.stringify({
         model: "sarvam-105b",
         messages: [
@@ -242,6 +261,7 @@ export const generateComparisonData = async (prompt: string, context: string) =>
         temperature: 0.1
       })
     });
+    clearTimeout(timeoutId);
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
@@ -403,9 +423,13 @@ export const runCoWorkAgent = async (
         }
       } else if (step.type === 'synthesize') {
         try {
+          const synthController = new AbortController();
+          const synthTimeoutId = setTimeout(() => synthController.abort(), 20000); // 20s for synthesis
+
           const synthRes = await fetch(SARVAM_ENDPOINT, {
             method: "POST",
             headers: { "Content-Type": "application/json", "Authorization": `Bearer ${SARVAM_API_KEY}` },
+            signal: synthController.signal,
             body: JSON.stringify({
               model: "sarvam-105b",
               messages: [
@@ -416,6 +440,7 @@ export const runCoWorkAgent = async (
               temperature: 0.1
             })
           });
+          clearTimeout(synthTimeoutId);
           const synthData = await synthRes.json();
           step.results = synthData.choices?.[0]?.message?.content || "Synthesis complete.";
           accumulatedContext += `\n\n[SYNTHESIZED STRATEGY]:\n${step.results}`;
