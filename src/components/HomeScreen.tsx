@@ -878,20 +878,18 @@ const HomeScreen = ({
           5. Ensure distinct dialogue labels for every line of speech.
           6. DO NOT wrap this in a code-viewer UI. Render the script directly as a document.
         `;
-      } else if (formsReactRequest || isInteractiveApp) { // Default to React-ready logic for better UX
+      } else {
         backgroundEnhancedQuery += `
-          CRITICAL ARCHITECTURE: PRODUCING A LIVE REACT MANIFESTATION.
-          1. This MUST be a SINGLE-FILE REACT COMPONENT.
-          2. Use React hooks (useState, useEffect, etc.) via the 'React' global.
-          3. Use ONLY Lucide-React icons (access via standard component names, e.g., <Eye />).
-          4. Use ONLY Tailwind CSS for all styling and animations.
-          5. Export ONE single default functional component: export default function Manifestation() { ... }
-          6. RETURN THE PURE RAW JSX/TSX CODE ONLY. 
-          7. ABSOLUTELY NO MARKDOWN CODE BLOCKS. DO NOT USE TRIPLE BACKTICKS (\`\`\`).
-          8. DO NOT include any explanations, preambles, notes, or post-scripts.
-          9. DO NOT generate a "Blueprint" or "Codebox". Generate the APP UI directly.
-          10. Ensure the component is full-screen and interactive.
-          11. If you need icons, simply use them as components (e.g. <ArrowRight />). No need for imports.
+          CRITICAL ARCHITECTURE: PRODUCING A RAW HTML MANIFESTATION.
+          1. This MUST be a SINGLE RAW HTML FILE. NO REACT. NO JSX.
+          2. Use ONLY HTML and Tailwind CSS for all styling.
+          3. Use <script src="https://unpkg.com/lucide@latest"></script> and <i data-lucide="icon-name"></i> for icons.
+          4. RETURN THE PURE RAW HTML CODE ONLY.
+          5. ABSOLUTELY NO MARKDOWN CODE BLOCKS. DO NOT USE TRIPLE BACKTICKS (\`\`\`).
+          6. DO NOT include any explanations, preambles, notes, or post-scripts.
+          7. DO NOT generate a "Blueprint" or "Codebox". Generate the actual UI directly.
+          8. Ensure the design is full-screen, responsive, and visually stunning.
+          9. Do NOT output React components, hooks, or imports.
         `;
       }
 
