@@ -5,8 +5,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 const DURATIONS = [3500, 5000, 5500, 5500, 5000, 5500, 4500];
 const TOTAL = DURATIONS.length;
 
-const SAT = '"Satoshi", system-ui, sans-serif';
-const IS  = '"Instrument Serif", Georgia, serif';
+const SAT    = '"Satoshi", system-ui, sans-serif';
+const NIMBUS = '"TAN-NIMBUS", serif';
 
 // ─── Confetti dots for the celebration scenes ─────────────────────────────────
 const Confetti = () => {
@@ -67,13 +67,13 @@ const S0 = () => (
         animate={{ rotate: [-5, 5, -5] }}
         transition={{ repeat: Infinity, duration: 1.5, ease: 'easeInOut' }}
         className="text-7xl">🎉✨🎁</motion.div>
-      <h1 style={{ fontFamily: IS }}
-        className="text-[15vw] md:text-[12vw] leading-none text-white tracking-tight drop-shadow-2xl">
+      <h1 style={{ fontFamily: NIMBUS }}
+        className="text-[14vw] md:text-[11vw] leading-none text-white tracking-tight drop-shadow-2xl">
         Happy<br />Birthday
       </h1>
-      <motion.h2 style={{ fontFamily: IS }}
+      <motion.h2 style={{ fontFamily: NIMBUS }}
         initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
-        className="text-[10vw] md:text-[8vw] leading-none text-white/80 italic tracking-wide">
+        className="text-[10vw] md:text-[8vw] leading-none text-white/80 tracking-wide">
         Diksha 💖
       </motion.h2>
     </motion.div>
@@ -88,8 +88,8 @@ const S1 = () => (
       transition={{ type: 'spring', stiffness: 120 }} className="relative z-10 max-w-2xl space-y-8">
       <div className="text-6xl space-x-4">🌸 🌟 🍀</div>
       <p style={{ fontFamily: SAT }} className="text-[10px] font-black uppercase tracking-[0.5em] text-white/50">A message for you</p>
-      <h2 style={{ fontFamily: IS }} className="text-5xl md:text-7xl italic text-white leading-tight drop-shadow-lg">
-        Hope you have a really <span className="text-yellow-300">good day</span> and an even better year ahead.
+      <h2 style={{ fontFamily: NIMBUS }} className="text-4xl md:text-6xl text-white leading-tight drop-shadow-lg tracking-wide">
+        I hope today is as beautiful as your heart, and the year ahead brings you <span className="text-yellow-200">everything you deserve.</span>
       </h2>
     </motion.div>
   </div>
@@ -103,11 +103,11 @@ const S2 = () => (
       transition={{ type: 'spring', stiffness: 100 }}
       className="max-w-2xl w-full flex flex-col items-center gap-8 relative z-10">
       <div className="text-7xl">🙄 💅 🦋</div>
-      <h2 style={{ fontFamily: IS }} className="text-5xl md:text-7xl italic text-white leading-tight drop-shadow-lg">
-        You might be <span className="text-yellow-300">annoying sometimes</span>…
+      <h2 style={{ fontFamily: NIMBUS }} className="text-4xl md:text-6xl text-white leading-tight drop-shadow-lg tracking-wide">
+        You drive me <span className="text-yellow-200">crazy sometimes</span>…
       </h2>
-      <p style={{ fontFamily: SAT }} className="text-xl md:text-2xl text-white/80 font-light">
-        but it wouldn't be the same without you around. 🫶
+      <p style={{ fontFamily: SAT }} className="text-xl md:text-2xl text-white/80 font-light leading-relaxed">
+        but honestly, my world would be so incredibly boring without you in it. 🫶
       </p>
     </motion.div>
   </div>
@@ -122,11 +122,11 @@ const S3 = () => (
       <motion.div className="text-7xl"
         animate={{ y: [-4, 4, -4], rotate: [-10, 10, -10] }}
         transition={{ repeat: Infinity, duration: 2 }}>😤 🤦‍♂️ 🤷‍♂️</motion.div>
-      <h2 style={{ fontFamily: IS }} className="text-5xl md:text-7xl italic text-white leading-tight drop-shadow-lg">
-        All those times I got scolded for things I <span className="underline decoration-wavy decoration-white/60">didn't even do</span>…
+      <h2 style={{ fontFamily: NIMBUS }} className="text-4xl md:text-6xl text-white leading-tight drop-shadow-lg tracking-wide">
+        All those times we got in trouble <span className="opacity-60 text-3xl">(and I took the blame)</span>…
       </h2>
       <p style={{ fontFamily: SAT }} className="text-xl md:text-2xl text-white/80 font-light">
-        Full credit goes to you. 😄
+        I wouldn't trade those memories for anything. 😄
       </p>
     </motion.div>
   </div>
@@ -141,11 +141,11 @@ const S4 = () => (
       transition={{ type: 'spring' }}
       className="max-w-2xl w-full flex flex-col items-center gap-8 relative z-10">
       <div className="text-7xl">👸 ✨ 🧚‍♀️</div>
-      <h2 style={{ fontFamily: IS }} className="text-5xl md:text-7xl italic text-white leading-tight drop-shadow-lg">
-        But since you're <span className="bg-white/20 px-4 py-2 rounded-full inline-block mt-2">papa ki pari</span>…
+      <h2 style={{ fontFamily: NIMBUS }} className="text-4xl md:text-6xl text-white leading-tight drop-shadow-lg tracking-wide">
+        You'll always be our little <span className="bg-white/20 px-4 py-2 rounded-2xl inline-block mt-3">papa ki pari</span>…
       </h2>
-      <p style={{ fontFamily: SAT }} className="text-xl md:text-2xl text-white/80 font-light">
-        you always manage to get away with it anyway 🙃
+      <p style={{ fontFamily: SAT }} className="text-xl md:text-2xl text-white/80 font-light leading-relaxed">
+        getting away with murder because you're just that cute. 🙃
       </p>
     </motion.div>
   </div>
@@ -158,11 +158,11 @@ const S5 = () => (
     <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
       transition={{ type: 'spring', stiffness: 150 }} className="relative z-10 max-w-2xl space-y-8">
       <div className="text-7xl">💖 🌷 💫</div>
-      <h2 style={{ fontFamily: IS }} className="text-5xl md:text-7xl italic text-white leading-tight drop-shadow-lg">
-        Take care, enjoy your day <span className="text-yellow-300">properly.</span>
+      <h2 style={{ fontFamily: NIMBUS }} className="text-4xl md:text-6xl text-white leading-tight drop-shadow-lg tracking-wide">
+        Take care of yourself, and smile big today.
       </h2>
       <p style={{ fontFamily: SAT }} className="text-xl md:text-2xl text-white/80 font-light">
-        You deserve every bit of it. 🌟
+        Know how deeply you are loved. 🌟
       </p>
     </motion.div>
   </div>
@@ -176,16 +176,17 @@ const S6 = () => (
     <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }}
       transition={{ type: 'spring', stiffness: 120 }}
       className="max-w-2xl w-full flex flex-col items-center gap-12 relative z-20">
-      <h2 style={{ fontFamily: IS }} className="text-6xl md:text-8xl italic text-white leading-tight drop-shadow-xl">
-        Don't forget to save me some cake 🍰
+      <h2 style={{ fontFamily: NIMBUS }} className="text-5xl md:text-7xl text-white leading-tight drop-shadow-xl tracking-wide">
+        Now go cut that cake! 🍰
       </h2>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.6 }}
         className="space-y-4">
-        <p style={{ fontFamily: SAT }} className="text-white/80 text-lg font-light">with love 🎀</p>
-        <div className="flex items-center gap-4 justify-center text-5xl">
+        <p style={{ fontFamily: SAT }} className="text-white/80 text-xl font-light tracking-wide">(and save the biggest slice for me)</p>
+        <p style={{ fontFamily: NIMBUS }} className="text-white/90 text-3xl pt-4">Love you always! 🎀</p>
+        <div className="flex items-center gap-4 justify-center text-5xl pt-4">
           {['🎂','🎈','✨','🎊','💛'].map((e, i) => (
             <motion.span key={i}
               animate={{ y: [0, -12, 0] }}
