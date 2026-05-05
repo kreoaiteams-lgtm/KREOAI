@@ -271,6 +271,7 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, onRefinement, readO
           <script src="https://cdn.tailwindcss.com"></script>
           <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
           <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+          <script src="https://unpkg.com/prop-types@15.8.1/prop-types.js"></script>
           <script src="https://unpkg.com/lucide-react/dist/umd/lucide-react.js"></script>
           <script src="https://unpkg.com/recharts@2.15.3/umd/Recharts.js"></script>
           <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
