@@ -132,8 +132,8 @@ const S2 = () => (
              <span style={{ fontFamily: SAT }} className="text-[10px] font-mono text-white/40 uppercase">Terminal_Sync</span>
           </div>
           <div className="space-y-3 pt-2">
-            <p style={{ fontFamily: SAT }} className="text-xs text-white/60 font-mono">> Scanning 12 sources for query...</p>
-            <p style={{ fontFamily: SAT }} className="text-xs text-white/60 font-mono">> Cross-referencing data points...</p>
+            <p style={{ fontFamily: SAT }} className="text-xs text-white/60 font-mono">&gt; Scanning 12 sources for query...</p>
+            <p style={{ fontFamily: SAT }} className="text-xs text-white/60 font-mono">&gt; Cross-referencing data points...</p>
             <div className="p-4 rounded-xl bg-white/5 border border-white/10 mt-4">
               <p style={{ fontFamily: SAT }} className="text-sm text-white/90 italic">"The consensus indicates a 40% efficiency gain in Q3."</p>
             </div>
