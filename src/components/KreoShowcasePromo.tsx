@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Layout, Globe, Presentation, Cpu, Zap, BarChart3, LineChart, ChevronRight, Search, Sparkles, Palette } from 'lucide-react';
+import { Layout, Globe, Presentation, Cpu, Zap, BarChart3, LineChart, ChevronRight, Search, Sparkles, Palette, Network } from 'lucide-react';
 
 // ─── Constants & Fonts ───────────────────────────────────────────────────────
 const SAT    = '"Satoshi", system-ui, sans-serif';
@@ -9,8 +9,8 @@ const NIMBUS = '"TAN-NIMBUS", serif';
 const GLASS  = '"glassure", serif';
 
 // ─── Scene durations (ms) ────────────────────────────────────────────────────
-// Total 7 scenes. We give them 7-8 seconds each so the typing animation has time.
-const DURATIONS = [5000, 7000, 7000, 7000, 7000, 7000, 6000];
+// Total 8 scenes.
+const DURATIONS = [5000, 7000, 7000, 7000, 7000, 7000, 7000, 6000];
 const TOTAL = DURATIONS.length;
 
 // ─── Utility Components ──────────────────────────────────────────────────────
@@ -54,7 +54,6 @@ const CommandBar = ({ prompt, isActive }: { prompt: string; isActive: boolean })
       return;
     }
     let i = 0;
-    // Delay start slightly
     const timer = setTimeout(() => {
       const interval = setInterval(() => {
         if (i <= prompt.length) {
@@ -64,9 +63,9 @@ const CommandBar = ({ prompt, isActive }: { prompt: string; isActive: boolean })
           clearInterval(interval);
           setIsTypingComplete(true);
         }
-      }, 40); // typing speed
+      }, 35);
       return () => clearInterval(interval);
-    }, 500);
+    }, 400);
     return () => clearTimeout(timer);
   }, [prompt, isActive]);
 
@@ -104,9 +103,12 @@ const S0 = () => (
     <GridBg />
     <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
       transition={{ type: 'spring', stiffness: 100 }} className="relative z-20 space-y-8 max-w-3xl">
-      <h1 style={{ fontFamily: IS }} className="text-7xl md:text-9xl leading-[0.9] text-black tracking-tight drop-shadow-xl">
+      <motion.h1 
+        animate={{ y: [0, -10, 0] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+        style={{ fontFamily: IS }} className="text-7xl md:text-9xl leading-[0.9] text-black tracking-tight drop-shadow-xl"
+      >
         The OS for <br/><span className="text-black/30 italic">ideas.</span>
-      </h1>
+      </motion.h1>
       <p style={{ fontFamily: SAT }} className="text-xl md:text-3xl text-black/60 font-light leading-relaxed">
         Watch how <KreoText /> turns a single thought into a complete ecosystem.
       </p>
@@ -121,9 +123,8 @@ const S1 = () => (
     <CommandBar prompt="Build a dark mode SaaS dashboard with revenue charts." isActive={true} />
     
     <motion.div 
-      initial={{ opacity: 0, y: 100, scale: 0.9 }} 
-      animate={{ opacity: 1, y: 40, scale: 1 }} 
-      transition={{ delay: 2.8, type: 'spring', stiffness: 80 }}
+      initial={{ opacity: 0, y: 100, scale: 0.9 }} animate={{ opacity: 1, y: 40, scale: 1 }} 
+      transition={{ delay: 2.5, type: 'spring', stiffness: 80 }}
       className="absolute z-10 w-[90%] max-w-5xl"
     >
       <div className="flex flex-col md:flex-row gap-8">
@@ -140,7 +141,10 @@ const S1 = () => (
           </p>
         </div>
         <div className="flex-1">
-          <div className="w-full aspect-[4/3] bg-[#0a0a0a] rounded-3xl border border-white/20 shadow-2xl overflow-hidden flex flex-col backdrop-blur-2xl">
+          <motion.div 
+            whileHover={{ scale: 1.02 }}
+            className="w-full aspect-[4/3] bg-[#0a0a0a] rounded-3xl border border-white/20 shadow-2xl overflow-hidden flex flex-col backdrop-blur-2xl"
+          >
             <div className="h-10 border-b border-white/10 flex items-center px-4 gap-2 bg-white/5">
               <div className="w-3 h-3 rounded-full bg-red-500/80" />
               <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
@@ -150,32 +154,42 @@ const S1 = () => (
               <div className="col-span-2 bg-blue-900/20 rounded-2xl border border-blue-500/30 p-5 flex flex-col justify-between relative overflow-hidden">
                 <div className="absolute right-0 top-0 w-32 h-32 bg-blue-500/10 blur-3xl rounded-full" />
                 <span style={{ fontFamily: SAT }} className="text-xs font-bold text-blue-400">Total Revenue</span>
-                <span style={{ fontFamily: IS }} className="text-5xl text-white mt-2">$124,500</span>
+                <motion.span 
+                  initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 3.2 }}
+                  style={{ fontFamily: IS }} className="text-5xl text-white mt-2"
+                >
+                  $124,500
+                </motion.span>
               </div>
-              <div className="bg-white/5 rounded-2xl border border-white/10 flex items-center justify-center p-6">
-                <BarChart3 className="text-white/30 w-full h-full" />
+              <div className="bg-white/5 rounded-2xl border border-white/10 flex items-end justify-center p-4 relative overflow-hidden">
+                <motion.div 
+                  initial={{ height: 0 }} animate={{ height: '70%' }} transition={{ delay: 3.5, duration: 1, type: 'spring' }}
+                  className="w-8 bg-blue-500/50 rounded-t-sm" 
+                />
               </div>
-              <div className="bg-white/5 rounded-2xl border border-white/10 flex items-center justify-center p-6">
-                <LineChart className="text-white/30 w-full h-full" />
+              <div className="bg-white/5 rounded-2xl border border-white/10 flex items-center justify-center p-6 relative overflow-hidden">
+                 <motion.div 
+                  animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 10, ease: 'linear' }}
+                  className="w-16 h-16 border-4 border-dashed border-white/20 rounded-full" 
+                 />
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </motion.div>
   </div>
 );
 
-// Scene 2: Deep Research
+// Scene 2: Deep Context
 const S2 = () => (
   <div className="fixed inset-0 flex flex-col items-center justify-center px-8 overflow-hidden">
     <GridBg isDark={true} />
     <CommandBar prompt="Research our top 3 competitors and synthesize trends." isActive={true} />
     
     <motion.div 
-      initial={{ opacity: 0, y: 100, scale: 0.9 }} 
-      animate={{ opacity: 1, y: 40, scale: 1 }} 
-      transition={{ delay: 3.0, type: 'spring', stiffness: 80 }}
+      initial={{ opacity: 0, y: 100, scale: 0.9 }} animate={{ opacity: 1, y: 40, scale: 1 }} 
+      transition={{ delay: 2.8, type: 'spring', stiffness: 80 }}
       className="absolute z-10 w-[90%] max-w-5xl"
     >
       <div className="flex flex-col md:flex-row-reverse gap-8">
@@ -201,14 +215,14 @@ const S2 = () => (
                <Sparkles className="text-purple-400/50 w-4 h-4" />
             </div>
             <div className="space-y-4 pt-2">
-              <p style={{ fontFamily: SAT }} className="text-xs text-white/50 font-mono">&gt; Spawning 5 parallel agents...</p>
-              <p style={{ fontFamily: SAT }} className="text-xs text-white/50 font-mono">&gt; Analyzing competitor pricing models...</p>
-              <div className="p-5 rounded-2xl bg-gradient-to-br from-purple-500/10 to-blue-500/5 border border-purple-500/20 mt-4 relative overflow-hidden">
+              <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 3.0 }} style={{ fontFamily: SAT }} className="text-xs text-white/50 font-mono">&gt; Spawning 5 parallel agents...</motion.p>
+              <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 3.5 }} style={{ fontFamily: SAT }} className="text-xs text-white/50 font-mono">&gt; Analyzing competitor pricing models...</motion.p>
+              <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 4.0 }} className="p-5 rounded-2xl bg-gradient-to-br from-purple-500/10 to-blue-500/5 border border-purple-500/20 mt-4 relative overflow-hidden">
                 <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20" />
                 <p style={{ fontFamily: SAT }} className="text-sm text-purple-100 italic relative z-10">
                   "Market consensus indicates a 40% shift towards usage-based billing in Q3."
                 </p>
-              </div>
+              </motion.div>
             </div>
           </div>
         </div>
@@ -224,8 +238,7 @@ const S3 = () => (
     <CommandBar prompt="Design a premium brand kit with typography." isActive={true} />
     
     <motion.div 
-      initial={{ opacity: 0, y: 100, scale: 0.9 }} 
-      animate={{ opacity: 1, y: 40, scale: 1 }} 
+      initial={{ opacity: 0, y: 100, scale: 0.9 }} animate={{ opacity: 1, y: 40, scale: 1 }} 
       transition={{ delay: 2.8, type: 'spring', stiffness: 80 }}
       className="absolute z-10 w-[90%] max-w-5xl"
     >
@@ -245,16 +258,72 @@ const S3 = () => (
         <div className="flex-1">
           <div className="w-full aspect-[4/3] bg-white rounded-3xl border border-black/10 shadow-[0_20px_50px_rgba(0,0,0,0.08)] p-6 md:p-8 flex flex-col gap-6">
              <div className="flex gap-4 h-1/2">
-                <div className="flex-1 bg-gradient-to-br from-pink-500 to-rose-400 rounded-2xl shadow-inner flex items-end p-4">
+                <motion.div initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 3.2 }} className="flex-1 bg-gradient-to-br from-pink-500 to-rose-400 rounded-2xl shadow-inner flex items-end p-4">
                   <span style={{ fontFamily: SAT }} className="text-white/80 text-xs font-mono">#EC4899</span>
-                </div>
-                <div className="flex-1 bg-gradient-to-br from-indigo-900 to-slate-900 rounded-2xl shadow-inner flex items-end p-4">
+                </motion.div>
+                <motion.div initial={{ x: 20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 3.4 }} className="flex-1 bg-gradient-to-br from-indigo-900 to-slate-900 rounded-2xl shadow-inner flex items-end p-4">
                   <span style={{ fontFamily: SAT }} className="text-white/50 text-xs font-mono">#312E81</span>
-                </div>
+                </motion.div>
              </div>
-             <div className="flex-1 bg-gray-50 rounded-2xl border border-gray-100 p-6 flex flex-col justify-center">
+             <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 3.6 }} className="flex-1 bg-gray-50 rounded-2xl border border-gray-100 p-6 flex flex-col justify-center">
                 <span style={{ fontFamily: SAT }} className="text-[10px] uppercase tracking-widest text-gray-400 mb-2">Primary Typeface</span>
                 <span style={{ fontFamily: NIMBUS }} className="text-4xl text-black">TAN-NIMBUS</span>
+             </motion.div>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  </div>
+);
+
+// Scene 4: Knowledge Mapping (Flowcharts & Flashcards)
+const S4 = () => (
+  <div className="fixed inset-0 flex flex-col items-center justify-center px-8 overflow-hidden">
+    <GridBg isDark={false} />
+    <CommandBar prompt="Generate flowcharts & flashcards for Quantum Physics." isActive={true} />
+    
+    <motion.div 
+      initial={{ opacity: 0, y: 100, scale: 0.9 }} animate={{ opacity: 1, y: 40, scale: 1 }} 
+      transition={{ delay: 2.8, type: 'spring', stiffness: 80 }}
+      className="absolute z-10 w-[90%] max-w-5xl"
+    >
+      <div className="flex flex-col md:flex-row-reverse gap-8 items-center">
+        <div className="flex-1 space-y-6 text-left">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-green-500/30 bg-green-500/10 backdrop-blur-md">
+            <Network size={14} className="text-green-600" />
+            <span style={{ fontFamily: SAT }} className="text-[10px] font-bold uppercase tracking-widest text-black/80">Data Structuring</span>
+          </div>
+          <h2 style={{ fontFamily: IS }} className="text-5xl md:text-7xl italic text-black leading-[1.1] tracking-tight drop-shadow-sm">
+            Knowledge <br/>Mapping.
+          </h2>
+          <p style={{ fontFamily: SAT }} className="text-lg text-black/60 font-light leading-relaxed">
+            Beyond UI. <KreoText /> transforms complex raw data into interactive flowcharts, mind maps, and flippable flashcards.
+          </p>
+        </div>
+        
+        <div className="flex-1 w-full relative h-[300px] flex items-center justify-center">
+          {/* Flashcard Animation */}
+          <motion.div 
+            animate={{ rotateY: [0, 180, 0] }}
+            transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }}
+            className="absolute left-0 w-48 h-64 bg-white rounded-3xl border border-black/10 shadow-xl flex flex-col items-center justify-center p-6 z-20"
+            style={{ transformStyle: 'preserve-3d' }}
+          >
+            <div className="absolute inset-0 bg-white rounded-3xl flex items-center justify-center p-6 text-center" style={{ backfaceVisibility: 'hidden' }}>
+              <span style={{ fontFamily: IS }} className="text-3xl text-black">Entanglement</span>
+            </div>
+            <div className="absolute inset-0 bg-green-50 rounded-3xl flex items-center justify-center p-6 text-center" style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}>
+              <span style={{ fontFamily: SAT }} className="text-sm text-green-900">Particles linked across distance.</span>
+            </div>
+          </motion.div>
+          
+          {/* Flowchart Animation */}
+          <div className="absolute right-0 w-64 h-64 bg-white/50 backdrop-blur-md rounded-3xl border border-black/5 flex flex-col items-center justify-between p-6 z-10 shadow-lg">
+             <motion.div animate={{ scale: [1, 1.05, 1] }} transition={{ repeat: Infinity, duration: 2 }} className="px-4 py-2 bg-blue-100 rounded-full text-xs font-mono text-blue-800">Superposition</motion.div>
+             <div className="w-[2px] h-10 bg-gradient-to-b from-blue-300 to-green-300" />
+             <div className="flex gap-4">
+               <motion.div animate={{ y: [0, -5, 0] }} transition={{ repeat: Infinity, duration: 2, delay: 0.5 }} className="px-4 py-2 bg-green-100 rounded-full text-xs font-mono text-green-800">Wave</motion.div>
+               <motion.div animate={{ y: [0, -5, 0] }} transition={{ repeat: Infinity, duration: 2, delay: 1.0 }} className="px-4 py-2 bg-green-100 rounded-full text-xs font-mono text-green-800">Particle</motion.div>
              </div>
           </div>
         </div>
@@ -263,19 +332,18 @@ const S3 = () => (
   </div>
 );
 
-// Scene 4: Presentations
-const S4 = () => (
+// Scene 5: Presentations
+const S5 = () => (
   <div className="fixed inset-0 flex flex-col items-center justify-center px-8 overflow-hidden">
     <GridBg isDark={false} />
     <CommandBar prompt="Turn this context into a 10-slide pitch deck." isActive={true} />
     
     <motion.div 
-      initial={{ opacity: 0, y: 100, scale: 0.9 }} 
-      animate={{ opacity: 1, y: 40, scale: 1 }} 
+      initial={{ opacity: 0, y: 100, scale: 0.9 }} animate={{ opacity: 1, y: 40, scale: 1 }} 
       transition={{ delay: 2.8, type: 'spring', stiffness: 80 }}
       className="absolute z-10 w-[90%] max-w-5xl"
     >
-      <div className="flex flex-col md:flex-row-reverse gap-12 items-center">
+      <div className="flex flex-col md:flex-row gap-12 items-center">
         <div className="flex-1 space-y-6 text-left">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-black/10 bg-black/5 backdrop-blur-md">
             <Presentation size={14} className="text-blue-600" />
@@ -290,31 +358,33 @@ const S4 = () => (
         </div>
         <div className="flex-1 w-full relative h-[300px] flex items-center justify-center">
           {/* Stacked Cards */}
-          <div className="absolute w-[110%] aspect-video bg-white rounded-2xl shadow-2xl border border-black/5 flex flex-col items-center justify-center p-8 z-30">
+          <motion.div 
+            animate={{ y: [-10, 10, -10] }} transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }}
+            className="absolute w-[110%] aspect-video bg-white rounded-2xl shadow-2xl border border-black/5 flex flex-col items-center justify-center p-8 z-30"
+          >
             <h3 style={{ fontFamily: IS }} className="text-5xl text-black">Q3 Strategy</h3>
             <p style={{ fontFamily: SAT }} className="text-sm text-black/40 mt-4 uppercase tracking-[0.2em]">The Path Forward</p>
-          </div>
-          <motion.div className="absolute w-[100%] aspect-video bg-gray-100 rounded-2xl shadow-lg border border-black/5 z-20 rotate-3 translate-x-4 translate-y-4" />
-          <motion.div className="absolute w-[90%] aspect-video bg-gray-200 rounded-2xl shadow-md border border-black/5 z-10 rotate-6 translate-x-8 translate-y-8" />
+          </motion.div>
+          <motion.div animate={{ y: [-5, 5, -5] }} transition={{ repeat: Infinity, duration: 6, ease: "easeInOut", delay: 0.5 }} className="absolute w-[100%] aspect-video bg-gray-100 rounded-2xl shadow-lg border border-black/5 z-20 rotate-3 translate-x-4 translate-y-4" />
+          <motion.div animate={{ y: [0, 5, 0] }} transition={{ repeat: Infinity, duration: 6, ease: "easeInOut", delay: 1.0 }} className="absolute w-[90%] aspect-video bg-gray-200 rounded-2xl shadow-md border border-black/5 z-10 rotate-6 translate-x-8 translate-y-8" />
         </div>
       </div>
     </motion.div>
   </div>
 );
 
-// Scene 5: Kreon Cards
-const S5 = () => (
+// Scene 6: Kreon Cards
+const S6 = () => (
   <div className="fixed inset-0 flex flex-col items-center justify-center px-8 overflow-hidden">
     <GridBg isDark={true} />
     <CommandBar prompt="Manifest my Kreon Identity Card." isActive={true} />
     
     <motion.div 
-      initial={{ opacity: 0, y: 100, scale: 0.9 }} 
-      animate={{ opacity: 1, y: 40, scale: 1 }} 
+      initial={{ opacity: 0, y: 100, scale: 0.9 }} animate={{ opacity: 1, y: 40, scale: 1 }} 
       transition={{ delay: 2.8, type: 'spring', stiffness: 80 }}
       className="absolute z-10 w-[90%] max-w-5xl"
     >
-      <div className="flex flex-col md:flex-row gap-12 items-center">
+      <div className="flex flex-col md:flex-row-reverse gap-12 items-center">
         <div className="flex-1 space-y-6 text-left">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-blue-500/30 bg-blue-500/10 backdrop-blur-md">
             <Cpu size={14} className="text-blue-400" />
@@ -328,7 +398,6 @@ const S5 = () => (
           </p>
         </div>
         <div className="flex-1 w-full relative h-[350px] flex items-center justify-center">
-          {/* Fake Kreon Card */}
           <motion.div 
             animate={{ y: [-10, 10, -10], rotateY: [-5, 5, -5], rotateX: [2, -2, 2] }}
             transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }}
@@ -336,12 +405,10 @@ const S5 = () => (
           >
             <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-[#1B3FBF]/50 to-transparent blur-3xl -z-10" />
             <div className="absolute bottom-0 right-0 w-32 h-32 bg-purple-500/20 blur-3xl -z-10 rounded-full" />
-            
             <div className="flex justify-between items-start">
               <span style={{ fontFamily: NIMBUS }} className="text-white text-2xl tracking-widest">KREON</span>
               <span style={{ fontFamily: SAT }} className="text-white/40 font-mono text-[10px]">NO. 0042</span>
             </div>
-            
             <div className="flex-1 flex items-center justify-center">
               <div className="w-24 h-24 rounded-full border border-white/20 bg-white/5 backdrop-blur-md flex items-center justify-center shadow-inner relative">
                 <div className="absolute inset-0 bg-white/20 rounded-full animate-ping opacity-20" />
@@ -350,7 +417,6 @@ const S5 = () => (
                 </div>
               </div>
             </div>
-            
             <div className="space-y-2 pb-2">
               <p style={{ fontFamily: SAT }} className="text-[9px] uppercase tracking-[0.3em] text-white/50">Authorized Resident</p>
               <div className="flex gap-1 h-1.5 w-full rounded-full overflow-hidden">
@@ -366,8 +432,8 @@ const S5 = () => (
   </div>
 );
 
-// Scene 6: Outro
-const S6 = () => (
+// Scene 7: Outro
+const S7 = () => (
   <div className="fixed inset-0 flex flex-col items-center justify-center text-center px-8 overflow-hidden bg-[#06030A]">
     <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,#1B3FBF15_0%,transparent_60%)]" />
     <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
@@ -391,7 +457,7 @@ const S6 = () => (
 );
 
 // ─── Scene registry ───────────────────────────────────────────────────────────
-const SCENES = [S0, S1, S2, S3, S4, S5, S6];
+const SCENES = [S0, S1, S2, S3, S4, S5, S6, S7];
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 export default function KreoShowcasePromo() {
@@ -417,7 +483,7 @@ export default function KreoShowcasePromo() {
   }, [scene]);
 
   const Scene = SCENES[scene];
-  const isDark = scene === 1 || scene === 2 || scene === 5 || scene === 6;
+  const isDark = scene === 1 || scene === 2 || scene === 6 || scene === 7;
 
   return (
     <div
