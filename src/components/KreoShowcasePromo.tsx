@@ -1,23 +1,30 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Layout, Globe, Presentation, Cpu, Zap, ChevronRight, BarChart3, LineChart } from 'lucide-react';
+import { Layout, Globe, Presentation, Cpu, Zap, BarChart3, LineChart, ChevronRight, Search, Sparkles, Palette } from 'lucide-react';
+
+// ─── Constants & Fonts ───────────────────────────────────────────────────────
+const SAT    = '"Satoshi", system-ui, sans-serif';
+const IS     = '"Instrument Serif", Georgia, serif';
+const NIMBUS = '"TAN-NIMBUS", serif';
+const GLASS  = '"glassure", serif';
 
 // ─── Scene durations (ms) ────────────────────────────────────────────────────
-const DURATIONS = [4000, 5000, 5000, 5000, 5000];
+// Total 6 scenes. We give them 7-8 seconds each so the typing animation has time.
+const DURATIONS = [5000, 7000, 7000, 7000, 7000, 6000];
 const TOTAL = DURATIONS.length;
 
-const SAT = '"Satoshi", system-ui, sans-serif';
-const IS  = '"Instrument Serif", Georgia, serif';
+// ─── Utility Components ──────────────────────────────────────────────────────
+const KreoText = () => <span style={{ fontFamily: NIMBUS }} className="text-[#1B3FBF]">KREO</span>;
+const MentraText = () => <span style={{ fontFamily: GLASS, fontStyle: 'italic' }} className="text-[#a78bfa]">Mentra</span>;
 
-// ─── Progress bar strip ───────────────────────────────────────────────────────
 const ProgressStrip = ({ scene, progress, isDark }: { scene: number; progress: number; isDark: boolean }) => (
-  <div className="fixed top-0 left-0 right-0 z-[9999] flex gap-1 p-3">
+  <div className="fixed top-0 left-0 right-0 z-[9999] flex gap-2 p-4">
     {Array.from({ length: TOTAL }).map((_, i) => (
-      <div key={i} className={`flex-1 h-[2px] rounded-full overflow-hidden ${isDark ? 'bg-white/10' : 'bg-black/10'}`}>
-        {i < scene && <div className={`h-full w-full ${isDark ? 'bg-white/40' : 'bg-black/40'}`} />}
+      <div key={i} className={`flex-1 h-[3px] rounded-full overflow-hidden backdrop-blur-md ${isDark ? 'bg-white/10' : 'bg-black/10'}`}>
+        {i < scene && <div className={`h-full w-full ${isDark ? 'bg-white/70' : 'bg-black/70'}`} />}
         {i === scene && (
           <motion.div
-            className={`h-full ${isDark ? 'bg-white' : 'bg-black'}`}
+            className={`h-full ${isDark ? 'bg-white shadow-[0_0_10px_rgba(255,255,255,0.8)]' : 'bg-black shadow-[0_0_10px_rgba(0,0,0,0.5)]'}`}
             initial={{ width: 0 }}
             animate={{ width: `${progress}%` }}
             transition={{ duration: 0.05, ease: 'linear' }}
@@ -29,113 +36,128 @@ const ProgressStrip = ({ scene, progress, isDark }: { scene: number; progress: n
 );
 
 const GridBg = ({ isDark }: { isDark?: boolean }) => (
-  <div className={`absolute inset-0 ${isDark ? 'bg-[#0a0a0a]' : 'bg-[#fafafa]'}`}>
-    <div className={`absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] ${isDark ? 'opacity-20' : 'opacity-100'}`} />
+  <div className={`absolute inset-0 ${isDark ? 'bg-[#06030A]' : 'bg-[#fafafa]'}`}>
+    <div className={`absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:32px_32px] ${isDark ? 'opacity-20' : 'opacity-100'}`} />
+    <div className="absolute inset-0 opacity-30 bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
   </div>
 );
 
-// ─── Scene 0: Introduction ───────────────────────────────────────────────────
-const S0 = () => (
-  <div className="fixed inset-0 flex flex-col items-center justify-center text-center px-8 overflow-hidden bg-[#fafafa]">
-    <GridBg />
-    <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
-      transition={{ type: 'spring', stiffness: 100 }} className="relative z-20 max-w-2xl space-y-6">
-      <div className="mx-auto w-16 h-16 bg-[#1B3FBF] rounded-2xl flex items-center justify-center shadow-2xl mb-8">
-        <Zap className="text-white w-8 h-8" />
+// ─── Typing Command Bar Component ────────────────────────────────────────────
+const CommandBar = ({ prompt, isActive }: { prompt: string; isActive: boolean }) => {
+  const [displayedText, setDisplayedText] = useState("");
+  const [isTypingComplete, setIsTypingComplete] = useState(false);
+
+  useEffect(() => {
+    if (!isActive) {
+      setDisplayedText("");
+      setIsTypingComplete(false);
+      return;
+    }
+    let i = 0;
+    // Delay start slightly
+    const timer = setTimeout(() => {
+      const interval = setInterval(() => {
+        if (i <= prompt.length) {
+          setDisplayedText(prompt.slice(0, i));
+          i++;
+        } else {
+          clearInterval(interval);
+          setIsTypingComplete(true);
+        }
+      }, 40); // typing speed
+      return () => clearInterval(interval);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [prompt, isActive]);
+
+  return (
+    <motion.div
+      initial={{ scale: 1.1, y: 100, opacity: 0 }}
+      animate={{ 
+        scale: isTypingComplete ? 0.85 : 1.1, 
+        y: isTypingComplete ? -120 : 0,
+        opacity: 1
+      }}
+      transition={{ type: 'spring', stiffness: 70, damping: 20 }}
+      className={`relative z-50 flex items-center gap-4 p-4 md:p-6 rounded-2xl md:rounded-3xl border shadow-2xl backdrop-blur-2xl w-[90%] max-w-3xl mx-auto
+        ${isTypingComplete ? 'bg-white/10 border-white/20' : 'bg-white/80 border-black/10'}`}
+    >
+      <Search className={isTypingComplete ? "text-white/50" : "text-[#1B3FBF]"} size={28} />
+      <div className="flex-1">
+        <p style={{ fontFamily: SAT }} className={`text-xl md:text-3xl font-medium tracking-tight ${isTypingComplete ? 'text-white/80' : 'text-black'}`}>
+          {displayedText}
+          {!isTypingComplete && <motion.span animate={{ opacity: [1, 0] }} transition={{ repeat: Infinity, duration: 0.8 }}>|</motion.span>}
+        </p>
       </div>
-      <h1 style={{ fontFamily: IS }}
-        className="text-[12vw] md:text-[8vw] leading-none text-black tracking-tight">
-        What can <span className="text-[#1B3FBF]">Kreo</span> do?
+      {isTypingComplete && (
+        <motion.div initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} className="absolute -inset-1 rounded-3xl bg-gradient-to-r from-blue-500/20 to-purple-500/20 blur-xl -z-10" />
+      )}
+    </motion.div>
+  );
+};
+
+// ─── Scenes ──────────────────────────────────────────────────────────────────
+
+// Scene 0: Introduction
+const S0 = () => (
+  <div className="fixed inset-0 flex flex-col items-center justify-center text-center px-8 overflow-hidden">
+    <GridBg />
+    <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
+      transition={{ type: 'spring', stiffness: 100 }} className="relative z-20 space-y-8 max-w-3xl">
+      <h1 style={{ fontFamily: IS }} className="text-7xl md:text-9xl leading-[0.9] text-black tracking-tight drop-shadow-xl">
+        The OS for <br/><span className="text-black/30 italic">ideas.</span>
       </h1>
-      <p style={{ fontFamily: SAT }} className="text-lg md:text-xl text-black/60 font-light max-w-lg mx-auto">
-        A single neural engine capable of manifesting everything from raw data to full applications.
+      <p style={{ fontFamily: SAT }} className="text-xl md:text-3xl text-black/60 font-light leading-relaxed">
+        Watch how <KreoText /> turns a single thought into a complete ecosystem.
       </p>
     </motion.div>
   </div>
 );
 
-// ─── Scene 1: Instant Applications (Demo) ────────────────────────────────────
+// Scene 1: Instant Apps
 const S1 = () => (
-  <div className="fixed inset-0 flex flex-col items-center justify-center px-8 overflow-hidden bg-white">
-    <GridBg />
-    <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }}
-      transition={{ type: 'spring', stiffness: 90 }} className="relative z-10 w-full max-w-4xl flex flex-col md:flex-row items-center gap-12">
-      <div className="flex-1 space-y-6 text-center md:text-left">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-black/10 bg-black/5">
-          <Layout size={14} className="text-[#1B3FBF]" />
-          <span style={{ fontFamily: SAT }} className="text-[10px] font-bold uppercase tracking-widest">01 / Generation</span>
-        </div>
-        <h2 style={{ fontFamily: IS }} className="text-5xl md:text-7xl italic text-black leading-[1.1] tracking-tight">
-          Instant <br/><span className="text-[#1B3FBF]">Applications.</span>
-        </h2>
-        <p style={{ fontFamily: SAT }} className="text-lg text-black/60 font-light leading-relaxed">
-          Describe a dashboard, a SaaS tool, or a landing page. Kreo writes the React, styles it with Tailwind, and renders it live instantly.
-        </p>
-      </div>
-      <div className="flex-1 w-full relative">
-        {/* Fake Dashboard Demo UI */}
-        <div className="w-full aspect-[4/3] bg-white rounded-3xl border border-black/10 shadow-2xl overflow-hidden flex flex-col">
-          <div className="h-10 border-b border-black/5 flex items-center px-4 gap-2 bg-black/[0.02]">
-            <div className="w-3 h-3 rounded-full bg-red-400" />
-            <div className="w-3 h-3 rounded-full bg-yellow-400" />
-            <div className="w-3 h-3 rounded-full bg-green-400" />
-          </div>
-          <div className="p-6 grid grid-cols-2 gap-4 h-full">
-            <div className="col-span-2 bg-blue-50/50 rounded-xl border border-blue-100 p-4 flex flex-col justify-between">
-              <span style={{ fontFamily: SAT }} className="text-xs font-bold text-blue-900">Total Revenue</span>
-              <span style={{ fontFamily: IS }} className="text-4xl text-blue-600">$124,500</span>
-            </div>
-            <div className="bg-gray-50 rounded-xl border border-gray-100 flex items-center justify-center">
-              <BarChart3 className="text-gray-300 w-12 h-12" />
-            </div>
-            <div className="bg-gray-50 rounded-xl border border-gray-100 flex items-center justify-center">
-              <LineChart className="text-gray-300 w-12 h-12" />
-            </div>
-          </div>
-        </div>
-        {/* Prompt popup */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}
-          className="absolute -bottom-6 -left-6 bg-white border border-black/10 shadow-xl rounded-2xl p-4 flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-black flex items-center justify-center">
-            <Zap className="text-white w-4 h-4" />
-          </div>
-          <p style={{ fontFamily: SAT }} className="text-xs font-medium text-black">"Generate an analytics dashboard"</p>
-        </motion.div>
-      </div>
-    </motion.div>
-  </div>
-);
-
-// ─── Scene 2: Deep Research (Mentra) ─────────────────────────────────────────
-const S2 = () => (
-  <div className="fixed inset-0 flex flex-col items-center justify-center px-8 overflow-hidden bg-[#06030A]">
-    <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,#1B3FBF20_0%,transparent_60%)]" />
+  <div className="fixed inset-0 flex flex-col items-center justify-center px-8 overflow-hidden">
     <GridBg isDark={true} />
-    <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
-      transition={{ type: 'spring', stiffness: 90 }} className="relative z-10 max-w-4xl w-full flex flex-col md:flex-row-reverse items-center gap-12">
-      <div className="flex-1 space-y-6 text-center md:text-left">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5">
-          <Globe size={14} className="text-white/60" />
-          <span style={{ fontFamily: SAT }} className="text-[10px] font-bold uppercase tracking-widest text-white/60">02 / Mentra</span>
-        </div>
-        <h2 style={{ fontFamily: IS }} className="text-5xl md:text-7xl italic text-white leading-[1.1] tracking-tight">
-          Autonomous <br/><span className="text-white/40">Research.</span>
-        </h2>
-        <p style={{ fontFamily: SAT }} className="text-lg text-white/60 font-light leading-relaxed">
-          Mentra crawls the live web, synthesizes dozens of sources, and renders complex verdicts instantly without hallucination.
-        </p>
-      </div>
-      <div className="flex-1 w-full">
-        <div className="w-full bg-black rounded-3xl border border-white/10 shadow-2xl p-6 space-y-4">
-          <div className="flex items-center gap-3 border-b border-white/10 pb-4">
-             <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-             <span style={{ fontFamily: SAT }} className="text-[10px] font-mono text-white/40 uppercase">Terminal_Sync</span>
+    <CommandBar prompt="Build a dark mode SaaS dashboard with revenue charts." isActive={true} />
+    
+    <motion.div 
+      initial={{ opacity: 0, y: 100, scale: 0.9 }} 
+      animate={{ opacity: 1, y: 40, scale: 1 }} 
+      transition={{ delay: 2.8, type: 'spring', stiffness: 80 }}
+      className="absolute z-10 w-[90%] max-w-5xl"
+    >
+      <div className="flex flex-col md:flex-row gap-8">
+        <div className="flex-1 space-y-6 text-left">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/20 bg-white/10 backdrop-blur-md">
+            <Layout size={14} className="text-[#1B3FBF]" />
+            <span style={{ fontFamily: SAT }} className="text-[10px] font-bold uppercase tracking-widest text-white/80">Application Synthesis</span>
           </div>
-          <div className="space-y-3 pt-2">
-            <p style={{ fontFamily: SAT }} className="text-xs text-white/60 font-mono">&gt; Scanning 12 sources for query...</p>
-            <p style={{ fontFamily: SAT }} className="text-xs text-white/60 font-mono">&gt; Cross-referencing data points...</p>
-            <div className="p-4 rounded-xl bg-white/5 border border-white/10 mt-4">
-              <p style={{ fontFamily: SAT }} className="text-sm text-white/90 italic">"The consensus indicates a 40% efficiency gain in Q3."</p>
+          <h2 style={{ fontFamily: IS }} className="text-5xl md:text-7xl italic text-white leading-[1.1] tracking-tight drop-shadow-lg">
+            Instant <br/>Interface.
+          </h2>
+          <p style={{ fontFamily: SAT }} className="text-lg text-white/60 font-light leading-relaxed">
+            <KreoText /> writes the React, styles with Tailwind, and renders live. Zero configuration required.
+          </p>
+        </div>
+        <div className="flex-1">
+          <div className="w-full aspect-[4/3] bg-[#0a0a0a] rounded-3xl border border-white/20 shadow-2xl overflow-hidden flex flex-col backdrop-blur-2xl">
+            <div className="h-10 border-b border-white/10 flex items-center px-4 gap-2 bg-white/5">
+              <div className="w-3 h-3 rounded-full bg-red-500/80" />
+              <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
+              <div className="w-3 h-3 rounded-full bg-green-500/80" />
+            </div>
+            <div className="p-6 grid grid-cols-2 gap-4 h-full">
+              <div className="col-span-2 bg-blue-900/20 rounded-2xl border border-blue-500/30 p-5 flex flex-col justify-between relative overflow-hidden">
+                <div className="absolute right-0 top-0 w-32 h-32 bg-blue-500/10 blur-3xl rounded-full" />
+                <span style={{ fontFamily: SAT }} className="text-xs font-bold text-blue-400">Total Revenue</span>
+                <span style={{ fontFamily: IS }} className="text-5xl text-white mt-2">$124,500</span>
+              </div>
+              <div className="bg-white/5 rounded-2xl border border-white/10 flex items-center justify-center p-6">
+                <BarChart3 className="text-white/30 w-full h-full" />
+              </div>
+              <div className="bg-white/5 rounded-2xl border border-white/10 flex items-center justify-center p-6">
+                <LineChart className="text-white/30 w-full h-full" />
+              </div>
             </div>
           </div>
         </div>
@@ -144,59 +166,160 @@ const S2 = () => (
   </div>
 );
 
-// ─── Scene 3: Presentations ──────────────────────────────────────────────────
-const S3 = () => (
-  <div className="fixed inset-0 flex flex-col items-center justify-center px-8 overflow-hidden bg-[#fafafa]">
-    <GridBg />
-    <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }}
-      transition={{ type: 'spring', stiffness: 90 }} className="relative z-10 max-w-4xl w-full flex flex-col md:flex-row items-center gap-12">
-      <div className="flex-1 space-y-6 text-center md:text-left">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-black/10 bg-black/5">
-          <Presentation size={14} className="text-[#1B3FBF]" />
-          <span style={{ fontFamily: SAT }} className="text-[10px] font-bold uppercase tracking-widest">03 / Pitch Decks</span>
-        </div>
-        <h2 style={{ fontFamily: IS }} className="text-5xl md:text-7xl italic text-black leading-[1.1] tracking-tight">
-          Cinematic <br/><span className="text-[#1B3FBF]">Presentations.</span>
-        </h2>
-        <p style={{ fontFamily: SAT }} className="text-lg text-black/60 font-light leading-relaxed">
-          Need a pitch deck? Kreo generates multi-slide HTML presentations with editorial typography, ready to export and share.
-        </p>
-      </div>
-      <div className="flex-1 w-full relative">
-        {/* Fake Slide Deck */}
-        <div className="w-full aspect-video bg-white rounded-xl shadow-xl overflow-hidden border border-black/5 flex flex-col items-center justify-center text-center p-8 relative">
-          <div className="absolute top-4 left-4 right-4 flex justify-between">
-             <span style={{ fontFamily: SAT }} className="text-[8px] font-bold uppercase tracking-widest text-black/40">Slide 1 / 12</span>
-             <span style={{ fontFamily: SAT }} className="text-[8px] font-bold uppercase tracking-widest text-black/40">Kreo Inc.</span>
+// Scene 2: Deep Research
+const S2 = () => (
+  <div className="fixed inset-0 flex flex-col items-center justify-center px-8 overflow-hidden">
+    <GridBg isDark={true} />
+    <CommandBar prompt="Research our top 3 competitors and synthesize trends." isActive={true} />
+    
+    <motion.div 
+      initial={{ opacity: 0, y: 100, scale: 0.9 }} 
+      animate={{ opacity: 1, y: 40, scale: 1 }} 
+      transition={{ delay: 3.0, type: 'spring', stiffness: 80 }}
+      className="absolute z-10 w-[90%] max-w-5xl"
+    >
+      <div className="flex flex-col md:flex-row-reverse gap-8">
+        <div className="flex-1 space-y-6 text-left">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-purple-500/30 bg-purple-500/10 backdrop-blur-md">
+            <Globe size={14} className="text-purple-400" />
+            <span style={{ fontFamily: SAT }} className="text-[10px] font-bold uppercase tracking-widest text-purple-200">Neural Search</span>
           </div>
-          <h3 style={{ fontFamily: IS }} className="text-4xl text-black">Q3 Strategy</h3>
-          <p style={{ fontFamily: SAT }} className="text-sm text-black/40 mt-2">The path to orchestration.</p>
+          <h2 style={{ fontFamily: IS }} className="text-5xl md:text-7xl italic text-white leading-[1.1] tracking-tight drop-shadow-lg">
+            Deep Context <br/>with <MentraText />.
+          </h2>
+          <p style={{ fontFamily: SAT }} className="text-lg text-white/60 font-light leading-relaxed">
+            Crawling the live web to anchor your app in reality. No hallucinations, just hard data.
+          </p>
         </div>
-        <motion.div className="absolute -right-4 top-1/2 -translate-y-1/2 w-full aspect-video bg-white/50 backdrop-blur-sm rounded-xl shadow-lg border border-black/5 -z-10 rotate-3 scale-95" />
-        <motion.div className="absolute -right-8 top-1/2 -translate-y-1/2 w-full aspect-video bg-white/20 backdrop-blur-sm rounded-xl shadow-md border border-black/5 -z-20 rotate-6 scale-90" />
+        <div className="flex-1">
+          <div className="w-full bg-black/80 backdrop-blur-3xl rounded-3xl border border-purple-500/20 shadow-[0_0_50px_rgba(168,85,247,0.1)] p-6 space-y-4">
+            <div className="flex items-center justify-between border-b border-white/10 pb-4">
+               <div className="flex items-center gap-3">
+                 <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse shadow-[0_0_10px_rgba(74,222,128,0.8)]" />
+                 <span style={{ fontFamily: SAT }} className="text-[10px] font-mono text-purple-300 uppercase tracking-widest">Mentra_Sync</span>
+               </div>
+               <Sparkles className="text-purple-400/50 w-4 h-4" />
+            </div>
+            <div className="space-y-4 pt-2">
+              <p style={{ fontFamily: SAT }} className="text-xs text-white/50 font-mono">&gt; Spawning 5 parallel agents...</p>
+              <p style={{ fontFamily: SAT }} className="text-xs text-white/50 font-mono">&gt; Analyzing competitor pricing models...</p>
+              <div className="p-5 rounded-2xl bg-gradient-to-br from-purple-500/10 to-blue-500/5 border border-purple-500/20 mt-4 relative overflow-hidden">
+                <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20" />
+                <p style={{ fontFamily: SAT }} className="text-sm text-purple-100 italic relative z-10">
+                  "Market consensus indicates a 40% shift towards usage-based billing in Q3."
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </motion.div>
   </div>
 );
 
-// ─── Scene 4: Call to action ─────────────────────────────────────────────────
+// Scene 3: Visual Identity
+const S3 = () => (
+  <div className="fixed inset-0 flex flex-col items-center justify-center px-8 overflow-hidden">
+    <GridBg isDark={false} />
+    <CommandBar prompt="Design a premium brand kit with typography." isActive={true} />
+    
+    <motion.div 
+      initial={{ opacity: 0, y: 100, scale: 0.9 }} 
+      animate={{ opacity: 1, y: 40, scale: 1 }} 
+      transition={{ delay: 2.8, type: 'spring', stiffness: 80 }}
+      className="absolute z-10 w-[90%] max-w-5xl"
+    >
+      <div className="flex flex-col md:flex-row gap-8">
+        <div className="flex-1 space-y-6 text-left">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-black/10 bg-black/5 backdrop-blur-md">
+            <Palette size={14} className="text-pink-500" />
+            <span style={{ fontFamily: SAT }} className="text-[10px] font-bold uppercase tracking-widest text-black/80">Aesthetic Engine</span>
+          </div>
+          <h2 style={{ fontFamily: IS }} className="text-5xl md:text-7xl italic text-black leading-[1.1] tracking-tight drop-shadow-sm">
+            Visual <br/>Identity.
+          </h2>
+          <p style={{ fontFamily: SAT }} className="text-lg text-black/60 font-light leading-relaxed">
+            <KreoText /> establishes your design system, choosing color palettes and typefaces that evoke the right emotion.
+          </p>
+        </div>
+        <div className="flex-1">
+          <div className="w-full aspect-[4/3] bg-white rounded-3xl border border-black/10 shadow-[0_20px_50px_rgba(0,0,0,0.08)] p-6 md:p-8 flex flex-col gap-6">
+             <div className="flex gap-4 h-1/2">
+                <div className="flex-1 bg-gradient-to-br from-pink-500 to-rose-400 rounded-2xl shadow-inner flex items-end p-4">
+                  <span style={{ fontFamily: SAT }} className="text-white/80 text-xs font-mono">#EC4899</span>
+                </div>
+                <div className="flex-1 bg-gradient-to-br from-indigo-900 to-slate-900 rounded-2xl shadow-inner flex items-end p-4">
+                  <span style={{ fontFamily: SAT }} className="text-white/50 text-xs font-mono">#312E81</span>
+                </div>
+             </div>
+             <div className="flex-1 bg-gray-50 rounded-2xl border border-gray-100 p-6 flex flex-col justify-center">
+                <span style={{ fontFamily: SAT }} className="text-[10px] uppercase tracking-widest text-gray-400 mb-2">Primary Typeface</span>
+                <span style={{ fontFamily: NIMBUS }} className="text-4xl text-black">TAN-NIMBUS</span>
+             </div>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  </div>
+);
+
+// Scene 4: Presentations
 const S4 = () => (
-  <div className="fixed inset-0 flex flex-col items-center justify-center text-center px-8 overflow-hidden bg-black">
-    <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,#ffffff15_0%,transparent_60%)]" />
+  <div className="fixed inset-0 flex flex-col items-center justify-center px-8 overflow-hidden">
+    <GridBg isDark={false} />
+    <CommandBar prompt="Turn this context into a 10-slide pitch deck." isActive={true} />
+    
+    <motion.div 
+      initial={{ opacity: 0, y: 100, scale: 0.9 }} 
+      animate={{ opacity: 1, y: 40, scale: 1 }} 
+      transition={{ delay: 2.8, type: 'spring', stiffness: 80 }}
+      className="absolute z-10 w-[90%] max-w-5xl"
+    >
+      <div className="flex flex-col md:flex-row-reverse gap-12 items-center">
+        <div className="flex-1 space-y-6 text-left">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-black/10 bg-black/5 backdrop-blur-md">
+            <Presentation size={14} className="text-blue-600" />
+            <span style={{ fontFamily: SAT }} className="text-[10px] font-bold uppercase tracking-widest text-black/80">Slide Generation</span>
+          </div>
+          <h2 style={{ fontFamily: IS }} className="text-5xl md:text-7xl italic text-black leading-[1.1] tracking-tight drop-shadow-sm">
+            Cinematic <br/>Presentations.
+          </h2>
+          <p style={{ fontFamily: SAT }} className="text-lg text-black/60 font-light leading-relaxed">
+            Ready to raise? <KreoText /> packages your application and research into editorial, export-ready slide decks.
+          </p>
+        </div>
+        <div className="flex-1 w-full relative h-[300px] flex items-center justify-center">
+          {/* Stacked Cards */}
+          <div className="absolute w-[110%] aspect-video bg-white rounded-2xl shadow-2xl border border-black/5 flex flex-col items-center justify-center p-8 z-30">
+            <h3 style={{ fontFamily: IS }} className="text-5xl text-black">Q3 Strategy</h3>
+            <p style={{ fontFamily: SAT }} className="text-sm text-black/40 mt-4 uppercase tracking-[0.2em]">The Path Forward</p>
+          </div>
+          <motion.div className="absolute w-[100%] aspect-video bg-gray-100 rounded-2xl shadow-lg border border-black/5 z-20 rotate-3 translate-x-4 translate-y-4" />
+          <motion.div className="absolute w-[90%] aspect-video bg-gray-200 rounded-2xl shadow-md border border-black/5 z-10 rotate-6 translate-x-8 translate-y-8" />
+        </div>
+      </div>
+    </motion.div>
+  </div>
+);
+
+// Scene 5: Outro
+const S5 = () => (
+  <div className="fixed inset-0 flex flex-col items-center justify-center text-center px-8 overflow-hidden bg-[#06030A]">
+    <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,#1B3FBF15_0%,transparent_60%)]" />
     <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-      transition={{ type: 'spring', stiffness: 100 }} className="relative z-20 space-y-10">
-      <div className="space-y-4">
+      transition={{ type: 'spring', stiffness: 80 }} className="relative z-20 space-y-12">
+      <div className="space-y-6">
         <h1 style={{ fontFamily: IS }}
-          className="text-[12vw] md:text-[8vw] leading-[0.9] italic text-white tracking-tighter">
-          Ready to <span className="text-white/40">create?</span>
+          className="text-[12vw] md:text-[9vw] leading-[0.9] italic text-white tracking-tighter drop-shadow-2xl">
+          Start <span className="text-white/40">building.</span>
         </h1>
-        <p style={{ fontFamily: SAT }} className="text-lg md:text-xl text-white/50 font-light max-w-md mx-auto">
-          Start manifesting your ideas instantly.
+        <p style={{ fontFamily: SAT }} className="text-xl md:text-2xl text-white/50 font-light max-w-lg mx-auto">
+          One prompt. Infinite possibilities with <KreoText />.
         </p>
       </div>
-      <div className="flex flex-col items-center gap-6">
-        <a href="/" style={{ fontFamily: SAT }} className="inline-flex items-center gap-3 px-10 py-5 bg-white text-black text-[11px] font-black uppercase tracking-[0.3em] rounded-full hover:scale-105 active:scale-95 transition-transform shadow-[0_0_40px_rgba(255,255,255,0.2)]">
-          Enter Kreo <ChevronRight size={14} />
+      <div className="flex justify-center pt-8">
+        <a href="/" style={{ fontFamily: SAT }} className="inline-flex items-center gap-3 px-12 py-5 bg-white text-black text-[12px] font-black uppercase tracking-[0.4em] rounded-full hover:scale-105 active:scale-95 transition-transform shadow-[0_0_50px_rgba(255,255,255,0.3)]">
+          Enter Portal <ChevronRight size={16} />
         </a>
       </div>
     </motion.div>
@@ -204,7 +327,7 @@ const S4 = () => (
 );
 
 // ─── Scene registry ───────────────────────────────────────────────────────────
-const SCENES = [S0, S1, S2, S3, S4];
+const SCENES = [S0, S1, S2, S3, S4, S5];
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 export default function KreoShowcasePromo() {
@@ -230,30 +353,32 @@ export default function KreoShowcasePromo() {
   }, [scene]);
 
   const Scene = SCENES[scene];
-  const isDark = scene === 2 || scene === 4;
+  const isDark = scene === 1 || scene === 2 || scene === 5;
 
   return (
     <div
-      className="relative w-full h-screen overflow-hidden select-none cursor-pointer transition-colors duration-1000"
+      className="relative w-full h-screen overflow-hidden select-none transition-colors duration-1000 bg-[#fafafa]"
       onClick={advance}
     >
       <ProgressStrip scene={scene} progress={progress} isDark={isDark} />
 
       {/* Top Left Branding */}
-      <div className="fixed top-8 left-8 z-[1000] flex items-center gap-3">
-        <div className={`w-6 h-6 rounded-full flex items-center justify-center ${isDark ? 'bg-white/10' : 'bg-black/5'}`}>
-          <Cpu size={11} className={isDark ? 'text-white' : 'text-black'} />
+      <div className="fixed top-8 left-8 z-[1000] flex items-center gap-3 pointer-events-none">
+        <div className={`w-8 h-8 rounded-xl flex items-center justify-center backdrop-blur-md border ${isDark ? 'bg-white/10 border-white/20' : 'bg-black/5 border-black/10'}`}>
+          <Cpu size={14} className={isDark ? 'text-white' : 'text-black'} />
         </div>
-        <span style={{ fontFamily: SAT }} className={`text-[10px] font-black uppercase tracking-[0.3em] ${isDark ? 'text-white/40' : 'text-black/40'}`}>KREO OS</span>
+        <span style={{ fontFamily: SAT }} className={`text-[11px] font-black uppercase tracking-[0.4em] ${isDark ? 'text-white/60' : 'text-black/60'}`}>
+          <KreoText /> OS
+        </span>
       </div>
 
       <AnimatePresence mode="wait">
         <motion.div
           key={scene}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.6 }}
+          initial={{ opacity: 0, filter: 'blur(10px)' }}
+          animate={{ opacity: 1, filter: 'blur(0px)' }}
+          exit={{ opacity: 0, filter: 'blur(10px)' }}
+          transition={{ duration: 0.8 }}
           className="w-full h-full"
         >
           <Scene />
