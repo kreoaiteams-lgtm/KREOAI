@@ -7,11 +7,11 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Landing from "./pages/Landing";
 import KreoPromo from "./components/KreoPromo";
-import KreoPromo1 from "./components/KreoPromo1";
-import KreoPromo2 from "./components/KreoPromo2";
-import KreoPromo3 from "./components/KreoPromo3";
-import KreoPromo4 from "./components/KreoPromo4";
-import KreoPromo5 from "./components/KreoPromo5";
+import CleanPromo1 from "./components/CleanPromo1";
+import CleanPromo2 from "./components/CleanPromo2";
+import CleanPromo3 from "./components/CleanPromo3";
+import CleanPromo4 from "./components/CleanPromo4";
+import CleanPromo5 from "./components/CleanPromo5";
 import KreoPromo6 from "./components/KreoPromo6";
 import Promo8 from "./components/Promo8";
 import KreoVsClaudePromo from "./components/KreoVsClaudePromo";
@@ -45,11 +45,11 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/login" element={<AuthScreen />} />
           <Route path="/landing" element={<Landing />} />
-          <Route path="/promo1" element={<KreoPromo1 />} />
-          <Route path="/promo2" element={<KreoPromo2 />} />
-          <Route path="/promo3" element={<KreoPromo3 />} />
-          <Route path="/promo4" element={<KreoPromo4 />} />
-          <Route path="/promo5" element={<KreoPromo5 />} />
+          <Route path="/promo1" element={<CleanPromo1 />} />
+          <Route path="/promo2" element={<CleanPromo2 />} />
+          <Route path="/promo3" element={<CleanPromo3 />} />
+          <Route path="/promo4" element={<CleanPromo4 />} />
+          <Route path="/promo5" element={<CleanPromo5 />} />
           <Route path="/promo6" element={<KreoPromo6 />} />
           <Route path="/promo8" element={<Promo8 />} />
           <Route path="/share/:id" element={<ShareView />} />
