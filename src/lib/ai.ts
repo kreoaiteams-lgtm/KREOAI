@@ -113,7 +113,7 @@ export const generateArtifact = async (
     ];
 
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s timeout
+    const timeoutId = setTimeout(() => controller.abort(), 60000); // Increased to 60s for heavy orchestration
 
     const response = await fetch(SARVAM_ENDPOINT, {
       method: "POST",

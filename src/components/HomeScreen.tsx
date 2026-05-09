@@ -515,15 +515,17 @@ const HomeScreen = ({
           let error = null;
 
           if (!isLocal) {
-            // Primary fetch — with share_token
-            let { data: primaryData, error: primaryError } = await (isUuid 
-              ? supabase.from("artifacts").select("id, prompt, code, created_at, user_id, share_token").or(`share_token.eq.${urlId},id.eq.${urlId}`).maybeSingle()
-              : supabase.from("artifacts").select("id, prompt, code, created_at, user_id, share_token").eq("share_token", urlId).maybeSingle());
+            // Primary fetch — with broad select for maximum compatibility
+            const query = isUuid 
+              ? supabase.from("artifacts").select("*").or(`share_token.eq.${urlId},id.eq.${urlId}`)
+              : supabase.from("artifacts").select("*").eq("share_token", urlId);
             
-            // Fallback: if 400 (column missing), retry with basic selection
-            if (primaryError && (primaryError.message?.includes('share_token') || primaryError.message?.includes('400') || (primaryError as any).status === 400)) {
+            let { data: primaryData, error: primaryError } = await query.maybeSingle();
+            
+            // Fallback for schema mismatches (if * or share_token fail)
+            if (primaryError && (primaryError.status === 400)) {
                const { data: fallbackData, error: fallbackError } = await (isUuid
-                ? supabase.from("artifacts").select("id, prompt, code, created_at, user_id").eq("id", urlId).maybeSingle()
+                ? supabase.from("artifacts").select("id, code").eq("id", urlId).maybeSingle()
                 : { data: null, error: new Error("Legacy tokens not supported in fallback mode") });
                data = fallbackData;
                error = fallbackError;
@@ -607,10 +609,18 @@ const HomeScreen = ({
           }
         }
 
-        let query = supabase.from('artifacts').select(useShareToken ? 'id, prompt, code, created_at, user_id, share_token' : 'id, prompt, code, created_at, user_id');
-        let { data, error } = await query
+        let { data, error } = await supabase.from('artifacts').select('*')
           .eq('user_id', user.id)
           .order('created_at', { ascending: false });
+
+        if (error && error.status === 400) {
+          // Absolute fallback if select * fails (unlikely, but for resilience)
+          const { data: minimalData, error: minimalError } = await supabase.from('artifacts')
+            .select('id, code')
+            .eq('user_id', user.id);
+          data = minimalData;
+          error = minimalError;
+        }
 
         if (error) {
           console.error("Neural sync throttled:", error.message);
@@ -1057,10 +1067,10 @@ const HomeScreen = ({
               <TooltipTrigger asChild>
                 <button
                   onClick={() => navigate('/webresearch')}
-                  className="flex items-center gap-2 px-4 py-2 rounded-full text-[#E63946] bg-[#E63946]/5 hover:bg-[#E63946]/10 transition-all ml-2"
+                  className="flex items-center gap-2 px-6 py-2 rounded-full bg-[#0020C2] text-white border border-[#0020C2] hover:scale-105 active:scale-95 transition-all ml-2"
                 >
-                  <BrainCircuit size={16} />
-                  <span className="text-[10px] font-black uppercase tracking-widest">Mentra</span>
+                  <BrainCircuit size={14} />
+                  <span className="text-[12px] font-serif italic capitalize tracking-wide">Mentra</span>
                 </button>
               </TooltipTrigger>
               <TooltipContent>Deep Research Agent</TooltipContent>
@@ -1280,8 +1290,7 @@ const HomeScreen = ({
                 className="text-center"
               >
                 <div 
-                  className="text-2xl font-black uppercase tracking-widest text-[#1B3FBF] animate-pulse"
-                  style={{ fontFamily: "'Satoshi', sans-serif" }}
+                  className="text-3xl font-serif italic text-[#1B3FBF] animate-pulse"
                 >
                   Coming right up...
                 </div>
