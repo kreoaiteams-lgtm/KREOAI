@@ -59,7 +59,7 @@ const CoWorkPanel = ({ onManifestGenerated, onClose }: CoWorkPanelProps) => {
               }}
             >
               <div className="absolute inset-0 bg-black/40 pointer-events-none" />
-              <h1 className="text-9xl md:text-[12rem] text-white leading-none mb-4 brand-font relative z-10">MENTRA</h1>
+              <h1 className="text-9xl md:text-[12rem] text-white leading-none mb-2 brand-font relative z-10">MENTRA</h1>
               <div className="flex gap-2 relative z-10">
                  <motion.div animate={{ scale: [1, 1.5, 1], opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.5, delay: 0 }} className="w-2 h-2 rounded-full bg-white/20" />
                  <motion.div animate={{ scale: [1, 1.5, 1], opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.5, delay: 0.2 }} className="w-2 h-2 rounded-full bg-white/40" />
@@ -72,11 +72,11 @@ const CoWorkPanel = ({ onManifestGenerated, onClose }: CoWorkPanelProps) => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="w-full flex flex-col items-center space-y-12"
+            className="w-full flex flex-col items-center space-y-6"
           >
             {/* Branding - Bigger Mentra */}
             <AnimatePresence>
-                  <h1 className="text-8xl md:text-9xl text-white leading-none mb-1 brand-font">MENTRA</h1>
+                  <h1 className="text-8xl md:text-9xl text-white leading-none mb-0 brand-font">MENTRA</h1>
             </AnimatePresence>
 
             {/* Input Area */}

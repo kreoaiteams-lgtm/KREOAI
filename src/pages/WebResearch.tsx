@@ -133,7 +133,7 @@ export default function WebResearch() {
                     </h3>
                     <div className="w-full space-y-10 glass-card p-10 md:p-12 flex flex-col items-center">
                        <div className="grid grid-cols-1 gap-8 w-full">
-                         {Object.entries(data.optionA.specs).map(([label, value]) => (
+                         {data.optionA.specs && Object.entries(data.optionA.specs).map(([label, value]) => (
                            <div key={label} className="flex flex-col items-center gap-1">
                              <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-white/30">{label}</span>
                              <span className="text-2xl font-serif italic text-white/90">{value}</span>
@@ -141,7 +141,7 @@ export default function WebResearch() {
                          ))}
                        </div>
                        <div className="pt-8 border-t border-white/5 w-full space-y-4">
-                         {data.optionA.pros.map((pro, i) => (
+                         {data.optionA.pros?.map((pro, i) => (
                            <span key={i} className="block text-sm text-white/50 font-light">{pro}</span>
                          ))}
                        </div>
@@ -158,7 +158,7 @@ export default function WebResearch() {
                     </h3>
                     <div className="w-full space-y-10 glass-card p-10 md:p-12 flex flex-col items-center">
                        <div className="grid grid-cols-1 gap-8 w-full">
-                         {Object.entries(data.optionB.specs).map(([label, value]) => (
+                         {data.optionB.specs && Object.entries(data.optionB.specs).map(([label, value]) => (
                            <div key={label} className="flex flex-col items-center gap-1">
                              <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-white/30">{label}</span>
                              <span className="text-2xl font-serif italic text-white/90">{value}</span>
@@ -166,7 +166,7 @@ export default function WebResearch() {
                          ))}
                        </div>
                        <div className="pt-8 border-t border-white/5 w-full space-y-4">
-                         {data.optionB.pros.map((pro, i) => (
+                         {data.optionB.pros?.map((pro, i) => (
                            <span key={i} className="block text-sm text-white/50 font-light">{pro}</span>
                          ))}
                        </div>
