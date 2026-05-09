@@ -296,19 +296,21 @@ export const generateComparisonData = async (prompt: string, context: string) =>
       body: JSON.stringify({
         model: "sarvam-105b",
         messages: [
-          {
             role: "system",
             content: `You are a TECHNICAL DATA ARCHITECT. 
                      Extract a structured comparison between TWO items from the provided research context. 
+                     If no context is provided or context is empty, use your vast internal knowledge to provide accurate details.
                      Return ONLY a JSON object. NO MARKDOWN. NO CHAT.
                      
                      Schema:
                      {
-                       "optionA": { "name": string, "specs": { "Price": string, "Range": string, "Battery": string, "Performance": string, "Pros": string[] } },
-                       "optionB": { "name": string, "specs": { "Price": string, "Range": string, "Battery": string, "Performance": string, "Pros": string[] } },
+                       "optionA": { "name": string, "specs": { [key: string]: string }, "pros": string[] },
+                       "optionB": { "name": string, "specs": { [key: string]: string }, "pros": string[] },
                        "verdict": string,
                        "winner": "A" | "B" | "Tie"
-                     }`
+                     }
+                     
+                     IMPORTANT: Choose the most relevant 4-5 technical specifications for the specific category of items (e.g., Weight, Balance, Tension for rackets; Range, Battery, Charging for EVs). Do NOT use irrelevant categories.`
           },
           { role: "user", content: `Context: ${context}\nObjective: ${prompt}` }
         ],
@@ -467,13 +469,13 @@ export const runCoWorkAgent = async (
 
           const res = await fetch(`https://s.jina.ai/${encodeURIComponent(step.query || step.content)}`, {
             method: "GET",
-            headers: { "Authorization": `Bearer ${JINA_API_KEY}`, "Accept": "application/json" },
+            headers: { "Authorization": `Bearer ${JINA_API_KEY}` },
             signal: controller.signal
           });
           clearTimeout(timeoutId);
 
-          const searchData = await res.json();
-          const snippets = searchData.data?.slice(0, 8).map((r: any) => `[Source: ${r.url}]\n${r.title}\n${r.content?.slice(0, 2000)}`).join("\n\n") || "No live data found.";
+          const text = await res.text();
+          const snippets = text.length > 100 ? text.slice(0, 6000) : "No live data found.";
           step.results = snippets;
           accumulatedContext += `\n\n### LIVE WEB CHECK: ${step.content}\n${snippets}`;
           step.status = 'done';
