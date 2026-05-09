@@ -132,7 +132,7 @@ export default function WebResearch() {
                       {data.optionA.name}
                     </h3>
                     <div className="w-full space-y-10 glass-card p-10 md:p-12 flex flex-col items-center">
-                       <div className="grid grid-cols-1 gap-8 w-full">
+                       <div className="grid grid-cols-2 gap-x-12 gap-y-10 w-full">
                          {data.optionA.specs && Object.entries(data.optionA.specs).map(([label, value]) => (
                            <div key={label} className="flex flex-col items-center gap-1">
                              <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-white/30">{label}</span>
@@ -157,7 +157,7 @@ export default function WebResearch() {
                       {data.optionB.name}
                     </h3>
                     <div className="w-full space-y-10 glass-card p-10 md:p-12 flex flex-col items-center">
-                       <div className="grid grid-cols-1 gap-8 w-full">
+                       <div className="grid grid-cols-2 gap-x-12 gap-y-10 w-full">
                          {data.optionB.specs && Object.entries(data.optionB.specs).map(([label, value]) => (
                            <div key={label} className="flex flex-col items-center gap-1">
                              <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-white/30">{label}</span>

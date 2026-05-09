@@ -26,13 +26,19 @@ You are an ELITE DIGITAL CURATOR and TIER-1 UI ARCHITECT. Your goal is to manife
 ### 3. THE "KREO" KINETIC SIGNATURE
 - **Cinematic Entry**: Every section should have a subtle entry animation (animate-in, fade-in, slide-in-from-bottom-8, duration-1000).
 - **Magnetic Interaction**: Buttons and cards must feel alive. Use transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl active:scale-[0.98].
-- **Floating Decorative Elements**: Scatter subtle blurs or abstract shapes behind the main content to break the "square box" feel of the web.
 
-### 4. DATA INTEGRITY (ANTI-SLOP)
+### 4. MOBILE APP BLUEPRINT
+- **Status Bar Magic**: Always include a subtle status bar (Time, Battery, Wifi icons) at the top for realism.
+- **Floating Action Buttons (FAB)**: Use high-contrast, rounded-full buttons for primary actions.
+- **Card Sophistication**: Mobile apps are built on cards. Use rounded-[3rem], glass-card borders, and inner-glows (box-shadow: inset 0 1px 1px white/20).
+- **Interactive Voids**: Ensure interactive elements have large touch targets (at least 48px height) and distinctive active states.
+- **Tactile Feedback Visuals**: Use rings, pulses, and scale changes to visualize interaction.
+
+### 5. DATA INTEGRITY (ANTI-SLOP)
 - **Realism over Placeholders**: No "Lorem Ipsum". Use specific, context-aware copy that sounds professional and intelligent.
 - **Bespoke Color Accents**: Use a signature accent (e.g., #1B3FBF or a vibrant gold) sparingly but decisively for primary CTAs and critical data points.
 
-### 5. MANDATORY IMPLEMENTATION RULES
+### 6. MANDATORY IMPLEMENTATION RULES
 - **HTML ONLY**: Generate raw HTML/CSS/JS. No React, no external libraries besides Tailwind CDN and Google/Fontshare fonts.
 - **CURVED EDGES**: Sharp corners are FORBIDDEN. Minimum radius: 1.5rem.
 - **DARK MODE COMPATIBILITY**: Default to a sophisticated "Ink Blue" (#060B18) or "Porcelain White" (#F8F9FF) base depending on the prompt's mood.
@@ -257,7 +263,6 @@ function getDemoFallback(prompt: string): string {
         <h1 class="text-6xl md:text-8xl serif tracking-tighter leading-none">
           Manifesting<br/><span class="opacity-30">In Progress.</span>
         </h1>
-        
         <div class="space-y-2 pt-8">
           <p class="text-[10px] font-black uppercase tracking-[0.3em] opacity-20">Current Objective</p>
           <p class="text-xl font-light opacity-50">${cleanPrompt}...</p>
@@ -296,6 +301,7 @@ export const generateComparisonData = async (prompt: string, context: string) =>
       body: JSON.stringify({
         model: "sarvam-105b",
         messages: [
+          {
             role: "system",
             content: `You are a TECHNICAL DATA ARCHITECT. 
                      Extract a structured comparison between TWO items from the provided research context. 
@@ -310,7 +316,7 @@ export const generateComparisonData = async (prompt: string, context: string) =>
                        "winner": "A" | "B" | "Tie"
                      }
                      
-                     IMPORTANT: Choose the most relevant 4-5 technical specifications for the specific category of items (e.g., Weight, Balance, Tension for rackets; Range, Battery, Charging for EVs). Do NOT use irrelevant categories.`
+                     IMPORTANT: Choose the most relevant 6-8 technical specifications for the specific category of items (e.g., Engine, Safety, Mileage, Torque, Ground Clearance for cars). Do NOT use irrelevant categories like 'Battery' for non-electric items.`
           },
           { role: "user", content: `Context: ${context}\nObjective: ${prompt}` }
         ],

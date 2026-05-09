@@ -433,11 +433,11 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, onRefinement, readO
             ))}
           </div>
         )}
-        <div className={`flex-1 relative flex items-start justify-center overflow-auto custom-scrollbar ${deviceMode === 'phone' ? 'py-32 bg-black/[0.02]' : ''}`}>
+        <div className={`flex-1 relative flex items-center justify-center overflow-auto custom-scrollbar ${deviceMode === 'phone' ? 'bg-black/[0.02]' : ''}`}>
           {(activeTab === "preview" || isPresentation) ? (
             <motion.div 
               layout
-              className={`relative bg-white shadow-2xl transition-all duration-700 ${isFullscreen ? "w-full h-full" : deviceMode === 'phone' ? "w-[375px] h-[760px] rounded-[3.5rem] border-[12px] border-black scale-[0.75] sm:scale-85 origin-top shrink-0 mt-8 mb-32" : "w-full h-full overflow-hidden"}`}
+              className={`relative bg-white shadow-2xl transition-all duration-700 ${isFullscreen ? "w-full h-full" : deviceMode === 'phone' ? "w-[375px] h-[760px] rounded-[3.5rem] border-[12px] border-black scale-[0.65] sm:scale-75 md:scale-90 origin-center shrink-0" : "w-full h-full overflow-hidden"}`}
             >
               <div className="h-full w-full animate-in fade-in duration-700 bg-white overflow-hidden">
                 <AnimatePresence>

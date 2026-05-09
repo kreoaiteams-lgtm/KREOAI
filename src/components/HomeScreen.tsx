@@ -948,7 +948,7 @@ const HomeScreen = ({
             .from("artifacts")
             .update({ code: code, prompt: finalQuery })
             .eq("share_token", currentArtifactId)
-            .select('id, prompt, code, created_at, user_id, share_token')
+            .select('*')
             .maybeSingle();
           newArtifact = data;
           insertError = error;
@@ -959,7 +959,7 @@ const HomeScreen = ({
               .from("artifacts")
               .update({ code: code, prompt: finalQuery })
               .eq("id", currentArtifactId)
-              .select('id, prompt, code, created_at, user_id')
+              .select('*')
               .maybeSingle();
             newArtifact = fallback.data;
             insertError = fallback.error;
@@ -976,7 +976,7 @@ const HomeScreen = ({
               is_public: true,
               share_token: shareToken
             })
-            .select('id, prompt, code, created_at, user_id, share_token')
+            .select('*')
             .maybeSingle();
           newArtifact = data;
           insertError = error;
@@ -992,7 +992,7 @@ const HomeScreen = ({
                 code: code,
                 user_id: user ? user.id : null,
               })
-              .select('id, prompt, code, created_at, user_id')
+              .select('*')
               .maybeSingle();
             newArtifact = fallback.data;
             insertError = fallback.error;
@@ -1011,13 +1011,12 @@ const HomeScreen = ({
           setCurrentArtifactId(targetId);
           navigate(`/share/${targetId}`, { replace: true });
         } else {
-          // If Supabase failed, maintain local state but keep currentArtifactId as optimistic for local session
+          // Absolute Fallback: Even if cloud sync fails, update local currentArtifactId to the shareToken 
+          // so the user isn't stuck with a "Syncing..." spinner in the share dialog.
           if (!user) {
             setHistoryItems(updatedLocal);
           }
-          if (optimisticId) {
-            setCurrentArtifactId(optimisticId);
-          }
+          setCurrentArtifactId(shareToken);
           console.warn("[KREO] Database sync failed. Experience remains local. Shared links will not work until database schema/access is resolved.");
         }
 
