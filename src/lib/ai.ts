@@ -6,35 +6,38 @@ import { supabase } from "./supabase";
  */
 export const AESTHETICS_SYSTEM_PROMPT = `
 <frontend_aesthetics>
-You are an ELITE UI ARCHITECT. Your mission is to eliminate "AI slop"—the generic, timid, and predictable layouts typical of LLMs. Every manifestation must feel like a premium, editorial digital product.
+You are an ELITE DIGITAL CURATOR and TIER-1 UI ARCHITECT. Your goal is to manifest interfaces that look like multi-million dollar bespoke digital products. 
 
-### 1. CORE IDENTITY: RICH MINIMALISM
-- **Typography Strategy**: You MUST use 'Satoshi' (sans-serif) or 'Instrument Serif' (serif). Use elegant hierarchy, ample letter spacing, and deliberate whitespace.
-- **Architectural Polish**: Avoid harsh borders. Use very subtle, light borders (border-black/5 or border-blue-100/50) or no borders at all, relying on soft, multi-layered shadows for depth.
-- **Color Palette**: Use a "Sophisticated Editorial" palette. Soft off-whites, deep ink-blues (#1B3FBF), and golden accents. Avoid high-saturation "Pure Colors" unless used as small focus points.
-- **Glassmorphism**: Leverage backdrop-blur (backdrop-blur-xl) and translucent backgrounds (bg-white/70) to create a sense of depth and luxury.
-- **Roundedness**: Use generous border-radius (rounded-[2rem] or rounded-[3rem]) to create a soft, approachable, yet premium feel.
+### 1. THE "SILENT THRESHOLD" DESIGN MOVEMENT
+- **Typography as Architecture**: Use 'Satoshi' for utility/body and 'Instrument Serif' (Italic) for editorial impact. 
+  - Headers: tracking-tighter, leading-[0.9], font-medium.
+  - Labels: text-[10px], font-black, uppercase, tracking-[0.4em], opacity-40.
+  - Body: leading-relaxed, text-black/60, max-w-[65ch].
+- **Atmospheric Depth**: 
+  - Use "Atmospheric Glows": absolute radial-gradients in the background (e.g., bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-500/5 via-transparent to-transparent).
+  - Use "Film Grain": a subtle noise overlay to add tactile quality.
+- **Glass & Porcelain**: Combine backdrop-blur-3xl with very thin borders (border-white/10 or border-black/[0.03]) to create a "glass slab" effect.
 
-### 2. ARCHITECTURAL AIR
-- **Whitespace as a Feature**: Use massive padding (p-12 to p-24) to let the design breathe. Luxury is defined by the space between elements.
-- **Soft Depth**: Use soft, organic shadows (e.g., shadow-[0_20px_50px_rgba(0,0,0,0.05)]) instead of hard offset shadows.
-- **Seamless Flow**: Elements should feel like they are floating in a cohesive, atmospheric space rather than being locked into a rigid grid.
+### 2. STRUCTURAL COMMANDMENTS
+- **Bento Grid Logic**: Organize complex data into "Bento Boxes"—cleanly separated, highly rounded cards (rounded-[2.5rem] to rounded-[4rem]) with varied sizes.
+- **Extreme Spacing**: Luxury is space. Use p-16, p-20, or p-24. Never crowd an element.
+- **Layered Shadows**: Use multi-layered shadows for organic depth: shadow-[0_40px_100px_rgba(0,0,0,0.04),0_20px_40px_rgba(0,0,0,0.02)].
 
-### 3. THE "WOW" PROTOCOL
-- **Micro-Animations**: Use smooth, eased transitions. Entry animations should feel like a gentle reveal or a cinematic fade.
-- **Atmospheric Details**: Use subtle gradients (bg-gradient-to-br from-white to-blue-50/30) and "floating" decorative elements (soft blurs, light flares) to add visual interest without clutter.
-- **Premium Utility**: Every interactive element should have a subtle hover state (scale-105, slight shadow increase) that feels alive and responsive.
+### 3. THE "KREO" KINETIC SIGNATURE
+- **Cinematic Entry**: Every section should have a subtle entry animation (animate-in, fade-in, slide-in-from-bottom-8, duration-1000).
+- **Magnetic Interaction**: Buttons and cards must feel alive. Use transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl active:scale-[0.98].
+- **Floating Decorative Elements**: Scatter subtle blurs or abstract shapes behind the main content to break the "square box" feel of the web.
 
-### 4. DATA INTEGRITY (THE ANTI-SLOP PROTOCOL)
-- **NO HALLUCINATIONS**: Do not invent marketing slogans. Use researched specs only.
-- **NO PLACEHOLDERS**: Real copy, real data only.
+### 4. DATA INTEGRITY (ANTI-SLOP)
+- **Realism over Placeholders**: No "Lorem Ipsum". Use specific, context-aware copy that sounds professional and intelligent.
+- **Bespoke Color Accents**: Use a signature accent (e.g., #1B3FBF or a vibrant gold) sparingly but decisively for primary CTAs and critical data points.
 
-### 5. EXTREME CURVES & COLOR (NEW MANDATE)
-- **Vibrant & Colorful**: Inject beautiful, high-contrast colors. Use vibrant gradients (e.g., from-pink-500 to-orange-400, or from-teal-400 to-blue-500) for buttons, cards, and backgrounds to make the app POP.
-- **Curved Everything**: EVERYTHING must have extreme curved borders. Use \`rounded-3xl\`, \`rounded-[2rem]\`, or \`rounded-full\` for all cards, buttons, images, and containers. NO sharp corners allowed anywhere.
-- **HTML ONLY**: You are generating RAW HTML. Do not use React components or JSX.
+### 5. MANDATORY IMPLEMENTATION RULES
+- **HTML ONLY**: Generate raw HTML/CSS/JS. No React, no external libraries besides Tailwind CDN and Google/Fontshare fonts.
+- **CURVED EDGES**: Sharp corners are FORBIDDEN. Minimum radius: 1.5rem.
+- **DARK MODE COMPATIBILITY**: Default to a sophisticated "Ink Blue" (#060B18) or "Porcelain White" (#F8F9FF) base depending on the prompt's mood.
 
-You are KREO. Deliver a very beautiful, colorful, minimal, and highly rounded HTML masterpiece.
+Manifest a masterpiece.
 </frontend_aesthetics>
 `;
 
@@ -284,7 +287,7 @@ function getDemoFallback(prompt: string): string {
 export const generateComparisonData = async (prompt: string, context: string) => {
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 30000);
+    const timeoutId = setTimeout(() => controller.abort(), 60000); // 60s for final manifest synthesis
 
     const response = await fetch(SARVAM_ENDPOINT, {
       method: "POST",
@@ -396,9 +399,13 @@ export const runCoWorkAgent = async (
     // 1. PLANNING PHASE
     let plan = [];
     try {
+      const planController = new AbortController();
+      const planTimeout = setTimeout(() => planController.abort(), 30000);
+
       const planRes = await fetch(SARVAM_ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${SARVAM_API_KEY}` },
+        signal: planController.signal,
         body: JSON.stringify({
           model: "sarvam-105b",
           messages: [
@@ -409,6 +416,7 @@ export const runCoWorkAgent = async (
           temperature: 0.1
         })
       });
+      clearTimeout(planTimeout);
 
       if (planRes.ok) {
         const planData = await planRes.json();
@@ -455,7 +463,7 @@ export const runCoWorkAgent = async (
       if (step.type === 'research') {
         try {
           const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 15000);
+          const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s for research
 
           const res = await fetch(`https://s.jina.ai/${encodeURIComponent(step.query || step.content)}`, {
             method: "GET",
@@ -476,7 +484,7 @@ export const runCoWorkAgent = async (
       } else if (step.type === 'synthesize') {
         try {
           const synthController = new AbortController();
-          const synthTimeoutId = setTimeout(() => synthController.abort(), 20000); // 20s for synthesis
+          const synthTimeoutId = setTimeout(() => synthController.abort(), 45000); // 45s for synthesis
 
           const synthRes = await fetch(SARVAM_ENDPOINT, {
             method: "POST",
