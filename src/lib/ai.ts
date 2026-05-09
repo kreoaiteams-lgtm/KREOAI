@@ -306,7 +306,7 @@ export const generateComparisonData = async (prompt: string, context: string) =>
             content: `You are a TECHNICAL DATA ARCHITECT. 
                      Extract a structured comparison between TWO items from the provided research context. 
                      If no context is provided or context is empty, use your vast internal knowledge to provide accurate details.
-                     Return ONLY a JSON object. NO MARKDOWN. NO CHAT.
+                     Return ONLY a raw JSON object. NO MARKDOWN BACKTICKS. NO CHAT.
                      
                      Schema:
                      {
@@ -316,7 +316,7 @@ export const generateComparisonData = async (prompt: string, context: string) =>
                        "winner": "A" | "B" | "Tie"
                      }
                      
-                     IMPORTANT: Choose the most relevant 6-8 technical specifications for the specific category of items (e.g., Engine, Safety, Mileage, Torque, Ground Clearance for cars). Do NOT use irrelevant categories like 'Battery' for non-electric items.`
+                     IMPORTANT: Ensure the JSON is syntactically perfect. No trailing commas. No unescaped quotes. Use only 6-8 relevant specs.`
           },
           { role: "user", content: `Context: ${context}\nObjective: ${prompt}` }
         ],
@@ -340,21 +340,33 @@ export const generateComparisonData = async (prompt: string, context: string) =>
       return null;
     }
 
-    // Improved JSON extraction: find first '{' and last '}'
-    const startIndex = content.indexOf('{');
-    const endIndex = content.lastIndexOf('}');
+    // Aggressive JSON extraction and cleaning
+    let cleaned = content.trim();
+    if (cleaned.includes('```')) {
+      cleaned = cleaned.replace(/```(?:json)?/gi, '').replace(/```/g, '').trim();
+    }
+
+    const startIndex = cleaned.indexOf('{');
+    const endIndex = cleaned.lastIndexOf('}');
 
     if (startIndex !== -1 && endIndex !== -1) {
+      const jsonStr = cleaned.slice(startIndex, endIndex + 1);
       try {
-        const jsonStr = content.slice(startIndex, endIndex + 1);
         return JSON.parse(jsonStr);
       } catch (e) {
-        console.error("JSON parse failed for extracted string", e);
+        console.error("Primary JSON parse failed. Attempting structural repair.", e);
+        // Basic repair: remove trailing commas before closing braces/brackets
+        try {
+          const repaired = jsonStr.replace(/,\s*([\]}])/g, '$1');
+          return JSON.parse(repaired);
+        } catch (re) {
+          console.error("JSON repair failed", re);
+        }
       }
     }
 
     try {
-      return JSON.parse(content);
+      return JSON.parse(cleaned);
     } catch (e) {
       console.error("Final fallback JSON parse failed", e);
       return null;
