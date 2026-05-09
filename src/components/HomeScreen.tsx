@@ -1056,81 +1056,15 @@ const HomeScreen = ({
             <Tooltip>
               <TooltipTrigger asChild>
                 <button
-                  id="kreo-tour-history"
-                  onClick={() => setHistoryOpen(!historyOpen)}
-                  className={`rounded-full p-2 transition-all ${historyOpen ? "text-primary bg-primary/10" : "text-foreground/80 hover:text-foreground"}`}
-                >
-                  <Clock size={20} />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>{t.history}</TooltipContent>
-            </Tooltip>
-
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
                   onClick={() => navigate('/webresearch')}
-                  className="rounded-full p-2 text-foreground/80 hover:text-[#E63946] hover:bg-[#E63946]/10 transition-all"
+                  className="flex items-center gap-2 px-4 py-2 rounded-full text-[#E63946] bg-[#E63946]/5 hover:bg-[#E63946]/10 transition-all ml-2"
                 >
-                  <BrainCircuit size={20} />
+                  <BrainCircuit size={16} />
+                  <span className="text-[10px] font-black uppercase tracking-widest">Mentra</span>
                 </button>
               </TooltipTrigger>
-              <TooltipContent>CoWork Mode (Agent)</TooltipContent>
+              <TooltipContent>Deep Research Agent</TooltipContent>
             </Tooltip>
-
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  onClick={() => navigate('/landing#about')}
-                  className="rounded-full p-2 text-foreground/80 hover:text-foreground hover:bg-foreground/5 transition-all"
-                >
-                  <Info size={20} />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>About Us</TooltipContent>
-            </Tooltip>
-
-            {/* Language Switcher */}
-            <div className="relative">
-              <button
-                onClick={() => setLangMenuOpen(v => !v)}
-                className="rounded-full p-2 text-foreground/80 hover:text-foreground hover:bg-foreground/5 transition-all flex items-center gap-1"
-                title={t.lang_label}
-              >
-                <Globe size={18} />
-                <span className="text-[9px] font-black uppercase tracking-widest hidden md:block">
-                  {languages.find(l => l.code === lang)?.nativeLabel}
-                </span>
-              </button>
-              <AnimatePresence>
-                {langMenuOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -8, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: -8, scale: 0.95 }}
-                    transition={{ duration: 0.15 }}
-                    className="absolute right-0 top-12 z-[200] bg-white border border-black/5 rounded-3xl shadow-2xl shadow-black/10 overflow-hidden min-w-[180px]"
-                  >
-                    <div className="p-2">
-                      {languages.map(l => (
-                        <button
-                          key={l.code}
-                          onClick={() => { setLang(l.code); setLangMenuOpen(false); }}
-                          className={`w-full flex items-center justify-between px-4 py-3 rounded-2xl text-left transition-all ${lang === l.code
-                              ? 'bg-[#1B3FBF] text-white'
-                              : 'hover:bg-black/5 text-black'
-                            }`}
-                        >
-                          <span className="text-sm font-medium">{l.nativeLabel}</span>
-                          {lang === l.code && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
-                        </button>
-                      ))}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-              {langMenuOpen && <div className="fixed inset-0 z-[199]" onClick={() => setLangMenuOpen(false)} />}
-            </div>
 
             <button
               onClick={() => navigate('/pricing')}
@@ -1187,17 +1121,91 @@ const HomeScreen = ({
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-md" onClick={() => setSettingsOpen(false)} />
           <div className="relative w-full max-w-sm p-10 rounded-[3rem] bg-white border border-black/5 animate-in zoom-in-95 duration-300 shadow-2xl font-satoshi text-black">
-            <h2 className="text-2xl font-medium tracking-tight mb-8 text-black">Atmosphere Control</h2>
+            <div className="flex justify-between items-center mb-8">
+              <h2 className="text-2xl font-medium tracking-tight text-black">{t.settings}</h2>
+              <button onClick={() => setSettingsOpen(false)} className="p-2 text-black/20 hover:text-black transition-colors">
+                <X size={20} />
+              </button>
+            </div>
+            
             <div className="space-y-6">
-              <div className="flex bg-black/5 p-1.5 rounded-2xl">
-                {(["light", "dark", "ultra"] as const).map((m) => (
-                  <button key={m} onClick={() => setTheme(m)} className={`flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${theme === m ? "bg-[#1B3FBF] text-white shadow-lg" : "text-black/50 hover:text-black"}`}>{m}</button>
-                ))}
+              <div className="space-y-3">
+                <p className="text-[9px] font-black uppercase tracking-widest text-black/30">Atmosphere Control</p>
+                <div className="flex bg-black/5 p-1.5 rounded-2xl">
+                  {(["light", "dark", "ultra"] as const).map((m) => (
+                    <button key={m} onClick={() => setTheme(m)} className={`flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${theme === m ? "bg-[#1B3FBF] text-white shadow-lg" : "text-black/50 hover:text-black"}`}>{m}</button>
+                  ))}
+                </div>
               </div>
+
               <div className="flex items-center justify-between p-4 rounded-2xl bg-[#0020C2]/5 border border-[#0020C2]/10">
                 <div className="text-sm font-medium text-black">Split Architecture</div>
                 <button onClick={() => setIsSplitView(!isSplitView)} className={`w-12 h-6 rounded-full transition-all relative ${isSplitView ? 'bg-[#0020C2]' : 'bg-foreground/10'}`}>
                   <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${isSplitView ? 'left-7' : 'left-1'}`} />
+                </button>
+              </div>
+
+              <div className="h-[1px] bg-black/5 w-full my-2" />
+
+              <div className="space-y-3">
+                <button 
+                  onClick={() => { setHistoryOpen(!historyOpen); setSettingsOpen(false); }} 
+                  className="w-full flex items-center justify-between p-4 rounded-2xl hover:bg-black/5 transition-all text-sm font-medium"
+                >
+                  <div className="flex items-center gap-3">
+                    <Clock size={18} className="text-black/40" />
+                    <span>{t.history}</span>
+                  </div>
+                  <ChevronDown size={14} className="-rotate-90 text-black/20" />
+                </button>
+
+                <button 
+                  onClick={() => { setLangMenuOpen(!langMenuOpen); }} 
+                  className="w-full flex items-center justify-between p-4 rounded-2xl hover:bg-black/5 transition-all text-sm font-medium"
+                >
+                  <div className="flex items-center gap-3">
+                    <Globe size={18} className="text-black/40" />
+                    <span>{t.lang_label}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-[#1B3FBF]">
+                      {languages.find(l => l.code === lang)?.nativeLabel}
+                    </span>
+                    <ChevronDown size={14} className={`${langMenuOpen ? 'rotate-180' : ''} transition-transform text-black/20`} />
+                  </div>
+                </button>
+
+                <AnimatePresence>
+                  {langMenuOpen && (
+                    <motion.div 
+                      initial={{ height: 0, opacity: 0 }} 
+                      animate={{ height: 'auto', opacity: 1 }} 
+                      exit={{ height: 0, opacity: 0 }}
+                      className="overflow-hidden px-2 space-y-1"
+                    >
+                      {languages.map(l => (
+                        <button
+                          key={l.code}
+                          onClick={() => { setLang(l.code); setLangMenuOpen(false); }}
+                          className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-left transition-all ${lang === l.code ? 'bg-[#1B3FBF]/10 text-[#1B3FBF]' : 'hover:bg-black/5 text-black/60'}`}
+                        >
+                          <span className="text-xs font-medium">{l.nativeLabel}</span>
+                          {lang === l.code && <div className="w-1.5 h-1.5 rounded-full bg-[#1B3FBF]" />}
+                        </button>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                <button 
+                  onClick={() => { navigate('/landing#about'); setSettingsOpen(false); }} 
+                  className="w-full flex items-center justify-between p-4 rounded-2xl hover:bg-black/5 transition-all text-sm font-medium"
+                >
+                  <div className="flex items-center gap-3">
+                    <Info size={18} className="text-black/40" />
+                    <span>About Us</span>
+                  </div>
+                  <ChevronDown size={14} className="-rotate-90 text-black/20" />
                 </button>
               </div>
             </div>
@@ -1331,7 +1339,7 @@ const HomeScreen = ({
                 <form onSubmit={handleSubmit} className="relative">
                     <input
                     type="text"
-                    className="w-full rounded-2xl px-6 py-4 pl-14 pr-14 text-sm outline-none border border-black/[0.08] bg-[#f0f3ff] text-black placeholder:text-black/30 focus:border-[#1B3FBF]/60 focus:bg-white transition-all font-light disabled:opacity-40"
+                    className="w-full rounded-2xl px-6 py-4 pl-14 pr-14 text-sm outline-none border border-black/[0.08] bg-[#f0f3ff] text-black placeholder:text-black/30 focus:border-[#1B3FBF]/60 focus:bg-white transition-all font-bold disabled:opacity-40"
                     placeholder="Refine the manifest..."
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
@@ -1415,7 +1423,7 @@ const HomeScreen = ({
                       </Tooltip>
                     </div>
                     <input
-                      className={`flex-1 bg-transparent text-lg outline-none font-satoshi ${theme === 'light' ? 'placeholder:text-black/30 text-black' : 'placeholder:text-white/40 text-white'}`}
+                      className={`flex-1 bg-transparent text-lg outline-none font-satoshi font-bold ${theme === 'light' ? 'placeholder:text-black/30 text-black' : 'placeholder:text-white/40 text-white'}`}
                       placeholder={placeholderText}
                       value={query}
                       onChange={(e) => setQuery(e.target.value)}
