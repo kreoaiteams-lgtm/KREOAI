@@ -3,60 +3,136 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, MessageSquare, Zap, Globe, Cpu, Smartphone, Layout, ArrowRight, ShieldCheck, ZapOff, CheckCircle2, Search, ArrowUp } from 'lucide-react';
 
 const KreoMasterPromo = () => {
-  const [scene, setScene] = useState(0);
+  const [scene, setScene] = useState(-1); 
   const [typedText, setTypedText] = useState("");
-  const fullText = "Manifest a luxury fitness app with biometric tracking.";
+  const [chatMessages, setChatMessages] = useState<{sender: string, text: string}[]>([]);
+  
+  const scenarios = [
+    { name: "School Project", messages: [
+      { sender: "Friend A", text: "Dude, our presentation for school is due in 20 mins." },
+      { sender: "Friend B", text: "We haven't even started the UI design... we're cooked." },
+      { sender: "Friend A", text: "Nah, watch this. I'll just manifest it." }
+    ], prompt: "Manifest a high-end academic dashboard for a school portal." },
+    { name: "Client Meeting", messages: [
+      { sender: "Sarah", text: "The client just asked for a luxury fitness app mockup for the 2 PM meeting." },
+      { sender: "Alex", text: "Wait, that's in 15 minutes! How are we going to build that?" },
+      { sender: "Sarah", text: "KREO. It's the only way." }
+    ], prompt: "Manifest a luxury fitness app with biometric tracking." },
+    { name: "Bank Pitch", messages: [
+      { sender: "Rohan", text: "The board wants to see the new Fintech dashboard TODAY." },
+      { sender: "Neha", text: "We don't even have the wireframes yet!" },
+      { sender: "Rohan", text: "Don't need wireframes. We have Neural Manifestation." }
+    ], prompt: "Manifest a secure, premium banking dashboard with real-time analytics." },
+    { name: "Game Dev", messages: [
+      { sender: "Sam", text: "Our indie game needs a cinematic HUD for the demo." },
+      { sender: "Chris", text: "I'm still debugging the physics... no time for UI." },
+      { sender: "Sam", text: "I got you. KREO, build the HUD." }
+    ], prompt: "Manifest a sci-fi gaming HUD with neon accents and health bars." }
+  ];
+
+  const [activeScenario] = useState(scenarios[Math.floor(Math.random() * scenarios.length)]);
+
+  useEffect(() => {
+    if (scene === -1) {
+      let i = 0;
+      const interval = setInterval(() => {
+        if (i < activeScenario.messages.length) {
+          setChatMessages(prev => [...prev, activeScenario.messages[i]]);
+          i++;
+        } else {
+          clearInterval(interval);
+          setTimeout(() => setScene(0), 1500);
+        }
+      }, 1500);
+      return () => clearInterval(interval);
+    }
+  }, [scene, activeScenario]);
 
   useEffect(() => {
     if (scene === 0) {
       let i = 0;
       const interval = setInterval(() => {
-        setTypedText(fullText.slice(0, i));
+        setTypedText(activeScenario.prompt.slice(0, i));
         i++;
-        if (i > fullText.length) {
+        if (i > activeScenario.prompt.length) {
           clearInterval(interval);
           setTimeout(() => setScene(1), 1000);
         }
       }, 50);
       return () => clearInterval(interval);
     }
-  }, [scene]);
+  }, [scene, activeScenario]);
 
   useEffect(() => {
     if (scene === 1) setTimeout(() => setScene(2), 3000);
-    if (scene === 2) setTimeout(() => setScene(3), 5000);
-    if (scene === 3) setTimeout(() => setScene(4), 5000);
+    if (scene === 2) setTimeout(() => setScene(5), 5000); // Jump to Code after Artifact
+    if (scene === 5) setTimeout(() => setScene(6), 4000); // To Responsive
+    if (scene === 6) setTimeout(() => setScene(3), 4000); // To Mentra
+    if (scene === 3) setTimeout(() => setScene(4), 5000); // To Final
   }, [scene]);
 
   const bgImage = "file:///Users/dhruvgautam/.gemini/antigravity/brain/c2033881-71b8-461f-826d-0e22f90a9933/promo_background_atmosphere_1778411496540.png";
 
   return (
-    <div className="fixed inset-0 bg-[#050505] text-white overflow-hidden font-sans z-[9999]">
-      {/* Cinematic Background Layer */}
-      <motion.div 
-        initial={{ scale: 1.1, opacity: 0 }}
-        animate={{ scale: 1, opacity: 0.6 }}
-        transition={{ duration: 10, ease: "easeOut" }}
-        className="absolute inset-0 z-0"
-        style={{
-          backgroundImage: `url("${bgImage}")`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center'
-        }}
-      />
-      <div className="absolute inset-0 bg-black/40 z-[1]" />
+    <div className={`fixed inset-0 transition-colors duration-1000 ${scene <= 0 ? 'bg-[#fcfcff]' : 'bg-[#050505]'} text-black overflow-hidden font-sans z-[9999]`}>
+      {/* Cinematic Background Layer (Only for Manifestation phases) */}
+      <AnimatePresence>
+        {scene > 0 && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.6 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 z-0"
+            style={{
+              backgroundImage: `url("${bgImage}")`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center'
+            }}
+          />
+        )}
+      </AnimatePresence>
+      
+      {scene > 0 && <div className="absolute inset-0 bg-black/40 z-[1]" />}
       <div className="grain z-[2]" />
 
       <div className="relative z-10 h-full w-full flex items-center justify-center p-8">
         <AnimatePresence mode="wait">
-          {/* SCENE 0: THE CHAT SPARK */}
+          {/* SCENE -1: INTRO CHAT (Light Theme) */}
+          {scene === -1 && (
+            <motion.div 
+              key="intro-chat"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="w-full max-w-md space-y-6"
+            >
+              <div className="text-center mb-12">
+                <span className="text-[10px] font-black uppercase tracking-[0.5em] text-[#1B3FBF] opacity-30">Scenario: {activeScenario.name}</span>
+              </div>
+              {chatMessages.map((msg, i) => (
+                <motion.div 
+                  key={i}
+                  initial={{ opacity: 0, x: i % 2 === 0 ? -20 : 20, scale: 0.95 }}
+                  animate={{ opacity: 1, x: 0, scale: 1 }}
+                  className={`flex ${i % 2 === 0 ? 'justify-start' : 'justify-end'}`}
+                >
+                  <div className={`max-w-[80%] p-5 rounded-[2rem] text-sm leading-relaxed ${i % 2 === 0 ? 'bg-black/[0.03] text-black rounded-bl-none' : 'bg-[#1B3FBF] text-white rounded-br-none shadow-xl shadow-[#1B3FBF]/20'}`}>
+                    <span className="block text-[8px] font-black uppercase tracking-widest opacity-40 mb-1">{msg.sender}</span>
+                    {msg.text}
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
+
+          {/* SCENE 0: THE CHAT SPARK (Transitions to Manifest) */}
           {scene === 0 && (
             <motion.div 
               key="chat"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="w-full max-w-2xl space-y-12 text-center"
+              className={`w-full max-w-2xl space-y-12 text-center ${scene <= 0 ? 'text-black' : 'text-white'}`}
             >
               <div className="space-y-4">
                 <span className="text-[10px] font-black uppercase tracking-[0.5em] text-[#1B3FBF]">Neural Interface Active</span>
@@ -64,12 +140,12 @@ const KreoMasterPromo = () => {
               </div>
 
               <div className="relative group">
-                <div className="absolute -inset-1 bg-gradient-to-r from-[#1B3FBF]/50 to-purple-500/50 rounded-[2rem] blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
-                <div className="relative flex items-center gap-4 bg-white/5 backdrop-blur-3xl border border-white/10 p-6 rounded-[2rem] text-left">
-                  <div className="p-3 bg-[#1B3FBF]/20 rounded-2xl">
+                <div className="absolute -inset-1 bg-gradient-to-r from-[#1B3FBF]/50 to-purple-500/50 rounded-[2rem] blur opacity-10 group-hover:opacity-20 transition duration-1000 group-hover:duration-200"></div>
+                <div className={`relative flex items-center gap-4 ${scene <= 0 ? 'bg-black/[0.03] border-black/[0.06]' : 'bg-white/5 backdrop-blur-3xl border border-white/10'} p-6 rounded-[2rem] text-left`}>
+                  <div className="p-3 bg-[#1B3FBF]/10 rounded-2xl">
                     <MessageSquare size={24} className="text-[#1B3FBF]" />
                   </div>
-                  <div className="flex-1 text-xl md:text-2xl font-light tracking-tight text-white/80">
+                  <div className={`flex-1 text-xl md:text-2xl font-light tracking-tight ${scene <= 0 ? 'text-black/80' : 'text-white/80'}`}>
                     {typedText}<span className="animate-pulse">|</span>
                   </div>
                   <div className="p-3 bg-[#1B3FBF] text-white rounded-2xl shadow-lg">
@@ -198,6 +274,76 @@ const KreoMasterPromo = () => {
                     </div>
                   </div>
                 </div>
+              </div>
+            </motion.div>
+          )}
+
+          {/* SCENE 5: CODE FLOW */}
+          {scene === 5 && (
+            <motion.div 
+              key="code"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="w-full max-w-4xl space-y-8"
+            >
+              <div className="space-y-2">
+                <span className="text-[10px] font-black uppercase tracking-[0.5em] text-[#1B3FBF]">The Source</span>
+                <h2 className="text-5xl font-serif italic tracking-tighter">Pure, production-ready <span className="opacity-40">logic.</span></h2>
+              </div>
+              <div className="bg-black/80 rounded-[2.5rem] border border-white/10 p-8 font-mono text-sm text-[#1B3FBF]/80 overflow-hidden relative h-[400px]">
+                <motion.div 
+                  animate={{ y: [0, -800] }}
+                  transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+                  className="space-y-2"
+                >
+                  {Array.from({ length: 60 }).map((_, i) => (
+                    <div key={i} className="flex gap-4">
+                      <span className="opacity-10 w-8">{i + 1}</span>
+                      <span className="text-white/60">
+                        {i % 4 === 0 ? 'export const Manifestation = () => {' : 
+                         i % 4 === 1 ? '  const [active, setActive] = useState(false);' :
+                         i % 4 === 2 ? '  return <motion.div className="p-12">' : 
+                                       '    <h1 className="serif italic">Neural Core</h1>'}
+                      </span>
+                    </div>
+                  ))}
+                </motion.div>
+                <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-[#050505] pointer-events-none" />
+              </div>
+            </motion.div>
+          )}
+
+          {/* SCENE 6: RESPONSIVE TRANSFORMATION */}
+          {scene === 6 && (
+            <motion.div 
+              key="responsive"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 1.2 }}
+              className="w-full h-full flex flex-col items-center justify-center gap-12"
+            >
+               <div className="text-center space-y-2">
+                <span className="text-[10px] font-black uppercase tracking-[0.5em] text-[#1B3FBF]">Infinite Adaptability</span>
+                <h2 className="text-5xl font-serif italic tracking-tighter">Mobile. Tablet. <span className="opacity-40">Desktop.</span></h2>
+              </div>
+              <div className="flex items-center gap-8 w-full max-w-4xl justify-center">
+                 <motion.div 
+                    animate={{ width: [320, 850, 320] }}
+                    transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                    className="h-[450px] border-[8px] border-white/10 rounded-[3rem] bg-white overflow-hidden shadow-2xl relative"
+                 >
+                    <div className="p-10 space-y-8">
+                       <div className="w-1/4 h-3 bg-black/5 rounded-full" />
+                       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                          <div className="h-32 bg-[#1B3FBF]/10 rounded-[2rem]" />
+                          <div className="h-32 bg-[#1B3FBF]/10 rounded-[2rem]" />
+                          <div className="h-32 bg-[#1B3FBF]/10 rounded-[2rem]" />
+                       </div>
+                       <div className="h-48 bg-black/5 rounded-[2rem]" />
+                    </div>
+                    <div className="absolute inset-y-0 right-0 w-1 bg-[#1B3FBF] opacity-20 animate-pulse" />
+                 </motion.div>
               </div>
             </motion.div>
           )}
