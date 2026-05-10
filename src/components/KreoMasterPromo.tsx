@@ -8,20 +8,33 @@ const KreoMasterPromo = () => {
   const [chatMessages, setChatMessages] = useState<{sender: string, text: string}[]>([]);
   const [accentColor, setAccentColor] = useState("#1B3FBF");
   const [activeLang, setActiveLang] = useState("English");
+  const [loadingStatus, setLoadingStatus] = useState("Initializing...");
   
   const scenarios = [
-    { name: "Global Launch", messages: [
-      { sender: "Marketing Head 📈", text: "We need the landing page in 5 languages by tomorrow." },
-      { sender: "Me", text: "Why tomorrow? Let's do it in 5 seconds." },
-      { sender: "Marketing Head 📈", text: "Is that even possible?" },
-      { sender: "Me", text: "With KREO, borders don't exist." }
-    ], prompt: "Manifest a global landing page with multi-language support and dynamic branding." },
-    { name: "Brand Pivot", messages: [
-      { sender: "CEO 💎", text: "Change of plans. The brand color is now Gold, not Blue." },
-      { sender: "Me", text: "Give me 10 seconds to re-calibrate." },
-      { sender: "CEO 💎", text: "Re-calibrating usually takes weeks..." },
-      { sender: "Me", text: "Not in the KREO ecosystem." }
-    ], prompt: "Manifest a luxury jewelry dashboard with 24k Gold accents and dark-light toggles." }
+    { name: "Luxury Jewelry Pivot", type: "jewelry", messages: [
+      { sender: "CEO 💎", text: "We need to showcase the 2026 Diamond Collection by tonight." },
+      { sender: "Me", text: "I'll manifest a high-end vault experience. Stay calm." },
+      { sender: "CEO 💎", text: "Wait, don't we need a photographer first?" },
+      { sender: "Me", text: "Neural assets are already rendering. Watch." }
+    ], prompt: "Manifest a luxury jewelry dashboard with 24k Gold accents and 3D vault transitions." },
+    { name: "Global Fitness Launch", type: "fitness", messages: [
+      { sender: "Sarah (Fitness)", text: "The app needs to feel like a multi-million dollar health platform." },
+      { sender: "Me", text: "I'm orchestrating the biometric DNA right now." },
+      { sender: "Sarah (Fitness)", text: "Make it beautiful. No placeholders." },
+      { sender: "Me", text: "Beauty is the threshold. Manifesting." }
+    ], prompt: "Manifest a premium fitness app with heart-rate tracking and bento layouts." },
+    { name: "Food Delivery Crisis", type: "food", messages: [
+      { sender: "Restaurant Partner 🍕", text: "The menu is changing every hour! How do we keep up?" },
+      { sender: "Me", text: "Real-time menu manifestation. I'll sync the database now." },
+      { sender: "Restaurant Partner 🍕", text: "Is it going to look tasty?" },
+      { sender: "Me", text: "It will look delicious. KREO style." }
+    ], prompt: "Manifest a vibrant food delivery app with organic curves and neon food photography." },
+    { name: "Crypto Whale Alert", type: "crypto", messages: [
+      { sender: "Investor 📈", text: "The market is moving too fast. I need a terminal that breathes." },
+      { sender: "Me", text: "Synthesizing a high-density financial nexus for you." },
+      { sender: "Investor 📈", text: "I need it to feel elite. Black and Gold." },
+      { sender: "Me", text: "Elite is my baseline. Recalibrating." }
+    ], prompt: "Manifest a high-density crypto terminal with glass-morphism and live candle charts." }
   ];
 
   const [activeScenario] = useState(scenarios[Math.floor(Math.random() * scenarios.length)]);
@@ -59,8 +72,24 @@ const KreoMasterPromo = () => {
   }, [scene, activeScenario]);
 
   useEffect(() => {
-    if (scene === 1) setTimeout(() => setScene(2), 3000);
-    if (scene === 2) setTimeout(() => setScene(7), 4000); // To Brand Mutation
+    if (scene === 1) {
+      const statuses = [
+        "Synthesizing Pixel DNA...",
+        "Orchestrating Layout Logic...",
+        "Injecting Branding Tokens...",
+        "Calibrating Neural Aesthetic...",
+        "Manifestation Finalized."
+      ];
+      let i = 0;
+      const interval = setInterval(() => {
+        setLoadingStatus(statuses[i]);
+        i++;
+        if (i >= statuses.length) clearInterval(interval);
+      }, 600);
+      setTimeout(() => setScene(2), 3500);
+      return () => clearInterval(interval);
+    }
+    if (scene === 2) setTimeout(() => setScene(7), 5000); 
     if (scene === 7) setTimeout(() => setScene(8), 4000); // To Language Swap
     if (scene === 8) setTimeout(() => setScene(5), 4000); // To Code
     if (scene === 5) setTimeout(() => setScene(6), 4000); // To Responsive
@@ -186,45 +215,45 @@ const KreoMasterPromo = () => {
             </motion.div>
           )}
 
-          {/* SCENE 1: NEURAL ORCHESTRATION */}
+           {/* SCENE 1: REAL LOADING SCREEN */}
           {scene === 1 && (
             <motion.div 
               key="loading"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="flex flex-col items-center gap-12"
+              className="flex flex-col items-center gap-16 w-full max-w-md"
             >
-              <div className="relative w-64 h-64 flex items-center justify-center">
-                <motion.div 
-                  animate={{ rotate: 360 }}
-                  transition={{ repeat: Infinity, duration: 10, ease: "linear" }}
-                  className="absolute inset-0 border border-black/5 rounded-full"
-                />
-                <motion.div 
-                  animate={{ rotate: -360 }}
-                  transition={{ repeat: Infinity, duration: 15, ease: "linear" }}
-                  className="absolute inset-4 border border-[#1B3FBF]/10 rounded-full"
-                />
-                <div className="w-32 h-32 rounded-full bg-white shadow-xl flex items-center justify-center relative">
-                   <Zap className="text-[#1B3FBF] animate-pulse" size={48} />
-                </div>
+              <div className="relative w-48 h-48 flex items-center justify-center">
+                 <motion.div 
+                    animate={{ rotate: 360 }}
+                    transition={{ repeat: Infinity, duration: 4, ease: "linear" }}
+                    className="absolute inset-0 border-4 border-black/5 rounded-full border-t-[#1B3FBF]"
+                 />
+                 <Zap className="text-[#1B3FBF] animate-bounce" size={48} />
               </div>
-              <div className="text-center space-y-4">
-                <h2 className="text-3xl font-serif italic tracking-tight text-black/80">Orchestrating Visual DNA...</h2>
-                <div className="w-48 h-[1px] bg-black/5 mx-auto relative overflow-hidden">
+              <div className="w-full space-y-6 text-center">
+                <motion.div 
+                  key={loadingStatus}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-2xl font-serif italic text-black/80 tracking-tight"
+                >
+                  {loadingStatus}
+                </motion.div>
+                <div className="w-full h-[2px] bg-black/5 relative overflow-hidden rounded-full">
                   <motion.div 
-                    initial={{ x: "-100%" }}
-                    animate={{ x: "200%" }}
-                    transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }}
-                    className="absolute inset-0 bg-[#1B3FBF] w-1/2"
+                    initial={{ width: 0 }}
+                    animate={{ width: '100%' }}
+                    transition={{ duration: 3, ease: "easeInOut" }}
+                    className="absolute inset-y-0 left-0 bg-[#1B3FBF]"
                   />
                 </div>
               </div>
             </motion.div>
           )}
 
-          {/* SCENE 2: THE ARTIFACT REVEAL */}
+          {/* SCENE 2: DYNAMIC ARTIFACT REVEAL */}
           {scene === 2 && (
             <motion.div 
               key="artifact"
@@ -235,50 +264,72 @@ const KreoMasterPromo = () => {
             >
               <div className="space-y-8 max-w-md text-left">
                 <div className="space-y-2">
-                  <span className="text-[10px] font-black uppercase tracking-[0.5em] text-[#1B3FBF]">Instant Manifestation</span>
-                  <h2 className="text-6xl font-serif italic tracking-tighter leading-none">Aura <span className="opacity-40">Fitness.</span></h2>
+                  <span className="text-[10px] font-black uppercase tracking-[0.5em] text-[#1B3FBF]">Manifestation Complete</span>
+                  <h2 className="text-6xl font-serif italic tracking-tighter leading-none capitalize">
+                    {activeScenario.type} <span className="opacity-40">Portal.</span>
+                  </h2>
                 </div>
                 <p className="text-lg font-light text-black/40 leading-relaxed">
-                  High-fidelity UIs generated in seconds. Fully responsive, multi-million dollar aesthetics, and production-ready code.
+                  Every pixel synthesized in real-time. No templates. Pure neural architecture tailored to your specific request.
                 </p>
                 <div className="flex gap-4">
-                   <div className="flex items-center gap-2 px-4 py-2 bg-black/[0.03] rounded-full border border-black/[0.06]">
-                     <Layout size={14} className="text-[#1B3FBF]" />
-                     <span className="text-[9px] font-bold uppercase tracking-widest">Bento Logic</span>
-                   </div>
-                   <div className="flex items-center gap-2 px-4 py-2 bg-black/[0.03] rounded-full border border-black/[0.06]">
-                     <Smartphone size={14} className="text-[#1B3FBF]" />
-                     <span className="text-[9px] font-bold uppercase tracking-widest">Mobile First</span>
+                   <div className="px-4 py-2 bg-black/[0.03] rounded-full border border-black/[0.06] text-[9px] font-bold uppercase tracking-widest">
+                     {activeScenario.type === 'jewelry' ? 'Gold DNA' : activeScenario.type === 'fitness' ? 'Biometric Sync' : activeScenario.type === 'food' ? 'Organic Flow' : 'Hedge Logic'}
                    </div>
                 </div>
               </div>
 
               {/* Phone Frame Simulation */}
               <div className="relative w-[300px] h-[600px] bg-black rounded-[3.5rem] border-[10px] border-black shadow-[0_50px_100px_rgba(0,0,0,0.1)] overflow-hidden">
-                <div className="h-full w-full bg-[#f8f9ff] text-black p-6 space-y-8 flex flex-col">
+                <div className={`h-full w-full p-6 space-y-8 flex flex-col transition-colors duration-1000 ${activeScenario.type === 'jewelry' ? 'bg-[#1a1a1a] text-[#D4AF37]' : activeScenario.type === 'crypto' ? 'bg-[#0a0a0a] text-white' : 'bg-[#f8f9ff] text-black'}`}>
                   {/* App Content */}
                   <div className="space-y-1">
-                    <span className="text-[10px] font-black uppercase tracking-[0.3em] opacity-30 text-[#1B3FBF]">Good Morning</span>
-                    <h3 className="text-4xl font-serif italic leading-none tracking-tighter">Dhruv <span className="opacity-30">G.</span></h3>
+                    <span className="text-[10px] font-black uppercase tracking-[0.3em] opacity-30">Neural Hub</span>
+                    <h3 className="text-4xl font-serif italic leading-none tracking-tighter capitalize">{activeScenario.type} <span className="opacity-30">Gen.</span></h3>
                   </div>
 
-                  {/* Bento Boxes */}
-                  <div className="grid grid-cols-2 gap-4 flex-1">
-                    <div className="col-span-2 bg-[#1B3FBF] rounded-[2.5rem] p-6 text-white space-y-4 shadow-xl shadow-[#1B3FBF]/20">
-                       <span className="text-[8px] font-black uppercase tracking-widest opacity-60">Daily Activity</span>
-                       <div className="text-5xl font-serif italic tracking-tighter">8,432 <span className="text-sm opacity-40 not-italic uppercase tracking-widest font-sans font-bold">Steps</span></div>
-                       <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
-                         <motion.div initial={{ width: 0 }} animate={{ width: '70%' }} transition={{ duration: 2, delay: 1 }} className="h-full bg-white" />
-                       </div>
-                    </div>
-                    <div className="bg-white rounded-[2.5rem] p-6 shadow-sm border border-black/[0.03] space-y-3">
-                       <Zap size={20} className="text-[#1B3FBF]" />
-                       <div className="text-2xl font-serif italic">120 <span className="text-[8px] font-sans font-bold opacity-30 uppercase tracking-widest">BPM</span></div>
-                    </div>
-                    <div className="bg-white rounded-[2.5rem] p-6 shadow-sm border border-black/[0.03] space-y-3">
-                       <Globe size={20} className="text-[#1B3FBF]" />
-                       <div className="text-2xl font-serif italic">240 <span className="text-[8px] font-sans font-bold opacity-30 uppercase tracking-widest">CAL</span></div>
-                    </div>
+                  {/* Dynamic UI Content */}
+                  <div className="flex-1 space-y-6">
+                    {activeScenario.type === 'fitness' && (
+                      <div className="space-y-6">
+                        <div className="bg-[#1B3FBF] rounded-[2.5rem] p-6 text-white space-y-4 shadow-xl shadow-[#1B3FBF]/20">
+                           <div className="text-4xl font-serif italic tracking-tighter">12,840 <span className="text-xs opacity-40 not-italic uppercase tracking-widest font-sans font-bold">Steps</span></div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="bg-white rounded-[2rem] p-4 shadow-sm border border-black/5 flex items-center justify-center"><Zap className="text-[#1B3FBF]" /></div>
+                          <div className="bg-white rounded-[2rem] p-4 shadow-sm border border-black/5 flex items-center justify-center"><Globe className="text-[#1B3FBF]" /></div>
+                        </div>
+                      </div>
+                    )}
+                    {activeScenario.type === 'jewelry' && (
+                      <div className="space-y-6">
+                        <div className="aspect-[4/5] bg-[#D4AF37]/10 rounded-[3rem] border border-[#D4AF37]/20 flex items-center justify-center overflow-hidden">
+                           <div className="text-6xl">💎</div>
+                        </div>
+                        <div className="text-center font-serif italic text-2xl">The Eternal Vault</div>
+                      </div>
+                    )}
+                    {activeScenario.type === 'food' && (
+                      <div className="space-y-6">
+                         <div className="h-48 bg-[#ef4444]/10 rounded-[3rem] flex items-center justify-center text-4xl">🍕</div>
+                         <div className="space-y-2">
+                           <div className="h-4 bg-black/5 rounded-full w-3/4" />
+                           <div className="h-4 bg-black/5 rounded-full w-1/2" />
+                         </div>
+                      </div>
+                    )}
+                    {activeScenario.type === 'crypto' && (
+                      <div className="space-y-4">
+                         <div className="h-32 bg-white/5 rounded-[2rem] p-4 flex flex-col justify-between border border-white/10">
+                            <span className="text-[10px] font-bold text-green-400">BTC +4.2%</span>
+                            <div className="text-3xl font-mono">$64,281</div>
+                         </div>
+                         <div className="grid grid-cols-2 gap-2 h-48">
+                            <div className="bg-white/5 rounded-[2rem] border border-white/5" />
+                            <div className="bg-white/5 rounded-[2rem] border border-white/5" />
+                         </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -513,7 +564,7 @@ const KreoMasterPromo = () => {
                 transition={{ delay: 0.5, duration: 1 }}
                 className="space-y-4"
               >
-                <h1 className="text-[12rem] md:text-[18rem] font-normal leading-none tracking-tighter text-black drop-shadow-sm font-serif">KREO</h1>
+                <h1 className="text-[12rem] md:text-[18rem] font-normal leading-none tracking-tighter text-black drop-shadow-sm font-tan-nimbus">KREO</h1>
                 <p className="text-3xl font-serif italic tracking-tight opacity-40">The Silent Threshold of Design.</p>
               </motion.div>
 
@@ -534,6 +585,14 @@ const KreoMasterPromo = () => {
       <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-white to-transparent opacity-60" />
       
       <style>{`
+        .brand-font {
+          font-family: 'Glassure', 'Instrument Serif', serif;
+          text-transform: uppercase;
+        }
+        .font-tan-nimbus {
+          font-family: 'Tan Nimbus', 'Instrument Serif', serif;
+          letter-spacing: -0.05em;
+        }
         .grain {
           position: fixed;
           inset: -100% -100%;
