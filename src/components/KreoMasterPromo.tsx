@@ -8,42 +8,41 @@ const KreoMasterPromo = () => {
   const [chatMessages, setChatMessages] = useState<{sender: string, text: string}[]>([]);
   
   const scenarios = [
-    { name: "School Project", messages: [
-      { sender: "Friend A", text: "Dude, our presentation for school is due in 20 mins." },
-      { sender: "Friend B", text: "We haven't even started the UI design... we're cooked." },
-      { sender: "Friend A", text: "Nah, watch this. I'll just manifest it." }
-    ], prompt: "Manifest a high-end academic dashboard for a school portal." },
-    { name: "Client Meeting", messages: [
-      { sender: "Sarah", text: "The client just asked for a luxury fitness app mockup for the 2 PM meeting." },
-      { sender: "Alex", text: "Wait, that's in 15 minutes! How are we going to build that?" },
-      { sender: "Sarah", text: "KREO. It's the only way." }
-    ], prompt: "Manifest a luxury fitness app with biometric tracking." },
-    { name: "Bank Pitch", messages: [
-      { sender: "Rohan", text: "The board wants to see the new Fintech dashboard TODAY." },
-      { sender: "Neha", text: "We don't even have the wireframes yet!" },
-      { sender: "Rohan", text: "Don't need wireframes. We have Neural Manifestation." }
-    ], prompt: "Manifest a secure, premium banking dashboard with real-time analytics." },
-    { name: "Game Dev", messages: [
-      { sender: "Sam", text: "Our indie game needs a cinematic HUD for the demo." },
-      { sender: "Chris", text: "I'm still debugging the physics... no time for UI." },
-      { sender: "Sam", text: "I got you. KREO, build the HUD." }
-    ], prompt: "Manifest a sci-fi gaming HUD with neon accents and health bars." }
+    { name: "School Ki tension", messages: [
+      { sender: "Chirkut Friend", text: "Bro, project submission is in 10 mins! 😱" },
+      { sender: "Me", text: "Chill, I haven't even opened the laptop yet." },
+      { sender: "Chirkut Friend", text: "We are dead... teacher will kill us." },
+      { sender: "Me", text: "Wait... KREO zindabad. Check this." }
+    ], prompt: "Manifest a clean, modern school project dashboard for history." },
+    { name: "The Corporate Nightmare", messages: [
+      { sender: "Boss 👹", text: "Where is the app design? Client is on the call!" },
+      { sender: "Me", text: "Sir, I'm just polishing the pixels..." },
+      { sender: "Boss 👹", text: "I need it NOW or no bonus this month!" },
+      { sender: "Me", text: "Pixels polished. Manifesting now." }
+    ], prompt: "Manifest a luxury real estate dashboard with 3D views." },
+    { name: "Startup Hustle", messages: [
+      { sender: "Co-Founder 🤡", text: "Pitch deck is missing a tech slide. Investor is here." },
+      { sender: "Me", text: "I'm on it. Just give me 30 seconds." },
+      { sender: "Co-Founder 🤡", text: "30 seconds? Are you a wizard?" },
+      { sender: "Me", text: "Better. I have KREO." }
+    ], prompt: "Manifest a futuristic AI analytics dashboard for startups." }
   ];
 
   const [activeScenario] = useState(scenarios[Math.floor(Math.random() * scenarios.length)]);
 
   useEffect(() => {
     if (scene === -1) {
+      setChatMessages([]); // Reset on start
       let i = 0;
       const interval = setInterval(() => {
-        if (i < activeScenario.messages.length) {
+        if (activeScenario && i < activeScenario.messages.length) {
           setChatMessages(prev => [...prev, activeScenario.messages[i]]);
           i++;
         } else {
           clearInterval(interval);
           setTimeout(() => setScene(0), 1500);
         }
-      }, 1500);
+      }, 1800);
       return () => clearInterval(interval);
     }
   }, [scene, activeScenario]);
@@ -97,31 +96,44 @@ const KreoMasterPromo = () => {
 
       <div className="relative z-10 h-full w-full flex items-center justify-center p-8">
         <AnimatePresence mode="wait">
-          {/* SCENE -1: INTRO CHAT (Light Theme) */}
+          {/* SCENE -1: INTRO CHAT (WhatsApp Light Theme) */}
           {scene === -1 && (
             <motion.div 
               key="intro-chat"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0, y: -20 }}
-              className="w-full max-w-md space-y-6"
+              className="w-full max-w-md h-[600px] flex flex-col bg-[#e5ddd5] rounded-[3rem] overflow-hidden shadow-2xl border-[10px] border-white relative z-[50]"
             >
-              <div className="text-center mb-12">
-                <span className="text-[10px] font-black uppercase tracking-[0.5em] text-[#1B3FBF] opacity-30">Scenario: {activeScenario.name}</span>
+              {/* WhatsApp Header */}
+              <div className="bg-[#075e54] p-6 pt-10 text-white flex items-center gap-4">
+                <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-xl">
+                   {activeScenario?.name?.includes("School") ? "🎓" : activeScenario?.name?.includes("Corporate") ? "👹" : "🤡"}
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-bold text-sm truncate">{activeScenario?.name || "Neural Chat"}</h4>
+                  <p className="text-[10px] opacity-60">online</p>
+                </div>
               </div>
-              {chatMessages.map((msg, i) => (
-                <motion.div 
-                  key={i}
-                  initial={{ opacity: 0, x: i % 2 === 0 ? -20 : 20, scale: 0.95 }}
-                  animate={{ opacity: 1, x: 0, scale: 1 }}
-                  className={`flex ${i % 2 === 0 ? 'justify-start' : 'justify-end'}`}
-                >
-                  <div className={`max-w-[80%] p-5 rounded-[2rem] text-sm leading-relaxed ${i % 2 === 0 ? 'bg-black/[0.03] text-black rounded-bl-none' : 'bg-[#1B3FBF] text-white rounded-br-none shadow-xl shadow-[#1B3FBF]/20'}`}>
-                    <span className="block text-[8px] font-black uppercase tracking-widest opacity-40 mb-1">{msg.sender}</span>
-                    {msg.text}
-                  </div>
-                </motion.div>
-              ))}
+
+              {/* Chat Area */}
+              <div className="flex-1 p-6 space-y-4 overflow-y-auto bg-[#e5ddd5] relative">
+                <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png')] bg-repeat" />
+                {chatMessages && chatMessages.map((msg, i) => msg && (
+                  <motion.div 
+                    key={i}
+                    initial={{ opacity: 0, x: msg.sender !== 'Me' ? -20 : 20, scale: 0.95 }}
+                    animate={{ opacity: 1, x: 0, scale: 1 }}
+                    className={`flex relative z-10 ${msg.sender !== 'Me' ? 'justify-start' : 'justify-end'}`}
+                  >
+                    <div className={`max-w-[85%] p-4 rounded-2xl text-[13px] leading-relaxed relative shadow-sm ${msg.sender !== 'Me' ? 'bg-white text-black rounded-tl-none' : 'bg-[#dcf8c6] text-black rounded-tr-none'}`}>
+                      <span className={`block text-[9px] font-bold mb-1 ${msg.sender !== 'Me' ? 'text-[#075e54]' : 'text-[#2b8a3e]'}`}>{msg.sender}</span>
+                      {msg.text}
+                      <span className="block text-[8px] opacity-30 text-right mt-1">11:11 PM</span>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
             </motion.div>
           )}
 
