@@ -94,7 +94,8 @@ const KreoMasterPromo = () => {
     if (scene === 8) setTimeout(() => setScene(5), 4000); // To Code
     if (scene === 5) setTimeout(() => setScene(6), 4000); // To Responsive
     if (scene === 6) setTimeout(() => setScene(9), 4000); // To Export
-    if (scene === 9) setTimeout(() => setScene(3), 4000); // To Mentra
+    if (scene === 9) setTimeout(() => setScene(10), 4000); // To "And that's not all"
+    if (scene === 10) setTimeout(() => setScene(3), 4000); // To Mentra
     if (scene === 3) setTimeout(() => setScene(4), 5000); // To Final
   }, [scene]);
 
@@ -195,7 +196,8 @@ const KreoMasterPromo = () => {
             >
               <div className="space-y-4">
                 <span className="text-[10px] font-black uppercase tracking-[0.5em] text-[#1B3FBF]">Neural Interface Active</span>
-                <h1 className="text-5xl md:text-6xl font-serif italic tracking-tighter">Your vision, <span className="opacity-40">manifested.</span></h1>
+                <h1 className="text-5xl md:text-6xl font-serif italic tracking-tighter text-black">Your vision, <span className="opacity-40">manifested.</span></h1>
+                <p className="text-sm font-tan-nimbus tracking-widest opacity-20 uppercase">Powered by KREO</p>
               </div>
 
               <div className="relative group">
@@ -486,6 +488,24 @@ const KreoMasterPromo = () => {
             </motion.div>
           )}
 
+          {/* SCENE 10: AND THAT'S NOT ALL */}
+          {scene === 10 && (
+            <motion.div 
+              key="extra"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 1.1 }}
+              className="text-center space-y-8"
+            >
+              <h2 className="text-4xl font-serif italic tracking-tighter opacity-40">And that's not all...</h2>
+              <h1 className="text-7xl font-serif italic tracking-tighter text-black">
+                Compare <span className="text-[#1B3FBF]">anything</span> with
+              </h1>
+              <div className="text-9xl brand-font text-[#1B3FBF] mb-4">MENTRA</div>
+              <div className="text-2xl font-tan-nimbus tracking-tighter opacity-30">via KREO</div>
+            </motion.div>
+          )}
+
           {/* SCENE 3: MENTRA INTELLIGENCE */}
           {scene === 3 && (
             <motion.div 
@@ -497,7 +517,7 @@ const KreoMasterPromo = () => {
             >
               <div className="text-center space-y-4">
                 <span className="text-[10px] font-black uppercase tracking-[0.5em] text-[#1B3FBF]">Deep Intelligence</span>
-                <h2 className="text-7xl font-serif italic tracking-tighter">MENTRA</h2>
+                <h2 className="text-7xl brand-font tracking-tighter text-[#1B3FBF]">MENTRA</h2>
               </div>
 
               <div className="w-full bg-white border border-black/5 p-12 rounded-[4rem] space-y-12 shadow-[0_50px_100px_rgba(0,0,0,0.08)]">
