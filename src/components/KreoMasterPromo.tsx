@@ -35,7 +35,24 @@ const KreoMasterPromo = () => {
       { sender: "Investor 📈", text: "I need it to feel elite. Black and Gold." },
       { sender: "Me", text: "Elite is my baseline. Recalibrating." }
     ], prompt: "Manifest a high-density crypto terminal with glass-morphism and live candle charts." }
-  ];
+    { name: "Executive Presentation", type: "ppt", messages: [
+      { sender: "VP of Sales 👔", text: "Board meeting is in an hour. I need the Q4 growth deck." },
+      { sender: "Me", text: "Manifesting 12 cinematic slides now. High-fidelity only." },
+      { sender: "VP of Sales 👔", text: "Wait, an hour? We need a week for this." },
+      { sender: "Me", text: "Welcome to the future. Slides are ready." }
+    ], prompt: "Manifest a cinematic 12-slide presentation for executive Q4 growth." },
+    { name: "System Architecture", type: "flowchart", messages: [
+      { sender: "Lead Architect 🏗️", text: "The user flow for the new payment bridge is too messy." },
+      { sender: "Me", text: "I'll manifest a high-density neural flowchart. Give me a second." },
+      { sender: "Lead Architect 🏗️", text: "It needs to handle 50+ edge cases." },
+      { sender: "Me", text: "Edge cases are my specialty. Mapping now." }
+    ], prompt: "Manifest a high-density system flowchart for a global payment bridge." },
+    { name: "Medical Exam Prep", type: "flashcards", messages: [
+      { sender: "Med Student 🩺", text: "Exams tomorrow. 500 pages of anatomy to memorize..." },
+      { sender: "Me", text: "I'll manifest 50 interactive neural flashcards. Focus on the core." },
+      { sender: "Med Student 🩺", text: "Interactive? Just make them readable!" },
+      { sender: "Me", text: "They will be unforgettable. Study mode active." }
+    ], prompt: "Manifest 50 high-fidelity interactive flashcards for human anatomy." }
 
   const [activeScenario] = useState(scenarios[Math.floor(Math.random() * scenarios.length)]);
 
@@ -313,10 +330,59 @@ const KreoMasterPromo = () => {
                     )}
                     {activeScenario.type === 'food' && (
                       <div className="space-y-6">
-                         <div className="h-48 bg-[#ef4444]/10 rounded-[3rem] flex items-center justify-center text-4xl">🍕</div>
-                         <div className="space-y-2">
-                           <div className="h-4 bg-black/5 rounded-full w-3/4" />
-                           <div className="h-4 bg-black/5 rounded-full w-1/2" />
+                         <div className="relative h-64 bg-gradient-to-br from-[#FF4D4D] to-[#FF8E53] rounded-[3rem] overflow-hidden shadow-xl">
+                            <div className="absolute inset-0 bg-black/10 flex items-center justify-center text-8xl drop-shadow-2xl">🍕</div>
+                            <div className="absolute bottom-6 left-6 right-6 p-4 bg-white/20 backdrop-blur-md rounded-2xl border border-white/20">
+                               <div className="h-2 w-1/3 bg-white rounded-full mb-2" />
+                               <div className="h-1 w-1/2 bg-white/40 rounded-full" />
+                            </div>
+                         </div>
+                         <div className="grid grid-cols-2 gap-4">
+                            <div className="h-32 bg-white rounded-[2rem] p-4 shadow-sm border border-black/5 flex flex-col justify-between">
+                               <div className="text-2xl font-serif italic text-[#FF4D4D]">4.8 ★</div>
+                               <span className="text-[8px] font-bold uppercase tracking-widest opacity-30">Top Rated</span>
+                            </div>
+                            <div className="h-32 bg-white rounded-[2rem] p-4 shadow-sm border border-black/5 flex flex-col justify-between">
+                               <div className="text-2xl font-serif italic text-[#FF4D4D]">15 <span className="text-[10px] uppercase font-sans font-bold">Min</span></div>
+                               <span className="text-[8px] font-bold uppercase tracking-widest opacity-30">Delivery</span>
+                            </div>
+                         </div>
+                      </div>
+                    )}
+                    {activeScenario.type === 'ppt' && (
+                      <div className="space-y-6">
+                         <div className="aspect-video bg-black rounded-2xl flex flex-col items-center justify-center p-8 text-center space-y-4 shadow-2xl border border-white/10">
+                            <div className="text-3xl font-serif italic text-white">Q4 Growth Nexus</div>
+                            <div className="h-1 w-12 bg-[#1B3FBF]" />
+                            <div className="text-[8px] text-white/40 uppercase tracking-[0.3em]">Confidential Executive Brief</div>
+                         </div>
+                         <div className="grid grid-cols-4 gap-2">
+                            {Array.from({ length: 4 }).map((_, i) => (
+                              <div key={i} className="aspect-video bg-black/5 rounded-lg border border-black/5" />
+                            ))}
+                         </div>
+                      </div>
+                    )}
+                    {activeScenario.type === 'flowchart' && (
+                      <div className="space-y-4">
+                         <div className="flex flex-col items-center gap-4">
+                            <div className="w-24 h-12 rounded-xl bg-[#1B3FBF] flex items-center justify-center text-[8px] text-white font-bold uppercase tracking-widest">Entry</div>
+                            <div className="w-[1px] h-8 bg-black/10" />
+                            <div className="w-32 h-16 rounded-xl border border-black/10 flex items-center justify-center text-[8px] font-serif italic px-2 text-center">Payment Verification Engine</div>
+                            <div className="flex gap-12 mt-2">
+                               <div className="w-[1px] h-8 bg-black/10 rotate-45" />
+                               <div className="w-[1px] h-8 bg-black/10 -rotate-45" />
+                            </div>
+                         </div>
+                      </div>
+                    )}
+                    {activeScenario.type === 'flashcards' && (
+                      <div className="space-y-6">
+                         <div className="w-full aspect-[3/4] bg-white rounded-[3rem] shadow-2xl border border-black/5 p-8 flex flex-col items-center justify-center text-center space-y-4">
+                            <span className="text-[10px] font-bold text-[#1B3FBF] uppercase tracking-widest">Flashcard 01/50</span>
+                            <div className="text-4xl font-serif italic tracking-tighter">The Cerebral Cortex</div>
+                            <div className="h-[1px] w-12 bg-black/10" />
+                            <p className="text-[10px] text-black/40 leading-relaxed">Tap to reveal neural structure</p>
                          </div>
                       </div>
                     )}
