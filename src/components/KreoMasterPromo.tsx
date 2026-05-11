@@ -34,7 +34,7 @@ const KreoMasterPromo = () => {
       { sender: "Me", text: "Synthesizing a high-density financial nexus for you." },
       { sender: "Investor 📈", text: "I need it to feel elite. Black and Gold." },
       { sender: "Me", text: "Elite is my baseline. Recalibrating." }
-    ], prompt: "Manifest a high-density crypto terminal with glass-morphism and live candle charts." }
+    ], prompt: "Manifest a high-density crypto terminal with glass-morphism and live candle charts." },
     { name: "Executive Presentation", type: "ppt", messages: [
       { sender: "VP of Sales 👔", text: "Board meeting is in an hour. I need the Q4 growth deck." },
       { sender: "Me", text: "Manifesting 12 cinematic slides now. High-fidelity only." },
@@ -53,6 +53,7 @@ const KreoMasterPromo = () => {
       { sender: "Med Student 🩺", text: "Interactive? Just make them readable!" },
       { sender: "Me", text: "They will be unforgettable. Study mode active." }
     ], prompt: "Manifest 50 high-fidelity interactive flashcards for human anatomy." }
+  ];
 
   const [activeScenario] = useState(scenarios[Math.floor(Math.random() * scenarios.length)]);
 
