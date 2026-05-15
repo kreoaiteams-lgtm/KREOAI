@@ -107,7 +107,7 @@ const NeuralTranslate = () => {
             zIndex: 9999,
             transform: 'translateX(-50%)'
           }}
-          className="w-72 bg-white/80 backdrop-blur-2xl border border-black/5 shadow-[0_20px_50px_rgba(0,0,0,0.1)] rounded-[1.5rem] overflow-hidden p-1 pointer-events-auto select-none"
+          className="w-[480px] bg-white/90 backdrop-blur-3xl border border-black/10 shadow-[0_40px_100px_rgba(0,0,0,0.15)] rounded-[2rem] overflow-hidden p-2 pointer-events-auto select-none"
         >
           {/* Header */}
           <div className="flex items-center justify-between px-3 py-2 border-b border-black/[0.03]">
@@ -115,7 +115,7 @@ const NeuralTranslate = () => {
               <div className="w-5 h-5 rounded-full bg-[#1B3FBF]/10 flex items-center justify-center">
                 <Languages className="w-3 h-3 text-[#1B3FBF]" />
               </div>
-              <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">Auto Translate</span>
+              <span className="text-[12px] font-black uppercase tracking-[0.25em] opacity-50">Auto Translate</span>
             </div>
             <button 
               onClick={() => setSelection(null)}
@@ -127,7 +127,7 @@ const NeuralTranslate = () => {
 
           <div className="p-3 space-y-3">
             {/* Source Preview */}
-            <div className="text-[11px] text-black/40 italic line-clamp-1 px-1">
+            <div className="text-[14px] text-black/50 italic line-clamp-1 px-2">
               "{selection.text}"
             </div>
 
@@ -137,7 +137,7 @@ const NeuralTranslate = () => {
                 <button
                   key={l.code}
                   onClick={() => handleTranslate(l.code)}
-                  className={`px-2 py-1 rounded-full text-[10px] font-medium transition-all whitespace-nowrap ${
+                  className={`px-4 py-2 rounded-full text-[12px] font-bold transition-all whitespace-nowrap ${
                     targetLang === l.code 
                       ? 'bg-[#1B3FBF] text-white' 
                       : 'bg-black/5 text-black/60 hover:bg-black/10'
@@ -158,7 +158,7 @@ const NeuralTranslate = () => {
                 <motion.div 
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="text-sm leading-relaxed text-black/80 pr-6"
+                  className="text-xl leading-relaxed font-medium text-black/90 pr-8"
                 >
                   {translatedText}
                 </motion.div>
@@ -166,7 +166,7 @@ const NeuralTranslate = () => {
                 <div className="h-full flex items-center justify-center">
                    <button 
                     onClick={() => handleTranslate()}
-                    className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-[#1B3FBF] hover:opacity-70 transition-opacity"
+                    className="flex items-center gap-2 text-[12px] font-black uppercase tracking-widest text-[#1B3FBF] hover:opacity-70 transition-opacity"
                    >
                      Initialize <ChevronRight className="w-3 h-3" />
                    </button>
