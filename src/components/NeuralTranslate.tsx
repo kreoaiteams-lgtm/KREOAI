@@ -149,16 +149,16 @@ const NeuralTranslate = () => {
             </div>
 
             {/* Result Area */}
-            <div className="min-h-[60px] bg-black/[0.02] rounded-xl p-3 relative group">
+            <div className="min-h-[100px] bg-black/[0.02] rounded-2xl p-6 relative group">
               {isTranslating ? (
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <Loader2 className="w-4 h-4 text-[#1B3FBF] animate-spin" />
+                  <Loader2 className="w-6 h-6 text-[#1B3FBF] animate-spin" />
                 </div>
               ) : translatedText ? (
                 <motion.div 
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="text-xl leading-relaxed font-medium text-black/90 pr-8"
+                  className="text-4xl leading-tight font-black text-black/90 pr-10"
                   dir="auto"
                 >
                   {translatedText}
