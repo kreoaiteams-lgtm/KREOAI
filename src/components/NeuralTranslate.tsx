@@ -71,7 +71,7 @@ const NeuralTranslate = () => {
     setTranslatedText('');
     
     try {
-      const result = await translateText(selection.text, LANGUAGES.find(l => l.code === lang)?.label || lang);
+      const result = await translateText(selection.text, lang);
       setTranslatedText(result);
       if (langOverride) {
           setTargetLanguage(langOverride);
@@ -159,6 +159,7 @@ const NeuralTranslate = () => {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   className="text-xl leading-relaxed font-medium text-black/90 pr-8"
+                  dir="auto"
                 >
                   {translatedText}
                 </motion.div>

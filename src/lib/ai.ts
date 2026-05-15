@@ -235,34 +235,45 @@ export const narrateText = async (text: string) => {
 };
 
 export const translateText = async (text: string, targetLanguage: string) => {
-  if (!SARVAM_API_KEY) return text;
-
   try {
-    const response = await backgroundFetch(SARVAM_ENDPOINT, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${SARVAM_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: "sarvam-105b",
-        messages: [
-          { role: "system", content: `You are an elite translator. Translate the following text into ${targetLanguage}. Return ONLY the translated text without quotes or explanation.` },
-          { role: "user", content: text },
-        ],
-        max_tokens: 500,
-        temperature: 0.3,
-      }),
-    });
-
-    if (!response.ok) throw new Error();
+    const langCode = targetLanguage.toLowerCase().slice(0, 2); // Simple mapping
+    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${langCode}&dt=t&q=${encodeURIComponent(text)}`;
+    
+    const response = await fetch(url);
+    if (!response.ok) throw new Error("Google Translate failed");
+    
     const data = await response.json();
-    return data.choices[0].message.content.trim();
+    // Google Translate returns an array structure: [[["translated", "source", ...]]]
+    return data[0].map((s: any) => s[0]).join("");
   } catch (err) {
     console.error("Translation Failed:", err);
-    return text;
+    
+    // Fallback to Sarvam if Google fails
+    if (!SARVAM_API_KEY) return text;
+    try {
+      const response = await backgroundFetch(SARVAM_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${SARVAM_API_KEY}`,
+        },
+        body: JSON.stringify({
+          model: "sarvam-105b",
+          messages: [
+            { role: "system", content: `Translate to ${targetLanguage}. Return ONLY text.` },
+            { role: "user", content: text },
+          ],
+          max_tokens: 500,
+        }),
+      });
+      const data = await response.json();
+      return data.choices[0].message.content.trim();
+    } catch (sErr) {
+      return text;
+    }
   }
 };
+
 
 
 function getDemoFallback(prompt: string): string {
