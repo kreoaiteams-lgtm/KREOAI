@@ -28,6 +28,8 @@ import CardPage from "./pages/CardPage";
 import Pricing from "./pages/PricingPage";
 import NeuralMouse from "@/components/NeuralMouse";
 import WebResearch from "./pages/WebResearch";
+import NeuralTranslate from "@/components/NeuralTranslate";
+
 
 import { Analytics } from "@vercel/analytics/react";
 import { LanguageProvider } from "@/context/LanguageContext";
@@ -42,6 +44,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <LanguageProvider>
+          <NeuralTranslate />
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/login" element={<AuthScreen />} />

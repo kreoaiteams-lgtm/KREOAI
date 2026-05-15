@@ -1,0 +1,34 @@
+{
+  "manifest_version": 3,
+  "name": "KREO Neural Proxy",
+  "version": "1.0.0",
+  "description": "Bypasses CORS for KREO AI requests and adds 3D conversion capabilities.",
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://api.sarvam.ai/*",
+    "https://*.vercel.app/*",
+    "http://localhost:*"
+  ],
+  "action": {
+    "default_title": "KREO Proxy"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_start"
+    }
+  ],
+  "externally_connectable": {
+    "matches": ["https://kreo-ai.vercel.app/*", "http://localhost:*"]
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  }
+}

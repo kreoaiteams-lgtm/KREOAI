@@ -1,4 +1,6 @@
 
+import { backgroundFetch } from "./backgroundFetch";
+
 const SARVAM_API_KEY = "sk_pd0jziip_HNsimctXQkcPjiVMBWYLpyzQ";
 const SARVAM_TTS_URL = "https://api.sarvam.ai/text-to-speech/stream";
 
@@ -16,7 +18,7 @@ export const sarvamAI = {
      */
     async streamTTS(options: SarvamTTSOptions): Promise<HTMLAudioElement | void> {
         try {
-            const response = await fetch(SARVAM_TTS_URL, {
+            const response = await backgroundFetch(SARVAM_TTS_URL, {
                 method: "POST",
                 headers: {
                     "api-subscription-key": SARVAM_API_KEY,

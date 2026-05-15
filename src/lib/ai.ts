@@ -1,4 +1,6 @@
 import { supabase } from "./supabase";
+import { backgroundFetch } from "./backgroundFetch";
+
 
 /**
  * Distilled aesthetics prompt from Claude Cookbooks
@@ -124,7 +126,7 @@ export const generateArtifact = async (
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 60000); // Increased to 60s for heavy orchestration
 
-    const response = await fetch(SARVAM_ENDPOINT, {
+    const response = await backgroundFetch(SARVAM_ENDPOINT, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -168,7 +170,7 @@ export const generateBio = async (answers: string[]) => {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15000);
 
-    const response = await fetch(SARVAM_ENDPOINT, {
+    const response = await backgroundFetch(SARVAM_ENDPOINT, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -199,7 +201,7 @@ export const narrateText = async (text: string) => {
   if (!SARVAM_API_KEY) return;
 
   try {
-    const response = await fetch("https://api.sarvam.ai/text-to-speech/stream", {
+    const response = await backgroundFetch("https://api.sarvam.ai/text-to-speech/stream", {
       method: "POST",
       headers: {
         "api-subscription-key": SARVAM_API_KEY,
@@ -231,6 +233,37 @@ export const narrateText = async (text: string) => {
     console.error("Narrate Failed:", err);
   }
 };
+
+export const translateText = async (text: string, targetLanguage: string) => {
+  if (!SARVAM_API_KEY) return text;
+
+  try {
+    const response = await backgroundFetch(SARVAM_ENDPOINT, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${SARVAM_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: "sarvam-105b",
+        messages: [
+          { role: "system", content: `You are an elite translator. Translate the following text into ${targetLanguage}. Return ONLY the translated text without quotes or explanation.` },
+          { role: "user", content: text },
+        ],
+        max_tokens: 500,
+        temperature: 0.3,
+      }),
+    });
+
+    if (!response.ok) throw new Error();
+    const data = await response.json();
+    return data.choices[0].message.content.trim();
+  } catch (err) {
+    console.error("Translation Failed:", err);
+    return text;
+  }
+};
+
 
 function getDemoFallback(prompt: string): string {
   // Extract only the user's core intent if it's an enhanced query
@@ -294,7 +327,7 @@ export const generateComparisonData = async (prompt: string, context: string) =>
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 60000); // 60s for final manifest synthesis
 
-    const response = await fetch(SARVAM_ENDPOINT, {
+    const response = await backgroundFetch(SARVAM_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json", "Authorization": `Bearer ${SARVAM_API_KEY}` },
       signal: controller.signal,
@@ -422,7 +455,7 @@ export const runCoWorkAgent = async (
       const planController = new AbortController();
       const planTimeout = setTimeout(() => planController.abort(), 30000);
 
-      const planRes = await fetch(SARVAM_ENDPOINT, {
+      const planRes = await backgroundFetch(SARVAM_ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${SARVAM_API_KEY}` },
         signal: planController.signal,
@@ -506,7 +539,7 @@ export const runCoWorkAgent = async (
           const synthController = new AbortController();
           const synthTimeoutId = setTimeout(() => synthController.abort(), 45000); // 45s for synthesis
 
-          const synthRes = await fetch(SARVAM_ENDPOINT, {
+          const synthRes = await backgroundFetch(SARVAM_ENDPOINT, {
             method: "POST",
             headers: { "Content-Type": "application/json", "Authorization": `Bearer ${SARVAM_API_KEY}` },
             signal: synthController.signal,
