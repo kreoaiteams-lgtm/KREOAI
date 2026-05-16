@@ -32,24 +32,20 @@ const ShareView: React.FC = () => {
             setLoading(true);
             
             try {
-                const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-                const isUuid = uuidRegex.test(id);
+                // 1. Try fetching by primary ID first
+                let { data, error: fetchError } = await supabase
+                    .from('artifacts')
+                    .select('id, prompt, code, created_at, user_id, share_token, is_public')
+                    .eq('id', id)
+                    .maybeSingle();
 
-                // Select only baseline columns if we suspect schema issues
-                let query = supabase.from('artifacts').select('id, prompt, code, created_at, user_id');
-                
-                if (isUuid) {
-                    query = query.or(`id.eq.${id}`);
-                } else {
-                    // This path handles non-UUID share tokens if they exist
-                    query = query.eq('id', id); 
-                }
-
-                let { data, error: fetchError } = await query.maybeSingle();
-
-                // Advanced Recovery: try share_token if it might exist
-                if (fetchError || !data) {
-                    const fallback = await supabase.from('artifacts').select('*').eq('share_token', id).maybeSingle();
+                // 2. Fallback: try by share_token column
+                if (!data) {
+                    const fallback = await supabase
+                        .from('artifacts')
+                        .select('id, prompt, code, created_at, user_id, share_token, is_public')
+                        .eq('share_token', id)
+                        .maybeSingle();
                     if (fallback.data) {
                         data = fallback.data;
                         fetchError = null;
@@ -58,13 +54,13 @@ const ShareView: React.FC = () => {
 
                 if (fetchError || !data) {
                     console.error("Fetch manifest error:", fetchError);
-                    setError("Neural Manifestation Not Found. The protocol may be incorrect or the artifact was never synchronized.");
+                    setError("Artifact not found. The link may be invalid or the artifact was deleted.");
                 } else {
                     setArtifact(data);
                 }
             } catch (err) {
                 console.error("Link sync failure:", err);
-                setError("Neural Sync Failure.");
+                setError("Network error. Please try again.");
             } finally {
                 setLoading(false);
             }
