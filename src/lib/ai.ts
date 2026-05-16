@@ -136,7 +136,7 @@ export const generateArtifact = async (
       body: JSON.stringify({
         model: "sarvam-105b",
         messages: messages,
-        max_tokens: 16000,
+        max_tokens: 32000,
         temperature: 0.7,
       }),
     });
@@ -364,7 +364,7 @@ export const generateComparisonData = async (prompt: string, context: string) =>
           },
           { role: "user", content: `Context: ${context}\nObjective: ${prompt}` }
         ],
-        max_tokens: 1000,
+        max_tokens: 4000,
         temperature: 0.1
       })
     });
@@ -476,7 +476,7 @@ export const runCoWorkAgent = async (
             { role: "system", content: COWORK_PLANNER_PROMPT },
             { role: "user", content: prompt }
           ],
-          max_tokens: 500,
+          max_tokens: 1500,
           temperature: 0.1
         })
       });
@@ -560,7 +560,7 @@ export const runCoWorkAgent = async (
                 { role: "system", content: "You are an ELITE ANALYST. Synthesize research data into a crisp, multi-perspective strategic overview." },
                 { role: "user", content: `Context: ${accumulatedContext}\nObjective: ${step.content}` }
               ],
-              max_tokens: 1000,
+              max_tokens: 4000,
               temperature: 0.1
             })
           });
