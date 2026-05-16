@@ -130,7 +130,7 @@ export const generateArtifact = async (
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${SARVAM_API_KEY}`,
+        "api-subscription-key": SARVAM_API_KEY,
       },
       signal: controller.signal,
       body: JSON.stringify({
@@ -174,7 +174,7 @@ export const generateBio = async (answers: string[]) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${SARVAM_API_KEY}`,
+        "api-subscription-key": SARVAM_API_KEY,
       },
       signal: controller.signal,
       body: JSON.stringify({
@@ -255,7 +255,7 @@ export const translateText = async (text: string, targetLanguage: string) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${SARVAM_API_KEY}`,
+          "api-subscription-key": SARVAM_API_KEY,
         },
         body: JSON.stringify({
           model: "sarvam-105b",
@@ -340,7 +340,7 @@ export const generateComparisonData = async (prompt: string, context: string) =>
 
     const response = await backgroundFetch(SARVAM_ENDPOINT, {
       method: "POST",
-      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${SARVAM_API_KEY}` },
+      headers: { "Content-Type": "application/json", "api-subscription-key": SARVAM_API_KEY },
       signal: controller.signal,
       body: JSON.stringify({
         model: "sarvam-105b",
@@ -468,7 +468,7 @@ export const runCoWorkAgent = async (
 
       const planRes = await backgroundFetch(SARVAM_ENDPOINT, {
         method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${SARVAM_API_KEY}` },
+        headers: { "Content-Type": "application/json", "api-subscription-key": SARVAM_API_KEY },
         signal: planController.signal,
         body: JSON.stringify({
           model: "sarvam-105b",
@@ -552,7 +552,7 @@ export const runCoWorkAgent = async (
 
           const synthRes = await backgroundFetch(SARVAM_ENDPOINT, {
             method: "POST",
-            headers: { "Content-Type": "application/json", "Authorization": `Bearer ${SARVAM_API_KEY}` },
+            headers: { "Content-Type": "application/json", "api-subscription-key": SARVAM_API_KEY },
             signal: synthController.signal,
             body: JSON.stringify({
               model: "sarvam-105b",

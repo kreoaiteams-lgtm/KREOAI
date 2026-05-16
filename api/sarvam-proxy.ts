@@ -1,4 +1,3 @@
-
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -22,15 +21,34 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     : 'https://api.sarvam.ai/v1/chat/completions';
 
   try {
+    const body = typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
+
+    const apiKey = (req.headers['api-subscription-key'] as string) || '';
+    const authHeader = (req.headers.authorization as string) || '';
+
+    // Build headers — prefer api-subscription-key (Sarvam's native auth), fallback to Authorization
+    const forwardHeaders: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+    if (apiKey) forwardHeaders['api-subscription-key'] = apiKey;
+    if (authHeader) forwardHeaders['Authorization'] = authHeader;
+
+    if (!apiKey && !authHeader) {
+      console.error('[Sarvam Proxy] No credentials provided in request headers');
+      return res.status(401).json({ error: 'Missing Sarvam credentials. Provide api-subscription-key header.' });
+    }
+
     const sarvamRes = await fetch(targetUrl, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': req.headers.authorization || '',
-        'api-subscription-key': (req.headers['api-subscription-key'] as string) || ''
-      },
-      body: JSON.stringify(req.body)
+      headers: forwardHeaders,
+      body
     });
+
+    if (!sarvamRes.ok) {
+        const errorText = await sarvamRes.text();
+        console.error(`[Sarvam Proxy Error] Status: ${sarvamRes.status}, Body: ${errorText}`);
+        return res.status(sarvamRes.status).json({ error: 'Sarvam API Error', details: errorText });
+    }
 
     const data = await sarvamRes.json().catch(() => null);
     

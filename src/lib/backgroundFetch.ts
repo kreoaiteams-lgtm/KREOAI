@@ -1,9 +1,9 @@
-
 /**
  * Executes a fetch request via the most reliable available channel:
  * 1. Chrome Extension (if available)
- * 2. Vercel Serverless Proxy (to bypass CORS)
- * 3. Direct Fetch (fallback)
+ * 2. Vercel Serverless Proxy (CORS bypass — primary path for Sarvam)
+ * NOTE: For Sarvam URLs, direct fetch is NEVER used as a fallback because
+ *       the browser will always block it with a CORS error.
  */
 export async function backgroundFetch(url: string, options: any = {}): Promise<Response> {
   const isSarvam = url.includes('sarvam.ai');
@@ -64,24 +64,28 @@ export async function backgroundFetch(url: string, options: any = {}): Promise<R
 
 async function tryVercelProxy(url: string, options: any, isSarvam: boolean, isTTS: boolean): Promise<Response> {
   if (isSarvam) {
-    try {
-      const proxyUrl = `/api/sarvam-proxy${isTTS ? '?endpoint=tts' : ''}`;
-      const response = await fetch(proxyUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': options.headers?.['Authorization'] || options.headers?.['authorization'] || '',
-          'api-subscription-key': options.headers?.['api-subscription-key'] || ''
-        },
-        body: options.body
-      });
-      if (response.ok) return response;
-    } catch (err) {
-      console.warn("Vercel Proxy failed, falling back to direct fetch:", err);
+    const proxyUrl = `/api/sarvam-proxy${isTTS ? '?endpoint=tts' : ''}`;
+    const response = await fetch(proxyUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': options.headers?.['Authorization'] || options.headers?.['authorization'] || '',
+        'api-subscription-key': options.headers?.['api-subscription-key'] || ''
+      },
+      body: options.body
+    });
+
+    // For Sarvam, NEVER fall through to a direct fetch — the browser blocks it with CORS.
+    // If the proxy itself returned an error, surface that error to the caller.
+    if (!response.ok) {
+      const detail = await response.json().catch(() => ({ error: `Proxy returned HTTP ${response.status}` }));
+      throw new Error(`[Sarvam Proxy] ${response.status}: ${JSON.stringify(detail)}`);
     }
+
+    return response;
   }
 
-  // 4. Final Fallback: Direct Fetch (Likely to hit CORS in browser)
+  // For non-Sarvam URLs, direct fetch is acceptable (no CORS restriction)
   return fetch(url, options);
 }
 
