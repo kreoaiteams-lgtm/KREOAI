@@ -124,7 +124,7 @@ export const generateArtifact = async (
     ];
 
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 60000); // Increased to 60s for heavy orchestration
+    const timeoutId = setTimeout(() => controller.abort(), 120000); // 120s for large artifacts
 
     const response = await backgroundFetch(SARVAM_ENDPOINT, {
       method: "POST",
@@ -136,7 +136,7 @@ export const generateArtifact = async (
       body: JSON.stringify({
         model: "sarvam-105b",
         messages: messages,
-        max_tokens: 4096,
+        max_tokens: 16000,
         temperature: 0.7,
       }),
     });
