@@ -820,6 +820,9 @@ const HomeScreen = ({
     try {
       const newUserMsg = { role: "user" as const, content: finalQuery };
 
+      // Multi-API Experience: Use TTS to narrate the initiation of the creation process
+      narrateText(`Initiating neural manifestation for: ${finalQuery.trim().slice(0, 50)}. Orchestrating visual flow and architectural balance.`);
+
       let targetId = currentArtifactId;
       let optimisticId = "";
 
@@ -914,6 +917,10 @@ const HomeScreen = ({
 
       if (code) {
         setArtifact(code);
+        
+        // Multi-API Experience: Vocal confirmation of completion
+        narrateText("Manifestation complete. Your architectural vision has been established in the neural net.");
+
         setChatHistory(prev => [...prev, {
           role: "assistant",
           content: code,
