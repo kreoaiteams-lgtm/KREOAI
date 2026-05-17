@@ -136,7 +136,7 @@ export const generateArtifact = async (
       body: JSON.stringify({
         model: "sarvam-105b",
         messages: messages,
-        max_tokens: 32000,
+        max_tokens: 4096,
         temperature: 0.7,
       }),
     });
@@ -210,14 +210,17 @@ export const narrateText = async (text: string) => {
       body: JSON.stringify({
         inputs: [{ text: text }],
         target_language_code: "en-IN",
-        speaker: "meera",
-        model: "bulbul:v2",
+        speaker: "tanya",
+        model: "bulbul:v3",
         speech_sample_rate: 22050,
         enable_preprocessing: true
       })
     });
 
-    if (!response.ok) throw new Error();
+    if (!response.ok) {
+        const errText = await response.text();
+        throw new Error(errText);
+    }
     const chunks = [];
     const reader = response.body?.getReader();
     if (!reader) return;
