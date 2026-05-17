@@ -1332,9 +1332,8 @@ const HomeScreen = ({
                         <div className="flex-1">{msg.display || msg.content}</div>
                         {msg.role === 'assistant' && (
                           <button
-                            onClick={() => narrateText(msg.content)}
-                            className="p-1 rounded-md hover:bg-black/5 text-black/20 hover:text-[#1B3FBF] transition-all shrink-0"
-                            title="Narrate Manifestation"
+                            className="p-1 rounded-md text-black/10 cursor-not-allowed shrink-0"
+                            title="Narration Disabled"
                           >
                             <Volume2 size={12} />
                           </button>

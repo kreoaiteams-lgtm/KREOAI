@@ -50,6 +50,7 @@ Manifest a masterpiece.
 `;
 
 const SARVAM_API_KEY = import.meta.env.VITE_SARVAM_API_KEY || "sk_re6xoj0j_hWoXVGn7z2ah9nsizyJmKmJY";
+const SARVAM_FALLBACK_KEY = "sk_pd0jziip_HNsimctXQkcPjiVMBWYLpyzQ"; // Formerly the TTS key, now repurposed for code generation fallback
 const SARVAM_ENDPOINT = "https://api.sarvam.ai/v1/chat/completions";
 const JINA_API_KEY = "jina_1571735a32634468b4b6258b9fcfa276X8wx9LD9fG7zOo7KVosMzfGXolqX";
 
@@ -126,20 +127,37 @@ export const generateArtifact = async (
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 120000); // 120s for large artifacts
 
-    const response = await backgroundFetch(SARVAM_ENDPOINT, {
+    const requestBody = JSON.stringify({
+      model: "sarvam-105b",
+      messages: messages,
+      max_tokens: 4096,
+      temperature: 0.7,
+    });
+
+    let response = await backgroundFetch(SARVAM_ENDPOINT, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "api-subscription-key": SARVAM_API_KEY,
       },
       signal: controller.signal,
-      body: JSON.stringify({
-        model: "sarvam-105b",
-        messages: messages,
-        max_tokens: 4096,
-        temperature: 0.7,
-      }),
+      body: requestBody,
     });
+
+    // Fallback: If primary key runs out of credits/fails, use the secondary key
+    if (!response.ok) {
+      console.warn(`Primary Sarvam API key failed with status ${response.status}. Attempting fallback to secondary API key...`);
+      response = await backgroundFetch(SARVAM_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "api-subscription-key": SARVAM_FALLBACK_KEY,
+        },
+        // Not passing signal here to avoid aborting the fallback if the primary timed out just before
+        body: requestBody,
+      });
+    }
+
     clearTimeout(timeoutId);
 
     if (!response.ok) return getDemoFallback(prompt);
