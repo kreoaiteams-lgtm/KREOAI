@@ -127,13 +127,7 @@ const AuthScreen = () => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             >
-              <h1 
-                className="text-8xl md:text-[9.5rem] font-normal leading-none tracking-tight text-[#0047ff]"
-                style={{ fontFamily: "'TAN NIMBUS', 'Calistoga', serif" }}
-              >
-                KREO
-              </h1>
-              <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight mt-6 font-sans uppercase">
+              <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight mt-24 font-sans uppercase">
                 WELCOME BACK
               </h2>
               <p className="text-sm md:text-base text-slate-500 font-semibold mt-2 max-w-xs font-sans uppercase">
