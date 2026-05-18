@@ -23,8 +23,8 @@ const NeuralDoodle = ({ top, left, index, icon }: { top: string, left: string, i
   const Icon = icon;
   const pos = useMemo(() => ({
     rotate: Math.random() * 360,
-    scale: 0.3 + Math.random() * 1.5,
-    opacity: 0.05 + Math.random() * 0.15,
+    scale: 0.4 + Math.random() * 1.2,
+    opacity: 0.04 + Math.random() * 0.12,
     delay: Math.random() * 2
   }), []);
 
@@ -38,32 +38,33 @@ const NeuralDoodle = ({ top, left, index, icon }: { top: string, left: string, i
       }}
       transition={{ 
         delay: pos.delay, 
-        duration: 2,
+        duration: 2.5,
         repeat: Infinity,
         repeatType: "reverse",
-        repeatDelay: Math.random() * 5
+        repeatDelay: Math.random() * 4
       }}
       className="absolute text-white pointer-events-none"
       style={{ top, left }}
     >
-      <Icon size={15 + Math.random() * 50} strokeWidth={0.5} />
+      <Icon size={12 + Math.random() * 30} strokeWidth={0.5} />
     </motion.div>
   );
 };
 
 const SplashScreen = ({ onComplete }: { onComplete: () => void }) => {
   const [phase, setPhase] = useState<"type" | "hold" | "exit">("type");
+  const [loadingPercent, setLoadingPercent] = useState(0);
   
   const doodles = useMemo(() => {
     const items = [];
-    const rows = 12;
-    const cols = 10;
+    const rows = 10;
+    const cols = 8;
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < cols; c++) {
-        const top = (r / rows) * 100 + (Math.random() * 6 - 3);
-        const left = (c / cols) * 100 + (Math.random() * 6 - 3);
+        const top = (r / rows) * 100 + (Math.random() * 8 - 4);
+        const left = (c / cols) * 100 + (Math.random() * 8 - 4);
         const icon = DOODLE_ICONS[Math.floor(Math.random() * DOODLE_ICONS.length)];
-        if (Math.random() > 0.2) {
+        if (Math.random() > 0.3) {
           items.push({ top: `${top}%`, left: `${left}%`, icon });
         }
       }
@@ -72,10 +73,26 @@ const SplashScreen = ({ onComplete }: { onComplete: () => void }) => {
   }, []);
 
   useEffect(() => {
+    // Smooth loader bar progression
+    const interval = setInterval(() => {
+      setLoadingPercent(prev => {
+        if (prev >= 100) {
+          clearInterval(interval);
+          return 100;
+        }
+        const step = Math.floor(Math.random() * 15) + 5;
+        return Math.min(100, prev + step);
+      });
+    }, 150);
+
     const t1 = setTimeout(() => setPhase("hold"), 1200);
     const t2 = setTimeout(() => setPhase("exit"), 3000);
-    const t3 = setTimeout(onComplete, 3800);
-    return () => [t1, t2, t3].forEach(clearTimeout);
+    const t3 = setTimeout(onComplete, 3700);
+
+    return () => {
+      clearInterval(interval);
+      [t1, t2, t3].forEach(clearTimeout);
+    };
   }, [onComplete]);
 
   return (
@@ -84,34 +101,70 @@ const SplashScreen = ({ onComplete }: { onComplete: () => void }) => {
         <motion.div
           key="splash"
           exit={{ opacity: 0, scale: 1.05 }}
-          transition={{ duration: 0.8, ease: "easeInOut" }}
-          className="fixed inset-0 z-[3000] flex flex-col items-center justify-center bg-[#1B3FBF] overflow-hidden"
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          className="fixed inset-0 z-[3000] flex flex-col items-center justify-center bg-[#020512] overflow-hidden"
         >
-          {/* Neural Cloud Field */}
-          <div className="absolute inset-0 overflow-hidden">
+          {/* Kinetic Ambient Glow behind letters */}
+          <div className="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] w-[350px] h-[350px] bg-blue-600/10 rounded-full blur-[80px] pointer-events-none z-0" />
+          <div className="absolute top-1/2 left-1/2 translate-x-[-40%] translate-y-[-60%] w-[250px] h-[250px] bg-purple-500/10 rounded-full blur-[90px] pointer-events-none z-0" />
+
+          {/* Neural Cloud Icon Field */}
+          <div className="absolute inset-0 overflow-hidden z-0">
              {doodles.map((item, i) => (
-               <NeuralDoodle key={i} index={i} top={item.top} left={item.left} icon={item.icon} />
+                <NeuralDoodle key={i} index={i} top={item.top} left={item.left} icon={item.icon} />
              ))}
           </div>
 
-          {/* Minimalist Centered KREO */}
-          <div className="flex items-center gap-1 md:gap-4 relative z-10">
-            {LETTERS.map((letter, i) => (
-               <motion.span
-                 key={i}
-                 initial={{ y: 20, opacity: 0, scale: 0.9 }}
-                 animate={{ y: 0, opacity: 1, scale: 1 }}
-                 transition={{ 
-                   delay: i * 0.1, 
-                   duration: 0.8,
-                   ease: [0.16, 1, 0.3, 1]
-                 }}
-                 className="text-[18vw] font-bold text-white leading-none tracking-tighter cursor-default drop-shadow-2xl"
-                 style={{ fontFamily: TAN }}
-               >
-                 {letter}
-               </motion.span>
-            ))}
+          <div className="relative z-10 flex flex-col items-center space-y-8">
+            {/* Minimalist Centered KREO Letters */}
+            <div className="flex items-center gap-2 md:gap-5">
+              {LETTERS.map((letter, i) => (
+                 <motion.span
+                   key={i}
+                   initial={{ y: 35, opacity: 0, scale: 0.8 }}
+                   animate={{ y: 0, opacity: 1, scale: 1 }}
+                   transition={{ 
+                     delay: i * 0.12, 
+                     duration: 0.9,
+                     ease: [0.16, 1, 0.3, 1]
+                   }}
+                   className="text-[17vw] font-bold text-white leading-none tracking-tighter cursor-default select-none drop-shadow-[0_20px_50px_rgba(0,32,194,0.3)]"
+                   style={{ fontFamily: TAN }}
+                 >
+                   {letter}
+                 </motion.span>
+              ))}
+            </div>
+
+            {/* Premium Subtitle & Editorial Tagline */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 0.6, y: 0 }}
+              transition={{ delay: 0.5, duration: 1 }}
+              className="flex flex-col items-center space-y-1 text-center"
+            >
+              <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white">
+                neural design engine
+              </p>
+              <p className="text-xs font-serif italic text-white/50 tracking-wide">
+                Architecting Visual Space...
+              </p>
+            </motion.div>
+          </div>
+
+          {/* Precision Loading Progress Bar at the bottom */}
+          <div className="absolute bottom-16 left-1/2 translate-x-[-50%] w-48 space-y-2 z-10 flex flex-col items-center">
+            <div className="h-[1.5px] w-full bg-white/5 rounded-full overflow-hidden border border-white/5 relative">
+              <motion.div 
+                className="h-full bg-gradient-to-r from-blue-600 via-indigo-400 to-white"
+                initial={{ width: 0 }}
+                animate={{ width: `${loadingPercent}%` }}
+                transition={{ duration: 0.15 }}
+              />
+            </div>
+            <span className="text-[8px] font-mono tracking-widest text-white/30 uppercase">
+              Manifesting Studio {loadingPercent}%
+            </span>
           </div>
         </motion.div>
       )}
@@ -120,5 +173,3 @@ const SplashScreen = ({ onComplete }: { onComplete: () => void }) => {
 };
 
 export default SplashScreen;
-
-
