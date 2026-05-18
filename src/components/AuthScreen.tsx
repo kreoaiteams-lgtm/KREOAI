@@ -89,6 +89,20 @@ const AuthScreen = () => {
         {showSplash && <SplashScreen onComplete={handleSplashComplete} />}
       </AnimatePresence>
 
+      {/* Injecting Local TAN-NIMBUS font-face cleanly */}
+      <style dangerouslySetInnerHTML={{ __html: `
+        @font-face {
+          font-family: 'TAN NIMBUS';
+          src: url('/TAN-Nimbus/TAN-NIMBUS.woff2') format('woff2'),
+               url('/TAN-Nimbus/TAN-NIMBUS.woff') format('woff'),
+               url('/TAN-Nimbus/TAN-NIMBUS.ttf') format('truetype'),
+               url('/TAN-Nimbus/TAN-NIMBUS.otf') format('opentype');
+          font-weight: normal;
+          font-style: normal;
+          font-display: swap;
+        }
+      ` }} />
+
       {/* Screen Container with scattered 3D shapes background image */}
       <div 
         className="min-h-screen w-full flex items-center justify-center p-6 md:p-12 relative overflow-hidden bg-[#fbfbfc]"
@@ -100,38 +114,36 @@ const AuthScreen = () => {
         }}
       >
         
-        {/* Soft blur overlay */}
+        {/* Soft overlay */}
         <div className="absolute inset-0 bg-white/5 backdrop-blur-[0.5px] pointer-events-none" />
 
-        {/* Unified 12-Column Responsive Grid */}
-        <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10 px-4">
+        {/* Cozy Unified Flex Layout to reduce empty gap in the center */}
+        <div className="w-full max-w-4xl flex flex-col lg:flex-row items-center justify-between gap-12 relative z-10 px-4">
           
           {/* Left Column: Kreo tan nimbus title & welcome back text */}
-          <div className="lg:col-span-7 flex flex-col justify-center items-start text-left select-none pr-8">
-            <link href="https://fonts.googleapis.com/css2?family=Calistoga&display=swap" rel="stylesheet" />
-            
+          <div className="w-full lg:w-1/2 flex flex-col justify-center items-start text-left select-none lg:pr-6 lg:-translate-y-12">
             <motion.div
-              initial={{ opacity: 0, x: -30 }}
+              initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             >
               <h1 
-                className="text-8xl md:text-[10rem] font-normal leading-none tracking-tight text-[#0047ff]"
-                style={{ fontFamily: "'Calistoga', serif" }}
+                className="text-8xl md:text-[9.5rem] font-normal leading-none tracking-tight text-[#0047ff]"
+                style={{ fontFamily: "'TAN NIMBUS', 'Calistoga', serif" }}
               >
                 Kreo
               </h1>
-              <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight mt-8 font-sans">
+              <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight mt-6 font-sans">
                 Welcome back
               </h2>
-              <p className="text-sm md:text-base text-slate-500 font-semibold mt-2.5 max-w-xs font-sans">
+              <p className="text-sm md:text-base text-slate-500 font-semibold mt-2 max-w-xs font-sans">
                 Let's create something amazing today.
               </p>
             </motion.div>
           </div>
 
-          {/* Right Column: Floating login card aligned perfectly */}
-          <div className="lg:col-span-5 flex justify-center lg:justify-end">
+          {/* Right Column: Floating login card positioned closely */}
+          <div className="w-full lg:w-1/2 flex justify-center lg:justify-end">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -268,19 +280,19 @@ const AuthScreen = () => {
                     <path
                       fill="#4285F4"
                       d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v3.92h6.69c-.29 1.5-.114 3.018-1 4.02l3.07 2.38c1.8-1.66 2.98-4.11 2.98-7.25z"
-                />
+                    />
                     <path
                       fill="#34A853"
                       d="M12 24c3.24 0 5.97-1.08 7.96-2.91l-3.07-2.38c-.9.6-2.04.97-3.32.97-2.55 0-4.72-1.73-5.49-4.05H1.05v2.47C3.03 21.93 7.27 24 12 24z"
-                />
+                    />
                     <path
                       fill="#FBBC05"
                       d="M6.51 15.63c-.2-.6-.31-1.24-.31-1.9s.11-1.3.31-1.9V9.36H1.05C.38 10.71 0 12.31 0 14s.38 3.29 1.05 4.64l5.46-4.01z"
-                />
+                    />
                     <path
                       fill="#EA4335"
                       d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.27 0 3.03 2.07 1.05 6.09l5.46 4.26c.77-2.32 2.94-4.6 5.49-4.6z"
-                />
+                    />
                   </svg>
                   Google
                 </button>
