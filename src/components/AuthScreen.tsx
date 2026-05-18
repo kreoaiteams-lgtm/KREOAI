@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { useLang } from "@/context/LanguageContext";
 import { motion, AnimatePresence } from "framer-motion";
-import { Mail, Lock, User, ArrowRight, Sparkles, Shield, Cpu, Zap, Activity, ChevronRight } from "lucide-react";
+import { Mail, Lock, User, ArrowRight, Sparkles, Shield, Cpu, Zap, Activity, ChevronRight, Award } from "lucide-react";
 import SplashScreen from "./SplashScreen";
 
 const AuthScreen = () => {
