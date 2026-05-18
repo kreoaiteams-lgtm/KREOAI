@@ -29,6 +29,8 @@ import Pricing from "./pages/PricingPage";
 import NeuralMouse from "@/components/NeuralMouse";
 import WebResearch from "./pages/WebResearch";
 import NeuralTranslate from "@/components/NeuralTranslate";
+import { ReferralTracker } from "@/components/ReferralTracker";
+import ReferralPage from "./pages/ReferralPage";
 
 
 import { Analytics } from "@vercel/analytics/react";
@@ -45,10 +47,13 @@ const App = () => (
       <BrowserRouter>
         <LanguageProvider>
           <NeuralTranslate />
+          <ReferralTracker />
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/login" element={<AuthScreen />} />
           <Route path="/landing" element={<Landing />} />
+          <Route path="/referral" element={<ReferralPage />} />
+          <Route path="/referrals" element={<ReferralPage />} />
           <Route path="/promo1" element={<CleanPromo1 />} />
           <Route path="/promo2" element={<CleanPromo2 />} />
           <Route path="/promo3" element={<CleanPromo3 />} />

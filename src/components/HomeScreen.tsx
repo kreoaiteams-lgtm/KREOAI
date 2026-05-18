@@ -1086,6 +1086,15 @@ const HomeScreen = ({
 
             <Tooltip>
               <TooltipTrigger asChild>
+                <button onClick={() => navigate('/referral')} className="rounded-full p-2 text-foreground/80 hover:text-foreground transition-all">
+                  <UserPlus size={20} />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>Referral Network</TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
                 <button onClick={() => setSettingsOpen(true)} className="rounded-full p-2 text-foreground/80 hover:text-foreground transition-all">
                   <Settings size={20} />
                 </button>
