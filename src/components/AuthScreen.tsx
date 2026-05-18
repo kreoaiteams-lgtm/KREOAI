@@ -121,7 +121,7 @@ const AuthScreen = () => {
         <div className="w-full max-w-4xl flex flex-col lg:flex-row items-center justify-between gap-12 relative z-10 px-4">
           
           {/* Left Column: Kreo tan nimbus title & welcome back text */}
-          <div className="w-full lg:w-1/2 flex flex-col justify-center items-start text-left select-none lg:pr-6 lg:-translate-y-12">
+          <div className="w-full lg:w-1/2 flex flex-col justify-center items-start text-left select-none lg:pr-6 lg:-translate-y-24">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -131,13 +131,13 @@ const AuthScreen = () => {
                 className="text-8xl md:text-[9.5rem] font-normal leading-none tracking-tight text-[#0047ff]"
                 style={{ fontFamily: "'TAN NIMBUS', 'Calistoga', serif" }}
               >
-                Kreo
+                KREO
               </h1>
-              <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight mt-6 font-sans">
-                Welcome back
+              <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight mt-6 font-sans uppercase">
+                WELCOME BACK
               </h2>
-              <p className="text-sm md:text-base text-slate-500 font-semibold mt-2 max-w-xs font-sans">
-                Let's create something amazing today.
+              <p className="text-sm md:text-base text-slate-500 font-semibold mt-2 max-w-xs font-sans uppercase">
+                LET'S CREATE SOMETHING AMAZING TODAY.
               </p>
             </motion.div>
           </div>
