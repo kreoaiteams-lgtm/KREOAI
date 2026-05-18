@@ -263,104 +263,65 @@ const AuthScreen = () => {
             </div>
           </motion.div>
 
-          {/* Right Column: Stunning Mockup Dashboard Components (7 Cols) */}
+          {/* Right Column: Premium "What you can do" Bubble Showcase (7 Cols) */}
           <motion.div 
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="lg:col-span-7 hidden lg:flex flex-col space-y-6"
+            className="lg:col-span-7 hidden lg:flex flex-col justify-center items-center"
           >
-            {/* Mock Component 1: Bento Analytics Sparkline Card */}
-            <div className="bg-white/10 backdrop-blur-md border border-white/10 rounded-3xl p-6 shadow-xl relative overflow-hidden flex flex-col justify-between h-44">
-              <div className="flex justify-between items-start">
-                <div className="space-y-1">
-                  <span className="text-[9px] font-black uppercase tracking-widest text-white/40">Studio Engine Feed</span>
-                  <h3 className="text-md font-serif italic text-white/90">Project Manifestation Density</h3>
+            <div className="w-full max-w-xl bg-white/5 backdrop-blur-md border border-white/10 rounded-[3rem] p-10 md:p-12 shadow-2xl flex flex-col justify-between items-center text-center space-y-10 min-h-[500px]">
+              {/* Header Badge */}
+              <div className="space-y-3">
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 text-white/60 text-[9px] font-black uppercase tracking-[0.3em]">
+                  <Sparkles className="w-3.5 h-3.5 text-yellow-400 animate-pulse" />
+                  What you can build
                 </div>
-                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-400/10 border border-emerald-400/20 text-emerald-400 text-[9px] font-black uppercase tracking-wider">
-                  +18.4% Peak
-                </span>
-              </div>
-              <div className="flex items-end justify-between">
-                <div>
-                  <p className="text-3xl font-bold text-white tracking-tight">4,096 <span className="text-xs font-normal text-white/40">Tokens</span></p>
-                  <p className="text-[9px] font-black uppercase tracking-wider text-white/30">Standard Limit</p>
-                </div>
-                {/* SVG Mock Sparkline Chart */}
-                <svg className="w-32 h-10 text-emerald-400" viewBox="0 0 100 30" fill="none">
-                  <path d="M0 25 C10 20, 20 28, 30 15 C40 2, 50 18, 60 10 C70 2, 80 12, 90 2 C95 1, 100 5, 100 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                  <path d="M0 25 C10 20, 20 28, 30 15 C40 2, 50 18, 60 10 C70 2, 80 12, 90 2 C95 1, 100 5, 100 5 L100 30 L0 30 Z" fill="url(#sparkline-grad)" opacity="0.1" />
-                  <defs>
-                    <linearGradient id="sparkline-grad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="currentColor" />
-                      <stop offset="100%" stopColor="currentColor" stopOpacity="0" />
-                    </linearGradient>
-                  </defs>
-                </svg>
-              </div>
-            </div>
-
-            {/* Mock Component 2: Bento CoWork Agent Task Card & User Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Left card: CoWork Active status */}
-              <div className="bg-white/10 backdrop-blur-md border border-white/10 rounded-3xl p-6 shadow-xl relative overflow-hidden flex flex-col justify-between h-44">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping" />
-                    <span className="text-[9px] font-black uppercase tracking-widest text-cyan-400">CoWork Active</span>
-                  </div>
-                  <Zap className="w-3.5 h-3.5 text-cyan-400" />
-                </div>
-                <div className="space-y-1.5">
-                  <p className="text-xs font-mono text-white/80 leading-relaxed truncate">
-                    &gt; Refactored css variables...
-                  </p>
-                  <p className="text-xs font-mono text-white/50 leading-relaxed truncate">
-                    &gt; Manifested 4 dynamic charts.
-                  </p>
-                </div>
-                <div className="pt-2 border-t border-white/5 flex items-center justify-between text-[9px] font-black uppercase tracking-wider text-white/30">
-                  <span>Engine Steps: 12/12</span>
-                  <span>1.2s latency</span>
-                </div>
+                <h2 
+                  className="text-4xl md:text-5xl lg:text-6xl text-white leading-tight tracking-tighter"
+                  style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: "italic" }}
+                >
+                  What you can do<br />
+                  with <span className="text-yellow-400">KREO.</span>
+                </h2>
               </div>
 
-              {/* Right card: Active Referrals progress card */}
-              <div className="bg-white/10 backdrop-blur-md border border-white/10 rounded-3xl p-6 shadow-xl relative overflow-hidden flex flex-col justify-between h-44">
-                <div className="flex justify-between items-start">
-                  <div className="space-y-0.5">
-                    <span className="text-[9px] font-black uppercase tracking-widest text-white/40">Referral Level</span>
-                    <h4 className="font-serif italic text-white/90">Gold Visionary</h4>
-                  </div>
-                  <Award className="w-4 h-4 text-yellow-400" />
-                </div>
-                <div className="space-y-2">
-                  <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden relative border border-white/5">
-                    <div className="h-full w-[75%] bg-gradient-to-r from-blue-500 to-yellow-400" />
-                  </div>
-                  <div className="flex justify-between text-[8px] font-black uppercase tracking-wider text-white/30">
-                    <span>Silver</span>
-                    <span>Gold (3/4)</span>
-                  </div>
-                </div>
-                <p className="text-[9px] font-light text-white/50 leading-tight">
-                  Next perk: Unlimited CoWork steps & Custom branding themes.
+              {/* Bubbles / Capsules Grid */}
+              <div className="flex flex-wrap justify-center gap-3.5 max-w-lg">
+                {[
+                  { name: "Pitch Decks" },
+                  { name: "SaaS Dashboards" },
+                  { name: "Landing Pages" },
+                  { name: "Brand Toolkits" },
+                  { name: "Flowcharts" },
+                  { name: "Study Visuals" },
+                  { name: "Financial Reports" },
+                  { name: "Mobile App UIs" },
+                ].map((item, i) => (
+                  <motion.div
+                    key={item.name}
+                    initial={{ opacity: 0, y: 15, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    transition={{ duration: 0.6, delay: 0.4 + i * 0.08, ease: [0.16, 1, 0.3, 1] }}
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    className="px-5 py-3 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 text-white/85 hover:text-white text-xs font-semibold tracking-wider transition-all duration-300 shadow-sm cursor-default flex items-center gap-2 select-none"
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-yellow-400 shadow-[0_0_8px_rgba(250,204,21,0.6)] animate-pulse" />
+                    {item.name}
+                  </motion.div>
+                ))}
+              </div>
+
+              {/* Bottom Caption */}
+              <div className="space-y-2">
+                <div className="h-[1px] w-12 bg-white/20 mx-auto" />
+                <p 
+                  className="text-white/30 text-[9px] uppercase tracking-[0.4em]"
+                  style={{ fontFamily: "'Satoshi', sans-serif" }}
+                >
+                  And so much more.
                 </p>
               </div>
-            </div>
-
-            {/* Mock Component 3: Live Manifesto feed */}
-            <div className="bg-white/5 backdrop-blur-sm border border-white/5 rounded-3xl p-6 shadow-lg flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="p-3 rounded-2xl bg-white/5 border border-white/10 text-white">
-                  <Activity className="w-4 h-4" />
-                </div>
-                <div className="space-y-0.5">
-                  <p className="text-xs font-semibold text-white/90">Interactive Bento Dashboard.html</p>
-                  <p className="text-[9px] font-black uppercase tracking-wider text-white/30">Generated via Sarvam-105b</p>
-                </div>
-              </div>
-              <ChevronRight className="w-4 h-4 text-white/20" />
             </div>
 
           </motion.div>
