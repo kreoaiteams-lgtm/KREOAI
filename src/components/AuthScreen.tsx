@@ -270,54 +270,64 @@ const AuthScreen = () => {
             transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
             className="lg:col-span-7 hidden lg:flex flex-col justify-center items-center"
           >
-            <div className="w-full max-w-xl bg-white/5 backdrop-blur-md border border-white/10 rounded-[3rem] p-10 md:p-12 shadow-2xl flex flex-col justify-between items-center text-center space-y-10 min-h-[500px]">
+            <div className="w-full max-w-xl bg-white/[0.02] backdrop-blur-lg border border-white/10 rounded-[3rem] p-10 md:p-12 shadow-2xl flex flex-col justify-between items-center text-center space-y-10 min-h-[500px] relative overflow-hidden">
+              {/* Playful morphing background glows */}
+              <div className="absolute -top-20 -left-20 w-48 h-48 bg-purple-500/10 rounded-full blur-3xl animate-pulse" />
+              <div className="absolute -bottom-20 -right-20 w-48 h-48 bg-cyan-500/10 rounded-full blur-3xl animate-pulse" />
+
               {/* Header Badge */}
-              <div className="space-y-3">
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 text-white/60 text-[9px] font-black uppercase tracking-[0.3em]">
-                  <Sparkles className="w-3.5 h-3.5 text-yellow-400 animate-pulse" />
-                  What you can build
+              <div className="space-y-4 relative z-10">
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-white/70 text-[9px] font-black uppercase tracking-[0.2em] -rotate-1 hover:rotate-1 transition-transform">
+                  <span className="animate-bounce">✨</span> Manifest Studio
                 </div>
                 <h2 
-                  className="text-4xl md:text-5xl lg:text-6xl text-white leading-tight tracking-tighter"
-                  style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: "italic" }}
+                  className="text-4xl md:text-5xl lg:text-[3.25rem] text-white leading-none tracking-tight font-black"
+                  style={{ fontFamily: "'Satoshi', sans-serif" }}
                 >
-                  What you can do<br />
-                  with <span className="text-yellow-400">KREO.</span>
+                  What can you <br/>
+                  build with <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-pink-400 to-cyan-300">KREO?</span>
                 </h2>
+                <p className="text-[9px] text-white/40 font-mono tracking-widest uppercase">
+                  (Hint: Hover/poke to interact! 👇)
+                </p>
               </div>
 
               {/* Bubbles / Capsules Grid */}
-              <div className="flex flex-wrap justify-center gap-3.5 max-w-lg">
+              <div className="flex flex-wrap justify-center gap-3.5 max-w-lg relative z-10">
                 {[
-                  { name: "Pitch Decks" },
-                  { name: "SaaS Dashboards" },
-                  { name: "Landing Pages" },
-                  { name: "Brand Toolkits" },
-                  { name: "Flowcharts" },
-                  { name: "Study Visuals" },
-                  { name: "Financial Reports" },
-                  { name: "Mobile App UIs" },
+                  { name: "Pitch Decks", emoji: "📊", border: "border-blue-400/30 text-blue-300 bg-blue-500/5", rot: "-rotate-2" },
+                  { name: "SaaS Dashboards", emoji: "💻", border: "border-cyan-400/30 text-cyan-300 bg-cyan-500/5", rot: "rotate-1" },
+                  { name: "Landing Pages", emoji: "🚀", border: "border-purple-400/30 text-purple-300 bg-purple-500/5", rot: "-rotate-1" },
+                  { name: "Brand Toolkits", emoji: "🎨", border: "border-pink-400/30 text-pink-300 bg-pink-500/5", rot: "rotate-2" },
+                  { name: "Flowcharts", emoji: "🗺️", border: "border-emerald-400/30 text-emerald-300 bg-emerald-500/5", rot: "-rotate-2" },
+                  { name: "Study Visuals", emoji: "📚", border: "border-amber-400/30 text-amber-300 bg-amber-500/5", rot: "rotate-1" },
+                  { name: "Financial Reports", emoji: "📈", border: "border-violet-400/30 text-violet-300 bg-violet-500/5", rot: "-rotate-1" },
+                  { name: "Mobile App UIs", emoji: "📱", border: "border-rose-400/30 text-rose-300 bg-rose-500/5", rot: "rotate-3" },
                 ].map((item, i) => (
                   <motion.div
                     key={item.name}
-                    initial={{ opacity: 0, y: 15, scale: 0.95 }}
+                    initial={{ opacity: 0, y: 15, scale: 0.9 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
-                    transition={{ duration: 0.6, delay: 0.4 + i * 0.08, ease: [0.16, 1, 0.3, 1] }}
-                    whileHover={{ scale: 1.05, y: -2 }}
-                    className="px-5 py-3 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 text-white/85 hover:text-white text-xs font-semibold tracking-wider transition-all duration-300 shadow-sm cursor-default flex items-center gap-2 select-none"
+                    transition={{ type: "spring", stiffness: 260, damping: 20, delay: 0.1 + i * 0.06 }}
+                    whileHover={{ 
+                      scale: 1.15, 
+                      rotate: [0, -4, 4, -2, 2, 0],
+                      y: -4,
+                      boxShadow: "0 10px 25px -5px rgba(255,255,255,0.05)"
+                    }}
+                    className={`px-5 py-3 rounded-full border ${item.border} ${item.rot} cursor-pointer hover:bg-white/10 hover:text-white text-xs font-bold tracking-wide transition-all duration-300 flex items-center gap-2 select-none`}
                   >
-                    <span className="w-1.5 h-1.5 rounded-full bg-yellow-400 shadow-[0_0_8px_rgba(250,204,21,0.6)] animate-pulse" />
+                    <span className="text-sm">{item.emoji}</span>
                     {item.name}
                   </motion.div>
                 ))}
               </div>
 
               {/* Bottom Caption */}
-              <div className="space-y-2">
+              <div className="space-y-2 relative z-10">
                 <div className="h-[1px] w-12 bg-white/20 mx-auto" />
                 <p 
-                  className="text-white/30 text-[9px] uppercase tracking-[0.4em]"
-                  style={{ fontFamily: "'Satoshi', sans-serif" }}
+                  className="text-white/30 text-[9px] uppercase tracking-[0.4em] font-mono"
                 >
                   And so much more.
                 </p>
