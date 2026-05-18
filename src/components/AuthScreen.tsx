@@ -7,6 +7,16 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Mail, Lock, User, ArrowRight, Sparkles, Shield, Cpu, Zap, Activity, ChevronRight, Award } from "lucide-react";
 import SplashScreen from "./SplashScreen";
 
+const CYCLE_WORDS = [
+  "PPT PRESENTATIONS",
+  "EXCEL SHEETS",
+  "BENTO DASHBOARDS",
+  "LANDING PAGES",
+  "CAMPAIGN CHARTS",
+  "NEURAL WEBSITES",
+  "COWORK PROTOCOLS"
+];
+
 const AuthScreen = () => {
   const navigate = useNavigate();
   const [isSignUp, setIsSignUp] = useState(false);
@@ -15,7 +25,15 @@ const AuthScreen = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [showSplash, setShowSplash] = useState(true);
+  const [cycleIndex, setCycleIndex] = useState(0);
   const { t } = useLang();
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCycleIndex((prev) => (prev + 1) % CYCLE_WORDS.length);
+    }, 2000);
+    return () => clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     // Only show splash once per session
@@ -124,9 +142,21 @@ const AuthScreen = () => {
               >
                 KREO
               </h1>
-              <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/60 mt-3 select-none">
-                {t.hero_sub || "Describe anything. KREO manifests it."}
-              </p>
+              <div className="text-[10px] font-black uppercase tracking-[0.4em] text-white/60 mt-3 select-none flex flex-wrap items-center gap-x-2 gap-y-1 min-h-[1.5rem]">
+                <span>BUILD ANYTHING:</span>
+                <AnimatePresence mode="wait">
+                  <motion.span
+                    key={cycleIndex}
+                    initial={{ opacity: 0, y: -8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 8 }}
+                    transition={{ duration: 0.25, ease: "easeInOut" }}
+                    className="text-yellow-400 font-extrabold tracking-[0.3em] inline-block"
+                  >
+                    {CYCLE_WORDS[cycleIndex]}
+                  </motion.span>
+                </AnimatePresence>
+              </div>
             </div>
 
             {/* Bright Glassmorphic Card Container */}
