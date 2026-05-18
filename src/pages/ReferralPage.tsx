@@ -212,9 +212,18 @@ const ReferralPage = () => {
         
         {/* Simple & Clean Header */}
         <section className="text-center space-y-3 max-w-2xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0020C2]/5 border border-[#0020C2]/10 text-[#0020C2] text-[10px] font-black uppercase tracking-wider">
-            <Users className="w-3.5 h-3.5" />
-            Invite & Earn
+          <div className="flex flex-wrap gap-2 items-center justify-center">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0020C2]/5 border border-[#0020C2]/10 text-[#0020C2] text-[10px] font-black uppercase tracking-wider">
+              <Users className="w-3.5 h-3.5" />
+              Invite & Earn
+            </div>
+            <button 
+              onClick={() => navigate("/card-trend")}
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-yellow-500/10 border border-yellow-500/25 text-yellow-700 text-[10px] font-bold uppercase tracking-wider hover:bg-yellow-500/20 transition-all hover:scale-105 active:scale-95"
+            >
+              <Sparkles className="w-3 h-3 text-yellow-600 animate-pulse" />
+              Card Sharing Trend
+            </button>
           </div>
           <h1 className="text-4xl md:text-5xl font-serif italic tracking-tight text-[#0020C2] leading-tight">
             Invite Friends to <span style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }} className="not-italic font-sans font-bold uppercase tracking-normal">KREO</span>

@@ -273,7 +273,7 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
                     <label className="text-[10px] font-black uppercase tracking-widest text-black">Logo URL <span className="normal-case font-medium text-black/40">(optional)</span></label>
                     <div className="relative">
                       <LinkIcon size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-black/20" />
-                      <input type="url" value={brandLogoUrl} onChange={e => setBrandLogoUrl(e.target.value)} placeholder="https://your-logo-url.com/logo.png" className="w-full h-10 rounded-xl border-2 border-black/5 bg-white pl-9 pr-3 text-[11px] focus:outline-none focus:border-[#1B3FBF]/40" />
+                      <input type="url" value={brandLogoUrl} onChange={e => setBrandLogoUrl(e.target.value)} placeholder="https://your-logo-url.com/logo.png" className="w-full h-10 rounded-xl border-2 border-black/5 bg-white pl-9 pr-3 text-[11px] text-slate-800 focus:outline-none focus:border-[#1B3FBF]/40" />
                     </div>
                   </div>
 
@@ -371,7 +371,7 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
                       autoFocus key={interviewPhase}
                       value={query} onChange={e => setQuery(e.target.value)}
                       placeholder="Your answer..."
-                      className="w-full bg-transparent border-b-2 border-black/8 py-4 text-xl outline-none focus:border-[#1B3FBF] transition-all placeholder:text-black/10 font-serif italic"
+                      className="w-full bg-transparent border-b-2 border-black/8 py-4 text-xl text-slate-800 outline-none focus:border-[#1B3FBF] transition-all placeholder:text-slate-400 font-serif italic"
                     />
                     <button type="submit" className="group px-10 py-4 bg-[#1B3FBF] text-white text-[10px] font-black uppercase tracking-[0.4em] rounded-full hover:scale-105 active:scale-95 transition-all shadow-xl shadow-[#1B3FBF]/20 flex items-center gap-3">
                       {interviewPhase < 2 ? 'Next' : 'Generate Identity'} <ChevronRight size={13} className="group-hover:translate-x-1 transition-transform" />

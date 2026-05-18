@@ -1070,7 +1070,7 @@ const HomeScreen = ({
                   className="flex items-center gap-2 px-6 py-2 rounded-full bg-[#0020C2] text-white border border-[#0020C2] hover:scale-105 active:scale-95 transition-all ml-2"
                 >
                   <BrainCircuit size={14} />
-                  <span className="text-[12px] font-serif italic capitalize tracking-wide">Mentra</span>
+                  <span className="text-[12px] font-sans font-bold capitalize tracking-wider">Mentra</span>
                 </button>
               </TooltipTrigger>
               <TooltipContent>Deep Research Agent</TooltipContent>

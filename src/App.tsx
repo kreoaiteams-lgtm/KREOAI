@@ -12,6 +12,7 @@ import CleanPromo2 from "./components/CleanPromo2";
 import CleanPromo3 from "./components/CleanPromo3";
 import CleanPromo4 from "./components/CleanPromo4";
 import CleanPromo5 from "./components/CleanPromo5";
+import CleanPromo6 from "./components/CleanPromo6";
 import KreoPromo6 from "./components/KreoPromo6";
 import Promo8 from "./components/Promo8";
 import KreoVsClaudePromo from "./components/KreoVsClaudePromo";
@@ -59,7 +60,8 @@ const App = () => (
           <Route path="/promo3" element={<CleanPromo3 />} />
           <Route path="/promo4" element={<CleanPromo4 />} />
           <Route path="/promo5" element={<CleanPromo5 />} />
-          <Route path="/promo6" element={<KreoPromo6 />} />
+          <Route path="/promo6" element={<CleanPromo6 />} />
+          <Route path="/card-trend" element={<CleanPromo6 />} />
           <Route path="/promo8" element={<Promo8 />} />
           <Route path="/share/:id" element={<ShareView />} />
           <Route path="/link/:id" element={<ShareView />} />
