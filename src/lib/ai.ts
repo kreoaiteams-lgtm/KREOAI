@@ -172,6 +172,110 @@ export const generateArtifact = async (
       }
     }
 
+    // MULTI-KEY STITCHED PRESENTATION ENGINE (PPT / SLIDES)
+    const isSlideRequest = lowerPrompt.includes("ppt") || lowerPrompt.includes("presentation") || lowerPrompt.includes("slide");
+    if (isSlideRequest) {
+      let slidesToGenerate: string[] = [];
+      let introText = prompt;
+
+      const slideMatches = prompt.split(/(?=Slide\s+\d+|[Ss]lide\s+\d+|Slide-\d+)/g);
+      if (slideMatches.length > 2) {
+        slidesToGenerate = slideMatches.filter(s => s.trim().length > 0);
+        if (!slidesToGenerate[0].toLowerCase().includes("slide")) {
+          introText = slidesToGenerate.shift() || prompt;
+        }
+      } else {
+        // Run a quick planner to outline 4 beautiful slides
+        console.log("[KREO] Multi-Key: Generating slide outlines via Planner agent...");
+        const planPrompt = `Outline a premium 4-slide presentation for: "${prompt}". Outline detailed copy, stats, and structures. Format EXCLUSIVELY with clear markers like "Slide 1:", "Slide 2:", etc. so we can easily parse them.`;
+        try {
+          const planResponse = await sarvamFetch(SARVAM_ENDPOINT, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              model: "sarvam-105b",
+              messages: [
+                { role: "system", content: "You write detailed outlines split by 'Slide X:' headers." },
+                { role: "user", content: planPrompt }
+              ],
+              max_tokens: 1500,
+              temperature: 0.7
+            })
+          });
+
+          if (planResponse.ok) {
+            const planData = await planResponse.json();
+            const outline = planData?.choices?.[0]?.message?.content || "";
+            const parsedMatches = outline.split(/(?=Slide\s+\d+|[Ss]lide\s+\d+|Slide-\d+|Slide\s+\d+:|[Ss]lide\s+\d+:)/g);
+            if (parsedMatches.length > 2) {
+              slidesToGenerate = parsedMatches.filter(s => s.trim().length > 0);
+            }
+          }
+        } catch (e) {
+          console.warn("[KREO] Planner failed, using standard generation", e);
+        }
+      }
+
+      if (slidesToGenerate.length > 0) {
+        console.log(`[KREO] Orchestrating parallel multi-key generation for ${slidesToGenerate.length} slides...`);
+        const keysCount = SARVAM_KEYS.length;
+
+        const slidePromises = slidesToGenerate.map(async (slideContent, index) => {
+          const slideMessages = [
+            {
+              role: "system",
+              content: `${AESTHETICS_SYSTEM_PROMPT}\n${taskGuideline}\n${brandKitRule}\n${styleMimicRule}\n\nCRITICAL MANDATE:\nYou are generating Slide ${index + 1} of a beautiful presentation.\nGenerate ONLY a single <section class="h-screen w-screen flex flex-col items-center justify-center p-24 bg-white relative overflow-hidden">...</section> HTML block. Do NOT include markdown code block wraps (\`\`\`html) or outer HTML/body tags. Just return the <section> block. Keep it stunningly complete.`
+            },
+            {
+              role: "user",
+              content: `Presentation context: ${introText}\n\nGenerate Slide ${index + 1} content:\n${slideContent}`
+            }
+          ];
+
+          let response;
+          for (let attempt = 0; attempt < keysCount; attempt++) {
+            const keyIndex = (index + attempt) % keysCount;
+            const currentKey = SARVAM_KEYS[keyIndex];
+            try {
+              response = await backgroundFetch(SARVAM_ENDPOINT, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  "api-subscription-key": currentKey
+                },
+                body: JSON.stringify({
+                  model: "sarvam-105b",
+                  messages: slideMessages,
+                  max_tokens: 3000,
+                  temperature: 0.7
+                })
+              });
+              if (response.ok) break;
+            } catch (err) {
+              console.warn(`Slide ${index + 1} attempt ${attempt} failed with key ${keyIndex + 1}`, err);
+            }
+          }
+
+          if (!response || !response.ok) {
+            throw new Error(`Slide ${index + 1} generation failed completely.`);
+          }
+
+          const data = await response.json();
+          let slideHtml = data?.choices?.[0]?.message?.content || "";
+          slideHtml = slideHtml.replace(/```(html|jsx|tsx|javascript|js)?/g, "").replace(/```/g, "").trim();
+          return slideHtml;
+        });
+
+        try {
+          const completedSlides = await Promise.all(slidePromises);
+          console.log("[KREO] Parallel Multi-Key Slide generation completed successfully!");
+          return completedSlides.join("\n\n");
+        } catch (e) {
+          console.error("[KREO] Parallel generation failed, falling back to single-run", e);
+        }
+      }
+    }
+
     const sanitizedHistory = chatHistory.map(({ role, content }) => ({ role, content }));
 
     const messages = [
