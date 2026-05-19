@@ -201,7 +201,9 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, onRefinement, readO
       return `
         <html>
           <head>
-            <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+            <link href="https://api.fontshare.com/v2/css?f[]=satoshi@700,500,400&display=swap" rel="stylesheet">
+            <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+            <script>window.tailwind = { config: { theme: { extend: { fontFamily: { sans: ['Satoshi', 'sans-serif'] }, colors: { primary: '${primaryColor}' }, borderRadius: { xl: '${borderRadius}' } } } } };</script>
             <script src="https://cdn.tailwindcss.com"></script>
             <style>
               :root {
@@ -226,7 +228,7 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, onRefinement, readO
                 * { cursor: crosshair !important; }
                 *:hover { outline: 2px dashed #1B3FBF !important; outline-offset: 2px; }
               ` : ""}
-              body { font-family: 'Inter', sans-serif; background: white; margin: 0; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; overflow-y: auto; }
+              body { font-family: 'Satoshi', sans-serif; background: white; margin: 0; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; overflow-y: auto; }
               .font-serif { font-family: 'Instrument Serif', serif; }
               section { min-height: 100vh; width: 100vw; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 4rem; box-sizing: border-box; }
             </style>
@@ -269,7 +271,7 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, onRefinement, readO
     return `
       <html>
         <head>
-          <script>window.tailwind = { config: { theme: { extend: { colors: { primary: '${primaryColor}' }, borderRadius: { xl: '${borderRadius}' } } } } };</script>
+          <script>window.tailwind = { config: { theme: { extend: { fontFamily: { sans: ['Satoshi', 'sans-serif'] }, colors: { primary: '${primaryColor}' }, borderRadius: { xl: '${borderRadius}' } } } } };</script>
           <script src="https://cdn.tailwindcss.com"></script>
           <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
           <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>

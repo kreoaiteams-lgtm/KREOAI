@@ -146,10 +146,36 @@ export const generateArtifact = async (
       enrichedPrompt += `\n\n[VISUAL ASSET PROVIDED]:\nA source image is available at this URL: ${imageUrl}.`;
     }
 
+    let taskGuideline = "";
+    const lowerPrompt = prompt.toLowerCase();
+    
+    if (lowerPrompt.includes("ppt") || lowerPrompt.includes("presentation") || lowerPrompt.includes("slide")) {
+      try {
+        const res = await fetch("/templates/ppt.md");
+        if (res.ok) taskGuideline = await res.text();
+      } catch (e) {
+        taskGuideline = `### Presentation Rules:\nUse multiple <section> elements. Each <section> represents a single slide. Ensure beautiful font sizes, structured cards, bento grids, and high-contrast dark/light themes.`;
+      }
+    } else if (lowerPrompt.includes("excel") || lowerPrompt.includes("spreadsheet") || lowerPrompt.includes("sheet") || lowerPrompt.includes("table")) {
+      try {
+        const res = await fetch("/templates/excel.md");
+        if (res.ok) taskGuideline = await res.text();
+      } catch (e) {
+        taskGuideline = `### Grid/Table Rules:\nGenerate highly professional data-dense dashboard tables or interactive grids with thin precise borders, search inputs, and sparklines.`;
+      }
+    } else if (lowerPrompt.includes("pdf") || lowerPrompt.includes("document") || lowerPrompt.includes("report")) {
+      try {
+        const res = await fetch("/templates/pdf.md");
+        if (res.ok) taskGuideline = await res.text();
+      } catch (e) {
+        taskGuideline = `### Document Rules:\nGenerate A4-styled, paginated, clean print-friendly reports with solid headers, footers, page numbering, and high contrast.`;
+      }
+    }
+
     const sanitizedHistory = chatHistory.map(({ role, content }) => ({ role, content }));
 
     const messages = [
-      { role: "system", content: `${AESTHETICS_SYSTEM_PROMPT}\n${brandKitRule}\n${styleMimicRule}` },
+      { role: "system", content: `${AESTHETICS_SYSTEM_PROMPT}\n${taskGuideline}\n${brandKitRule}\n${styleMimicRule}` },
       ...sanitizedHistory,
       { role: "user", content: enrichedPrompt },
     ];
