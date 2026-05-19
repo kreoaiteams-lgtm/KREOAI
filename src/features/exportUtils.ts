@@ -15,6 +15,19 @@ export const exportAsHTML = (code: string) => {
   URL.revokeObjectURL(url);
 };
 
+export const exportAsMD = (code: string) => {
+  const mdContent = "```html\n" + code.replace(/```(jsx|tsx|javascript|js|html|react|css)?/g, "").replace(/```/g, "").trim() + "\n```";
+  const blob = new Blob([mdContent], { type: "text/markdown" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "kreo-manifestation.md";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+};
+
 export const exportAsZip = async (code: string) => {
   const zip = new JSZip();
   zip.file("index.html", code);

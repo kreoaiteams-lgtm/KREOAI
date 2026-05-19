@@ -55,9 +55,33 @@ Manifest a masterpiece. Output ONLY valid HTML code.
 </frontend_aesthetics>
 `;
 
-const SARVAM_API_KEY = import.meta.env.VITE_SARVAM_API_KEY || "sk_re6xoj0j_hWoXVGn7z2ah9nsizyJmKmJY";
-const SARVAM_FALLBACK_KEY = "sk_pd0jziip_HNsimctXQkcPjiVMBWYLpyzQ"; // Formerly the TTS key, now repurposed for code generation fallback
+const SARVAM_KEYS = [
+  import.meta.env.VITE_SARVAM_API_KEY || "sk_re6xoj0j_hWoXVGn7z2ah9nsizyJmKmJY",
+  "sk_pd0jziip_HNsimctXQkcPjiVMBWYLpyzQ",
+  "sk_128zbf3x_7VQczNTUWgOnA9JTMhnGeCwk",
+  "sk_b7a3spyf_wWuetPhp6ZOp11sgP418WGuU"
+];
+const SARVAM_API_KEY = SARVAM_KEYS[0]; // Kept for simple null checks
 const SARVAM_ENDPOINT = "https://api.sarvam.ai/v1/chat/completions";
+
+async function sarvamFetch(url: string, options: any) {
+  let response;
+  for (let i = 0; i < SARVAM_KEYS.length; i++) {
+    const key = SARVAM_KEYS[i];
+    const currentOptions = {
+      ...options,
+      headers: { ...options.headers, "api-subscription-key": key }
+    };
+    try {
+      response = await backgroundFetch(url, currentOptions);
+      if (response.ok) return response;
+      console.warn(`[Key Rotation] Sarvam API Key ${i + 1} failed with status ${response.status}. Trying next...`);
+    } catch (err) {
+      console.warn(`[Key Rotation] Sarvam API Key ${i + 1} request failed:`, err);
+    }
+  }
+  return response || new Response(null, { status: 500 });
+}
 const JINA_API_KEY = "jina_1571735a32634468b4b6258b9fcfa276X8wx9LD9fG7zOo7KVosMzfGXolqX";
 
 const NEEDS_SEARCH_REGEX = /(price|cost|today|latest|news|statistics|stats|vs|compare|rate|ranking|best|top|current|roi|bank|market|stock)/i;
@@ -140,29 +164,14 @@ export const generateArtifact = async (
       temperature: 0.7,
     });
 
-    let response = await backgroundFetch(SARVAM_ENDPOINT, {
+    let response = await sarvamFetch(SARVAM_ENDPOINT, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
-        "api-subscription-key": SARVAM_API_KEY,
+        "Content-Type": "application/json"
       },
       signal: controller.signal,
       body: requestBody,
     });
-
-    // Fallback: If primary key runs out of credits/fails, use the secondary key
-    if (!response.ok) {
-      console.warn(`Primary Sarvam API key failed with status ${response.status}. Attempting fallback to secondary API key...`);
-      response = await backgroundFetch(SARVAM_ENDPOINT, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "api-subscription-key": SARVAM_FALLBACK_KEY,
-        },
-        // Not passing signal here to avoid aborting the fallback if the primary timed out just before
-        body: requestBody,
-      });
-    }
 
     clearTimeout(timeoutId);
 
@@ -194,7 +203,7 @@ export const generateBio = async (answers: string[]) => {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15000);
 
-    const response = await backgroundFetch(SARVAM_ENDPOINT, {
+    const response = await sarvamFetch(SARVAM_ENDPOINT, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -278,7 +287,7 @@ export const translateText = async (text: string, targetLanguage: string) => {
     // Fallback to Sarvam if Google fails
     if (!SARVAM_API_KEY) return text;
     try {
-      const response = await backgroundFetch(SARVAM_ENDPOINT, {
+      const response = await sarvamFetch(SARVAM_ENDPOINT, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -365,7 +374,7 @@ export const generateComparisonData = async (prompt: string, context: string) =>
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 60000); // 60s for final manifest synthesis
 
-    const response = await backgroundFetch(SARVAM_ENDPOINT, {
+    const response = await sarvamFetch(SARVAM_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json", "api-subscription-key": SARVAM_API_KEY },
       signal: controller.signal,
@@ -493,7 +502,7 @@ export const runCoWorkAgent = async (
       const planController = new AbortController();
       const planTimeout = setTimeout(() => planController.abort(), 30000);
 
-      const planRes = await backgroundFetch(SARVAM_ENDPOINT, {
+      const planRes = await sarvamFetch(SARVAM_ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json", "api-subscription-key": SARVAM_API_KEY },
         signal: planController.signal,
@@ -577,7 +586,7 @@ export const runCoWorkAgent = async (
           const synthController = new AbortController();
           const synthTimeoutId = setTimeout(() => synthController.abort(), 45000); // 45s for synthesis
 
-          const synthRes = await backgroundFetch(SARVAM_ENDPOINT, {
+          const synthRes = await sarvamFetch(SARVAM_ENDPOINT, {
             method: "POST",
             headers: { "Content-Type": "application/json", "api-subscription-key": SARVAM_API_KEY },
             signal: synthController.signal,

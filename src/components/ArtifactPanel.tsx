@@ -10,6 +10,8 @@ import { generateArtifact } from "@/lib/ai";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLang } from "@/context/LanguageContext";
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useArtifactTools } from "@/features/useArtifactTools";
 import * as exportUtils from "@/features/exportUtils";
 
@@ -394,6 +396,9 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, onRefinement, readO
                     </TooltipTrigger>
                     <TooltipContent side="left" className="text-[9px] uppercase font-bold tracking-widest">Copies HTML + Opens Canva</TooltipContent>
                   </Tooltip>
+                  <button onClick={() => exportUtils.exportAsMD(getManifestationSrcDoc())} className="w-full flex items-center gap-3 px-4 py-3 hover:bg-black/5 rounded-2xl text-[10px] font-black uppercase tracking-widest text-black/60 hover:text-[#1B3FBF] transition-all">
+                    <Code2 size={14} /> Proper MD File (.md)
+                  </button>
                   <button onClick={() => exportUtils.exportAsHTML(getManifestationSrcDoc())} className="w-full flex items-center gap-3 px-4 py-3 hover:bg-black/5 rounded-2xl text-[10px] font-black uppercase tracking-widest text-black/60 hover:text-[#1B3FBF] transition-all">
                     <Code2 size={14} /> Manifest Source (.html)
                   </button>
@@ -590,8 +595,16 @@ const ArtifactPanel = ({ code, prompt, isSplitView, onShare, onRefinement, readO
               </div>
             </motion.div>
           ) : (
-            <div className="h-full w-full overflow-auto bg-white">
-              <pre className="p-8 font-mono text-xs leading-relaxed text-[#2D4FA8] whitespace-pre-wrap">{code.replace(/```(jsx|tsx|javascript|js|html|react|css)?/g, "").replace(/```/g, "").trim()}</pre>
+            <div className="h-full w-full overflow-auto bg-[#1E1E1E]">
+              <SyntaxHighlighter 
+                language="html" 
+                style={vscDarkPlus}
+                customStyle={{ margin: 0, padding: '2rem', height: '100%', fontSize: '0.8rem', background: '#1E1E1E' }}
+                showLineNumbers={true}
+                wrapLines={true}
+              >
+                {code.replace(/```(jsx|tsx|javascript|js|html|react|css)?/g, "").replace(/```/g, "").trim()}
+              </SyntaxHighlighter>
             </div>
           )}
         </div>

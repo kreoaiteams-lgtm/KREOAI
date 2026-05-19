@@ -146,7 +146,7 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
       </div>
 
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-[4000] flex items-center justify-between px-8 py-5 bg-white/80 backdrop-blur-2xl border-b border-black/[0.04]">
+      <header className="fixed top-0 left-0 right-0 z-[4000] flex items-center justify-between px-8 py-5 bg-white/80 backdrop-blur-2xl border-b border-black">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 bg-[#1B3FBF] rounded-full flex items-center justify-center">
             <Zap size={14} className="text-white" />
@@ -182,8 +182,8 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
                       onClick={() => setInterest(item.id as KreonInterest)}
                       className={`relative flex items-center gap-3 px-4 py-3.5 rounded-2xl border-2 transition-all duration-200 group ${
                         interest === item.id 
-                          ? 'bg-[#1B3FBF] border-[#1B3FBF] text-white shadow-xl shadow-[#1B3FBF]/25' 
-                          : 'bg-white border-black/5 text-black hover:border-[#1B3FBF]/30 hover:shadow-md'
+                          ? 'bg-[#1B3FBF] border-[#1B3FBF] text-white ' 
+                          : 'bg-white border-black text-black hover:border-[#1B3FBF]/30 hover:'
                       }`}
                     >
                       <div className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all ${
@@ -198,7 +198,7 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
                 </div>
                 <button 
                   onClick={() => setPhase('brand')}
-                  className="group w-fit px-10 py-4 bg-[#1B3FBF] text-white text-[10px] font-black uppercase tracking-[0.4em] rounded-full hover:scale-105 active:scale-95 transition-all shadow-xl shadow-[#1B3FBF]/20 flex items-center gap-3"
+                  className="group w-fit px-10 py-4 bg-[#1B3FBF] text-white text-[10px] font-black uppercase tracking-[0.4em] rounded-full hover:scale-105 active:scale-95 transition-all  flex items-center gap-3"
                 >
                   Next: Brand DNA <ChevronRight size={13} className="group-hover:translate-x-1 transition-transform" />
                 </button>
@@ -234,7 +234,7 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
                     </div>
                     <div className="flex items-center gap-3">
                       <input type="color" value={brandPrimary} onChange={e => setBrandPrimary(e.target.value)} className="w-14 h-10 rounded-xl cursor-pointer border-none bg-transparent" />
-                      <div className="flex-1 h-10 rounded-xl border-2 border-black/5" style={{ background: `linear-gradient(135deg, ${brandPrimary}, ${brandSecondary})` }} />
+                      <div className="flex-1 h-10 rounded-xl border-2 border-black" style={{ background: `linear-gradient(135deg, ${brandPrimary}, ${brandSecondary})` }} />
                     </div>
                   </div>
                   {/* Secondary Color */}
@@ -245,7 +245,7 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
                     </div>
                     <div className="flex items-center gap-3">
                       <input type="color" value={brandSecondary} onChange={e => setBrandSecondary(e.target.value)} className="w-14 h-10 rounded-xl cursor-pointer border-none bg-transparent" />
-                      <div className="flex-1 h-10 rounded-xl border-2 border-black/5 flex items-center px-4" style={{ background: `${brandSecondary}15` }}>
+                      <div className="flex-1 h-10 rounded-xl border-2 border-black flex items-center px-4" style={{ background: `${brandSecondary}15` }}>
                         <div className="w-4 h-4 rounded-full" style={{ background: brandSecondary }} />
                       </div>
                     </div>
@@ -254,7 +254,7 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <label className="text-[10px] font-black uppercase tracking-widest text-black">Font Family</label>
-                      <select value={brandFont} onChange={e => setBrandFont(e.target.value)} className="w-full h-10 rounded-xl border-2 border-black/5 bg-white px-3 text-[11px] font-semibold focus:outline-none focus:border-[#1B3FBF]/40">
+                      <select value={brandFont} onChange={e => setBrandFont(e.target.value)} className="w-full h-10 rounded-xl border-2 border-black bg-white px-3 text-[11px] font-semibold focus:outline-none focus:border-[#1B3FBF]/40">
                         {['Inter', 'Satoshi', 'Sora', 'DM Sans', 'Outfit', 'Plus Jakarta Sans', 'Space Grotesk', 'Poppins'].map(f => (
                           <option key={f}>{f}</option>
                         ))}
@@ -273,12 +273,12 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
                     <label className="text-[10px] font-black uppercase tracking-widest text-black">Logo URL <span className="normal-case font-medium text-black/40">(optional)</span></label>
                     <div className="relative">
                       <LinkIcon size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-black/20" />
-                      <input type="url" value={brandLogoUrl} onChange={e => setBrandLogoUrl(e.target.value)} placeholder="https://your-logo-url.com/logo.png" className="w-full h-10 rounded-xl border-2 border-black/5 bg-white pl-9 pr-3 text-[11px] text-slate-800 focus:outline-none focus:border-[#1B3FBF]/40" />
+                      <input type="url" value={brandLogoUrl} onChange={e => setBrandLogoUrl(e.target.value)} placeholder="https://your-logo-url.com/logo.png" className="w-full h-10 rounded-xl border-2 border-black bg-white pl-9 pr-3 text-[11px] text-slate-800 focus:outline-none focus:border-[#1B3FBF]/40" />
                     </div>
                   </div>
 
                   {/* Live Preview */}
-                  <div className="p-4 rounded-2xl border-2 border-black/5" style={{ fontFamily: brandFont, borderRadius: brandRadius }}>
+                  <div className="p-4 rounded-2xl border-2 border-black" style={{ fontFamily: brandFont, borderRadius: brandRadius }}>
                     <div className="text-[9px] font-black uppercase tracking-widest text-black mb-3">Brand DNA Preview</div>
                     <div className="flex items-center gap-3">
                       <div className="px-4 py-2 text-white text-[10px] font-black uppercase tracking-widest rounded-lg" style={{ background: brandPrimary, borderRadius: brandRadius }}>Primary Button</div>
@@ -294,7 +294,7 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
                   </button>
                   <button 
                     onClick={() => { saveBrandKit(); setPhase('interview'); }}
-                    className="group flex-1 max-w-xs px-10 py-4 bg-[#1B3FBF] text-white text-[10px] font-black uppercase tracking-[0.4em] rounded-full hover:scale-105 active:scale-95 transition-all shadow-xl shadow-[#1B3FBF]/20 flex items-center justify-center gap-3"
+                    className="group flex-1 max-w-xs px-10 py-4 bg-[#1B3FBF] text-white text-[10px] font-black uppercase tracking-[0.4em] rounded-full hover:scale-105 active:scale-95 transition-all  flex items-center justify-center gap-3"
                   >
                     <Sparkles size={13} /> Save & Continue <ChevronRight size={13} className="group-hover:translate-x-1 transition-transform" />
                   </button>
@@ -304,7 +304,7 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
               <div className="hidden md:flex flex-1 bg-gradient-to-br from-[#f0f4ff] to-[#f8f9ff] items-center justify-center relative overflow-hidden p-12">
                 <div className="w-full max-w-xs space-y-6">
                   <div className="text-[9px] font-black uppercase tracking-[0.4em] text-[#1B3FBF]/40 text-center">Your Brand Kit · Always Active</div>
-                  <div className="bg-white rounded-3xl shadow-xl p-6 border border-black/5 space-y-4">
+                  <div className="bg-white rounded-3xl shadow-xl p-6 border border-black space-y-4">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-black text-lg" style={{ background: brandPrimary }}>K</div>
                       <div>
@@ -373,7 +373,7 @@ const IdentityScreen: React.FC<IdentityScreenProps> = ({
                       placeholder="Your answer..."
                       className="w-full bg-transparent border-b-2 border-black/8 py-4 text-xl text-slate-800 outline-none focus:border-[#1B3FBF] transition-all placeholder:text-slate-400 font-serif italic"
                     />
-                    <button type="submit" className="group px-10 py-4 bg-[#1B3FBF] text-white text-[10px] font-black uppercase tracking-[0.4em] rounded-full hover:scale-105 active:scale-95 transition-all shadow-xl shadow-[#1B3FBF]/20 flex items-center gap-3">
+                    <button type="submit" className="group px-10 py-4 bg-[#1B3FBF] text-white text-[10px] font-black uppercase tracking-[0.4em] rounded-full hover:scale-105 active:scale-95 transition-all  flex items-center gap-3">
                       {interviewPhase < 2 ? 'Next' : 'Generate Identity'} <ChevronRight size={13} className="group-hover:translate-x-1 transition-transform" />
                     </button>
                   </form>
