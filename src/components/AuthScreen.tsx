@@ -102,10 +102,10 @@ const AuthScreen = () => {
           <div className="relative w-full h-[360px] md:h-full min-h-[380px] md:min-h-0 bg-[#eef1f6] rounded-[2.5rem] overflow-hidden flex items-center justify-start select-none shadow-inner border border-slate-100">
             {/* KREO logo overlay in TAN-NIMBUS font shifted significantly down and scaled up */}
 
-            <img 
+             <img 
               src="/chatgpt-image.png" 
               alt="Kreo Illustration" 
-              className="w-full h-full object-cover object-left" 
+              className="w-full h-full object-cover origin-bottom-left scale-150" 
             />
           </div>
 
@@ -114,19 +114,6 @@ const AuthScreen = () => {
             
             {/* Logo / Header block */}
             <div className="space-y-6">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2.5 text-slate-800 font-bold select-none text-xs">
-                  <div className="w-8 h-8 bg-slate-900 rounded-xl flex items-center justify-center text-white shadow-md shadow-slate-900/20">
-                    <Cpu className="w-4 h-4" />
-                  </div>
-                  <span className="font-sans font-black tracking-widest text-xs uppercase">Kreo Studio</span>
-                </div>
-                {/* Trust Badge */}
-                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 text-emerald-600">
-                  <ShieldCheck className="w-3.5 h-3.5" />
-                  <span className="text-[9px] font-bold uppercase tracking-widest">Secure</span>
-                </div>
-              </div>
 
               {/* Title / Welcome back */}
               <div>
