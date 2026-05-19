@@ -89,7 +89,7 @@ const AuthScreen = () => {
         {showSplash && <SplashScreen onComplete={handleSplashComplete} />}
       </AnimatePresence>
 
-      <div className="min-h-screen w-full flex flex-col items-center justify-center overflow-x-hidden bg-[#e5e5e5] py-12 px-4 md:px-6 relative">
+      <div className="min-h-screen w-full flex flex-col items-center justify-center overflow-x-hidden bg-gradient-to-br from-[#d9e4f6] via-[#f0f4fa] to-[#cfdff4] py-12 px-4 md:px-6 relative">
         
         {/* Master Light-Themed Unified Container Card */}
         <motion.div
@@ -100,10 +100,19 @@ const AuthScreen = () => {
         >
           {/* Left Column: Stunning static illustration aligned to the left side */}
           <div className="relative w-full h-[360px] md:h-full min-h-[380px] md:min-h-0 bg-[#eef1f6] rounded-[2.5rem] overflow-hidden flex items-center justify-start select-none">
+            {/* KREO logo overlay in TAN-NIMBUS font at the center top */}
+            <div className="absolute top-8 left-1/2 -translate-x-1/2 z-20 text-center">
+              <h1 
+                className="text-4xl text-slate-800 tracking-tighter font-bold uppercase select-none drop-shadow-sm"
+                style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }}
+              >
+                KREO
+              </h1>
+            </div>
             <img 
               src="/chatgpt-image.png" 
               alt="Kreo Illustration" 
-              className="w-full h-full object-cover object-left animate-[pulse_8s_ease-in-out_infinite]" 
+              className="w-full h-full object-cover object-left" 
             />
           </div>
 
