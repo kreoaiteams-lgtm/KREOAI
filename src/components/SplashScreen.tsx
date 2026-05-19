@@ -43,7 +43,7 @@ const NeuralDoodle = ({ top, left, index, icon }: { top: string, left: string, i
         repeatType: "reverse",
         repeatDelay: Math.random() * 4
       }}
-      className="absolute text-white pointer-events-none"
+      className="absolute text-slate-400 pointer-events-none"
       style={{ top, left }}
     >
       <Icon size={12 + Math.random() * 30} strokeWidth={0.5} />
@@ -102,11 +102,11 @@ const SplashScreen = ({ onComplete }: { onComplete: () => void }) => {
           key="splash"
           exit={{ opacity: 0, scale: 1.05 }}
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="fixed inset-0 z-[3000] flex flex-col items-center justify-center bg-[#020512] overflow-hidden"
+          className="fixed inset-0 z-[3000] flex flex-col items-center justify-center bg-[#f4f6fa] overflow-hidden"
         >
           {/* Kinetic Ambient Glow behind letters */}
-          <div className="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] w-[350px] h-[350px] bg-blue-600/10 rounded-full blur-[80px] pointer-events-none z-0" />
-          <div className="absolute top-1/2 left-1/2 translate-x-[-40%] translate-y-[-60%] w-[250px] h-[250px] bg-purple-500/10 rounded-full blur-[90px] pointer-events-none z-0" />
+          <div className="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] w-[350px] h-[350px] bg-blue-300/20 rounded-full blur-[80px] pointer-events-none z-0" />
+          <div className="absolute top-1/2 left-1/2 translate-x-[-40%] translate-y-[-60%] w-[250px] h-[250px] bg-purple-300/20 rounded-full blur-[90px] pointer-events-none z-0" />
 
           {/* Neural Cloud Icon Field */}
           <div className="absolute inset-0 overflow-hidden z-0">
@@ -128,7 +128,7 @@ const SplashScreen = ({ onComplete }: { onComplete: () => void }) => {
                      duration: 0.9,
                      ease: [0.16, 1, 0.3, 1]
                    }}
-                   className="text-[17vw] font-bold text-white leading-none tracking-tighter cursor-default select-none drop-shadow-[0_20px_50px_rgba(0,32,194,0.3)]"
+                   className="text-[17vw] font-bold text-slate-900 leading-none tracking-tighter cursor-default select-none drop-shadow-xl"
                    style={{ fontFamily: TAN }}
                  >
                    {letter}
@@ -143,10 +143,10 @@ const SplashScreen = ({ onComplete }: { onComplete: () => void }) => {
               transition={{ delay: 0.5, duration: 1 }}
               className="flex flex-col items-center space-y-1 text-center"
             >
-              <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white">
+              <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-500">
                 neural design engine
               </p>
-              <p className="text-xs font-serif italic text-white/50 tracking-wide">
+              <p className="text-xs font-serif italic text-slate-400 tracking-wide">
                 Architecting Visual Space...
               </p>
             </motion.div>
@@ -154,15 +154,15 @@ const SplashScreen = ({ onComplete }: { onComplete: () => void }) => {
 
           {/* Precision Loading Progress Bar at the bottom */}
           <div className="absolute bottom-16 left-1/2 translate-x-[-50%] w-48 space-y-2 z-10 flex flex-col items-center">
-            <div className="h-[1.5px] w-full bg-white/5 rounded-full overflow-hidden border border-white/5 relative">
+            <div className="h-[2px] w-full bg-slate-200 rounded-full overflow-hidden border border-slate-300 relative shadow-inner">
               <motion.div 
-                className="h-full bg-gradient-to-r from-blue-600 via-indigo-400 to-white"
+                className="h-full bg-slate-800"
                 initial={{ width: 0 }}
                 animate={{ width: `${loadingPercent}%` }}
                 transition={{ duration: 0.15 }}
               />
             </div>
-            <span className="text-[8px] font-mono tracking-widest text-white/30 uppercase">
+            <span className="text-[8px] font-mono tracking-widest text-slate-400 uppercase font-semibold">
               Manifesting Studio {loadingPercent}%
             </span>
           </div>

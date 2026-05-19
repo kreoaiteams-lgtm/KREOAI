@@ -19,10 +19,7 @@ const AuthScreen = () => {
   const { t } = useLang();
 
   useEffect(() => {
-    const hasSeenSplash = sessionStorage.getItem("kreo_login_splash_seen");
-    if (hasSeenSplash) {
-      setShowSplash(false);
-    }
+    // Splash screen always plays now
   }, []);
 
   useEffect(() => {
@@ -34,7 +31,6 @@ const AuthScreen = () => {
   }, [navigate]);
 
   const handleSplashComplete = () => {
-    sessionStorage.setItem("kreo_login_splash_seen", "true");
     setShowSplash(false);
   };
 
