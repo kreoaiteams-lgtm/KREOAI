@@ -100,11 +100,11 @@ const AuthScreen = () => {
         >
           {/* Left Column: Stunning static illustration aligned to the left side */}
           <div className="relative w-full h-[360px] md:h-full min-h-[380px] md:min-h-0 bg-[#eef1f6] rounded-[2.5rem] overflow-hidden flex items-center justify-start select-none">
-            {/* KREO logo overlay in TAN-NIMBUS font at the center top */}
-            <div className="absolute top-8 left-1/2 -translate-x-1/2 z-20 text-center">
+            {/* KREO logo overlay in TAN-NIMBUS font shifted down and scaled larger */}
+            <div className="absolute top-[5.5rem] left-1/2 -translate-x-1/2 z-20 text-center w-full">
               <h1 
-                className="text-4xl text-slate-800 tracking-tighter font-bold uppercase select-none drop-shadow-sm"
-                style={{ fontFamily: "'TAN-NIMBUS', sans-serif" }}
+                className="text-7xl md:text-[5.5rem] text-slate-900 tracking-tighter font-black uppercase select-none drop-shadow-md"
+                style={{ fontFamily: "'TAN-NIMBUS', sans-serif", lineHeight: 1 }}
               >
                 KREO
               </h1>
