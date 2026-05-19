@@ -105,8 +105,8 @@ const AuthScreen = () => {
              <img 
               src="/chatgpt-image.png" 
               alt="Kreo Illustration" 
-              className="w-full h-full object-cover" 
-              style={{ transform: "scale(1.25)", transformOrigin: "left center" }}
+              className="w-full h-full object-cover object-left" 
+              style={{ transform: "scale(1.1)", transformOrigin: "left center" }}
             />
           </div>
 
