@@ -239,6 +239,10 @@ export const generateArtifact = async (
           for (let attempt = 0; attempt < keysCount; attempt++) {
             const keyIndex = (index + attempt) % keysCount;
             const currentKey = SARVAM_KEYS[keyIndex];
+            
+            const slideController = new AbortController();
+            const slideTimeoutId = setTimeout(() => slideController.abort(), 25000); // 25s timeout per attempt
+            
             try {
               response = await backgroundFetch(SARVAM_ENDPOINT, {
                 method: "POST",
@@ -246,6 +250,7 @@ export const generateArtifact = async (
                   "Content-Type": "application/json",
                   "api-subscription-key": currentKey
                 },
+                signal: slideController.signal,
                 body: JSON.stringify({
                   model: "sarvam-105b",
                   messages: slideMessages,
@@ -253,8 +258,10 @@ export const generateArtifact = async (
                   temperature: 0.7
                 })
               });
+              clearTimeout(slideTimeoutId);
               if (response.ok) break;
             } catch (err) {
+              clearTimeout(slideTimeoutId);
               console.warn(`Slide ${index + 1} attempt ${attempt} failed with key ${keyIndex + 1}`, err);
             }
           }

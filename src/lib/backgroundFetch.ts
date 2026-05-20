@@ -72,6 +72,7 @@ async function tryVercelProxy(url: string, options: any, isSarvam: boolean, isTT
         'Authorization': options.headers?.['Authorization'] || options.headers?.['authorization'] || '',
         'api-subscription-key': options.headers?.['api-subscription-key'] || ''
       },
+      signal: options.signal,
       body: options.body
     });
 
