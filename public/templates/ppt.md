@@ -2,6 +2,12 @@
 
 Generate cinematic presentation slides using multiple `<section>` HTML blocks. These slides are parsed dynamically. Do not build plain bullet lists. Ensure the design is premium and uses full visual hierarchy.
 
+## CRITICAL PERFORMANCE & SIZE CONSTRAINTS (MAX 15,000 CHARACTERS)
+- The total generated code MUST be extremely compact and clean. Do not exceed 15,000 characters.
+- Avoid repetitive CSS classes. Use global parent styling where possible.
+- Avoid verbose custom inline SVGs; use simple Lucide icons (via `<i data-lucide="...">`) or clean CSS shapes instead.
+- Do NOT output any conversational filler, intro, or outro text (e.g. "Here is slide 1:"). Return ONLY the clean HTML tags starting with `<section>` and ending with `</section>`.
+
 ## Structure
 - Use multiple `<section>` elements. Each `<section>` represents a single slide.
 - Avoid boring black text on white backgrounds. Use gradient overlays and dramatic dark themes.
